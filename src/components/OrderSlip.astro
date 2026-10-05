@@ -1,0 +1,49 @@
+---
+// Order slip: preview of the pre-filled WhatsApp message. Links go through
+// /wa?src=<page>, never a raw wa.me link (qa.md §2). /wa itself is not built yet.
+export interface Props {
+  heading: string;
+  message: string;
+  ctaLabel: string;
+  src: string;
+}
+const { heading, message, ctaLabel, src } = Astro.props;
+const href = `/wa?src=${encodeURIComponent(src)}`;
+---
+<section class="slip" aria-labelledby="slip-title">
+  <h2 id="slip-title" class="slip__title">{heading}</h2>
+  <pre class="slip__msg">{message}</pre>
+  <a class="slip__cta" href={href} rel="nofollow">{ctaLabel}</a>
+</section>
+
+<style>
+  .slip {
+    background: var(--card);
+    border: 1px dashed var(--tag-line);
+    border-radius: var(--r-frame);
+    padding: 20px;
+    max-width: 420px;
+  }
+  .slip__title { font-size: 20px; margin: 0 0 12px; }
+  .slip__msg {
+    font-family: var(--f-ui);
+    font-size: 14px;
+    white-space: pre-wrap;
+    margin: 0 0 16px;
+    padding: 12px;
+    background: var(--paper);
+    border-radius: var(--r-tag);
+    color: var(--fg);
+  }
+  .slip__cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch);
+    padding: 0 20px;
+    border-radius: var(--r-btn);
+    background: var(--accent);
+    color: var(--on-accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+</style>

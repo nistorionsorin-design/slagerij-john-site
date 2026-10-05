@@ -1,0 +1,86 @@
+---
+// Q&A box (D-04) — the site's only island. STUB: markup, styles and the script
+// entry point exist; retrieval over faq.json (synonyms, diacritic-insensitive
+// match) is not implemented. Every label is a prop; nothing is baked in.
+import faq from '../data/faq.json';
+import type { FaqItem } from '../data/types';
+
+export interface Props {
+  locale: 'nl' | 'ro';
+  heading: string;
+  automatedLabel: string;
+  inputLabel: string;
+  submitLabel: string;
+  handoffLabel: string;
+  src: string;
+}
+const { locale, heading, automatedLabel, inputLabel, submitLabel, handoffLabel, src } = Astro.props;
+const items = faq[locale] as FaqItem[];
+---
+<section class="qa" aria-labelledby="qa-title" data-qa data-items={JSON.stringify(items)}>
+  <h2 id="qa-title" class="qa__title">{heading}</h2>
+  <p class="qa__auto">{automatedLabel}</p>
+  <div class="qa__chips">
+    {items.slice(0, 4).map((it) => <button type="button" class="qa__chip" data-qa-chip>{it.q}</button>)}
+  </div>
+  <form class="qa__form" data-qa-form>
+    <label class="vh" for="qa-input">{inputLabel}</label>
+    <input id="qa-input" name="q" type="text" autocomplete="off" placeholder={inputLabel} />
+    <button type="submit">{submitLabel}</button>
+  </form>
+  <div class="qa__answer" aria-live="polite" data-qa-answer></div>
+  <a class="qa__handoff" href={`/wa?src=${encodeURIComponent(src)}`} rel="nofollow">{handoffLabel}</a>
+</section>
+
+<script>
+  // Island entry point. Retrieval lands here; until then the form does nothing.
+  document.querySelectorAll<HTMLFormElement>('[data-qa-form]').forEach((form) => {
+    form.addEventListener('submit', (e) => e.preventDefault());
+  });
+</script>
+
+<style>
+  .qa {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--r-frame-lg);
+    padding: 20px;
+  }
+  .qa__title { margin: 0 0 4px; }
+  .qa__auto { font-size: var(--fs-caption); color: var(--muted); margin: 0 0 12px; }
+  .qa__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .qa__chip {
+    min-height: var(--touch);
+    padding: 0 14px;
+    border-radius: var(--r-chip);
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--fg);
+    font: inherit;
+    cursor: pointer;
+  }
+  .qa__form { display: flex; gap: 8px; }
+  .qa__form input {
+    flex: 1;
+    min-height: var(--touch);
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-btn);
+    background: var(--paper);
+    font: inherit;
+    color: var(--fg);
+  }
+  .qa__form button {
+    min-height: var(--touch);
+    padding: 0 16px;
+    border-radius: var(--r-btn);
+    border: 0;
+    background: var(--ink);
+    color: var(--on-ink);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .qa__answer { margin-top: 12px; }
+  .qa__handoff { display: inline-block; margin-top: 12px; font-weight: 600; }
+</style>

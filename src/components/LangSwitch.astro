@@ -1,0 +1,35 @@
+---
+export interface Props {
+  current: 'nl' | 'ro';
+  nlHref: string;
+  roHref: string;
+  label: string;
+}
+const { current, nlHref, roHref, label } = Astro.props;
+---
+<nav class="lang" aria-label={label}>
+  <a href={nlHref} hreflang="nl-BE" lang="nl" aria-current={current === 'nl' ? 'true' : undefined}>NL</a>
+  <a href={roHref} hreflang="ro-BE" lang="ro" aria-current={current === 'ro' ? 'true' : undefined}>RO</a>
+</nav>
+
+<style>
+  .lang {
+    display: inline-flex;
+    border: 1px solid var(--line);
+    border-radius: var(--r-chip);
+    overflow: hidden;
+    background: var(--card);
+  }
+  .lang a {
+    display: grid;
+    place-items: center;
+    min-width: var(--touch);
+    min-height: var(--touch);
+    padding: 0 14px;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .lang a[aria-current] { background: var(--ink); color: var(--on-ink); }
+</style>

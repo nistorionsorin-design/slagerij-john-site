@@ -1,0 +1,120 @@
+/* Design tokens — design/brief.md §3. Ported from canvas boards.
+   Light-only for now; dark hero is a token (--ink) painted on-component. */
+:root {
+  --paper: #F4EDE0;
+  --card: #FBF7EE;
+  --line: #D9CDB8;
+  --ink: #15110D;
+  --fg: #1A1511;
+  --muted: #5E534A;
+  --tag: #EADFC9;
+  --tag-line: #D4C6AC;
+  --accent: #F2C12E;
+  --accent-alt: #E8B429;
+  --accent-hi: #F5CF4F;
+  --on-accent: #1A1511;
+  --ox: #7B2420;
+  --open: #2E6B3F;
+  --open-dark: #58C27A;
+  --on-ink: #F4EDE0;
+  --on-ink-muted: #E9DEC9;
+
+  --r-tile: 14px;
+  --r-frame: 16px;
+  --r-frame-lg: 18px;
+  --r-btn: 12px;
+  --r-tag: 10px;
+  --r-chip: 999px;
+
+  --f-display: 'Fraunces Variable', 'Fraunces', Georgia, serif;
+  --f-ui: 'Inter Tight Variable', 'Inter Tight', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+
+  /* Mobile scale */
+  --fs-h1: 42px; --lh-h1: 1.0;
+  --fs-accent: 26px;
+  --fs-h2: 24px;
+  --fs-body: 15px; --lh-body: 1.45;
+  --fs-caption: 12px;
+  --fs-eyebrow: 11px;
+
+  --touch: 44px;
+  --bar: 72px;
+
+  --ease-paper: cubic-bezier(.2,.6,.2,1);
+}
+
+@media (min-width: 960px) {
+  :root {
+    --fs-h1: 92px; --lh-h1: 0.95;
+    --fs-accent: 44px;
+    --fs-h2: 32px;
+    --fs-body: 16px;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--fg);
+  font-family: var(--f-ui);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3 {
+  font-family: var(--f-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 .5em;
+}
+
+h1 {
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+}
+
+h2 { font-size: var(--fs-h2); }
+
+a {
+  color: var(--ox);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--ox);
+  outline-offset: 2px;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+
+/* prefers-reduced-motion = still, globally. Components also honour this. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+  }
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* visually-hidden utility — skip link, screen-reader labels */
+.vh {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0);
+  white-space: nowrap; border: 0;
+}

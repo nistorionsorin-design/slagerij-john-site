@@ -1,0 +1,22 @@
+{
+  "legalName": "",
+  "name": "",
+  "vatID": "",
+  "url": "",
+  "telephone": "",
+  "email": "",
+  "address": {
+    "streetAddress": "",
+    "postalCode": "",
+    "addressLocality": "",
+    "addressRegion": "",
+    "addressCountry": "BE"
+  },
+  "geo": {
+    "latitude": null,
+    "longitude": null
+  },
+  "areaServed": [],
+  "sameAs": [],
+  "knowsLanguage": ["nl-BE", "ro-RO"]
+}

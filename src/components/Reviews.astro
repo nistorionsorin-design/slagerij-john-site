@@ -1,0 +1,43 @@
+---
+// Reviews — live Google rating + count fetched server-side (D-10). Stub shows
+// the shell; the fetch job writes to data/reviews.json on build or on a cron.
+import reviews from '../data/reviews.json';
+export interface Props {
+  heading: string;
+  sourceLine: string;
+}
+const { heading, sourceLine } = Astro.props;
+const r = reviews.rating;
+const c = reviews.count;
+---
+<section class="rev" aria-labelledby="rev-title">
+  <h2 id="rev-title" class="rev__title">{heading}</h2>
+  <div class="rev__fig">
+    <span class="rev__rating">{r ?? '—'}</span>
+    <span class="rev__out">/ 5</span>
+    <span class="rev__count">({c ?? '—'})</span>
+  </div>
+  <p class="rev__source">{sourceLine}</p>
+</section>
+
+<style>
+  .rev {
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .rev__fig {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    font-family: var(--f-display);
+    font-weight: 600;
+  }
+  .rev__rating { font-size: 44px; color: var(--ox); }
+  .rev__out { font-size: 20px; color: var(--muted); }
+  .rev__count { font-size: 18px; color: var(--muted); }
+  .rev__source {
+    font-size: var(--fs-caption);
+    color: var(--muted);
+    margin: 8px 0 0;
+  }
+</style>

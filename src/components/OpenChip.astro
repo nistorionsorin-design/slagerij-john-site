@@ -1,0 +1,58 @@
+---
+// Open chip, computed from hours.json in Europe/Brussels time AT BUILD.
+// A static build goes stale between deploys: the live version needs either a
+// scheduled rebuild or a few lines of client JS — decision for the build gate.
+import hours from '../data/hours.json';
+import type { Day } from '../data/types';
+
+export interface Props {
+  openLabel: string;
+  closedLabel: string;
+  variant?: 'paper' | 'ink';
+}
+const { openLabel, closedLabel, variant = 'paper' } = Astro.props;
+
+const days = hours.regular as Day[];
+const parts = new Intl.DateTimeFormat('en-GB', {
+  timeZone: 'Europe/Brussels',
+  weekday: 'long',
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false,
+}).formatToParts(new Date());
+const get = (t: string) => parts.find((p) => p.type === t)?.value ?? '';
+const curMin = Number(get('hour')) * 60 + Number(get('minute'));
+const toMin = (t: string) => {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + (m || 0);
+};
+const slots = days.find((d) => d.dayOfWeek === get('weekday'))?.slots ?? [];
+const openNow = slots.some((s) => toMin(s.open) <= curMin && curMin < toMin(s.close));
+---
+<span class={`chip chip--${variant} ${openNow ? 'chip--open' : 'chip--closed'}`}>
+  <span class="chip__dot" aria-hidden="true"></span>
+  <span class="chip__label">{openNow ? openLabel : closedLabel}</span>
+</span>
+
+<style>
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: var(--r-chip);
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    background: var(--card);
+    color: var(--fg);
+    border: 1px solid var(--line);
+  }
+  .chip__dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--muted);
+  }
+  .chip--open .chip__dot { background: var(--open); }
+  .chip--ink { background: rgba(255,255,255,.08); color: var(--on-ink); border-color: rgba(255,255,255,.18); }
+  .chip--ink.chip--open .chip__dot { background: var(--open-dark); }
+</style>

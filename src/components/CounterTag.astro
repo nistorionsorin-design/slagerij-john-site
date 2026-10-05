@@ -1,0 +1,62 @@
+---
+// CounterTag — the butcher's price tag with pin hole. name · one cooking line · €/kg.
+// Stub: all content is slotted; no copy baked in.
+export interface Props {
+  name: string;
+  line?: string;
+  price?: string;
+  unit?: string;
+}
+const { name, line, price, unit } = Astro.props;
+---
+<article class="tag">
+  <span class="tag__hole" aria-hidden="true"></span>
+  <h3 class="tag__name">{name}</h3>
+  {line && <p class="tag__line">{line}</p>}
+  {price && (
+    <p class="tag__price">
+      <span class="tag__amount">{price}</span>
+      {unit && <span class="tag__unit">&nbsp;{unit}</span>}
+    </p>
+  )}
+</article>
+
+<style>
+  .tag {
+    position: relative;
+    background: var(--tag);
+    border: 1px solid var(--tag-line);
+    border-radius: var(--r-tag);
+    padding: 20px 16px 16px;
+    color: var(--fg);
+    text-align: left;
+  }
+  .tag__hole {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--tag-line);
+  }
+  .tag__name {
+    font-family: var(--f-display);
+    font-size: 20px;
+    line-height: 1.1;
+    margin: 0 0 4px;
+  }
+  .tag__line {
+    font-size: var(--fs-caption);
+    color: var(--muted);
+    margin: 0 0 10px;
+  }
+  .tag__price {
+    margin: 0;
+    color: var(--ox);
+    font-weight: 700;
+    font-size: 18px;
+  }
+  .tag__unit { font-weight: 500; color: var(--muted); font-size: 13px; }
+</style>

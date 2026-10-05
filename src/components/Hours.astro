@@ -1,0 +1,48 @@
+---
+// Hours card — reads hours.json. Stub emits an empty table when no data.
+import hours from '../data/hours.json';
+import type { Day } from '../data/types';
+
+export interface Props {
+  heading: string;
+  dayNames: Record<string, string>; // locale-provided
+  closedLabel: string;
+}
+
+const { heading, dayNames, closedLabel } = Astro.props;
+const regular = hours.regular as Day[];
+const order = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+---
+<section class="hrs card" aria-labelledby="hrs-title">
+  <h2 id="hrs-title" class="hrs__title">{heading}</h2>
+  <dl class="hrs__list">
+    {order.map((d) => {
+      const day = regular.find(x => x.dayOfWeek === d);
+      const slots = day?.slots || [];
+      return (
+        <div class="hrs__row">
+          <dt>{dayNames[d] || d}</dt>
+          <dd>
+            {slots.length === 0
+              ? closedLabel
+              : slots.map(s => `${s.open}–${s.close}`).join(' · ')}
+          </dd>
+        </div>
+      );
+    })}
+  </dl>
+</section>
+
+<style>
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--r-frame);
+    padding: 20px;
+  }
+  .hrs__title { margin-top: 0; }
+  .hrs__list { margin: 0; display: grid; gap: 6px; }
+  .hrs__row { display: grid; grid-template-columns: 1fr auto; align-items: baseline; }
+  .hrs__row dt { font-weight: 600; }
+  .hrs__row dd { margin: 0; color: var(--muted); font-variant-numeric: tabular-nums; }
+</style>

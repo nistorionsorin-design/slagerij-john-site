@@ -1,0 +1,99 @@
+---
+// Head, hreflang pair, canonical, JSON-LD, self-hosted fonts.
+// No facts here: entity.json and hours.json carry the values.
+import '../styles/tokens.css';
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/fraunces/wght-italic.css';
+import '@fontsource-variable/inter-tight';
+import entity from '../data/entity.json';
+import hours from '../data/hours.json';
+import type { Day } from '../data/types';
+
+export interface Props {
+  title: string;
+  description: string;
+  locale: 'nl' | 'ro';
+  path: string;
+  alternates?: { nl: string; ro: string };
+  noindex?: boolean;
+}
+
+const { title, description, locale, path, alternates, noindex = false } = Astro.props;
+
+const origin = 'https://slagerij-john.be';
+const abs = (p: string) => `${origin}${p === '/' ? '/' : p}`;
+const htmlLang = locale === 'ro' ? 'ro-BE' : 'nl-BE';
+
+// ButcherShop only when entity.json is filled; an empty stub emits a neutral
+// WebSite node so no half-empty entity is ever published (the gate warns).
+const regular = hours.regular as Day[];
+const jsonld = entity.name
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'ButcherShop',
+      '@id': `${origin}/#shop`,
+      name: entity.name,
+      legalName: entity.legalName || undefined,
+      vatID: entity.vatID || undefined,
+      url: `${origin}/`,
+      telephone: entity.telephone || undefined,
+      email: entity.email || undefined,
+      address: { '@type': 'PostalAddress', ...entity.address },
+      geo:
+        entity.geo.latitude !== null
+          ? { '@type': 'GeoCoordinates', latitude: entity.geo.latitude, longitude: entity.geo.longitude }
+          : undefined,
+      areaServed: entity.areaServed,
+      sameAs: entity.sameAs,
+      knowsLanguage: entity.knowsLanguage,
+      openingHoursSpecification: regular.flatMap((d) =>
+        d.slots.map((s) => ({
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: `https://schema.org/${d.dayOfWeek}`,
+          opens: s.open,
+          closes: s.close,
+        })),
+      ),
+    }
+  : {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      '@id': `${origin}/#website`,
+      url: `${origin}/`,
+      inLanguage: ['nl-BE', 'ro-BE'],
+    };
+---
+<!doctype html>
+<html lang={htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex ? (
+      <meta name="robots" content="noindex" />
+    ) : (
+      <>
+        <link rel="canonical" href={abs(path)} />
+        {alternates && (
+          <>
+            <link rel="alternate" hreflang="nl-BE" href={abs(alternates.nl)} />
+            <link rel="alternate" hreflang="ro-BE" href={abs(alternates.ro)} />
+            <link rel="alternate" hreflang="x-default" href={abs(alternates.nl)} />
+          </>
+        )}
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={abs(path)} />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content={htmlLang.replace('-', '_')} />
+      </>
+    )}
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
