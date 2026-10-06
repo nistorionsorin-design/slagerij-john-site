@@ -1,0 +1,61 @@
+---
+// The overlay menu of the header (stage 0b2, design/css/header.css `.menu`, board „Header · mobiel 390”,
+// state C). Rendered before the footer as a plain dark list (`.menu--flat`): that is the no-JS menu the
+// burger link points to. header.ts moves it next to the sign, hides it and opens it as the full-screen
+// overlay. Phone only; from 960 px header.css hides it and the links sit in the sign.
+// Foot (header.css v2.2): the open chip (stage 2) + Route · Bestel via WhatsApp · brand marks with their names.
+// No NL/RO here: the switch is in the sign, which stays above the overlay.
+import entity from '../data/entity.json';
+import BrandIcon, { type Brand } from './BrandIcon.astro';
+import WaIcon from './WaIcon.astro';
+import { menu, ui, wa, routeHref, type Locale } from '../i18n/ui';
+
+export interface Props {
+  locale: Locale;
+  path: string;
+}
+const { locale, path } = Astro.props;
+const t = ui[locale];
+const isCurrent = (href: string) => path === href || path.startsWith(href + '/');
+
+// Brand marks (brief §3, design/icons/README.md): one colour, the name beside each.
+// Facebook, TikTok, Too Good To Go = entity.json sameAs; Google Maps = the shop's listing by name + address.
+const same = (host: string) => entity.sameAs.find((u) => u.includes(host));
+const a = entity.address;
+const mapsQuery = encodeURIComponent(`${entity.name}, ${a.streetAddress}, ${a.postalCode} ${a.addressLocality}`);
+const social = [
+  { brand: 'facebook', name: 'Facebook', href: same('facebook.com') },
+  { brand: 'tiktok', name: 'TikTok', href: same('tiktok.com') },
+  { brand: 'google-maps', name: 'Google Maps', href: `https://www.google.com/maps/search/?api=1&query=${mapsQuery}` },
+  { brand: 'too-good-to-go', name: 'Too Good To Go', href: same('toogoodtogo.com') },
+].filter((s): s is { brand: Brand; name: string; href: string } => Boolean(s.href));
+---
+<div class="menu menu--flat" id="menu" data-menu>
+  <nav class="menu__links" aria-label={t.menu}>
+    {menu[locale].map((it) => (
+      <a href={it.href} aria-current={isCurrent(it.href) ? 'page' : undefined}>
+        <span>{it.label}</span>
+        <em>{it.sub}</em>
+      </a>
+    ))}
+  </nav>
+  <div class="menu__foot on-ink">
+    <div class="menu__row">
+      {/* stage 2: the open chip (.oc) lands here, left of Route */}
+      <a class="menu__route" href={routeHref(entity.geo.latitude, entity.geo.longitude)} rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
+        {t.bar.route}
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+      </a>
+    </div>
+    <a class="btn btn--primary btn--lg btn--block" href={wa(`menu-${locale}`)}>
+      <WaIcon />
+      <span>{t.order}</span>
+    </a>
+    <div class="menu__social">
+      {social.map((s) => (
+        <a href={s.href} rel="noopener"><BrandIcon name={s.brand} /><span>{s.name}</span></a>
+      ))}
+    </div>
+  </div>
+</div>

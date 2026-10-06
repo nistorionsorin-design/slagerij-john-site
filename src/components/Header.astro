@@ -1,0 +1,55 @@
+---
+// Header — „het uithangbord” (stage 0b2): design/css/header.css ported 1:1 (src/styles/header.css),
+// boards „Header · mobiel 390” and „Header · desktop 1440”. One dark capsule floating over the page:
+// dark glass over the hero photo (variant "hero"), solid ink over paper (variant "paper").
+// Mobile: fixed too since v2.2 (D-27), compact 48 px after 80 px.
+// Desktop: fixed, as wide as the page (max 1600); after 80 px compact — 56 px, max 1040, place line gone —
+// and it never hides (header.css v2; the class toggle is src/scripts/header.ts).
+// Never moves at load. Without JS the burger is a link to #menu (Menu.astro, a plain list before the
+// footer) and the desktop sign simply stays fixed.
+// The emblem stays small on its paper tile (D-19). Buttons and NL/RO from buttons.css.
+import { Image } from 'astro:assets';
+import '../styles/header.css';
+import emblem from '../assets/logo/emblem.webp';
+import LangSwitch from './LangSwitch.astro';
+import WaIcon from './WaIcon.astro';
+import { nav, ui, home, wa, type Locale } from '../i18n/ui';
+
+export interface Props {
+  locale: Locale;
+  path: string;
+  alternates: { nl: string; ro: string };
+  variant?: 'hero' | 'paper';
+}
+const { locale, path, alternates, variant = 'paper' } = Astro.props;
+const t = ui[locale];
+const isCurrent = (href: string) => path === href || path.startsWith(href + '/');
+---
+<header class:list={['sign', variant === 'paper' ? 'sign--paper' : 'sign--hero']} data-sign>
+  <a class="sign__brand" href={home[locale]}>
+    <span class="sign__emblem"><Image src={emblem} width={34} height={34} densities={[1, 2]} alt="" /></span>
+    <span class="sign__name">Slagerij John</span>
+    <span class="sign__place">{t.place}</span>
+  </a>
+  <nav class="sign__nav" aria-label={t.menu}>
+    {nav[locale].map((it) => (
+      <a href={it.href} aria-current={isCurrent(it.href) ? 'page' : undefined}>{it.label}</a>
+    ))}
+  </nav>
+  <div class="sign__right">
+    <LangSwitch current={locale} nlHref={alternates.nl} roHref={alternates.ro} label={t.lang} />
+    <a class="btn btn--primary sign__cta" href={wa(`nav-${locale}`)}>
+      <WaIcon />
+      <span>{t.order}</span>
+    </a>
+    {/* header.ts turns this link into a <button aria-expanded> that opens the overlay */}
+    <a class="btn-icon sign__burger" href="#menu" aria-label={t.menu} data-burger data-open={t.menu} data-close={t.close}>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg>
+    </a>
+  </div>
+</header>
+{variant === 'paper' && <div class="sign-space" aria-hidden="true"></div>}
+
+<script>
+  import '../scripts/header.ts';
+</script>

@@ -1,0 +1,150 @@
+/* Header — „het uithangbord” (the shop sign) · v2.3 (06.10.2026: wider, compact on scroll, never hides; menu fits a phone; sticky on mobile too; 44 px socials)
+   Dan, 06.10 11:54: „the upper part — coolest trends, really nice, maybe on a darker background, make it special”.
+   Source of truth: canvas boards „Header · mobiel 390 (3 toestanden)” and „Header · desktop 1440 (2 toestanden)”. Port 1:1.
+
+   The idea: the shopfront is black and the sign above the door is black. The header is that sign: one dark capsule that
+   floats a little above the page, on the hero and on the paper pages alike. Dark glass over the hero photo, solid ink over
+   paper. One capsule, one height, never a full-width bar.
+   Uses buttons.css (.btn, .btn-icon, .lang) and open-chip.css (.oc). Tokens from tokens.css.
+
+   Markup (mobile and desktop share it):
+   <header class="sign" data-sign>
+     <a class="sign__brand" href="/"><span class="sign__emblem"><img src="…emblem…" alt=""></span><span class="sign__name">Slagerij John</span><span class="sign__place">Zwevezele · Wingene</span></a>
+     <nav class="sign__nav" aria-label="Hoofdmenu"><a href="/producten">Producten</a><a href="/bbq-pakketten">BBQ &amp; gourmet</a><a href="/traiteur">Traiteur</a><a href="/feestmenu-eindejaar" aria-current="page">Eindejaar</a><a href="/contact">Contact</a></nav>
+     <div class="sign__right">
+       <nav class="lang" aria-label="Taal"><a class="lang__seg" href="/" aria-current="page">NL</a><a class="lang__seg" href="/ro">RO</a></nav>
+       <a class="btn btn--primary sign__cta" href="/wa?src=nav">WhatsApp icon · Bestel via WhatsApp</a>
+       <button class="btn-icon sign__burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menu">burger / X</button>
+     </div>
+   </header>
+   <div class="menu" id="menu" hidden> … the overlay (below) … </div>
+
+   Behaviour:
+   - Mobile (Dan, 06.10 18:53: „the header stays when you scroll”): position: fixed, like desktop. After 80 px it gets
+     `sign--compact`: 48 px tall, solid ink, emblem 30, name 17. Together with the bottom bar that is 120 px of fixed chrome
+     on an 844 px screen — accepted: both are action surfaces (menu + language above, call/WhatsApp/route below).
+   - Desktop (≥ 960): position: fixed, as wide as the page (max 1600). After 80 px of scroll it gets `sign--compact`:
+     56 px tall, narrower (max 1040), the place line gone, links and action one step tighter — it keeps the most
+     important and NEVER hides (Dan, 06.10 18:35). header.js toggles the one class; without JS it stays as it is.
+   - The sign is painted over the hero's first frame; it never moves at load (no fade-in, no slide: CLS 0, LCP untouched).
+   - The burger opens the overlay (`hidden` toggled, `aria-expanded`, focus moved to the first link, Esc closes, body scroll locked);
+     without JS the burger is a link to #menu, which is a plain list at the end of the page. */
+
+.sign{
+  --sign-h: 56px;
+  position:fixed;left:14px;right:14px;top:14px;z-index:20;
+  display:flex;align-items:center;gap:10px;box-sizing:border-box;height:var(--sign-h);padding:0 8px 0 10px;
+  border-radius:999px;color:var(--on-ink);
+  background:rgba(21,17,13,.62);border:1px solid rgba(244,237,224,.25);
+  backdrop-filter:blur(14px) saturate(1.1);-webkit-backdrop-filter:blur(14px) saturate(1.1);
+  box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 12px 32px -16px rgba(0,0,0,.65);
+}
+.sign--paper{background:rgba(21,17,13,.94)}             /* over a paper page: solid ink, no glass needed */
+.sign__brand{display:flex;align-items:center;gap:10px;min-width:0;color:inherit;text-decoration:none}
+.sign__emblem{display:flex;align-items:center;justify-content:center;width:36px;height:36px;flex:0 0 auto;border-radius:10px;background:var(--paper);overflow:hidden}
+.sign__emblem img{width:30px;height:30px;object-fit:contain;display:block}
+.sign__name{font-family:var(--f-display);font-weight:600;font-size:19px;letter-spacing:-0.01em;line-height:1;white-space:nowrap}
+.sign__place{display:none;font-family:var(--f-ui);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--on-ink-muted);white-space:nowrap}
+.sign__nav{display:none}
+.sign__right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.sign__cta{display:none}
+.sign .lang{padding:2px;background:rgba(21,17,13,.45);border-color:rgba(244,237,224,.25)}
+.sign .lang__seg{height:30px;min-width:40px;padding:0 10px;color:var(--on-ink-muted)}
+.sign .lang__seg[aria-current="page"]{background:var(--paper);color:var(--fg)}
+.sign .btn-icon{width:40px;height:40px;border-color:rgba(244,237,224,.28);background:rgba(21,17,13,.35);color:var(--on-ink)}
+/* burger → X with the same three lines (CSS only, needs aria-expanded on the button) */
+.sign__burger svg line{transition:transform .2s cubic-bezier(.2,.6,.2,1),opacity .15s;transform-origin:center}
+.sign__burger[aria-expanded="true"] svg line:nth-child(1){transform:translateY(5px) rotate(45deg)}
+.sign__burger[aria-expanded="true"] svg line:nth-child(2){opacity:0}
+.sign__burger[aria-expanded="true"] svg line:nth-child(3){transform:translateY(-5px) rotate(-45deg)}
+
+/* mobile compact (after 80 px, header.js adds the class at every width): shorter, solid ink, nothing else changes */
+@media (max-width:959px){
+  .sign{transition:height .2s cubic-bezier(.2,.6,.2,1),background-color .2s}
+  .sign--compact{--sign-h:48px;background:rgba(21,17,13,.94);padding:0 6px 0 8px}
+  .sign--compact .sign__emblem{width:30px;height:30px;border-radius:8px}.sign--compact .sign__emblem img{width:25px;height:25px}
+  .sign--compact .sign__name{font-size:17px}
+  .sign--compact .lang__seg{height:28px;min-width:36px}
+  .sign--compact .btn-icon{width:36px;height:36px}
+}
+@media (min-width:960px){
+  .sign{--sign-h:64px;position:fixed;left:50%;right:auto;top:16px;width:calc(100% - 48px);max-width:1600px;transform:translateX(-50%);padding:0 10px 0 12px;gap:28px;
+        transition:max-width .32s cubic-bezier(.2,.6,.2,1),height .2s cubic-bezier(.2,.6,.2,1),gap .2s,padding .2s,box-shadow .2s}
+  .sign__emblem{width:40px;height:40px}.sign__emblem img{width:34px;height:34px}
+  .sign__name{font-size:22px}
+  .sign__place{display:inline;margin-left:4px}
+  .sign__nav{display:flex;align-items:center;gap:26px;margin-left:12px}
+  .sign__nav a{position:relative;color:var(--on-ink-muted);text-decoration:none;font-family:var(--f-ui);font-size:15px;font-weight:500;line-height:1;padding:10px 0;white-space:nowrap;transition:color .12s}
+  .sign__nav a::after{content:"";position:absolute;left:0;right:0;bottom:4px;height:2px;border-radius:2px;background:var(--on-ink);transform:scaleX(0);transform-origin:left;transition:transform .18s cubic-bezier(.2,.6,.2,1)}
+  .sign__nav a:hover{color:var(--on-ink)}
+  .sign__nav a:hover::after,.sign__nav a[aria-current="page"]::after{transform:scaleX(1)}
+  .sign__nav a[aria-current="page"]{color:var(--on-ink)}
+  .sign__cta{display:inline-flex;min-height:44px;padding:0 18px}
+  .sign__burger{display:none}
+  /* compact — after 80 px of scroll. The sign pulls in to what matters: emblem · wordmark · the five links · NL/RO · the yellow
+     action. Place line gone, one step tighter, max 1040 wide, still centred. It never slides away. */
+  .sign--compact{--sign-h:56px;max-width:1040px;gap:18px;padding:0 8px 0 10px;box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 16px 36px -16px rgba(0,0,0,.75)}
+  .sign--compact .sign__place{display:none}
+  .sign--compact .sign__emblem{width:34px;height:34px}.sign--compact .sign__emblem img{width:28px;height:28px}
+  .sign--compact .sign__name{font-size:20px}
+  .sign--compact .sign__nav{gap:18px;margin-left:4px}.sign--compact .sign__nav a{font-size:14px;padding:8px 0}
+  .sign--compact .sign__cta{min-height:40px;padding:0 16px}
+}
+/* narrow laptops and tablets in landscape (Claude Code, stage 0b2 — kept as the rule): */
+@media (min-width:960px) and (max-width:1279px){.sign__place{display:none}}
+@media (min-width:960px) and (max-width:1119px){.sign{gap:16px}.sign__nav{gap:16px}.sign__nav a{font-size:14px}}
+@media (min-width:960px) and (max-width:1023px){.sign__name{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
+@media (prefers-reduced-motion:reduce){.sign{transition:none}.sign__burger svg line{transition:none}.sign__nav a::after{transition:none}}
+
+/* ---------- the overlay menu (mobile; on desktop the links sit in the sign) ----------
+   <div class="menu" id="menu" hidden>
+     <nav class="menu__links" aria-label="Menu"><a href="/producten"><span>Producten &amp; prijzen</span><em>per kg, colli's</em></a> … 7 links …</nav>
+     <div class="menu__foot"> open chip + Route row · <a class="btn btn--primary btn--lg btn--block">Bestel via WhatsApp</a> · <div class="menu__social"> four brand icons with their names </div> — no language switch here, it is in the sign </div>
+   </div> */
+/* The menu fits a 390×844 phone without scrolling (06.10 18:55): every label on one line at ~30 px, the sub-line under
+   the label, no NL/RO in the foot (it sits in the sign above), the socials with their names in a wrapping row. */
+.menu{position:fixed;inset:0;z-index:15;box-sizing:border-box;padding:84px 20px 20px 20px;background:var(--ink);color:var(--on-ink);overflow:auto;display:flex;flex-direction:column;gap:18px}
+.menu[hidden]{display:none}
+.menu__links{display:flex;flex-direction:column}
+.menu__links a{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:10px 0;border-bottom:1px solid rgba(244,237,224,.14);color:var(--on-ink);text-decoration:none;
+  font-family:var(--f-display);font-weight:500;font-size:clamp(26px,7.7vw,32px);line-height:1;letter-spacing:-0.02em;white-space:nowrap}
+.menu__links a em{font-family:var(--f-ui);font-style:normal;font-size:11px;letter-spacing:.04em;color:var(--on-ink-muted);white-space:nowrap}
+.menu__links a[aria-current="page"]{color:var(--accent)}
+.menu__foot{display:flex;flex-direction:column;gap:12px;margin-top:auto}
+.menu__social{display:flex;flex-wrap:wrap;gap:0 16px;font-family:var(--f-ui);font-size:12px;font-weight:600;color:var(--on-ink-muted)}
+.menu__social a{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 4px;margin:0 -4px;color:inherit;text-decoration:none}   /* 44 px tap targets (brief), the row still fits 390×844 */
+/* entrance: the links rise 10 px and fade, staggered 40 ms, 320 ms — after the tap, never at page load */
+.menu:not([hidden]) .menu__links a{animation:menu-in .32s cubic-bezier(.2,.6,.2,1) both}
+.menu__links a:nth-child(1){animation-delay:.02s}.menu__links a:nth-child(2){animation-delay:.06s}.menu__links a:nth-child(3){animation-delay:.10s}.menu__links a:nth-child(4){animation-delay:.14s}.menu__links a:nth-child(5){animation-delay:.18s}.menu__links a:nth-child(6){animation-delay:.22s}.menu__links a:nth-child(7){animation-delay:.26s}
+@keyframes menu-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.menu:not([hidden]) .menu__links a{animation:none}}
+@media (min-width:960px){.menu{display:none!important}}
+
+/* ===== site additions (Claude Code, stage 0b2 / 1b; re-ported on v2.3 — narrow-laptop steps, mobile sticky and the socials row live in the file above) — below this line only; everything above is design/css/header.css 1:1 ===== */
+
+/* focus rings in paper on the sign and in the menu (board „Header · desktop 1440”: „Focusringen in papier”);
+   the .btn / .btn-icon / .lang__seg / a rules set the ring, this only recolours it */
+.sign :focus-visible,.menu :focus-visible{outline-color:var(--on-ink)}
+
+/* the home on desktop: the hero is a paper text column + a photo panel (stage 1), so the sign stands mostly
+   on paper → solid ink there, as .sign--paper (glass over paper reads grey); on the phone it stays glass */
+@media (min-width:960px){.sign--hero{background:rgba(21,17,13,.94)}}
+
+/* paper pages: the sign floats over the top of the page, this keeps the first content clear of it
+   (mobile 14 + 56 + 14; desktop 16 + 64 + 16) */
+.sign-space{height:84px}
+@media (min-width:960px){.sign-space{height:96px}}
+
+/* menu open: page scroll locked, the bottom bar (z 50) steps aside */
+html.menu-open{overflow:hidden}
+html.menu-open .bar{visibility:hidden}
+
+/* no JS: the burger is a link to #menu and the menu is a plain dark list before the footer */
+.menu--flat{position:static;inset:auto;z-index:auto;padding:36px 20px 40px}
+.menu--flat .menu__links a{animation:none}
+
+/* menu foot, as the board „Header · mobiel 390” draws it inline: the chip + Route row (the socials row and its
+   names are in the file above since v2.2; NL/RO is in the sign) */
+.menu__row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.menu__route{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin-left:auto;color:var(--on-ink);font-family:var(--f-ui);font-size:13px;font-weight:600;text-decoration:none}
+@media (hover:hover){.menu__social a:hover,.menu__route:hover{color:var(--on-ink);text-decoration:underline;text-underline-offset:4px}}

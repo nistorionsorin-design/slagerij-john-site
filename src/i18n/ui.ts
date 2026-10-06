@@ -32,12 +32,38 @@ export const nav: Record<Locale, NavItem[]> = {
   ],
 };
 
+// Overlay menu (stage 0b2, design/css/header.css + board „Header · mobiel 390”): seven links,
+// each with its sub-line — lexicon §5.15 (NL) and §6 (RO), 06.10 18:45, verbatim.
+// „bestel vóór [DATUM]” / „comandă până pe [DATA]” stay placeholders until FACTS has the deadline.
+export interface MenuItem { label: string; sub: string; href: string }
+export const menu: Record<Locale, MenuItem[]> = {
+  nl: [
+    { label: 'Producten & prijzen', sub: "per kg · colli's", href: '/producten' },
+    { label: 'BBQ & gourmet', sub: 'pakketten · steengrill', href: '/bbq-pakketten' },
+    { label: 'Traiteur', sub: 'feesten · BBQ aan huis', href: '/traiteur' },
+    { label: 'Eindejaar', sub: 'bestel vóór [DATUM]', href: '/feestmenu-eindejaar' },
+    { label: 'Roemeense specialiteiten', sub: 'mici · gerookte worst', href: '/roemeense-specialiteiten' },
+    { label: 'Over ons', sub: 'John & Georgiana', href: '/over-ons' },
+    { label: 'Contact', sub: 'uren · route', href: '/contact' },
+  ],
+  ro: [
+    { label: 'Produse și prețuri', sub: 'pe kg · colli', href: '/ro/produse' },
+    { label: 'Grătar și gourmet', sub: 'pachete · steengrill', href: '/ro/gratar' },
+    { label: 'Catering', sub: 'petreceri · grătar la domiciliu', href: '/ro/catering' },
+    { label: 'Sărbători', sub: 'comandă până pe [DATA]', href: '/ro/sarbatori' },
+    { label: 'Mici și specialități', sub: 'mici · cârnați afumați', href: '/ro/mici-si-specialitati' },
+    { label: 'Despre noi', sub: 'John și Georgiana', href: '/ro/despre-noi' },
+    { label: 'Contact', sub: 'program · drum', href: '/ro/contact' },
+  ],
+};
+
 export const ui = {
   nl: {
     /** lexicon §5.15 */
     skip: 'Naar de inhoud',
-    /** canvas Main / Contact boards: aria-label of the burger */
+    /** lexicon §5.15: burger label, and the label when the menu is open */
     menu: 'Menu',
+    close: 'Sluiten',
     /** scaffold label of the language switch, kept */
     lang: 'Taal / Limbă',
     /** canvas Desktop board, place line under the wordmark */
@@ -50,8 +76,10 @@ export const ui = {
     footer: { nl: 'Nederlands', ro: 'Română' },
   },
   ro: {
-    skip: '[SKIP]',
-    menu: 'Menu',
+    /** lexicon §6 interface strings (06.10) */
+    skip: 'Sari la conținut',
+    menu: 'Meniu',
+    close: 'Închide',
     lang: 'Taal / Limbă',
     place: 'Zwevezele · Wingene',
     /** lexicon §5.3 */

@@ -335,7 +335,8 @@ if (built) {
     warn('a11y-manual', 'text over the hero gradient and keyboard operation of the Q&A box: verify in the browser');
   }
 
-  // client JS budget (D-06 one island + D-12 hero loop + D-20 open chip): a script ships only
+  // client JS budget (D-06 one island + D-12 hero loop + D-20 open chip + the header's menu and
+  // smart-sticky, build plan stage 0b2): a script ships only
   // on a page that mounts its component, from /_astro/, never inline (CSP script-src 'self').
   {
     const js = walk(dist).filter((f) => /\.(js|mjs)$/.test(f));
@@ -343,6 +344,7 @@ if (built) {
     const e = inline.map((p) => `${p.file}: inline script (blocked by the CSP in vercel.json)`);
     const mounts = [
       ['Hero', /<section class="hero[\s"]/],
+      ['Header', /<header class="sign[\s"]/],
       ['OpenChip', /class="oc[\s"]/],
       ['QaBox', /<section class="qa[\s"]/],
     ];
@@ -352,7 +354,7 @@ if (built) {
         const file = src.split('/').pop();
         const m = mounts.find(([name]) => file.startsWith(name + '.'));
         if (!src.startsWith('/_astro/')) e.push(`${p.file}: ${src} not served from /_astro/`);
-        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / OpenChip / QaBox)`);
+        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / Header / OpenChip / QaBox)`);
         else if (!m[1].test(p.html)) e.push(`${p.file}: ships ${file} without its component`);
       }
     verdict('client-js', e, `${js.length} JS files in dist; no inline script; each script ships only with its component`);

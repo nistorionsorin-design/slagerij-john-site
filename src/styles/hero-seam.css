@@ -1,0 +1,32 @@
+/* Hero seam — desktop ≥ 960 · v1.2 (06.10.2026 19:13, Dan: „keep just the photo as a pinned print” — the torn edge is OUT, the stamp is the original ring stamp again)
+   Source of truth: canvas board „Hero · de naad (papier ↔ foto) · 1 + 2” (1440 and 2560 frames). Port 1:1 at the next hero pass.
+   The photo is a print pinned on the paper: inset 16 px top/bottom, left corners 26 px, warm shadow. The stamp stays the
+   original ring stamp (paper rings on the photo, 132 px, rotated 8°) at the top-right of the print; the counter tag hangs
+   over the seam at the bottom. No torn edge (removed 19:13; design/svg/hero-tear.svg is an archive file, unused).
+   Mobile (< 960) unchanged: full-screen photo. Nothing moves at load; the five-frame wipe stays inside .hero__media.
+
+   DOM (desktop):
+   <section class="hero hw">
+     <div class="hero__text"> <div class="hero__lead"> chip · h1.hero__title · accent · sub · buttons </div> <div class="hero__trust">…</div> </div>
+     <div class="hero__media"> frames + scrim + pause </div>
+     <div class="hero__stamp"><div class="stamp">Vlaamse klassiekers · Roemeense smaak · sinds 2025</div></div>   (inside .hero__media)
+     <div class="hero__tag"> the counter tag of the current frame (.ht) </div>
+   </section> */
+
+@media (min-width:960px){
+  .hero{--seam:55%;position:relative;background:var(--paper)}
+  .hero__media{position:absolute;left:var(--seam);right:0;top:16px;bottom:16px;height:auto;border-radius:26px 0 0 26px;overflow:hidden;background:var(--ink);
+    box-shadow:0 30px 70px -30px rgba(123,36,32,.55),0 8px 24px -12px rgba(21,17,13,.5)}
+  .hero__stamp{position:absolute;right:32px;top:32px;z-index:5}
+  .stamp{width:132px;height:132px;padding:18px 14px;letter-spacing:.14em;line-height:1.4;text-shadow:0 1px 2px rgba(0,0,0,.35);
+    box-shadow:inset 0 0 0 5px rgba(21,17,13,.28),inset 0 0 0 6.5px var(--on-ink),0 10px 30px -10px rgba(0,0,0,.6)}   /* the original ring stamp, refined */
+  .hero__tag{position:absolute;left:calc(var(--seam) - 44px);bottom:52px;width:360px;z-index:5}
+  .hero__text{position:absolute;left:0;top:96px;bottom:0;width:calc(var(--seam) - 40px);box-sizing:border-box;padding:24px var(--gutter) 40px;
+    display:flex;flex-direction:column;justify-content:space-between}
+  .hero__lead{margin:auto 0;padding-right:8px}
+  .hero__title{max-width:6.8em;font-size:clamp(56px,6vw,92px)}   /* two lines at every width: 61 px at 1024, 77 at 1280, 82 at 1366, 92 from 1536 */
+}
+@media (min-width:1600px){
+  .hero{--seam:52%}
+  .hero__title{font-size:clamp(92px,5vw,118px)}
+}

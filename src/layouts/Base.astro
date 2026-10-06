@@ -1,6 +1,7 @@
 ---
 // Head, hreflang pair, canonical, JSON-LD, self-hosted fonts, and the layout frame:
-// skip link · Nav · <slot> (the page's <main>) · Footer · BottomBar (mobile).
+// skip link · Header (the sign) · <slot> (the page's <main>) · Menu (the no-JS list; header.ts
+// makes it the overlay) · Footer · BottomBar (mobile).
 // No facts here: entity.json and hours.json carry the values.
 import '../styles/fonts.css';
 import '../styles/tokens.css';
@@ -8,7 +9,8 @@ import '../styles/buttons.css';
 import entity from '../data/entity.json';
 import hours from '../data/hours.json';
 import type { Day } from '../data/types';
-import Nav from '../components/Nav.astro';
+import Header from '../components/Header.astro';
+import Menu from '../components/Menu.astro';
 import Footer from '../components/Footer.astro';
 import BottomBar from '../components/BottomBar.astro';
 import { ui, home, wa, routeHref, type Locale } from '../i18n/ui';
@@ -20,8 +22,8 @@ export interface Props {
   path: string;
   alternates?: { nl: string; ro: string };
   noindex?: boolean;
-  /** 'ink' lets the mobile nav float over a dark hero (stage 1). */
-  navVariant?: 'paper' | 'ink';
+  /** 'hero': the sign is dark glass over the hero photo; 'paper': solid ink, with a spacer below (stage 0b2). */
+  navVariant?: 'paper' | 'hero';
 }
 
 const { title, description, locale, path, alternates, noindex = false, navVariant = 'paper' } = Astro.props;
@@ -105,8 +107,9 @@ const jsonld = entity.name
   </head>
   <body>
     <a class="skip" href="#main">{t.skip}</a>
-    <Nav locale={locale} path={path} alternates={alt} variant={navVariant} />
+    <Header locale={locale} path={path} alternates={alt} variant={navVariant} />
     <slot />
+    <Menu locale={locale} path={path} />
     <Footer locale={locale} alternates={alt} />
     <BottomBar
       telHref={`tel:${entity.telephone}`}
