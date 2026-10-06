@@ -1,9 +1,9 @@
 ---
 // Stamp badge (brief §4). Text is slotted; none is baked in.
 // paper: oxblood on paper, rotated −6° (board Toog).
-// ink: the ring stamp on the desktop hero photo (D-28, board „Hero · de naad”): paper rings, rotated 8°.
-// Its size (132 px), padding, rings, tracking and shadow come from design/css/hero-seam.css (`.stamp`),
-// which scoped rules here would out-rank — so this variant sets only colour, border, type and rotation.
+// ink: paper rings on a dark ground, rotated 8°. It was the ring stamp on the desktop hero photo until
+// stage 1c (hero-seam.css v1.5: the hero's stamp is now the inline ink SVG, design/svg/stamp.svg) — v1.5
+// no longer sizes `.stamp`, so a dark-ground use (footer, stage 0c) sets its own size and padding.
 export interface Props { variant?: 'paper' | 'ink' }
 const { variant = 'paper' } = Astro.props;
 ---

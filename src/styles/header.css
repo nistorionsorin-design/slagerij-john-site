@@ -1,4 +1,4 @@
-/* Header — „het uithangbord” (the shop sign) · v2.3 (06.10.2026: wider, compact on scroll, never hides; menu fits a phone; sticky on mobile too; 44 px socials)
+/* Header — „het uithangbord” (the shop sign) · v2.4 (06.10.2026: wider, compact on scroll, never hides; menu fits 390×844, 360×740 and 375×667, scrolls below that; sticky on mobile too; 44 px socials)
    Dan, 06.10 11:54: „the upper part — coolest trends, really nice, maybe on a darker background, make it special”.
    Source of truth: canvas boards „Header · mobiel 390 (3 toestanden)” and „Header · desktop 1440 (2 toestanden)”. Port 1:1.
 
@@ -113,6 +113,19 @@
 .menu__foot{display:flex;flex-direction:column;gap:12px;margin-top:auto}
 .menu__social{display:flex;flex-wrap:wrap;gap:0 16px;font-family:var(--f-ui);font-size:12px;font-weight:600;color:var(--on-ink-muted)}
 .menu__social a{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 4px;margin:0 -4px;color:inherit;text-decoration:none}   /* 44 px tap targets (brief), the row still fits 390×844 */
+/* short phones (≤ 780 px tall, e.g. 360×740): one step tighter so the menu still needs no scrolling */
+@media (max-width:959px) and (max-height:780px){
+  .menu{padding-top:76px;gap:14px}
+  .menu__links a{padding:8px 0;font-size:clamp(24px,7vw,30px)}
+  .menu__foot{gap:10px}
+}
+/* very short phones (≤ 700 px tall, e.g. 375×667): one more step; below that the menu simply scrolls (overflow:auto above) */
+@media (max-width:959px) and (max-height:700px){
+  .menu{padding-top:70px;gap:10px}
+  .menu__links a{padding:6px 0;gap:2px;font-size:clamp(22px,6.4vw,26px)}
+  .menu__links a em{font-size:10.5px}
+  .menu__foot{gap:8px}
+}
 /* entrance: the links rise 10 px and fade, staggered 40 ms, 320 ms — after the tap, never at page load */
 .menu:not([hidden]) .menu__links a{animation:menu-in .32s cubic-bezier(.2,.6,.2,1) both}
 .menu__links a:nth-child(1){animation-delay:.02s}.menu__links a:nth-child(2){animation-delay:.06s}.menu__links a:nth-child(3){animation-delay:.10s}.menu__links a:nth-child(4){animation-delay:.14s}.menu__links a:nth-child(5){animation-delay:.18s}.menu__links a:nth-child(6){animation-delay:.22s}.menu__links a:nth-child(7){animation-delay:.26s}
@@ -120,7 +133,7 @@
 @media (prefers-reduced-motion:reduce){.menu:not([hidden]) .menu__links a{animation:none}}
 @media (min-width:960px){.menu{display:none!important}}
 
-/* ===== site additions (Claude Code, stage 0b2 / 1b; re-ported on v2.3 — narrow-laptop steps, mobile sticky and the socials row live in the file above) — below this line only; everything above is design/css/header.css 1:1 ===== */
+/* ===== site additions (Claude Code, stage 0b2 / 1b; re-ported on v2.4 — narrow-laptop steps, mobile sticky and the socials row live in the file above) — below this line only; everything above is design/css/header.css 1:1 ===== */
 
 /* focus rings in paper on the sign and in the menu (board „Header · desktop 1440”: „Focusringen in papier”);
    the .btn / .btn-icon / .lang__seg / a rules set the ring, this only recolours it */

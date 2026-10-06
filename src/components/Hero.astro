@@ -4,8 +4,11 @@
 // ported 1:1 (src/styles/hero-b.css); this file adds only layout and the no-JS still.
 // Layout from the canvas: mobile (Main) = full-screen dark hero, the sign floating on it,
 // text at the bottom above the bar; desktop = board „Hero · de naad” (D-28, stage 1b):
-// design/css/hero-seam.css v1.2 1:1 — paper text column, the photo as a pinned print with the
-// ring stamp at its top-right, the counter tag over the seam. (The torn edge was dropped 19:13.)
+// design/css/hero-seam.css v1.7 1:1 (stage 1c) — paper text column, the photo as a pinned print,
+// the counter tag over the seam, and THE hero stamp: the ink stamp centred on the seam, left half
+// oxblood on the paper, right half paper-coloured on the photo (design/svg/stamp.svg, stamp-ro.svg
+// on /ro), inlined so its text uses the page fonts; the RO title scales to .76 to stay two lines. No stamp
+// on the photo any more (the ring stamp left the hero 06.10 20:05; Stamp.astro stays for the footer).
 // Frame 1 is a plain <img fetchpriority="high"> at opacity 1 from first paint (LCP).
 // Frames 2–5, the loop frame and tags 2–5 sit in <template>s; src/scripts/hero.ts
 // inserts them after `load`. Without JS, mask support or motion: one still.
@@ -15,13 +18,17 @@ import '../styles/hero-b.css';
 import '../styles/hero-seam.css';
 import photos from '../data/photos.json';
 import type { HeroPhoto } from '../data/types';
-import Stamp from './Stamp.astro';
+import stampNl from '../assets/stamp.svg?raw';
+import stampRo from '../assets/stamp-ro.svg?raw';
 import WaIcon from './WaIcon.astro';
 import { hero as copy, wa, type Locale } from '../i18n/ui';
 
 export interface Props { locale: Locale }
 const { locale } = Astro.props;
 const t = copy[locale];
+// the ink stamp, inline (not <img>: an <img> SVG cannot reach the page fonts); the file's
+// leading comment is dropped, the <svg> itself goes out as it is in design/svg/
+const ink = (locale === 'ro' ? stampRo : stampNl).replace(/^\s*<!--[\s\S]*?-->\s*/, '');
 
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/hero/*.{jpg,jpeg,png,webp}', { eager: true });
 
@@ -68,7 +75,10 @@ const loop = first && { ...first, wipe: 'w135' };
         </label>
       </span>
     </div>
-    <h1 id="hero-title" class="hero__title">{t.title} <span class="hero__accent">{t.accent}</span></h1>
+    <div class="hero__titlebox">
+      <h1 id="hero-title" class="hero__title">{t.title} <span class="hero__accent">{t.accent}</span></h1>
+      <div class="hero__ink" set:html={ink} />
+    </div>
     <p class="hero__sub">{t.sub}</p>
     <div class="hero__cta">
       <a class="btn btn--primary btn--lg" href={wa(`home-hero`)}>
@@ -118,15 +128,6 @@ const loop = first && { ...first, wipe: 'w135' };
     </template>
 
     <div class="hero__scrim" aria-hidden="true"></div>
-    <div class="hero__stamp">
-      <Stamp variant="ink">
-        {/* §5.16: three segments; each on its own line inside the ring, the dots kept for reading */}
-        {t.stamp.split(' · ').map((seg, i) => (
-          <>{i > 0 && <span class="vh"> · </span>}<span class="hero__stamp-seg">{seg}</span></>
-        ))}
-      </Stamp>
-    </div>
-
   </div>
   <div class="hero__tag">
       {frames.map((f, i) => {
@@ -219,8 +220,8 @@ const loop = first && { ...first, wipe: 'w135' };
       flex-direction: column;
       padding: calc(var(--nav-h) + 16px) var(--gutter) calc(var(--bar) + 22px + env(safe-area-inset-bottom, 0px));
     }
-    /* desktop-only pieces: the stamp and the counter tag */
-    .hero__tag, .hero__stamp { display: none; }
+    /* desktop-only piece: the counter tag (the ink stamp hides itself below 960 in hero-seam.css) */
+    .hero__tag { display: none; }
   }
   .hero__lead {
     display: flex;
@@ -269,8 +270,8 @@ const loop = first && { ...first, wipe: 'w135' };
   }
   .hero__cta .btn { width: 100%; }
 
-  /* ── desktop (board „Hero · de naad”, D-28): hero-seam.css v1.2 places the text column (55 %,
-     52 % from 1600), the photo as a pinned print, the ring stamp in it and the tag over the seam.
+  /* ── desktop (board „Hero · de naad”, D-28): hero-seam.css v1.7 places the text column (55 %,
+     52 % from 1600), the photo as a pinned print, the tag over the seam and the ink stamp on the seam.
      The sign (stage 0b2) floats over it; the text column starts at 96 + 24 px. H1 size and
      max-width are in the seam file. This block adds colour, the remaining type and the pieces
      the seam file leaves to the component. ── */
@@ -294,14 +295,12 @@ const loop = first && { ...first, wipe: 'w135' };
     .hero__cta { flex-direction: row; gap: 12px; margin-top: 6px; }
     .hero__cta .btn { width: auto; }
 
-    /* the ring stamp: hero-seam.css puts it 32 px from the hero's top, where the fixed sign (16 + 64 px,
-       full width up to 1600) covered its upper 41 px at 1024–1440 (measured 06.10). Below the sign
-       instead (80 + 16) wherever the sign reaches the stamp, i.e. up to ~1960 px; wider screens keep
-       the file's 32 px, the 1600 px sign ends before the print's corner there. */
-    @media (max-width: 1999.98px) { .hero__stamp { top: 96px; } }
-    .hero__stamp-seg { display: block; }
-    .hero__stamp-seg + .vh + .hero__stamp-seg,
-    .hero__stamp-seg ~ .hero__stamp-seg { margin-top: 3px; }
+    /* the ink stamp's SVG names its fonts 'Inter Tight' / 'Fraunces' (design/svg/stamp.svg); this site
+       registers them as 'Inter Tight Variable' / 'Fraunces Variable' (fonts.css), so without this the
+       stamp would fall back to Arial / Georgia. CSS outranks SVG presentation attributes and carries into the
+       two <use> copies (their clones take the styles of the drawing in <defs>); the file stays 1:1. */
+    .hero__ink :global(text[font-family*="Inter"]) { font-family: var(--f-ui); }
+    .hero__ink :global(text[font-family*="Fraunces"]) { font-family: var(--f-display); }
 
     /* counter tag over the seam (tag-lift is its only shadow): .hero__tag (hero-seam.css) is the
        360 px box; the five tags stack in it, bottom-aligned, and swap with the frames (hero-b.css) */

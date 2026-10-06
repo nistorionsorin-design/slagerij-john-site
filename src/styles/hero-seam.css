@@ -1,32 +1,77 @@
-/* Hero seam — desktop ≥ 960 · v1.2 (06.10.2026 19:13, Dan: „keep just the photo as a pinned print” — the torn edge is OUT, the stamp is the original ring stamp again)
-   Source of truth: canvas board „Hero · de naad (papier ↔ foto) · 1 + 2” (1440 and 2560 frames). Port 1:1 at the next hero pass.
-   The photo is a print pinned on the paper: inset 16 px top/bottom, left corners 26 px, warm shadow. The stamp stays the
-   original ring stamp (paper rings on the photo, 132 px, rotated 8°) at the top-right of the print; the counter tag hangs
-   over the seam at the bottom. No torn edge (removed 19:13; design/svg/hero-tear.svg is an archive file, unused).
-   Mobile (< 960) unchanged: full-screen photo. Nothing moves at load; the five-frame wipe stays inside .hero__media.
+/* Hero seam — desktop ≥ 960 · v1.7 (06.10.2026 20:55: the stamp moves ONTO the seam — Dan 20:41 „move it to be half on the photo … one half like now, the other half contrast with the background”: left half oxblood on the paper, right half paper-coloured on the photo; centred on the title at every width; not on the phone)
+   v1.6 (20:45): v1.5 + the RO title on two lines — Claude Code's 1c report: „Măcelărie și magazin românesc în Zwevezele.” ran to four lines; the RO string stays (lexicon: „magazin românesc” is the search term), the RO hero scales its title instead
+   v1.5 (20:10): the ink stamp on the paper is THE hero stamp — Dan 19:40 „add also the nice real stamp u made with the actual text in the place i made”, 20:05 „take the other one out”: the ring stamp on the photo is gone — and the H1 on two lines at every width (optical size pinned)
+   Source of truth: canvas board „Hero · de naad (papier ↔ foto) · print + inktstempel” (1440 and 2560 frames). Port 1:1 at the next hero pass.
+   The photo is a print pinned on the paper: inset 16 px top/bottom, left corners 26 px, warm shadow; the counter tag hangs over the
+   seam at the bottom. NO stamp on the photo any more (the ring stamp .hero__stamp is removed from the hero — the Stamp component
+   itself stays for the footer).
+   THE stamp: the ink stamp — a rubber-stamp impression (design/svg/stamp.svg; /ro pages: stamp-ro.svg) that sits ON the seam,
+   its centre exactly on the print's left edge: the left half is oxblood on the paper, the right half paper-coloured on the photo
+   (one drawing, two <use> copies clipped at the SVG's centre line, same grain, a 1 px lift shadow under the light half). Rotated −8°
+   inside the SVG. Size ≈ the H1's height: 128 px at 960–1050, 176 at 1440, 224 from 1836 (clamp(128px, 12.2vw, 224px)). Vertically
+   centred on the two title lines at every width; the title never reaches it (≥ 60 px clear at 960). No blend mode (it is not over
+   text any more). The SVG is role="img" with the tagline as aria-label (lexicon §5.16) — the only stamp in the hero. No torn edge
+   (removed 19:13; hero-tear.svg = archive).
+   RO (/ro, :lang(ro) on the hero or its ancestors): the title at .76 × --h1 — same pixel width, two lines; everything else identical.
+   Mobile (< 960) unchanged: full-screen photo, no ink stamp. Nothing moves at load; the five-frame wipe stays inside .hero__media.
 
-   DOM (desktop):
+   DOM (desktop) — two changes vs v1.3: the H1 gets a wrapper that carries the ink stamp; .hero__stamp (the ring stamp) is deleted
    <section class="hero hw">
-     <div class="hero__text"> <div class="hero__lead"> chip · h1.hero__title · accent · sub · buttons </div> <div class="hero__trust">…</div> </div>
-     <div class="hero__media"> frames + scrim + pause </div>
-     <div class="hero__stamp"><div class="stamp">Vlaamse klassiekers · Roemeense smaak · sinds 2025</div></div>   (inside .hero__media)
+     <div class="hero__text">
+       <div class="hero__lead">
+         .hero__row (chip · pause)
+         <div class="hero__titlebox">
+           <h1 class="hero__title">Slagerij &amp; traiteur in Zwevezele. <span class="hero__accent">…</span></h1>   (unchanged: the accent stays inside the H1)
+           <div class="hero__ink">{{ inline contents of design/svg/stamp.svg — stamp-ro.svg on /ro }}</div>
+         </div>
+         sub · buttons
+       </div>
+       <div class="hero__trust">…</div>
+     </div>
+     <div class="hero__media"> frames + scrim + pause — no .hero__stamp any more </div>
      <div class="hero__tag"> the counter tag of the current frame (.ht) </div>
-   </section> */
+   </section>
+   Inline the SVG (Astro: read the file and set:html, or an .astro wrapper) — NOT <img>: inside an <img> the SVG cannot use the page
+   fonts (Inter Tight, Fraunces) and would fall back to Arial/Georgia. The filter ids (ink / ringpath, RO: inkro / ringpathro) are
+   unique per page. The <svg> keeps width/height="176" for standalone previews; the CSS below sizes it. */
+
+.hero__ink{display:none}                                              /* mobile: the hero is the photo; no ink stamp */
 
 @media (min-width:960px){
-  .hero{--seam:55%;position:relative;background:var(--paper)}
+  .hero{--seam:55%;--h1:clamp(48px,5.4vw,76px);--h1-scale:1;position:relative;background:var(--paper)}
+  .hero:lang(ro),.hero[lang="ro"]{--h1-scale:.76}
+    /* RO: „Măcelărie și magazin românesc în Zwevezele.” is 43 characters to the NL 33. Measured at opsz 120: „Măcelărie și magazin” 7.45 em,
+       „românesc în Zwevezele.” 8.43 em, „Măcelărie și magazin românesc” 11.18 em (NL „Slagerij & traiteur” 6.57 em). At .76 the RO title
+       takes the same pixel width as the NL one (6.8 × --h1), breaks after „magazin” and is two lines at every width: 66 px at 1440,
+       90 px at 2560. The string itself is not shortened — „magazin românesc” is what the diaspora searches (lexicon §2). */
   .hero__media{position:absolute;left:var(--seam);right:0;top:16px;bottom:16px;height:auto;border-radius:26px 0 0 26px;overflow:hidden;background:var(--ink);
     box-shadow:0 30px 70px -30px rgba(123,36,32,.55),0 8px 24px -12px rgba(21,17,13,.5)}
-  .hero__stamp{position:absolute;right:32px;top:32px;z-index:5}
-  .stamp{width:132px;height:132px;padding:18px 14px;letter-spacing:.14em;line-height:1.4;text-shadow:0 1px 2px rgba(0,0,0,.35);
-    box-shadow:inset 0 0 0 5px rgba(21,17,13,.28),inset 0 0 0 6.5px var(--on-ink),0 10px 30px -10px rgba(0,0,0,.6)}   /* the original ring stamp, refined */
+  .hero__stamp{display:none}                                           /* belt and braces: should the ring stamp still be in the DOM, it never shows */
   .hero__tag{position:absolute;left:calc(var(--seam) - 44px);bottom:52px;width:360px;z-index:5}
   .hero__text{position:absolute;left:0;top:96px;bottom:0;width:calc(var(--seam) - 40px);box-sizing:border-box;padding:24px var(--gutter) 40px;
     display:flex;flex-direction:column;justify-content:space-between}
   .hero__lead{margin:auto 0;padding-right:8px}
-  .hero__title{max-width:6.8em;font-size:clamp(56px,6vw,92px)}   /* two lines at every width: 61 px at 1024, 77 at 1280, 82 at 1366, 92 from 1536 */
+  .hero__title{max-width:calc(6.8em / var(--h1-scale));font-size:calc(var(--h1) * var(--h1-scale));font-variation-settings:"opsz" 120}   /* max-width in px = 6.8 × --h1 for NL and RO alike */
+    /* opsz pinned at 120: Fraunces' automatic optical size widens the glyphs ~15 % below 80 px, which pushed the H1 to THREE lines
+       at 1024–1280 (measured on the live site 06.10 20:00: „Slagerij & traiteur” = 7.5 em at 69 px, 6.7 em at 86 px). At opsz 120 it is
+       6.57 em at every size and „… traiteur in” 7.39 em, so max-width 6.8em breaks after „traiteur” everywhere: two lines, always.
+       120 is what the auto size already gives at 1440–2560, so nothing changes there. */
+  .hero__accent{font-variation-settings:normal}                       /* the italic accent inside the H1 keeps its automatic optical size */
+
+  /* the ink stamp: anchored to the H1 box, centred on the seam whatever --gutter is
+     (titlebox right edge = seam − 40 − gutter − 8 [lead padding-right]  →  right: −(48 + gutter + half the stamp) puts the box's
+     centre on the seam, so the SVG's own split line (x = 80 of 160) is the print's edge). pointer-events none */
+  .hero__titlebox{position:relative}
+  .hero__ink{--ink:clamp(128px,12.2vw,224px);display:block;position:absolute;right:calc(-48px - var(--gutter) - var(--ink) / 2);
+    top:calc(var(--h1) * var(--h1-scale) * .95);width:var(--ink);aspect-ratio:1;transform:translateY(-50%);pointer-events:none;z-index:6}
+    /* top: the two title lines are 1.9 × the title size tall (line-height .95) and the accent sits under them inside the H1, so the
+       stamp's centre = .95 × size from the top; size = --h1 × --h1-scale (RO .76). z-index 6: above the print (.hero__text paints
+       over .hero__media already; 6 also clears the tag's 5 should they ever meet) */
+  .hero__ink svg{display:block;width:100%;height:100%;overflow:visible}
+}
+@media (min-width:1366px){
+  .hero{--h1:clamp(76px,6vw,92px)}                                  /* 82 at 1366, 92 from 1536 */
 }
 @media (min-width:1600px){
-  .hero{--seam:52%}
-  .hero__title{font-size:clamp(92px,5vw,118px)}
+  .hero{--seam:52%;--h1:clamp(92px,5vw,118px)}
 }
