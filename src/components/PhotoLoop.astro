@@ -34,7 +34,7 @@ const tiles = (photos.loop as Photo[]).slice(0, 5);
     }
   </div>
   {tiles.length > 0 && (
-    <button class="loop__pause" type="button" aria-label={pauseLabel} aria-pressed="false" data-pause>
+    <button class="btn-icon loop__pause" type="button" aria-label={pauseLabel} aria-pressed="false" data-pause>
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
     </button>
   )}
@@ -63,18 +63,8 @@ const tiles = (photos.loop as Photo[]).slice(0, 5);
   .loop__tile--empty {
     background: linear-gradient(135deg, var(--tag), var(--tag-line));
   }
-  .loop__pause {
-    display: grid;
-    place-items: center;
-    margin: 16px auto 0;
-    width: var(--touch);
-    height: var(--touch);
-    border-radius: var(--r-chip);
-    border: 1px solid var(--line);
-    background: var(--card);
-    color: var(--fg);
-    cursor: pointer;
-  }
+  /* .btn-icon (buttons.css); this only places it */
+  .loop__pause { display: flex; margin: 16px auto 0; }
   @media (max-width: 720px) {
     .loop__grid { gap: 6px; padding: 0 12px; }
   }

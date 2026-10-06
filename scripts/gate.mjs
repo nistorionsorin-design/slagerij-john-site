@@ -7,6 +7,9 @@ import { join, relative, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+// --release (before a push to main): placeholders FAIL. Default (dev, preview branch): they
+// WARN — docs/build-plan.md §0 allows them in dev and on `preview`, never on `main`.
+const RELEASE = process.argv.includes('--release');
 const dist = join(root, 'dist');
 const OWN_HOST = 'slagerij-john.be';
 const GEO = { latitude: 51.041, longitude: 3.2185 };
@@ -172,6 +175,7 @@ if (built) {
       for (const u of hits) e.push(`${rel(f)}: ${u}`);
       if (f.endsWith('.css') && /url\(\s*['"]?data:font/i.test(src)) e.push(`${rel(f)}: inlined font`);
     }
+    for (const p of pages) if (/<style[^>]*>[\s\S]*?url\(\s*['"]?data:font/i.test(p.html)) e.push(`${p.file}: inlined font in <style>`);
     const fonts = walk(dist).filter((f) => /\.woff2?$/.test(f));
     if (fonts.some((f) => !rel(f).startsWith('dist/_astro/'))) e.push('font file outside /_astro/');
     if (!fonts.length) e.push('no self-hosted font files in dist/_astro/');
@@ -188,7 +192,8 @@ if (built) {
         n++;
         const src = attr(tag, 'src') ?? '';
         if (!attr(tag, 'width') || !attr(tag, 'height')) e.push(`${p.file}: ${src} without width/height`);
-        if (attr(tag, 'alt') === undefined) e.push(`${p.file}: ${src} without alt`);
+        // a bare `alt` (Astro's rendering of alt="") is a valid empty alt
+        if (attr(tag, 'alt') === undefined && !/\salt(?=[\s/>])/i.test(tag)) e.push(`${p.file}: ${src} without alt`);
         const hero = attr(tag, 'fetchpriority') === 'high';
         if (!hero && attr(tag, 'loading') !== 'lazy') e.push(`${p.file}: ${src} not lazy`);
         if (!/\.(avif|webp|svg)(\?|$)/i.test(src)) e.push(`${p.file}: ${src} is not AVIF/WebP`);
@@ -202,18 +207,21 @@ if (built) {
     else warn('hero-weight', 'hero frame ≤ 90 kB mobile: check the served variant in the browser, not automated here');
   }
 
-  // 7 — placeholders (C-04)
+  // 7 — placeholders (C-04). Any [UPPER-CASE] token ([PRIJS], [KOOKLIJN], [ALT RO], …),
+  // the {TEL}-style braces of the lexicon, or lorem. WARN in dev/preview, FAIL with --release.
   {
-    const e = [];
-    const needles = ['[PRIJS]', '[PREȚ]', '[DATUM]', '[DATA]', '{TEL}', '[NUME]'];
+    const found = new Map();
+    const re = /\[[A-ZĂÂÎȘȚ][A-ZĂÂÎȘȚ0-9 -]+\]|\{(?:TEL|NUME|DATUM|DATA|PRIJS)\}|[Ll]orem/g;
     const scan = (label, text) => {
-      for (const n of needles) if (text.includes(n)) e.push(`${label}: ${n}`);
-      if (/lorem/i.test(text)) e.push(`${label}: lorem`);
+      for (const m of text.matchAll(re)) found.set(label, new Set([...(found.get(label) ?? []), m[0]]));
     };
-    for (const p of pages) scan(p.file, p.html);
+    for (const p of pages) scan(p.file, p.html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/gi, ' '));
     for (const f of walk(join(root, 'src/content')).filter((f) => /\.(md|mdx)$/.test(f))) scan(rel(f), read(f));
-    for (const f of walk(join(root, 'src/data')).filter((f) => f.endsWith('.json'))) scan(rel(f), read(f));
-    verdict('placeholders', e, 'no placeholder string in dist/, src/content/, src/data/');
+    for (const f of walk(join(root, 'src/data')).filter((f) => f.endsWith('.json'))) scan(rel(f), read(f).replace(/"_source":\s*"(?:[^"\\]|\\.)*"/g, ''));
+    const list = [...found].map(([k, v]) => `${k}: ${[...v].join(' ')}`);
+    if (!list.length) pass('placeholders', 'no placeholder string in dist/, src/content/, src/data/');
+    else if (RELEASE) fail('placeholders', list.join('\n         '));
+    else warn('placeholders', `in ${list.length} files — allowed in dev/preview, FAIL under --release:\n         ${list.join('\n         ')}`);
   }
 
   // 8 — RO lint (mechanical subset of the Romanian bible §16)
@@ -224,7 +232,8 @@ if (built) {
       if (/"/.test(text)) e.push(`${label}: straight double quote — use „…”`);
       if (/[“]/.test(text)) e.push(`${label}: “ — Romanian opens with „`);
       if (/[–—]/.test(text)) e.push(`${label}: en/em dash in body`);
-      const m = text.match(/(?<![\d.,:/])\b(?:[2-9]\d|\d{3,})\s+(?!de\b|%|€|kg\b|g\b|km\b|m\b|cm\b|ml\b|l\b|min\b|h\b)\p{L}{3,}/u);
+      // a numeral followed by a proper noun (postal code + place: „8750 Zwevezele”) is not a counted noun
+      const m = text.match(/(?<![\d.,:/])\b(?:[2-9]\d|\d{3,})\s+(?!de\b|%|€|kg\b|g\b|km\b|m\b|cm\b|ml\b|l\b|min\b|h\b|\p{Lu})\p{L}{3,}/u);
       if (m) e.push(`${label}: numeral ≥ 20 without „de”: «${m[0]}»`);
     };
     const md = walk(join(root, 'src/content/ro')).filter((f) => /\.(md|mdx)$/.test(f));
@@ -277,7 +286,7 @@ if (built) {
     let mounted = 0;
     for (const p of pages) {
       for (const [cls, name] of [['hero', 'hero'], ['loop', 'photo loop']]) {
-        const sec = p.html.match(new RegExp(`<section class="${cls}"[\\s\\S]*?</section>`, 'i'))?.[0];
+        const sec = p.html.match(new RegExp(`<section class="${cls}[\\s"][\\s\\S]*?</section>`, 'i'))?.[0];
         if (!sec) continue;
         mounted++;
         const imgs = (sec.match(/<img\b/gi) || []).length;
@@ -285,7 +294,11 @@ if (built) {
         if (cls === 'hero' && imgs && !/<img[^>]*fetchpriority="high"/i.test(sec)) e.push(`${p.file}: first hero frame is not a plain fetchpriority=high <img>`);
       }
     }
-    const css = walk(dist).filter((f) => f.endsWith('.css')).map(read).join('\n');
+    // page CSS is inlined into <style> (astro.config inlineStylesheets: 'always'); read both places
+    const css = [
+      ...walk(dist).filter((f) => f.endsWith('.css')).map(read),
+      ...pages.flatMap((p) => [...p.html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/gi)].map((m) => m[1])),
+    ].join('\n');
     if (!/prefers-reduced-motion:\s*reduce/.test(css)) e.push('no prefers-reduced-motion rule in the built CSS');
     if (/\.hero__bg img[^}]*opacity:\s*0(?![.\d])/.test(css)) e.push('first hero frame starts at opacity 0');
     verdict('motion', e, 'pause control where frames rotate; reduced-motion rule present; first hero frame opacity 1');
@@ -322,13 +335,27 @@ if (built) {
     warn('a11y-manual', 'text over the hero gradient and keyboard operation of the Q&A box: verify in the browser');
   }
 
-  // client JS budget (D-06): only the Q&A island may ship a script
+  // client JS budget (D-06 one island + D-12 hero loop + D-20 open chip): a script ships only
+  // on a page that mounts its component, from /_astro/, never inline (CSP script-src 'self').
   {
     const js = walk(dist).filter((f) => /\.(js|mjs)$/.test(f));
-    const inline = pages.filter((p) => /<script(?![^>]*application\/ld\+json)[^>]*>[\s\S]*?\S[\s\S]*?<\/script>/i.test(p.html.replace(/<script[^>]*src=[^>]*><\/script>/gi, '')));
+    const inline = pages.filter((p) => /<script(?![^>]*application\/(ld\+)?json)[^>]*>[\s\S]*?\S[\s\S]*?<\/script>/i.test(p.html.replace(/<script[^>]*src=[^>]*><\/script>/gi, '')));
     const e = inline.map((p) => `${p.file}: inline script (blocked by the CSP in vercel.json)`);
-    for (const p of pages) if (/<script[^>]*src=/i.test(p.html) && !/<section class="qa"/.test(p.html)) e.push(`${p.file}: ships a script without the Q&A island`);
-    verdict('client-js', e, `${js.length} JS files in dist; no inline script; scripts only where the Q&A island is mounted`);
+    const mounts = [
+      ['Hero', /<section class="hero[\s"]/],
+      ['OpenChip', /class="oc[\s"]/],
+      ['QaBox', /<section class="qa[\s"]/],
+    ];
+    for (const p of pages)
+      for (const tag of p.html.match(/<script[^>]*\ssrc="[^"]*"[^>]*>/gi) || []) {
+        const src = attr(tag, 'src');
+        const file = src.split('/').pop();
+        const m = mounts.find(([name]) => file.startsWith(name + '.'));
+        if (!src.startsWith('/_astro/')) e.push(`${p.file}: ${src} not served from /_astro/`);
+        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / OpenChip / QaBox)`);
+        else if (!m[1].test(p.html)) e.push(`${p.file}: ships ${file} without its component`);
+      }
+    verdict('client-js', e, `${js.length} JS files in dist; no inline script; each script ships only with its component`);
   }
 }
 

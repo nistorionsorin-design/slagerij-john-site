@@ -1,5 +1,157 @@
 {
-  "hero": [],
+  "_source": "Hero frames per docs/build-plan.md §3 (files, focal points) and the canvas boards Main/Desktop (zoom origins). Alts NL/RO and tag names NL/RO = lexicon §5.14 table (06.10) verbatim. Tag line and price stay [KOOKLIJN] / [PRIJS] (RO [PREȚ]) until FACTS.md has the owners' values. Claude Code, stage 1.",
+  "hero": [
+    {
+      "src": "hero/mici-op-de-bbq-slagerij-john-zwevezele.jpg",
+      "from": "assets/raw/2026-10-03-site/catering-mici-grill.webp",
+      "focalX": 50,
+      "focalY": 35,
+      "zoomX": 50,
+      "zoomY": 40,
+      "alt": {
+        "nl": "Mici op de barbecue bij Slagerij John in Zwevezele",
+        "ro": "Mici la grătar la Măcelăria John din Zwevezele"
+      },
+      "tag": {
+        "name": {
+          "nl": "Mici",
+          "ro": "Mici"
+        },
+        "line": {
+          "nl": "[KOOKLIJN]",
+          "ro": "[KOOKLIJN]"
+        },
+        "price": {
+          "nl": "[PRIJS]",
+          "ro": "[PREȚ]"
+        },
+        "unit": {
+          "nl": "/kg",
+          "ro": "/kg"
+        }
+      }
+    },
+    {
+      "src": "hero/toog-slagerij-john-bruggestraat-zwevezele.webp",
+      "from": "assets/raw/2026-10-03-site/pork-products.webp",
+      "focalX": 50,
+      "focalY": 40,
+      "zoomX": 40,
+      "zoomY": 50,
+      "alt": {
+        "nl": "Vers varkensvlees in de toog",
+        "ro": "Carne proaspătă de porc în vitrină"
+      },
+      "tag": {
+        "name": {
+          "nl": "Colli Varken 1",
+          "ro": "Colli Porc 1"
+        },
+        "line": {
+          "nl": "[KOOKLIJN]",
+          "ro": "[KOOKLIJN]"
+        },
+        "price": {
+          "nl": "[PRIJS]",
+          "ro": "[PREȚ]"
+        },
+        "unit": {
+          "nl": "/colli",
+          "ro": "/colli"
+        }
+      }
+    },
+    {
+      "src": "hero/georgiana-hapjes-slagerij-john-zwevezele.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/georgiabna plate .jpeg",
+      "focalX": 60,
+      "focalY": 42,
+      "zoomX": 60,
+      "zoomY": 45,
+      "alt": {
+        "nl": "Georgiana met een schotel hapjes",
+        "ro": "Georgiana cu un platou de aperitive"
+      },
+      "tag": {
+        "name": {
+          "nl": "Hapjes & feestschotels",
+          "ro": "Aperitive și platouri festive"
+        },
+        "line": {
+          "nl": "[KOOKLIJN]",
+          "ro": "[KOOKLIJN]"
+        },
+        "price": {
+          "nl": "[PRIJS]",
+          "ro": "[PREȚ]"
+        },
+        "unit": {
+          "nl": "/pers",
+          "ro": "/pers."
+        }
+      }
+    },
+    {
+      "src": "hero/bbq-pakket-slagerij-john-zwevezele.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 1.jpeg",
+      "focalX": 50,
+      "focalY": 50,
+      "zoomX": 50,
+      "zoomY": 45,
+      "alt": {
+        "nl": "BBQ-pakket met gemarineerd vlees",
+        "ro": "Pachet BBQ cu carne marinată"
+      },
+      "tag": {
+        "name": {
+          "nl": "BBQ-pakket",
+          "ro": "Pachet BBQ"
+        },
+        "line": {
+          "nl": "[KOOKLIJN]",
+          "ro": "[KOOKLIJN]"
+        },
+        "price": {
+          "nl": "[PRIJS]",
+          "ro": "[PREȚ]"
+        },
+        "unit": {
+          "nl": "/pers",
+          "ro": "/pers."
+        }
+      }
+    },
+    {
+      "src": "hero/john-aan-de-bbq-slagerij-john-zwevezele.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/john gratar.jpeg",
+      "focalX": 52,
+      "focalY": 50,
+      "zoomX": 55,
+      "zoomY": 45,
+      "alt": {
+        "nl": "John aan de barbecue, worsten op de grill",
+        "ro": "John la barbecue, cu cârnați pe grătar"
+      },
+      "tag": {
+        "name": {
+          "nl": "BBQ aan huis",
+          "ro": "Grătar la domiciliu"
+        },
+        "line": {
+          "nl": "[KOOKLIJN]",
+          "ro": "[KOOKLIJN]"
+        },
+        "price": {
+          "nl": "[PRIJS]",
+          "ro": "[PREȚ]"
+        },
+        "unit": {
+          "nl": "/pers",
+          "ro": "/pers."
+        }
+      }
+    }
+  ],
   "loop": [],
   "gallery": []
 }

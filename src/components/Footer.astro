@@ -1,0 +1,82 @@
+---
+// Footer — canvas boards Main / Contact: wordmark, legal line, NAP line, NL/RO links.
+// Emblem small on its own tile (D-19). Values from entity.json, never typed here.
+import { Image } from 'astro:assets';
+import emblem from '../assets/logo/emblem.webp';
+import entity from '../data/entity.json';
+import { ui, vatDisplay, type Locale } from '../i18n/ui';
+
+export interface Props {
+  locale: Locale;
+  alternates: { nl: string; ro: string };
+}
+const { locale, alternates } = Astro.props;
+const t = ui[locale];
+const a = entity.address;
+---
+<footer class="foot">
+  <div class="container foot__in">
+    <div class="foot__brand">
+      <Image class="foot__emblem" src={emblem} width={56} height={56} densities={[1, 2]} alt="" />
+      <div class="foot__text">
+        <span class="foot__mark">{entity.name}</span>
+        <span>{entity.legalName} · {vatDisplay(entity.vatID)} · <a href={`mailto:${entity.email}`}>{entity.email}</a></span>
+        <address class="foot__nap">
+          {a.streetAddress}, {a.postalCode} {a.addressLocality} · <a href={`tel:${entity.telephone}`}>{entity.telephoneDisplay}</a>
+        </address>
+      </div>
+    </div>
+    <nav class="foot__lang" aria-label={t.lang}>
+      <a href={alternates.nl} hreflang="nl-BE" lang="nl" aria-current={locale === 'nl' ? 'true' : undefined}>{t.footer.nl}</a>
+      <a href={alternates.ro} hreflang="ro-BE" lang="ro" aria-current={locale === 'ro' ? 'true' : undefined}>{t.footer.ro}</a>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .foot {
+    border-top: 1px solid var(--line);
+    padding: 26px 0 28px;
+    /* keep clear of the fixed bottom bar on mobile (U-03) */
+    padding-bottom: calc(28px + var(--bar) + env(safe-area-inset-bottom, 0px));
+    font-size: var(--fs-caption);
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .foot__in { display: flex; flex-direction: column; gap: var(--space-3); }
+  .foot__brand { display: flex; align-items: flex-start; gap: var(--space-3); }
+  .foot__emblem {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--r-tag);
+    background: #FDFDFD;
+    border: 1px solid var(--line);
+    flex: 0 0 auto;
+  }
+  .foot__text { display: flex; flex-direction: column; gap: 6px; }
+  .foot__mark {
+    font-family: var(--f-display);
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--fg);
+  }
+  .foot__nap { font-style: normal; }
+  .foot__nap a { white-space: nowrap; }
+  .foot a { color: inherit; }
+  .foot a:hover { color: var(--fg); }
+  .foot__lang { display: flex; gap: 14px; margin-top: 6px; }
+  .foot__lang a {
+    font-weight: 600;
+    text-decoration: none;
+    min-height: var(--touch);
+    display: inline-flex;
+    align-items: center;
+  }
+  .foot__lang a[aria-current] { color: var(--fg); }
+
+  @media (min-width: 960px) {
+    .foot { padding-bottom: 32px; }
+    .foot__in { flex-direction: row; align-items: center; justify-content: space-between; }
+  }
+</style>

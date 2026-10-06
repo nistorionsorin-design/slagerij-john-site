@@ -1,28 +1,37 @@
 ---
-// Head, hreflang pair, canonical, JSON-LD, self-hosted fonts.
+// Head, hreflang pair, canonical, JSON-LD, self-hosted fonts, and the layout frame:
+// skip link · Nav · <slot> (the page's <main>) · Footer · BottomBar (mobile).
 // No facts here: entity.json and hours.json carry the values.
+import '../styles/fonts.css';
 import '../styles/tokens.css';
-import '@fontsource-variable/fraunces';
-import '@fontsource-variable/fraunces/wght-italic.css';
-import '@fontsource-variable/inter-tight';
+import '../styles/buttons.css';
 import entity from '../data/entity.json';
 import hours from '../data/hours.json';
 import type { Day } from '../data/types';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import BottomBar from '../components/BottomBar.astro';
+import { ui, home, wa, routeHref, type Locale } from '../i18n/ui';
 
 export interface Props {
   title: string;
   description: string;
-  locale: 'nl' | 'ro';
+  locale: Locale;
   path: string;
   alternates?: { nl: string; ro: string };
   noindex?: boolean;
+  /** 'ink' lets the mobile nav float over a dark hero (stage 1). */
+  navVariant?: 'paper' | 'ink';
 }
 
-const { title, description, locale, path, alternates, noindex = false } = Astro.props;
+const { title, description, locale, path, alternates, noindex = false, navVariant = 'paper' } = Astro.props;
 
 const origin = 'https://slagerij-john.be';
 const abs = (p: string) => `${origin}${p === '/' ? '/' : p}`;
 const htmlLang = locale === 'ro' ? 'ro-BE' : 'nl-BE';
+const t = ui[locale];
+// Pages without a pair (404) switch language at the home pages.
+const alt = alternates ?? { nl: home.nl, ro: home.ro };
 
 // ButcherShop only when entity.json is filled; an empty stub emits a neutral
 // WebSite node so no half-empty entity is ever published (the gate warns).
@@ -67,9 +76,10 @@ const jsonld = entity.name
 <html lang={htmlLang}>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#F4EDE0" />
     {noindex ? (
       <meta name="robots" content="noindex" />
     ) : (
@@ -94,6 +104,18 @@ const jsonld = entity.name
     <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />
   </head>
   <body>
+    <a class="skip" href="#main">{t.skip}</a>
+    <Nav locale={locale} path={path} alternates={alt} variant={navVariant} />
     <slot />
+    <Footer locale={locale} alternates={alt} />
+    <BottomBar
+      telHref={`tel:${entity.telephone}`}
+      waHref={wa(`bar-mobile-${locale}`)}
+      mapHref={routeHref(entity.geo.latitude, entity.geo.longitude)}
+      telLabel={t.bar.tel}
+      waLabel={t.bar.wa}
+      mapLabel={t.bar.route}
+      navLabel={t.bar.label}
+    />
   </body>
 </html>

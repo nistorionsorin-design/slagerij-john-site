@@ -1,0 +1,68 @@
+/* PORTED 1:1 from design/css/hero-b.css (06.10). Do not edit here: change the design file, then re-copy.
+   Site-specific additions (no-JS still, layout, sync) live in src/components/Hero.astro. */
+/* Hero — five frames, transition B (soft wipe from a corner), Ken Burns zoom. D-12 settled 06.10.
+   Source of truth for the motion: canvas boards Main / Desktop / ROHome (v16). Port 1:1 into Hero.astro.
+   Timing: 45 s loop = 5 frames × 9 s. Each frame wipes in over 2 s, stays 7 s, is covered by the next.
+   Percentages are of 45 s: 4.444 % = 2 s · 24.444 % = 11 s · 20 % = 9 s.
+   Only opacity, transform and mask-position animate (compositor). Nothing here changes layout.
+
+   DOM contract (order matters: later = on top):
+     <section class="hw">
+       <div class="hb hb0"           style="animation-delay:-47s"><img class="hk home" fetchpriority="high" …frame 1…></div>
+       <div class="hb vi w135"       style="animation-delay:-38s"><img class="hk" …frame 2…></div>   ← frames 2–5 + the loop frame
+       <div class="hb vi w315"       style="animation-delay:-29s"><img class="hk" …frame 3…></div>     are inserted after `load`
+       <div class="hb vi w45"        style="animation-delay:-20s"><img class="hk" …frame 4…></div>     (hero.js, external file: CSP script-src 'self')
+       <div class="hb vi w225"       style="animation-delay:-11s"><img class="hk" …frame 5…></div>
+       <div class="hb vi hbb w135"   style="animation-delay:-47s"><img class="hk" …frame 1 again…></div>
+       …scrims, content…
+       <input type="checkbox" id="h-pause" class="hp"><label for="h-pause" aria-label="Pauzeer de foto's">…</label>   ← pause works without JS
+     </section>
+   Each <img class="hk"> carries the same animation-delay as its parent and `object-position` + `transform-origin` = its focal point (photos.json).
+   Frame 1 is a plain <img> in the HTML at opacity 1 from first paint (LCP); without JS the hero is that one still.
+   Zoom: 1.00 → 1.08 over the 11 s a frame is on screen (Ken Burns), transform-origin at the focal point. */
+
+.hw .hb{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;animation-duration:45s;animation-timing-function:linear;animation-iteration-count:infinite}
+.hw .hb0{animation-name:hw-f0}
+@keyframes hw-f0{0%,24.444%{opacity:1}24.454%,100%{opacity:0}}
+.hw .hk{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;animation:hw-z 45s linear infinite}
+@keyframes hw-z{0%{transform:scale(1)}24.444%{transform:scale(1.08)}24.454%,100%{transform:scale(1)}}
+
+/* pause: CSS only (:has), no script needed */
+.hw .hp{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+.hw:has(.hp:checked) .hb,.hw:has(.hp:checked) .hk,.hw:has(.hp:checked) .ht{animation-play-state:paused}
+.hw .ic-play{display:none}
+.hw:has(.hp:checked) .ic-pause{display:none}
+.hw:has(.hp:checked) .ic-play{display:block}
+.hw .hp:focus-visible+label{outline:2px solid var(--on-ink,#F4EDE0);outline-offset:2px}
+
+/* transition B: a soft diagonal wipe, a different corner for each frame */
+.hw .hb.vi{mask-size:300% 300%;-webkit-mask-size:300% 300%;mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;animation-name:hw-fb,none;animation-timing-function:linear,cubic-bezier(.45,.05,.55,.95)}
+.hw .hb.vi.hbb{animation-name:hw-fbb,none}
+@keyframes hw-fb{0%,24.444%{opacity:1}24.454%,100%{opacity:0}}
+@keyframes hw-fbb{0%,20%{opacity:1}20.01%,100%{opacity:0}}
+.hw .hb.w135{mask-image:linear-gradient(135deg,#000 0%,#000 44%,transparent 56%,transparent 100%);-webkit-mask-image:linear-gradient(135deg,#000 0%,#000 44%,transparent 56%,transparent 100%);animation-name:hw-fb,hw-w135}.hw .hb.w135.hbb{animation-name:hw-fbb,hw-w135}
+@keyframes hw-w135{0%{mask-position:100% 100%;-webkit-mask-position:100% 100%}4.444%,24.444%{mask-position:0% 0%;-webkit-mask-position:0% 0%}24.454%,100%{mask-position:100% 100%;-webkit-mask-position:100% 100%}}
+.hw .hb.w315{mask-image:linear-gradient(315deg,#000 0%,#000 44%,transparent 56%,transparent 100%);-webkit-mask-image:linear-gradient(315deg,#000 0%,#000 44%,transparent 56%,transparent 100%);animation-name:hw-fb,hw-w315}.hw .hb.w315.hbb{animation-name:hw-fbb,hw-w315}
+@keyframes hw-w315{0%{mask-position:0% 0%;-webkit-mask-position:0% 0%}4.444%,24.444%{mask-position:100% 100%;-webkit-mask-position:100% 100%}24.454%,100%{mask-position:0% 0%;-webkit-mask-position:0% 0%}}
+.hw .hb.w45{mask-image:linear-gradient(45deg,#000 0%,#000 44%,transparent 56%,transparent 100%);-webkit-mask-image:linear-gradient(45deg,#000 0%,#000 44%,transparent 56%,transparent 100%);animation-name:hw-fb,hw-w45}.hw .hb.w45.hbb{animation-name:hw-fbb,hw-w45}
+@keyframes hw-w45{0%{mask-position:100% 0%;-webkit-mask-position:100% 0%}4.444%,24.444%{mask-position:0% 100%;-webkit-mask-position:0% 100%}24.454%,100%{mask-position:100% 0%;-webkit-mask-position:100% 0%}}
+.hw .hb.w225{mask-image:linear-gradient(225deg,#000 0%,#000 44%,transparent 56%,transparent 100%);-webkit-mask-image:linear-gradient(225deg,#000 0%,#000 44%,transparent 56%,transparent 100%);animation-name:hw-fb,hw-w225}.hw .hb.w225.hbb{animation-name:hw-fbb,hw-w225}
+@keyframes hw-w225{0%{mask-position:0% 100%;-webkit-mask-position:0% 100%}4.444%,24.444%{mask-position:100% 0%;-webkit-mask-position:100% 0%}24.454%,100%{mask-position:0% 100%;-webkit-mask-position:0% 100%}}
+
+/* desktop only: the counter tag on the photo panel swaps with the frame, after the wipe */
+.ht{opacity:0;animation:htf 45s ease-in-out infinite}
+@keyframes htf{0%,15.556%{opacity:1}17.156%,97.778%{opacity:0}100%{opacity:1}}
+
+/* reduced motion: one still, nothing moves, no mask. Must come last. */
+@media (prefers-reduced-motion:reduce){
+  .hw .hb.hb0,.hw .hb.vi,.hw .hb.vi.hbb,.hw .hk,.hw .ht{animation:none!important}
+  .hw .hb.vi{opacity:0;mask-image:none!important;-webkit-mask-image:none!important}
+  .hw .hb.hb0{opacity:1}
+  .hw .hk{transform:none}
+  .hw .ht.home{opacity:1}
+}
+
+/* scrims used on the canvas, mobile: */
+/*   flat  : background:rgba(21,17,13,.24)
+     grad  : linear-gradient(180deg, rgba(21,17,13,.55) 0%, rgba(21,17,13,.05) 30%, rgba(21,17,13,.35) 55%, rgba(21,17,13,.96) 100%)
+   desktop photo panel: linear-gradient(180deg, rgba(21,17,13,0) 50%, rgba(21,17,13,.55) 100%) */

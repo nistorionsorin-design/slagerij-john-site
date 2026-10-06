@@ -1,6 +1,8 @@
 ---
 // Order slip: preview of the pre-filled WhatsApp message. Links go through
 // /wa?src=<page>, never a raw wa.me link (qa.md §2). /wa itself is not built yet.
+import WaIcon from './WaIcon.astro';
+
 export interface Props {
   heading: string;
   message: string;
@@ -13,7 +15,7 @@ const href = `/wa?src=${encodeURIComponent(src)}`;
 <section class="slip" aria-labelledby="slip-title">
   <h2 id="slip-title" class="slip__title">{heading}</h2>
   <pre class="slip__msg">{message}</pre>
-  <a class="slip__cta" href={href} rel="nofollow">{ctaLabel}</a>
+  <a class="btn btn--primary" href={href} rel="nofollow"><WaIcon /><span>{ctaLabel}</span></a>
 </section>
 
 <style>
@@ -34,16 +36,5 @@ const href = `/wa?src=${encodeURIComponent(src)}`;
     background: var(--paper);
     border-radius: var(--r-tag);
     color: var(--fg);
-  }
-  .slip__cta {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--touch);
-    padding: 0 20px;
-    border-radius: var(--r-btn);
-    background: var(--accent);
-    color: var(--on-accent);
-    font-weight: 600;
-    text-decoration: none;
   }
 </style>

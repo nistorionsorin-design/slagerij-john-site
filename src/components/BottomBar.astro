@@ -1,6 +1,10 @@
 ---
-// BottomBar — mobile fixed action bar · Bel · WhatsApp · Route. 72px tall.
-// Labels and hrefs slotted; no copy/facts baked in.
+// BottomBar — mobile fixed action bar Bel · WhatsApp · Route, 72 px (U-03).
+// Canvas Contact board: paper ground, hairline on top, the WhatsApp cell yellow with
+// the button radius (a pill since stage 0b, --r-btn). Three real <a href> (gate a11y). Hidden on desktop.
+// The WhatsApp icon is WaIcon (board „Merkiconen” A/B); Route keeps the Lucide pin: its label is
+// „Route”, not the Google Maps name, so the brand-mark rule does not apply.
+import WaIcon from './WaIcon.astro';
 export interface Props {
   telHref: string;
   waHref: string;
@@ -14,22 +18,16 @@ const { telHref, waHref, mapHref, telLabel, waLabel, mapLabel, navLabel } = Astr
 ---
 <nav class="bar" aria-label={navLabel}>
   <a class="bar__link" href={telHref}>
-    <span class="bar__icon" aria-hidden="true">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92V21a1 1 0 0 1-1.09 1 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 3.21 4.09 1 1 0 0 1 4.2 3h4.09a1 1 0 0 1 1 .75l1 4a1 1 0 0 1-.29 1l-2.2 2.2a16 16 0 0 0 6 6l2.2-2.2a1 1 0 0 1 1-.29l4 1a1 1 0 0 1 .75 1z"/></svg>
-    </span>
-    <span class="bar__label">{telLabel}</span>
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
+    <span>{telLabel}</span>
   </a>
   <a class="bar__link bar__link--accent" href={waHref}>
-    <span class="bar__icon" aria-hidden="true">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-    </span>
-    <span class="bar__label">{waLabel}</span>
+    <WaIcon size={20} />
+    <span>{waLabel}</span>
   </a>
-  <a class="bar__link" href={mapHref}>
-    <span class="bar__icon" aria-hidden="true">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-    </span>
-    <span class="bar__label">{mapLabel}</span>
+  <a class="bar__link" href={mapHref} rel="noopener">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+    <span>{mapLabel}</span>
   </a>
 </nav>
 
@@ -37,27 +35,30 @@ const { telHref, waHref, mapHref, telLabel, waLabel, mapLabel, navLabel } = Astr
   .bar {
     position: fixed;
     inset: auto 0 0 0;
-    height: var(--bar);
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    background: var(--card);
-    border-top: 1px solid var(--line);
     z-index: 50;
+    min-height: var(--bar);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 8px 10px 10px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    background: var(--paper);
+    border-top: 1px solid var(--line);
   }
   .bar__link {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    text-decoration: none;
+    gap: var(--space-1);
+    min-height: 52px;
     color: var(--fg);
-    font-size: 12px;
+    font-size: var(--fs-caption);
     font-weight: 600;
-    min-height: var(--touch);
+    text-decoration: none;
+    border-radius: var(--r-btn);
   }
-  .bar__link--accent { background: var(--accent); color: var(--on-accent); }
-  .bar__icon svg { display: block; }
+  .bar__link svg { display: block; }
+  .bar__link--accent { background: var(--accent); color: var(--on-accent); font-weight: 700; }
   @media (min-width: 960px) {
     .bar { display: none; }
   }

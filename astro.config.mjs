@@ -5,7 +5,9 @@ export default defineConfig({
   site: 'https://slagerij-john.be',
   output: 'static',
   trailingSlash: 'never',
-  build: { format: 'file' },
+  // inlineStylesheets: the page CSS goes into <style> (CSP style-src allows it) so no
+  // render-blocking stylesheet request sits before first paint; fonts stay in /_astro/.
+  build: { format: 'file', inlineStylesheets: 'always' },
   i18n: {
     defaultLocale: 'nl',
     locales: ['nl', 'ro'],

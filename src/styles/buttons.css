@@ -1,0 +1,142 @@
+/* Buttons, pills and the language switch — Slagerij John · v1 (06.10.2026)
+   Dan, 06.10 11:27 on the stage-0 header: „can we make these pills look premium and nice”.
+   Source of truth: canvas board „Knoppen · pillen en schakelaar” (v20). Port 1:1 into site/src/styles (one file) and use the
+   classes in every component; no per-component button CSS any more.
+
+   What makes them read as premium here, in this order: one radius (the pill), a hairline edge in the ink of the surface,
+   a one-pixel paper highlight on top, a warm soft shadow that sits under the button (never a grey halo), real
+   hover/press motion (1 px lift, 120 ms), tabular alignment of icon and label, and nothing else. No gradients.
+
+   Tokens used: --accent --on-accent --ink --on-ink --on-ink-muted --fg --muted --card --line --ox --on-ox --f-ui.
+   Radius: every button and segment is a full pill (999). design/brief.md §3 „12 (buttons)” is superseded by this file (06.10). */
+
+:root{
+  --btn-h: 48px;            /* md, the default */
+  --btn-h-lg: 52px;         /* hero and bestelbon primary on mobile, 54 on desktop */
+  --btn-h-sm: 40px;         /* inline, inside cards */
+  --btn-px: 20px;
+  --btn-fs: 15px;
+  --btn-ease: cubic-bezier(.2,.6,.2,1);
+  --btn-edge: rgba(26,21,17,.14);              /* hairline on paper/accent */
+  --btn-edge-ink: rgba(244,237,224,.28);        /* hairline on ink */
+  --btn-shadow: 0 1px 2px rgba(26,21,17,.08), 0 10px 24px -14px rgba(123,36,32,.45);
+  --btn-shadow-hover: 0 2px 4px rgba(26,21,17,.10), 0 16px 32px -16px rgba(123,36,32,.55);
+  --btn-shadow-press: inset 0 2px 4px rgba(26,21,17,.18);
+}
+
+/* ---------- base ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  box-sizing:border-box;min-height:var(--btn-h);padding:0 var(--btn-px);
+  border-radius:999px;border:1px solid transparent;
+  font-family:var(--f-ui);font-size:var(--btn-fs);font-weight:600;letter-spacing:-0.005em;line-height:1;
+  text-decoration:none;white-space:nowrap;cursor:pointer;user-select:none;
+  transition:transform .12s var(--btn-ease),box-shadow .12s var(--btn-ease),background-color .12s var(--btn-ease),border-color .12s var(--btn-ease),color .12s var(--btn-ease);
+}
+.btn svg{width:18px;height:18px;flex:0 0 auto;stroke-width:2}
+.btn--lg{min-height:var(--btn-h-lg);padding:0 22px;font-size:16px}
+.btn--sm{min-height:var(--btn-h-sm);padding:0 16px;font-size:14px;gap:8px}
+.btn--block{display:flex;width:100%}
+.btn:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
+@media (hover:hover){
+  .btn:hover{transform:translateY(-1px)}
+}
+.btn:active{transform:translateY(0)}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}.btn:hover{transform:none}}
+
+/* ---------- primary: the one accent action ---------- */
+.btn--primary{
+  background:var(--accent);color:var(--on-accent);border-color:var(--btn-edge);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.38),var(--btn-shadow);
+}
+@media (hover:hover){.btn--primary:hover{background:#EDB91F;box-shadow:inset 0 1px 0 rgba(255,255,255,.38),var(--btn-shadow-hover)}}
+.btn--primary:active{background:#E3AE14;box-shadow:var(--btn-shadow-press)}
+
+/* ---------- secondary: outline, on paper ---------- */
+.btn--secondary{background:transparent;color:var(--fg);border-color:rgba(26,21,17,.55)}
+@media (hover:hover){.btn--secondary:hover{background:var(--card);border-color:var(--fg);box-shadow:var(--btn-shadow)}}
+.btn--secondary:active{background:var(--tag);box-shadow:var(--btn-shadow-press)}
+
+/* ---------- quote: oxblood, only on traiteur content ---------- */
+.btn--quote{background:var(--ox);color:var(--on-ox);border-color:rgba(0,0,0,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),var(--btn-shadow)}
+@media (hover:hover){.btn--quote:hover{background:#8A2A25;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),var(--btn-shadow-hover)}}
+.btn--quote:active{background:#6E1F1B;box-shadow:var(--btn-shadow-press)}
+
+/* ---------- ink: dark button on paper (rare: the Q&A send) ---------- */
+.btn--ink{background:var(--ink);color:var(--on-ink);border-color:var(--ink);box-shadow:var(--btn-shadow)}
+@media (hover:hover){.btn--ink:hover{background:#2A221B}}
+.btn--ink:active{box-shadow:var(--btn-shadow-press)}
+
+/* ---------- on ink (hero, dark blocks): the same three, re-skinned ---------- */
+.on-ink .btn--secondary{color:var(--on-ink);border-color:rgba(244,237,224,.55)}
+@media (hover:hover){.on-ink .btn--secondary:hover{background:rgba(244,237,224,.10);border-color:var(--on-ink);box-shadow:none}}
+.on-ink .btn--secondary:active{background:rgba(244,237,224,.16)}
+.on-ink .btn:focus-visible{outline-color:var(--on-ink)}
+.on-ink .btn--light{background:var(--paper);color:var(--fg);border-color:rgba(26,21,17,.10);box-shadow:var(--btn-shadow)}  /* light button inside an ox/ink block */
+
+/* ---------- text link with arrow ---------- */
+.link-arrow{display:inline-flex;align-items:center;gap:6px;color:var(--ox);font-weight:600;font-size:14px;text-decoration:none;min-height:44px}
+.link-arrow svg{width:16px;height:16px;transition:transform .12s var(--btn-ease)}
+@media (hover:hover){.link-arrow:hover{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}.link-arrow:hover svg{transform:translateX(2px)}}
+
+/* ---------- icon buttons: burger, close, pause (44 px circle) ---------- */
+.btn-icon{
+  display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;box-sizing:border-box;
+  border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;
+  transition:background-color .12s var(--btn-ease),border-color .12s var(--btn-ease),transform .12s var(--btn-ease);
+}
+.btn-icon svg{width:20px;height:20px;stroke-width:2}
+@media (hover:hover){.btn-icon:hover{border-color:var(--fg);transform:translateY(-1px)}}
+.btn-icon:active{background:var(--tag);transform:none}
+.btn-icon:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
+.on-ink .btn-icon{border-color:var(--btn-edge-ink);background:rgba(21,17,13,.35);color:var(--on-ink);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+@media (hover:hover){.on-ink .btn-icon:hover{border-color:var(--on-ink);background:rgba(21,17,13,.5)}}
+
+/* ---------- language switch: a segmented pill of two links ----------
+   <nav class="lang" aria-label="Taal"><a class="lang__seg" href="/" hreflang="nl" lang="nl" aria-current="page">NL</a><a class="lang__seg" href="/ro" hreflang="ro" lang="ro">RO</a></nav>
+   aria-current marks the active language: a link, not a toggle; nothing to script. */
+.lang{display:inline-flex;align-items:center;gap:2px;box-sizing:border-box;padding:3px;border-radius:999px;border:1px solid var(--line);background:var(--card)}
+.lang__seg{
+  display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:34px;padding:0 12px;box-sizing:border-box;
+  border-radius:999px;font-family:var(--f-ui);font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-decoration:none;
+  transition:background-color .12s var(--btn-ease),color .12s var(--btn-ease);
+}
+@media (hover:hover){.lang__seg:hover{color:var(--fg);background:rgba(26,21,17,.06)}}
+.lang__seg[aria-current="page"]{background:var(--ink);color:var(--on-ink);box-shadow:0 1px 2px rgba(26,21,17,.22)}
+.lang__seg:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.on-ink .lang{border-color:var(--btn-edge-ink);background:rgba(21,17,13,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.on-ink .lang__seg{color:var(--on-ink-muted)}
+@media (hover:hover){.on-ink .lang__seg:hover{color:var(--on-ink);background:rgba(244,237,224,.10)}}
+.on-ink .lang__seg[aria-current="page"]{background:var(--paper);color:var(--fg)}
+.on-ink .lang__seg:focus-visible{outline-color:var(--on-ink)}
+
+/* ---------- the desktop header, right side, 1440 ----------
+   <div class="nav__right"> links … <nav class="lang">…</nav> <a class="btn btn--primary" href="/wa?src=nav">WhatsApp icon + Bestel via WhatsApp</a> </div>
+   links: 15px/500, color fg, gap 28; the lang switch 16 px before the CTA; the CTA 46 px high (min-height 46px) so the bar stays 84 px. */
+.nav__right{display:flex;align-items:center;gap:28px}
+.nav__right .lang{margin-left:4px}
+.nav__right .btn--primary{min-height:46px;margin-left:-8px}
+
+/* ===== site additions (Claude Code, stage 0b) — below this line only; everything above is design/css/buttons.css 1:1 ===== */
+
+/* the lg size is 52 on the phone and 54 on desktop (comment on --btn-h-lg above) */
+@media (min-width:960px){:root{--btn-h-lg:54px}}
+
+/* .on-ink-m: a surface that is ink on the phone only — the mobile hero and the nav floating on it;
+   from 960 px the same block stands on paper. The .on-ink rules above, scoped to < 960 px. */
+@media (max-width:959.98px){
+  .on-ink-m .btn--secondary{color:var(--on-ink);border-color:rgba(244,237,224,.55)}
+  .on-ink-m .btn--secondary:active{background:rgba(244,237,224,.16)}
+  .on-ink-m .btn:focus-visible{outline-color:var(--on-ink)}
+  .on-ink-m .btn-icon{border-color:var(--btn-edge-ink);background:rgba(21,17,13,.35);color:var(--on-ink);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .on-ink-m .lang{border-color:var(--btn-edge-ink);background:rgba(21,17,13,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .on-ink-m .lang__seg{color:var(--on-ink-muted)}
+  .on-ink-m .lang__seg[aria-current="page"]{background:var(--paper);color:var(--fg)}
+  .on-ink-m .lang__seg:focus-visible{outline-color:var(--on-ink)}
+}
+@media (max-width:959.98px) and (hover:hover){
+  .on-ink-m .btn--secondary:hover{background:rgba(244,237,224,.10);border-color:var(--on-ink);box-shadow:none}
+  .on-ink-m .btn-icon:hover{border-color:var(--on-ink);background:rgba(21,17,13,.5)}
+  .on-ink-m .lang__seg:hover{color:var(--on-ink);background:rgba(244,237,224,.10)}
+}
+

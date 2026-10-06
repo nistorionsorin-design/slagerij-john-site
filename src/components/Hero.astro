@@ -1,149 +1,370 @@
 ---
-// Hero (D-12): first frame is a plain <img fetchpriority="high"> at opacity 1 from first paint.
-// Frames 2–5 and the A/B/C transition are not built: the transition is pending Dan's choice.
+// Hero (D-12, stage 1) — five frames, transition B (soft wipe), Ken Burns 1,00 → 1,08,
+// pause (WCAG 2.2.2), reduced motion = one still. Motion CSS is design/css/hero-b.css
+// ported 1:1 (src/styles/hero-b.css); this file adds only layout and the no-JS still.
+// Layout from the canvas: mobile (Main) = full-screen dark hero, nav floating on it,
+// text at the bottom above the bar; desktop (Desktop) = paper text column 7fr + dark
+// photo panel 6fr with the stamp, the pause and the counter tag.
+// Frame 1 is a plain <img fetchpriority="high"> at opacity 1 from first paint (LCP).
+// Frames 2–5, the loop frame and tags 2–5 sit in <template>s; src/scripts/hero.ts
+// inserts them after `load`. Without JS, mask support or motion: one still.
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import '../styles/hero-b.css';
 import photos from '../data/photos.json';
-import type { Photo } from '../data/types';
+import type { HeroPhoto } from '../data/types';
+import Stamp from './Stamp.astro';
+import WaIcon from './WaIcon.astro';
+import { hero as copy, wa, type Locale } from '../i18n/ui';
 
-export interface Props {
-  locale: 'nl' | 'ro';
-  title: string;
-  accent?: string;
-  eyebrow?: string;
-  ctaHref: string;
-  ctaLabel: string;
-  pauseLabel: string;
-}
-const { locale, title, accent, eyebrow, ctaHref, ctaLabel, pauseLabel } = Astro.props;
-const frames = (photos.hero as Photo[]).slice(0, 5);
-const first = frames[0];
+export interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = copy[locale];
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/hero/*.{jpg,jpeg,png,webp}', { eager: true });
+
+// DOM contract of hero-b.css: wipe direction and animation delay per position.
+const WIPE = ['', 'w135', 'w315', 'w45', 'w225'];
+const FRAME_DELAY = [-47, -38, -29, -20, -11];
+const TAG_DELAY = [-45, -36, -27, -18, -9];
+
+const frames = (photos.hero as HeroPhoto[]).slice(0, 5).map((p, i) => {
+  const mod = files[`../assets/${p.src}`];
+  if (!mod) throw new Error(`photos.json hero[${i}]: src/assets/${p.src} not found`);
+  const img = mod.default;
+  const r = (img.width / img.height).toFixed(3);
+  const max = Math.min(img.width, 1600);
+  const widths = [480, 768, 1080, 1600].filter((w) => w < max).concat(max);
+  // The frame covers its box: on a phone the full screen (height-bound for wide photos),
+  // on desktop the 6/13 photo panel under the 84 px nav.
+  // From 1600 px the photo panel is half the width (1fr 1fr).
+  const sizes = `(min-width: 1600px) max(50vw, calc((100vh - 84px) * ${r})), (min-width: 960px) max(47vw, calc((100vh - 84px) * ${r})), max(100vw, calc(100vh * ${r}))`;
+  const fx = p.focalX ?? 50, fy = p.focalY ?? 50;
+  const style = `object-position:${fx}% ${fy}%;transform-origin:${p.zoomX ?? fx}% ${p.zoomY ?? fy}%;animation-delay:${FRAME_DELAY[i]}s`;
+  return { p, img, widths, sizes, style, delay: FRAME_DELAY[i], wipe: WIPE[i], tagDelay: TAG_DELAY[i] };
+});
+const [first, ...rest] = frames;
+const loop = first && { ...first, wipe: 'w135' };
 ---
-<section class="hero">
-  <div class="hero__bg">
-    {first ? (
-      <img
-        src={first.src}
-        alt={first.alt[locale]}
-        width={first.width}
-        height={first.height}
-        fetchpriority="high"
+{first && (
+<section class="hero hw" data-hero aria-labelledby="hero-title">
+  <div class="hero__media">
+    <div class="hb hb0" style={`animation-delay:${first.delay}s`}>
+      <Picture
+        class="hk home"
+        src={first.img}
+        widths={first.widths}
+        sizes={first.sizes}
+        formats={['avif', 'webp']}
+        fallbackFormat="webp"
+        quality={45}
+        alt={first.p.alt[locale]}
+        loading="eager"
         decoding="async"
-        style={`object-position:${first.focalX ?? 50}% ${first.focalY ?? 50}%`}
+        fetchpriority="high"
+        style={first.style}
       />
-    ) : (
-      <div class="hero__placeholder" aria-hidden="true"></div>
-    )}
+    </div>
+
+    <template data-frames>
+      {[...rest, loop].map((f, n) => (
+        <div class:list={['hb', 'vi', f.wipe, { hbb: n === rest.length }]} style={`animation-delay:${f.delay}s`}>
+          <Picture
+            class="hk"
+            src={f.img}
+            widths={f.widths}
+            sizes={f.sizes}
+            formats={['avif', 'webp']}
+            fallbackFormat="webp"
+            quality={45}
+            alt={f.p.alt[locale]}
+            loading="lazy"
+            decoding="async"
+            style={f.style}
+          />
+        </div>
+      ))}
+    </template>
+
+    <div class="hero__scrim" aria-hidden="true"></div>
+
+    {frames.map((f, i) => {
+      const tag = (
+        <div class:list={['ht', { home: i === 0 }]} style={`animation-delay:${f.tagDelay}s`} aria-hidden={i === 0 ? undefined : 'true'}>
+          <span class="ht__pin" aria-hidden="true"></span>
+          <span class="ht__text">
+            <span class="ht__name">{f.p.tag.name[locale]}</span>
+            <span class="ht__line">{f.p.tag.line[locale]}</span>
+          </span>
+          <span class="ht__price"><span class="ht__amount">{f.p.tag.price[locale]}</span><span class="ht__unit">{f.p.tag.unit[locale]}</span></span>
+        </div>
+      );
+      return i === 0 ? tag : null;
+    })}
+    <template data-tags>
+      {rest.map((f) => (
+        <div class="ht" style={`animation-delay:${f.tagDelay}s`} aria-hidden="true">
+          <span class="ht__pin"></span>
+          <span class="ht__text">
+            <span class="ht__name">{f.p.tag.name[locale]}</span>
+            <span class="ht__line">{f.p.tag.line[locale]}</span>
+          </span>
+          <span class="ht__price"><span class="ht__amount">{f.p.tag.price[locale]}</span><span class="ht__unit">{f.p.tag.unit[locale]}</span></span>
+        </div>
+      ))}
+    </template>
+
+    <div class="hero__stamp">
+      <Stamp variant="ink">
+        {/* §5.16: three segments; each on its own line inside the ring, the dots kept for reading */}
+        {t.stamp.split(' · ').map((seg, i) => (
+          <>{i > 0 && <span class="vh"> · </span>}<span class="hero__stamp-seg">{seg}</span></>
+        ))}
+      </Stamp>
+    </div>
   </div>
-  <div class="hero__shade" aria-hidden="true"></div>
-  <div class="hero__content container">
-    {eyebrow && <p class="hero__eyebrow">{eyebrow}</p>}
-    <h1 class="hero__title">
-      {title}
-      {accent && <em class="hero__accent">{accent}</em>}
-    </h1>
-    <slot />
-    <a class="btn btn--accent" href={ctaHref}>{ctaLabel}</a>
+
+  <div class="hero__text on-ink-m">
+    {/* board Desktop: the text column is space-between — this lead group on top, the trust
+        strip (stage 3) at the foot. On the phone the group is the whole block. */}
+    <div class="hero__lead">
+    <div class="hero__row">
+      {/* stage 2: the open chip lands here, before the pause */}
+      {/* the pause stands on ink at every width (the photo panel on desktop) → .on-ink */}
+      <span class="hero__pause on-ink">
+        <input type="checkbox" id="hero-pause" class="hp" data-pause />
+        <label for="hero-pause" class="btn-icon">
+          <span class="vh hero__say-pause">{t.pause}</span>
+          <span class="vh hero__say-play">{t.play}</span>
+          <svg class="ic-pause" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+          <svg class="ic-play" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg>
+        </label>
+      </span>
+    </div>
+    <h1 id="hero-title" class="hero__title">{t.title} <span class="hero__accent">{t.accent}</span></h1>
+    <p class="hero__sub">{t.sub}</p>
+    <div class="hero__cta">
+      <a class="btn btn--primary btn--lg" href={wa(`home-hero`)}>
+        <WaIcon />
+        <span>{t.primary}</span>
+      </a>
+      <a class="btn btn--secondary btn--lg" href={t.secondaryHref}>{t.secondary}</a>
+    </div>
+    </div>
   </div>
-  {frames.length > 1 && (
-    <button class="hero__pause" type="button" aria-label={pauseLabel} aria-pressed="false" data-pause>
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-    </button>
-  )}
 </section>
+)}
+
+<script>
+  import '../scripts/hero.ts';
+</script>
 
 <style>
+  /* ── no-JS / pre-live still (spec: "without JS or without mask support the hero is one
+     still"). hero-b.css animates frame 1's opacity and zoom from first paint; until
+     hero.ts adds .is-live, frame 1 stands still at opacity 1 and tag 1 stays. ── */
+  .hw:not(.is-live) .hb0 { animation: none; opacity: 1; }
+  /* frames inserted by hero.ts stay inert until frame 2 is decoded and the loop goes live */
+  .hw:not(.is-live) .hb.vi { animation: none; opacity: 0; }
+  .hw:not(.is-live) .hk { animation: none; }
+  .hw:not(.is-live) .ht.home { animation: none; opacity: 1; }
+  /* start the still at the zoom value frame 1 has when the loop begins (delay −47 s =
+     2 s into its 11 s zoom: 1 + 0,08 × 2/11), so going live does not jump */
+  @media (prefers-reduced-motion: no-preference) {
+    .hw:not(.is-live) .hk.home { transform: scale(1.0145); }
+  }
+  .hw:not(.is-live) .hp { display: none; }
+  .hw:not(.is-live) .hero__pause { visibility: hidden; }
+
+  /* ── layout: mobile first (canvas Main, 390 × 844) ── */
   .hero {
     position: relative;
-    min-height: 70vh;
-    background: var(--ink);
-    color: var(--on-ink);
     isolation: isolate;
     overflow: clip;
-  }
-  .hero__bg,
-  .hero__placeholder {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-  }
-  .hero__bg img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 1;
-  }
-  .hero__placeholder {
-    background:
-      radial-gradient(60% 50% at 50% 40%, rgba(242,193,46,.1), transparent 70%),
-      linear-gradient(180deg, #1f1813 0%, #15110D 100%);
-  }
-  .hero__shade {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: linear-gradient(180deg, rgba(21,17,13,.1) 0%, rgba(21,17,13,.55) 60%, rgba(21,17,13,.8) 100%);
-  }
-  .hero__content {
-    position: relative;
-    z-index: 2;
-    min-height: 70vh;
+    min-height: 100vh;
+    min-height: 100svh;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding-top: 24px;
-    padding-bottom: 32px;
-    gap: 16px;
-  }
-  .hero__eyebrow {
-    font-size: var(--fs-eyebrow);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--on-ink-muted);
-    margin: 0;
-  }
-  .hero__title {
+    background: var(--ink);
     color: var(--on-ink);
-    text-wrap: balance;
-    max-width: 20ch;
+  }
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    background: var(--ink);
+  }
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(21,17,13,.55) 0%, rgba(21,17,13,.05) 30%, rgba(21,17,13,.35) 55%, rgba(21,17,13,.96) 100%),
+      linear-gradient(rgba(21,17,13,.24), rgba(21,17,13,.24));
+  }
+  .hero__text {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    padding: calc(var(--nav-h) + 16px) var(--gutter) calc(var(--bar) + 22px + env(safe-area-inset-bottom, 0px));
+  }
+  .hero__lead {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  /* the pause label says what a tap will do (lexicon §5.15) */
+  .hero__say-play { display: none; }
+  .hw:has(.hp:checked) .hero__say-pause { display: none; }
+  .hw:has(.hp:checked) .hero__say-play { display: inline; }
+  .hero__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: var(--touch);
+  }
+  /* the pause: .btn-icon on ink (buttons.css); this box only places it */
+  .hero__pause { position: relative; margin-left: auto; display: inline-flex; }
+  .hero__title {
     margin: 0;
+    color: var(--on-ink);
   }
   .hero__accent {
+    display: block;
+    margin-top: 14px;
     font-style: italic;
     font-weight: 400;
     font-size: var(--fs-accent);
+    line-height: var(--lh-accent);
+    letter-spacing: 0;
     color: var(--accent);
-    display: block;
   }
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: var(--touch);
-    padding: 0 20px;
-    border-radius: var(--r-btn);
-    font-family: var(--f-ui);
-    font-weight: 600;
-    text-decoration: none;
-    border: 1px solid transparent;
+  .hero__sub {
+    margin: 0;
+    max-width: 34ch;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--on-ink-muted);
   }
-  .btn--accent {
-    background: var(--accent);
-    color: var(--on-accent);
-    align-self: flex-start;
+  .hero__cta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
   }
-  .btn--accent:hover { background: var(--accent-hi); }
-  .hero__pause {
-    position: absolute;
-    right: 16px;
-    bottom: 16px;
-    z-index: 3;
-    width: var(--touch);
-    height: var(--touch);
-    display: grid;
-    place-items: center;
-    border-radius: var(--r-chip);
-    border: 1px solid rgba(255,255,255,.25);
-    background: rgba(21,17,13,.5);
-    color: var(--on-ink);
-    cursor: pointer;
+  .hero__cta .btn { width: 100%; }
+
+  /* desktop-only pieces */
+  .ht, .hero__stamp { display: none; }
+
+  /* ── desktop (canvas Desktop, 1440 × 900): paper text column + dark photo panel ──
+     Header + hero fill the first screen exactly: the hero is 100svh minus the header
+     (--nav-h + its 1 px hairline), no upper cap, and the photo column stretches to the
+     full section height. When the floating sign of stage 0b2 replaces this header, the
+     hero becomes 100svh on its own and the photo runs under the sign. */
+  @media (min-width: 960px) {
+    .hero {
+      display: grid;
+      grid-template-columns: 7fr 6fr;
+      align-items: stretch;
+      min-height: calc(100vh - var(--nav-h) - 1px);
+      min-height: calc(100svh - var(--nav-h) - 1px);
+      background: var(--paper);
+      color: var(--fg);
+    }
+    .hero__media {
+      position: relative;
+      inset: auto;
+      grid-column: 2;
+      grid-row: 1;
+      height: auto;
+      min-height: 100%;
+    }
+    .hero__scrim { background: linear-gradient(180deg, rgba(21,17,13,0) 50%, rgba(21,17,13,.55) 100%); }
+    .hero { container-type: inline-size; }
+    .hero__text {
+      position: static;
+      grid-column: 1;
+      grid-row: 1;
+      justify-content: space-between;
+      padding: 64px var(--gutter) 48px;
+      /* left edge on the same line as the header's content (.container, max --container),
+         as wordmark and H1 share one line on the board; 100cqw = the hero's width */
+      padding-left: max(var(--gutter), calc((100cqw - var(--container)) / 2 + var(--gutter)));
+    }
+    /* the lead group sits in the middle of the column; the stage-3 trust strip pins to
+       the foot with margin-top: auto */
+    .hero__lead { gap: 22px; margin: auto 0; }
+    .hero__pause {
+      position: absolute;
+      right: 32px;
+      bottom: 36px;
+      z-index: 3;
+    }
+    .hero__title { color: var(--fg); max-width: 720px; }
+    .hero__accent { margin-top: 22px; color: var(--ox); }
+    .hero__sub { max-width: 560px; font-size: var(--fs-lead); line-height: 1.5; color: var(--fg); }
+    .hero__cta { flex-direction: row; gap: 12px; margin-top: 6px; }
+    .hero__cta .btn { width: auto; }
+
+    .hero__stamp { display: block; position: absolute; right: 32px; top: 32px; z-index: 3; }
+    .hero__stamp-seg { display: block; }
+    .hero__stamp-seg + .vh + .hero__stamp-seg,
+    .hero__stamp-seg ~ .hero__stamp-seg { margin-top: 3px; }
+
+    /* counter tag on the photo (board Desktop; tag-lift is its only shadow) */
+    .ht {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      position: absolute;
+      left: 36px;
+      bottom: 36px;
+      z-index: 3;
+      width: 360px;
+      max-width: calc(100% - 140px);
+      padding: 14px 16px 14px 34px;
+      background: var(--tag);
+      border: 1px solid var(--tag-line);
+      border-radius: var(--r-tag);
+      box-shadow: var(--shadow-tag);
+      color: var(--fg);
+    }
+    .ht__pin {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      margin-top: -6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: var(--paper);
+      border: 1px solid var(--tag-pin);
+    }
+    .ht__text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .ht__name { font-family: var(--f-display); font-weight: 600; font-size: 20px; line-height: 1.1; }
+    .ht__line { font-size: var(--fs-caption); line-height: 1.35; color: var(--muted); }
+    .ht__price { display: flex; align-items: baseline; gap: 3px; font-variant-numeric: tabular-nums; }
+    .ht__amount { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--ox); }
+    .ht__unit { font-size: var(--fs-caption); color: var(--muted); }
+  }
+
+  /* ── wide screens (≥ 1600 px, Dan 06.10): the photo takes half the width, the type
+     grows with the screen and the lead block is centred in the text half, so the column
+     does not read as empty paper. Here the H1 leaves the container line: on that line
+     the column is 608 px at every width, too narrow for a two-line H1 above 92 px.
+     Two lines need 6.57em for „Slagerij & traiteur”, hence max-width 6.8em (not 720 px).
+     Buttons unchanged. ── */
+  @media (min-width: 1600px) {
+    .hero { grid-template-columns: 1fr 1fr; }
+    .hero__text { padding-left: var(--gutter); }
+    .hero__lead { align-self: center; }
+    .hero__title { font-size: clamp(92px, 5vw, 118px); max-width: 6.8em; }
+    .hero__accent { font-size: clamp(44px, 2.4vw, 56px); }
+    .hero__sub { font-size: clamp(18px, 0.95vw, 22px); max-width: 620px; }
   }
 </style>

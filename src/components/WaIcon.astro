@@ -1,0 +1,14 @@
+---
+// The icon on every WhatsApp button and the bar's WhatsApp cell. Board „Merkiconen”: A = the
+// Lucide bubble (now, build plan stage 0b), B = the real WhatsApp mark (design/icons/).
+// Dan picked B (06.10). This one line flips it; every WhatsApp button follows.
+import BrandIcon from './BrandIcon.astro';
+const WA_ICON = 'B' as 'A' | 'B';
+export interface Props { size?: 16 | 18 | 20 }
+const { size = 18 } = Astro.props;
+---
+{WA_ICON === 'B' ? (
+  <BrandIcon name="whatsapp" size={size} />
+) : (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L4 20l1-4.4A8.5 8.5 0 1 1 21 11.5z"/></svg>
+)}

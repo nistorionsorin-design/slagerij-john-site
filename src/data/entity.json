@@ -1,22 +1,40 @@
 {
-  "legalName": "",
-  "name": "",
-  "vatID": "",
-  "url": "",
-  "telephone": "",
-  "email": "",
+  "_source": "docs/lexicon.md §1 entity record copied verbatim + §8.1 areaServed/sameAs; phone per DECISIONS D-14 (D1 settled: 0466 18 64 57); address string = lexicon D2 proposal = FACTS [OBSERVED]; geo = FACTS Maps pin [OBSERVED] 03.10. Filled by Claude Code at stage 0 (06.10) so the footer and bottom bar carry the NAP; Cowork owns this file from here. UNVERIFIED until the owners confirm D2 and D6.",
+  "legalName": "Slager John SComm",
+  "name": "Slagerij John",
+  "alternateName": "Măcelăria John",
+  "vatID": "BE1012585374",
+  "url": "https://slagerij-john.be",
+  "telephone": "+32466186457",
+  "telephoneDisplay": "0466 18 64 57",
+  "whatsapp": "32466186457",
+  "email": "info@slagerij-john.be",
   "address": {
-    "streetAddress": "",
-    "postalCode": "",
-    "addressLocality": "",
-    "addressRegion": "",
+    "streetAddress": "Bruggestraat 146A",
+    "postalCode": "8750",
+    "addressLocality": "Zwevezele",
+    "addressRegion": "West-Vlaanderen",
     "addressCountry": "BE"
   },
   "geo": {
-    "latitude": null,
-    "longitude": null
+    "latitude": 51.041,
+    "longitude": 3.2185
   },
-  "areaServed": [],
-  "sameAs": [],
-  "knowsLanguage": ["nl-BE", "ro-RO"]
+  "foundingDate": "2025-02",
+  "areaServed": [
+    { "@type": "City", "name": "Zwevezele" },
+    { "@type": "City", "name": "Wingene" },
+    { "@type": "City", "name": "Lichtervelde" },
+    { "@type": "City", "name": "Ruddervoorde" },
+    { "@type": "City", "name": "Tielt" },
+    { "@type": "City", "name": "Torhout" },
+    { "@type": "City", "name": "Roeselare" }
+  ],
+  "sameAs": [
+    "https://www.facebook.com/profile.php?id=61560710702910",
+    "https://www.tiktok.com/@traiteur.john",
+    "https://roflandra.be/harta/afacere/slager-john",
+    "https://www.toogoodtogo.com/nl-be/find/wingene/slagerijjohn/meal/verassingspakket-114243663079363392"
+  ],
+  "knowsLanguage": ["nl-BE", "ro"]
 }

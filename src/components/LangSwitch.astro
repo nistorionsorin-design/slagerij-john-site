@@ -1,4 +1,8 @@
 ---
+// Language switch — design/css/buttons.css `.lang`: a segmented pill of two links, the current
+// language marked with aria-current (a link, not a toggle; nothing to script). Both codes show
+// on every width (board „Knoppen”). Looks come from buttons.css only; on ink the parent carries
+// .on-ink (always ink) or .on-ink-m (ink on the phone only).
 export interface Props {
   current: 'nl' | 'ro';
   nlHref: string;
@@ -8,28 +12,6 @@ export interface Props {
 const { current, nlHref, roHref, label } = Astro.props;
 ---
 <nav class="lang" aria-label={label}>
-  <a href={nlHref} hreflang="nl-BE" lang="nl" aria-current={current === 'nl' ? 'true' : undefined}>NL</a>
-  <a href={roHref} hreflang="ro-BE" lang="ro" aria-current={current === 'ro' ? 'true' : undefined}>RO</a>
+  <a class="lang__seg" href={nlHref} hreflang="nl-BE" lang="nl" aria-current={current === 'nl' ? 'page' : undefined}>NL</a>
+  <a class="lang__seg" href={roHref} hreflang="ro-BE" lang="ro" aria-current={current === 'ro' ? 'page' : undefined}>RO</a>
 </nav>
-
-<style>
-  .lang {
-    display: inline-flex;
-    border: 1px solid var(--line);
-    border-radius: var(--r-chip);
-    overflow: hidden;
-    background: var(--card);
-  }
-  .lang a {
-    display: grid;
-    place-items: center;
-    min-width: var(--touch);
-    min-height: var(--touch);
-    padding: 0 14px;
-    font-weight: 600;
-    font-size: 13px;
-    color: var(--fg);
-    text-decoration: none;
-  }
-  .lang a[aria-current] { background: var(--ink); color: var(--on-ink); }
-</style>

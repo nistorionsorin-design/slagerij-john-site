@@ -1,4 +1,14 @@
 {
-  "regular": [],
+  "_source": "docs/lexicon.md §1 / FACTS.md opening hours [OBSERVED] current site + GBP 03.10 — re-verify with the owners before go-live (lexicon D6). Filled by Claude Code at stage 0 (06.10) because the ButcherShop JSON-LD needs openingHoursSpecification once entity.json is filled; Cowork owns this file from here. Special days stay empty until the owners answer ([UREN]).",
+  "timeZone": "Europe/Brussels",
+  "regular": [
+    { "dayOfWeek": "Monday", "slots": [{ "open": "13:00", "close": "18:00" }] },
+    { "dayOfWeek": "Tuesday", "slots": [{ "open": "08:00", "close": "18:00" }] },
+    { "dayOfWeek": "Wednesday", "slots": [{ "open": "08:00", "close": "13:00" }] },
+    { "dayOfWeek": "Thursday", "slots": [{ "open": "08:00", "close": "18:00" }] },
+    { "dayOfWeek": "Friday", "slots": [{ "open": "08:00", "close": "18:00" }] },
+    { "dayOfWeek": "Saturday", "slots": [{ "open": "08:00", "close": "18:00" }] },
+    { "dayOfWeek": "Sunday", "slots": [{ "open": "08:00", "close": "13:00" }] }
+  ],
   "special": []
 }

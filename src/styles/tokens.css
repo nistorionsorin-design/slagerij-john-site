@@ -1,6 +1,8 @@
-/* Design tokens — design/brief.md §3. Ported from canvas boards.
-   Light-only for now; dark hero is a token (--ink) painted on-component. */
+/* Design tokens — design/brief.md §3 and the Design System tokens.json
+   (canvas ds/slagerijjohn, v1). Light-only: the dark hero is --ink painted
+   on-component. Names here are the names the components use. */
 :root {
+  /* colour */
   --paper: #F4EDE0;
   --card: #FBF7EE;
   --line: #D9CDB8;
@@ -9,50 +11,81 @@
   --muted: #5E534A;
   --tag: #EADFC9;
   --tag-line: #D4C6AC;
+  --tag-pin: #C7B897;
   --accent: #F2C12E;
-  --accent-alt: #E8B429;
-  --accent-hi: #F5CF4F;
+  --accent-deep: #E8B429;
+  --accent-light: #F5CF4F;
   --on-accent: #1A1511;
   --ox: #7B2420;
+  --on-ox: #F4EDE0;
+  --ox-tint: #F2D6C9;
   --open: #2E6B3F;
   --open-dark: #58C27A;
   --on-ink: #F4EDE0;
   --on-ink-muted: #E9DEC9;
 
+  /* radii */
+  --r-tag: 10px;
+  --r-btn: 999px; /* every button is a pill (brief §3, 06.10); button sizes live in buttons.css */
   --r-tile: 14px;
   --r-frame: 16px;
   --r-frame-lg: 18px;
-  --r-btn: 12px;
-  --r-tag: 10px;
   --r-chip: 999px;
 
-  --f-display: 'Fraunces Variable', 'Fraunces', Georgia, serif;
-  --f-ui: 'Inter Tight Variable', 'Inter Tight', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-
-  /* Mobile scale */
-  --fs-h1: 42px; --lh-h1: 1.0;
-  --fs-accent: 26px;
-  --fs-h2: 24px;
-  --fs-body: 15px; --lh-body: 1.45;
-  --fs-caption: 12px;
-  --fs-eyebrow: 11px;
-
+  /* spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 28px;
+  --space-7: 40px;
+  --gutter: 20px;
   --touch: 44px;
   --bar: 72px;
+  --nav-h: 72px;
+  --container: 1440px;
 
-  --ease-paper: cubic-bezier(.2,.6,.2,1);
+  /* type */
+  /* the fallback face differs per scale: see fonts.css (optical size) */
+  --f-display: 'Fraunces Variable', 'Fraunces Fallback Small', Georgia, serif;
+  --f-ui: 'Inter Tight Variable', 'Inter Tight Fallback', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  --fs-h1: 42px; --lh-h1: 1.0; --ls-h1: -0.02em;
+  --fs-accent: 26px; --lh-accent: 1.05;
+  --fs-h2: 26px; --lh-h2: 1.05;
+  --fs-tag: 19px;
+  --fs-wordmark: 22px;
+  --fs-body: 15px; --lh-body: 1.45;
+  --fs-lead: 15px;
+  --fs-caption: 12px;
+  --fs-eyebrow: 11px;
+  --fs-price: 26px;
+
+  --shadow-tag: 0 14px 40px rgba(0, 0, 0, 0.35);
+  --ease-paper: cubic-bezier(.2, .6, .2, 1);
 }
 
 @media (min-width: 960px) {
   :root {
-    --fs-h1: 92px; --lh-h1: 0.95;
-    --fs-accent: 44px;
+    --gutter: 56px;
+    --nav-h: 84px;
+    /* 92 px as on the 1440 board, scaled down below 1440 so a two-line H1 stays two lines */
+    --f-display: 'Fraunces Variable', 'Fraunces Fallback', Georgia, serif;
+    --fs-h1: clamp(64px, 6.4vw, 92px); --lh-h1: 0.95; --ls-h1: -0.03em;
+    --fs-accent: 44px; --lh-accent: 1;
     --fs-h2: 32px;
+    --fs-wordmark: 26px;
     --fs-body: 16px;
+    --fs-lead: 18px;
   }
 }
 
-* { box-sizing: border-box; }
+/* cross-document view transitions, CSS only (brief §5; no client JS, D-06) */
+@view-transition { navigation: auto; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
 
 html, body {
   margin: 0;
@@ -67,19 +100,43 @@ html, body {
   text-rendering: optimizeLegibility;
 }
 
+body {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* the page's <main> grows; the footer sits at the bottom even on short stubs */
+main { flex: 1 0 auto; }
+
 h1, h2, h3 {
   font-family: var(--f-display);
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-optical-sizing: auto;
   margin: 0 0 .5em;
+  text-wrap: balance;
 }
 
 h1 {
   font-size: var(--fs-h1);
   line-height: var(--lh-h1);
+  font-weight: 500;
+  letter-spacing: var(--ls-h1);
 }
 
-h2 { font-size: var(--fs-h2); }
+h2 {
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+h3 {
+  font-size: var(--fs-tag);
+  line-height: 1.15;
+  font-weight: 600;
+}
+
+p { margin: 0 0 1em; }
 
 a {
   color: var(--ox);
@@ -87,15 +144,19 @@ a {
   text-underline-offset: 2px;
 }
 
-a:focus-visible, button:focus-visible {
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible {
   outline: 2px solid var(--ox);
   outline-offset: 2px;
 }
+
+button, input, select, textarea { font: inherit; }
 
 img { max-width: 100%; height: auto; display: block; }
 
 /* prefers-reduced-motion = still, globally. Components also honour this. */
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  @view-transition { navigation: none; }
   *, *::before, *::after {
     animation-duration: 0s !important;
     animation-iteration-count: 1 !important;
@@ -103,18 +164,59 @@ img { max-width: 100%; height: auto; display: block; }
   }
 }
 
+/* 1440 = the Desktop board: at 1440 the content runs edge to edge with 56 px gutters;
+   wider screens centre it. The hero's text column aligns to the same edge. */
 .container {
   width: 100%;
-  max-width: 1200px;
+  max-width: var(--container);
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 var(--gutter);
 }
+
+/* type utilities shared by components */
+.eyebrow {
+  font-size: var(--fs-eyebrow);
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ox);
+  margin: 0;
+}
+
+.accent {
+  font-family: var(--f-display);
+  font-optical-sizing: auto;
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--fs-accent);
+  line-height: var(--lh-accent);
+  color: var(--ox);
+}
+
+/* buttons, icon buttons, the NL/RO switch: src/styles/buttons.css (design/css/buttons.css 1:1) */
 
 /* visually-hidden utility — skip link, screen-reader labels */
 .vh {
   position: absolute;
   width: 1px; height: 1px;
   padding: 0; margin: -1px;
-  overflow: hidden; clip: rect(0,0,0,0);
+  overflow: hidden; clip: rect(0, 0, 0, 0);
   white-space: nowrap; border: 0;
 }
+
+/* skip link: hidden until focused (U-23) */
+.skip {
+  position: absolute;
+  left: var(--gutter);
+  top: 8px;
+  z-index: 100;
+  padding: 10px 14px;
+  border-radius: var(--r-tag);
+  background: var(--ink);
+  color: var(--on-ink);
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+.skip:focus { transform: none; }

@@ -1,17 +1,15 @@
 ---
-// STUB. Title, description and H1 are the brand name only; the real strings
-// come from docs/lexicon.md §5–6 (Cowork lane) after the content freeze.
+// Home NL. Stage 1: the hero. The body (trust strip, toog, categories, …) is stage 3.
+// Title and description: lexicon §5.12, home NL (shortened 06.10), verbatim.
 import Base from '../layouts/Base.astro';
-import LangSwitch from '../components/LangSwitch.astro';
+import Hero from '../components/Hero.astro';
 const alternates = { nl: '/', ro: '/ro' };
 ---
-<Base title="Slagerij John" description="Slagerij John" locale="nl" path="/" alternates={alternates}>
-  <main id="main" class="container stub">
-    <h1>Slagerij John</h1>
-    <LangSwitch current="nl" nlHref="/" roHref="/ro" label="Taal / Limbă" />
+<Base
+  title="Slagerij John – slager & traiteur in Zwevezele, zondag open"
+  description="Slager & traiteur in Zwevezele: dagvers vlees, huisbereide gerechten, BBQ- en feestschotels, Roemeense specialiteiten. Zondag open. Bestel via WhatsApp."
+  locale="nl" path="/" alternates={alternates} navVariant="ink">
+  <main id="main">
+    <Hero locale="nl" />
   </main>
 </Base>
-
-<style>
-  .stub { padding-top: 48px; padding-bottom: 48px; }
-</style>
