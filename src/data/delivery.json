@@ -1,7 +1,20 @@
 {
-  "zones": [],
-  "minimumOrder": null,
-  "freeRadiusKm": null,
-  "feePerKm": null,
+  "_source": "Stage 5 (Claude Code, 07.10). Delivery = the old site's rules [OBSERVED] /order 03.10 + 06.10 (FACTS „Delivery rules”), as lexicon §5.5 already states them on the site: delivery minimum €50, free within 10 km, from €100 free within 20 km, €1/km beyond, Monday–Saturday, slots 18:00–19:30. Zones = the places lexicon §5.11 („Leveren jullie in Tielt / Lichtervelde / Roeselare?”, revised 07.10) puts in a ring, with their postcodes; any other postcode → „Bel ons”. Per-km distances are not known, so a fee beyond a free ring is not computed (the slip shows [LEVERKOST]). Pickup: no same-day order (`cutoff` null — the 12:00 cut-off is D6, unconfirmed; with a time here, today is offered until then), 30-min steps, 14 days ahead. D6: every line to confirm with the owners; Cowork owns this file from here.",
+  "minimumOrder": 50,
+  "rings": [
+    { "km": 10, "freeFrom": 50 },
+    { "km": 20, "freeFrom": 100 }
+  ],
+  "feePerKm": 1,
+  "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+  "times": ["18:00", "18:30", "19:00", "19:30"],
+  "zones": [
+    { "postcode": "8750", "place": "Zwevezele", "ring": 10 },
+    { "postcode": "8750", "place": "Wingene", "ring": 10 },
+    { "postcode": "8810", "place": "Lichtervelde", "ring": 10 },
+    { "postcode": "8700", "place": "Tielt", "ring": 20 },
+    { "postcode": "8800", "place": "Roeselare", "ring": 20 }
+  ],
+  "pickup": { "leadDays": 1, "cutoff": null, "stepMin": 30, "horizonDays": 14 },
   "currency": "EUR"
 }

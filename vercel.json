@@ -26,5 +26,11 @@
       ]
     }
   ],
-  "redirects": []
+  "redirects": [],
+  "rewrites": [
+    { "source": "/wa", "destination": "/api/wa" }
+  ],
+  "functions": {
+    "api/*.js": { "includeFiles": "src/data/*.json", "maxDuration": 15 }
+  }
 }

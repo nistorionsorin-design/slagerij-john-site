@@ -59,8 +59,8 @@ export const homeNl = {
     count: (count: string) => `${count} beoordelingen`,
     source: 'Beoordelingen komen rechtstreeks van Google en worden dagelijks bijgewerkt.',
     link: 'Bekijk alle beoordelingen op Google Maps.',
-    /** a Maps search for the shop until the GBP review link (place id) is in FACTS.md — an outbound link, no request */
-    href: 'https://www.google.com/maps/search/?api=1&query=Slagerij%20John%2C%20Bruggestraat%20146A%2C%208750%20Zwevezele',
+    /** the shop's Maps profile (FACTS „Google Maps profile URL”, canonical form, 07.10) — an outbound link, no request */
+    href: 'https://www.google.com/maps?cid=16864215184050152248',
     starsLabel: (rating: string) => `${rating} van 5`,
   },
 

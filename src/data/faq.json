@@ -28,7 +28,7 @@
   ],
   "ro": [],
   "pages": {
-    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4.",
+    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4. /bestellen = lexicon §5.11 „Bestellen” (three items, added 07.10 for stage 5; §5.20 „FAQ on the page”), NL and RO verbatim; [BETALING] / [PLATĂ] stay visible until D6. Claude Code, stage 5 revision.",
     "producten": {
       "nl": [
         {
@@ -49,6 +49,36 @@
         }
       ],
       "ro": []
+    },
+    "bestellen": {
+      "nl": [
+        {
+          "q": "Moet ik een account maken?",
+          "a": "Nee. Naam, telefoon en e-mail volstaan; wij bewaren ze 90 dagen, alleen voor uw bestelling."
+        },
+        {
+          "q": "Kan ik vandaag nog afhalen?",
+          "a": "Online bestelt u voor morgen of later en kiest u zelf dag en uur binnen de openingsuren. Voor vandaag: bel ons even, dan kijken wij wat kan."
+        },
+        {
+          "q": "Hoe betaal ik?",
+          "a": "Bij afhaling in de winkel of bij levering aan de deur: [BETALING]. Online betalen is niet nodig."
+        }
+      ],
+      "ro": [
+        {
+          "q": "Trebuie să-mi fac cont?",
+          "a": "Nu. Ajung numele, telefonul și e-mailul; le păstrăm 90 de zile, doar pentru comanda ta."
+        },
+        {
+          "q": "Pot ridica azi?",
+          "a": "Online comanzi pentru mâine sau mai târziu și alegi ziua și ora în programul magazinului. Pentru azi: sună-ne, vedem ce se poate."
+        },
+        {
+          "q": "Cum plătesc?",
+          "a": "La ridicare, în magazin, sau la livrare, la ușă: [PLATĂ]. Nu plătești online."
+        }
+      ]
     }
   }
 }

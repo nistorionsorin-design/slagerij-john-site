@@ -33,7 +33,7 @@ const onPage = ['rund', 'varken', 'kip', 'lam', 'roemeens', 'colli'];
 const cats = onPage.map((id) => {
   const c = products.categories.find((x) => x.id === id);
   if (!c) throw new Error(`products.json: no category "${id}"`);
-  return { ...c, items: products.items.filter((p) => p.category === id) };
+  return { ...c, items: products.items.filter((p) => p.category === id && !p.orderOnly) }; // orderOnly: bestelbon only (stage 5)
 });
 
 // the board's photo = hero frame 2 (the counter), cropped at build to 4:3 at its focal point (the original is a

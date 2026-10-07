@@ -51,6 +51,14 @@ export interface Product {
   /** the „aanbevolen pakket” look of board Toog: the ink tag */
   featured?: boolean;
   photo?: string;
+  /** bestelbon (stage 5): smallest quantity (gourmet „vanaf 2 personen”); default per unit in src/lib/order-core.js */
+  min?: number;
+  /** bestelbon: quantity step; default per unit (kg 0,5 · everything else 1) */
+  step?: number;
+  /** bestelbon: false = not orderable online (default true) */
+  orderable?: boolean;
+  /** sold through the bestelbon only, not shown on /producten (its page is a later stage) */
+  orderOnly?: boolean;
 }
 
 export interface Products {
@@ -61,3 +69,16 @@ export interface Products {
 }
 
 export interface FaqItem { q: string; a: string; keywords?: string[] }
+
+/** delivery.json (stage 5): the old site's delivery rules ([OBSERVED] 03.10 / 06.10, lexicon §5.5) — D6: the owners
+ *  confirm. `rings`: free from `freeFrom` € within `km` of the shop; `zones`: postcode → ring (km 10 or 20). */
+export interface Delivery {
+  minimumOrder: number | null;
+  rings: { km: number; freeFrom: number }[];
+  feePerKm: number | null;
+  days: string[];
+  times: string[];
+  zones: { postcode: string; place: string; ring: number }[];
+  pickup: { leadDays: number; cutoff: string | null; stepMin: number; horizonDays: number };
+  currency: string;
+}

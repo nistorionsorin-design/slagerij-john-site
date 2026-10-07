@@ -1,40 +1,104 @@
 ---
-// Order slip: preview of the pre-filled WhatsApp message. Links go through
-// /wa?src=<page>, never a raw wa.me link (qa.md §2). /wa itself is not built yet.
-import WaIcon from './WaIcon.astro';
-
+// OrderSlip — de bestelbon as a paper slip (brief §4 „order slip”; canvas board Bestellen „Uw bestelbon”, stage 5):
+// the reference, the lines with their prices, pickup or delivery with the moment, payment, the total, the art. VI.53 4°
+// line. Rendered empty at build; src/scripts/order.ts fills it as the customer chooses (the rows are text, not inputs —
+// the form's own fields carry the order). Without script it shows its empty line and the form still sends.
 export interface Props {
-  heading: string;
-  message: string;
-  ctaLabel: string;
-  src: string;
+  t: {
+    title: string;
+    empty: string;
+    pickup: string;
+    delivery: string;
+    whenPending: string;
+    pay: string;
+    payDelivery: string;
+    feeLabel: string;
+    total: string;
+    priceTbc: string;
+    legal: string;
+  };
 }
-const { heading, message, ctaLabel, src } = Astro.props;
-const href = `/wa?src=${encodeURIComponent(src)}`;
+const { t } = Astro.props;
 ---
-<section class="slip" aria-labelledby="slip-title">
-  <h2 id="slip-title" class="slip__title">{heading}</h2>
-  <pre class="slip__msg">{message}</pre>
-  <a class="btn btn--primary" href={href} rel="nofollow"><WaIcon /><span>{ctaLabel}</span></a>
+<section class="slip" aria-labelledby="slip-title" data-slip>
+  <div class="slip__head">
+    <h2 class="slip__title" id="slip-title">{t.title}</h2>
+    <span class="slip__ref" data-slip-ref></span>
+  </div>
+  <div class="slip__lines" data-slip-lines aria-live="polite">
+    <p class="slip__empty">{t.empty}</p>
+  </div>
+  <dl class="slip__meta">
+    <dt data-slip-method>{t.pickup}</dt>
+    <dd data-slip-when>{t.whenPending}</dd>
+    <dt class="slip__fee" data-slip-fee-label hidden>{t.feeLabel}</dt>
+    <dd class="slip__fee" data-slip-fee hidden></dd>
+  </dl>
+  <p class="slip__pay" data-slip-pay>{t.pay}</p>
+  <div class="slip__total">
+    <span>{t.total}</span>
+    <strong data-slip-total>{t.priceTbc}</strong>
+  </div>
+  <p class="slip__legal">{t.legal}</p>
 </section>
 
 <style>
+  /* board Bestellen „Uw bestelbon”: card paper, dashed tag-pin border, radius 14, padding 18; rows 14 px tabular with a
+     hairline above each block; the total in Fraunces 26 under an ink rule */
   .slip {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 18px 18px 16px;
+    border-radius: var(--r-tile);
     background: var(--card);
-    border: 1px dashed var(--tag-line);
-    border-radius: var(--r-frame);
-    padding: 20px;
-    max-width: 420px;
-  }
-  .slip__title { font-size: 20px; margin: 0 0 12px; }
-  .slip__msg {
-    font-family: var(--f-ui);
-    font-size: 14px;
-    white-space: pre-wrap;
-    margin: 0 0 16px;
-    padding: 12px;
-    background: var(--paper);
-    border-radius: var(--r-tag);
+    border: 1px dashed var(--tag-pin);
     color: var(--fg);
   }
+  .slip__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .slip__title { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 20px; line-height: 1.1; }
+  .slip__ref { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .slip__lines {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 14px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+  .slip__lines :global(.slip__empty) { grid-column: 1 / -1; margin: 0; color: var(--muted); }
+  .slip__lines :global(span:nth-child(even)) { text-align: right; white-space: nowrap; }
+  .slip__meta {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 14px;
+    margin: 0;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    font-size: 14px;
+  }
+  .slip__meta dt { color: var(--muted); }
+  .slip__meta dd { margin: 0; text-align: right; }
+  .slip__meta [hidden] { display: none; }
+  .slip__pay { margin: 0; font-size: 13px; line-height: 1.4; color: var(--muted); }
+  .slip__total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--fg);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .slip__total strong {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  .slip__legal { margin: 0; font-size: 11px; line-height: 1.4; color: var(--muted); }
 </style>

@@ -1,0 +1,52 @@
+---
+// /bestellen — the bestelbon (stage 5, D-23, docs/order-flow.md). Canvas board Bestellen (mobile 390): intro (eyebrow ·
+// H1 · lead · open chip) then OrderForm (pickup/delivery · 1 products · free request · 2 when · 3 details · allergy ·
+// the slip + the two sends), then the FAQ. Desktop derived (D-30): the intro on the 1440 container, the form in two columns.
+// Strings: src/i18n/bestellen.ts (lexicon §5.20). FAQ: the three §5.11 „Bestellen” items (faq.json pages.bestellen).
+// JSON-LD: BreadcrumbList (lexicon §8.4).
+import Base from '../layouts/Base.astro';
+import OpenChip from '../components/OpenChip.astro';
+import OrderForm from '../components/OrderForm.astro';
+import Faq from '../components/Faq.astro';
+import { bestellenNl as t } from '../i18n/bestellen';
+
+const origin = 'https://slagerij-john.be';
+const path = '/bestellen';
+const alternates = { nl: '/bestellen', ro: '/ro/comanda' };
+const jsonld = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t.crumbs.home, item: `${origin}/` },
+      { '@type': 'ListItem', position: 2, name: t.crumbs.page, item: `${origin}${path}` },
+    ],
+  },
+];
+---
+<Base title={t.title} description={t.description} locale="nl" path={path} alternates={alternates} jsonld={jsonld}>
+  <main id="main" class="ob">
+    <div class="container ob-intro">
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h1 class="ob-intro__h1">{t.h1}</h1>
+      <p class="ob-intro__lead">{t.lead}</p>
+      <OpenChip locale="nl" variant="p" class="ob-intro__chip" />
+    </div>
+    <div class="container">
+      <OrderForm />
+    </div>
+    <Faq locale="nl" title={t.faq} page="bestellen" />
+  </main>
+</Base>
+
+<style>
+  /* board Bestellen: intro 24 px under the sign, H1 Fraunces 38, lead 15 */
+  .ob-intro { display: flex; flex-direction: column; gap: 14px; padding-top: 24px; padding-bottom: 24px; }
+  .ob-intro__h1 { margin: 0; font-size: 38px; line-height: 1.02; letter-spacing: -0.02em; }
+  .ob-intro__lead { margin: 0; font-size: 15px; line-height: 1.45; max-width: 56ch; }
+  .ob-intro :global(.ob-intro__chip) { align-self: flex-start; }
+  @media (min-width: 960px) {
+    .ob-intro { padding-top: 56px; padding-bottom: 40px; gap: 18px; }
+    .ob-intro__h1 { font-size: 64px; line-height: 1; }
+    .ob-intro__lead { font-size: 17px; line-height: 1.5; }
+  }
+</style>

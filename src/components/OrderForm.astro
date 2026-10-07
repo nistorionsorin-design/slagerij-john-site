@@ -1,0 +1,507 @@
+---
+// OrderForm — the bestelbon (stage 5, docs/order-flow.md; D-23: the old form, kept, improved, enhanced). Canvas board
+// Bestellen (mobile 390) for the look; desktop derived (D-30): the steps left, the slip + the two sends right, sticky.
+// Without script it is a plain form: number fields per product, a date field and a time list, one POST to /api/order,
+// which checks every rule against hours.json / delivery.json and answers with a 303 back to #bedankt or #fout.
+// src/scripts/order.ts adds the live slip, the −/+ steppers, the day and time chips from the opening hours, the free
+// request list, the delivery quote, the remembered details and the WhatsApp send with the whole order pre-filled.
+// The script's data travels as one application/json block (CSP: no inline script); the rules are src/lib/order-core.js.
+import type { Product } from '../data/types';
+import delivery from '../data/delivery.json';
+import WaIcon from './WaIcon.astro';
+import OrderSlip from './OrderSlip.astro';
+import { products, priceLabel, unitLabel } from '../lib/price';
+import { qtyRule, fromMin, waText } from '../lib/order-core.js';
+import { bestellenNl as t } from '../i18n/bestellen';
+import allergens from '../data/allergens.json';
+
+const locale = 'nl';
+// the board's order: the packs and the traiteur first, then the counter by the kilo (one pill for the whole group)
+const packs = ['colli', 'gourmet', 'tapas', 'warm', 'dessert'];
+const counter = ['rund', 'varken', 'kip', 'lam', 'roemeens'];
+const section = (id: string) => {
+  const c = products.categories.find((x) => x.id === id);
+  if (!c) throw new Error(`products.json: no category "${id}"`);
+  return { ...c, items: products.items.filter((p) => p.category === id && p.orderable !== false) };
+};
+const groups = [...packs, ...counter].map(section).filter((c) => c.items.length);
+const pills = [
+  ...groups.filter((c) => packs.includes(c.id)).map((c) => ({ href: `#cat-${c.id}`, label: c.name.nl })),
+  { href: `#cat-${counter[0]}`, label: t.products.kgGroup },
+];
+
+const qtyUnit: Record<Product['unit'], string> = { kg: 'kg', pers: 'pers.', liter: 'l', colli: '', stuk: '' };
+
+// no-script time list: every half hour a pickup or a delivery can take (the server checks the day's own times)
+const allTimes = [...new Set([...Array.from({ length: 20 }, (_, i) => fromMin(8 * 60 + i * 30)), ...delivery.times])];
+
+// what the script needs; the hours come from Base.astro's #hours block
+const scriptData = {
+  locale,
+  items: products.items
+    .filter((p) => p.orderable !== false)
+    .map((p) => ({ id: p.id, category: p.category, name: { [locale]: p.name[locale] }, unit: p.unit, price: p.price, priceFrom: p.priceFrom, min: p.min, step: p.step })),
+  delivery: { ...delivery, _source: undefined },
+  qtyUnit,
+  t: { slip: t.slip, when: t.when, send: t.send, done: t.done, details: { required: t.details.required }, errors: t.errors },
+};
+
+const waEmpty = `/wa?src=bestelbon&text=${encodeURIComponent(t.send.msgEmpty)}`;
+// the WhatsApp preview before anything is chosen: the order-flow §5 frame with nothing in it
+const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', time: '', lines: [], requests: [], name: '', phone: '', address: null });
+---
+<form class="order" id="bestelbon" method="post" action="/api/order" data-order>
+  <input type="hidden" name="lang" value={locale} />
+  <div class="order__trap" aria-hidden="true">
+    <label>website <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+  </div>
+
+  <div class="order__main">
+    <fieldset class="om">
+      <legend class="vh">{t.method.legend}</legend>
+      <input class="om__in" type="radio" name="method" id="m-pickup" value="pickup" checked />
+      <label class="om__card" for="m-pickup">
+        <span class="om__title">{t.method.pickup}</span>
+        <span class="om__sub">{t.method.pickupSub}</span>
+      </label>
+      <input class="om__in" type="radio" name="method" id="m-delivery" value="delivery" />
+      <label class="om__card" for="m-delivery">
+        <span class="om__title">{t.method.delivery}</span>
+        <span class="om__sub">{t.method.deliverySub}</span>
+      </label>
+    </fieldset>
+
+    <section class="os" aria-labelledby="os-products">
+      <p class="eyebrow">{t.products.eyebrow}</p>
+      <h2 class="os__title" id="os-products">{t.products.title}</h2>
+      <nav class="os__pills" aria-labelledby="os-products">
+        {pills.map((p) => <a class="pill" href={p.href}>{p.label}</a>)}
+      </nav>
+      {groups.map((c) => (
+        <div class="ocat" id={`cat-${c.id}`}>
+          <h3 class="ocat__title">{c.name.nl}</h3>
+          <ul class="ocat__list">
+            {c.items.map((p) => {
+              const r = qtyRule(p);
+              const ph = p.price === null;
+              return (
+                <li class="oi" data-item={p.id}>
+                  <span class="oi__pin" aria-hidden="true"></span>
+                  <div class="oi__text">
+                    <p class="oi__name" id={`n-${p.id}`}>{p.name.nl}</p>
+                    {p.line.nl && <p class="oi__line">{p.line.nl}</p>}
+                  </div>
+                  <div class="oi__foot">
+                    <p class="oi__price">
+                      <span class:list={['oi__amount', { 'oi__amount--ph': ph }]}>{priceLabel(p, locale)}</span>
+                      <span class="oi__unit">{unitLabel(p.unit, locale)}</span>
+                    </p>
+                    <div class="qty">
+                      <button class="qty__b" type="button" data-step="-1" aria-label={`${t.products.less}: ${p.name.nl}`} hidden>−</button>
+                      <label class="vh" for={`q-${p.id}`}>{t.products.qty}: {p.name.nl}</label>
+                      <input class="qty__in" type="number" inputmode="decimal" id={`q-${p.id}`} name={`q-${p.id}`} value="0" min="0" max={r.max} step={r.step} data-min={r.min} />
+                      {qtyUnit[p.unit] && <span class="qty__u" aria-hidden="true">{qtyUnit[p.unit]}</span>}
+                      <button class="qty__b qty__b--more" type="button" data-step="1" aria-label={`${t.products.more}: ${p.name.nl}`} hidden>+</button>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
+
+      <div class="or">
+        <h3 class="or__title">{t.request.title}</h3>
+        <p class="or__intro">{t.request.intro}</p>
+        <label class="field">
+          <span class="field__l">{t.request.label}</span>
+          <textarea class="field__in" name="requests" rows="2" maxlength="600" data-requests></textarea>
+        </label>
+        <div class="or__add" data-request-add hidden>
+          <label class="field">
+            <span class="field__l">{t.request.label}</span>
+            <input class="field__in" type="text" maxlength="200" data-request-input />
+          </label>
+          <button class="btn btn--secondary" type="button" data-request-button>{t.request.add}</button>
+        </div>
+        <ul class="or__list" data-request-list hidden></ul>
+        <template data-request-tpl>
+          <li class="or__item"><span></span><button class="or__x" type="button" aria-label={t.request.remove}>×</button></li>
+        </template>
+      </div>
+    </section>
+
+    <section class="os" aria-labelledby="os-when">
+      <p class="eyebrow">{t.when.eyebrow}</p>
+      <h2 class="os__title" id="os-when">
+        <span class="os__pickup">{t.when.titlePickup}</span><span class="os__delivery">{t.when.titleDelivery}</span>
+      </h2>
+      <div class="ow" data-when-fallback>
+        <label class="field">
+          <span class="field__l">{t.when.day}</span>
+          <input class="field__in" type="date" name="date" required />
+        </label>
+        <label class="field">
+          <span class="field__l">{t.when.time}</span>
+          <select class="field__in" name="time" required>
+            <option value="">—</option>
+            {allTimes.map((x) => <option value={x}>{x}</option>)}
+          </select>
+        </label>
+      </div>
+      <div class="ow-days" role="radiogroup" aria-label={t.when.day} data-days hidden></div>
+      <div class="ow-times" role="radiogroup" aria-label={t.when.time} data-times hidden></div>
+      <p class="os__note"><span class="os__pickup">{t.when.note}</span><span class="os__delivery">{t.when.noteDelivery}</span></p>
+    </section>
+
+    <section class="os" aria-labelledby="os-details">
+      <p class="eyebrow">{t.details.eyebrow}</p>
+      <h2 class="os__title" id="os-details">{t.details.title}</h2>
+      <label class="field">
+        <span class="field__l">{t.details.name}</span>
+        <input class="field__in" type="text" name="name" autocomplete="name" maxlength="80" required data-remember />
+      </label>
+      <div class="field-row">
+        <label class="field">
+          <span class="field__l">{t.details.phone}</span>
+          <input class="field__in" type="tel" name="phone" autocomplete="tel" maxlength="30" required data-remember />
+        </label>
+        <label class="field">
+          <span class="field__l">{t.details.email}</span>
+          <input class="field__in" type="email" name="email" autocomplete="email" maxlength="120" required data-remember />
+        </label>
+      </div>
+      <fieldset class="oa" data-address>
+        <legend class="vh">{t.method.delivery}</legend>
+        <label class="field oa__street">
+          <span class="field__l">{t.details.street}</span>
+          <input class="field__in" type="text" name="street" autocomplete="address-line1" maxlength="80" data-remember />
+        </label>
+        <label class="field oa__nr">
+          <span class="field__l">{t.details.nr}</span>
+          <input class="field__in" type="text" name="nr" maxlength="12" data-remember />
+        </label>
+        <label class="field oa__pc">
+          <span class="field__l">{t.details.postcode}</span>
+          <input class="field__in" type="text" name="postcode" autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" data-remember />
+        </label>
+        <label class="field oa__place">
+          <span class="field__l">{t.details.place}</span>
+          <input class="field__in" type="text" name="place" autocomplete="address-level2" maxlength="60" data-remember />
+        </label>
+      </fieldset>
+      <label class="field">
+        <span class="field__l">{t.details.remarks}</span>
+        <textarea class="field__in" name="remarks" rows="3" maxlength="600"></textarea>
+      </label>
+      <label class="check" data-remember-box hidden>
+        <input type="checkbox" data-remember-check checked />
+        <span>{t.details.remember}</span>
+      </label>
+      <p class="os__note">{t.details.privacy} <a href="/privacy">{t.details.privacyLink}</a>.</p>
+    </section>
+
+    <aside class="allergy" aria-labelledby="allergy-title">
+      <svg class="allergy__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+      <div>
+        <h2 class="allergy__title" id="allergy-title">{t.allergy.title}</h2>
+        <p>{allergens.workshop_notice_nl}</p>
+        <p>{t.allergy.duty}</p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="order__side">
+    <OrderSlip t={t.slip} />
+    <div class="send">
+      <p class="send__status" role="status" aria-live="polite" data-status></p>
+      <button class="btn btn--primary btn--lg btn--block" type="submit" data-submit>{t.send.submit}</button>
+      <a class="btn btn--secondary btn--lg btn--block" href={waEmpty} rel="nofollow" data-wa><WaIcon /><span>{t.send.whatsapp}</span></a>
+      <p class="send__promise">{t.send.promise}</p>
+      <div class="send__msg">
+        <p class="send__label">{t.send.msgLabel}</p>
+        <p class="send__text" data-wa-preview>{previewEmpty}</p>
+      </div>
+    </div>
+  </div>
+</form>
+
+<section class="done" id="bedankt" tabindex="-1" aria-labelledby="done-title" data-done>
+  <h2 class="done__title" id="done-title">{t.done.thanks}</h2>
+  <p class="done__ref" data-done-ref-row hidden>{t.done.ref}: <strong data-done-ref></strong></p>
+  <p class="done__note">{t.send.promise}</p>
+  <p class="done__dry" data-done-dry hidden></p>
+</section>
+<section class="done done--err" id="fout" tabindex="-1" aria-labelledby="err-title">
+  <h2 class="done__title" id="err-title">{t.done.error}</h2>
+  <p class="done__note">{t.done.fix}</p>
+  <a class="btn btn--secondary" href="#bestelbon">{t.products.eyebrow}</a>
+</section>
+
+<script type="application/json" id="order-data" set:html={JSON.stringify(scriptData)} />
+
+<script>
+  import '../scripts/order.ts';
+</script>
+
+<style>
+  /* ── phone = board Bestellen (390): 20 px gutters (the page's .container), steps 26 px apart, eyebrow + Fraunces 26
+     heading, product rows as counter tags (pin hole, 10 px radius; a chosen row takes the tag colour), steppers 44 px,
+     fields 46 px on white, the slip dashed. Desktop (≥ 960, derived): two columns, the slip + sends sticky. ── */
+  .order { display: flex; flex-direction: column; gap: 24px; padding-bottom: 32px; }
+  .order__trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+  .order__main { display: flex; flex-direction: column; gap: 26px; min-width: 0; }
+  .order__side { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+  /* pickup / delivery */
+  .om { margin: 0; padding: 0; border: 0; min-width: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .om__in { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
+  .om__card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 64px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    cursor: pointer;
+  }
+  .om__title { font-size: 15px; font-weight: 600; line-height: 1.25; }
+  .om__sub { font-size: 12px; line-height: 1.35; color: var(--muted); }
+  .om__in:checked + .om__card { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+  .om__in:checked + .om__card .om__sub { color: var(--on-ink-muted); }
+  .om__in:focus-visible + .om__card { outline: 2px solid var(--fg); outline-offset: 2px; }
+  @media (hover: hover) { .om__in:not(:checked) + .om__card:hover { border-color: var(--fg); } }
+
+  /* a step */
+  .os { display: flex; flex-direction: column; gap: 14px; scroll-margin-top: 96px; }
+  .os__title { margin: 0; font-family: var(--f-display); font-weight: 500; font-size: 26px; line-height: 1.05; letter-spacing: -0.015em; }
+  .os__note { margin: 0; font-size: 13px; line-height: 1.45; color: var(--muted); }
+  .os__delivery { display: none; }
+  .order:has(#m-delivery:checked) .os__pickup { display: none; }
+  .order:has(#m-delivery:checked) .os__delivery { display: inline; }
+
+  .os__pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch);
+    padding: 0 14px;
+    border-radius: var(--r-chip);
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--fg);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  @media (hover: hover) { .pill:hover { border-color: var(--fg); } }
+
+  /* a category and its rows */
+  .ocat { display: flex; flex-direction: column; gap: 10px; scroll-margin-top: 96px; }
+  .ocat__title { margin: 8px 0 0; font-family: var(--f-display); font-weight: 600; font-size: 20px; line-height: 1.1; }
+  .ocat__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .oi {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 14px 12px 34px;
+    border-radius: var(--r-tag);
+    border: 1px solid var(--line);
+    background: var(--card);
+  }
+  .oi.is-on { background: var(--tag); border-color: var(--tag-line); }
+  .oi__pin {
+    position: absolute;
+    left: 13px;
+    top: 21px;
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    background: var(--paper);
+    border: 1px solid var(--tag-pin);
+  }
+  .oi__text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .oi__name { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 19px; line-height: 1.1; }
+  .oi__line { margin: 0; font-size: 12px; line-height: 1.35; color: var(--muted); }
+  .oi__foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .oi__price { margin: 0; display: flex; align-items: baseline; gap: 3px; font-variant-numeric: tabular-nums; color: var(--ox); white-space: nowrap; }
+  .oi__amount { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+  .oi__amount--ph { font-size: 18px; }
+  .oi__unit { font-size: 12px; color: var(--muted); }
+
+  .qty {
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+    border: 1px solid var(--fg);
+    border-radius: 12px;
+    background: var(--card);
+    overflow: hidden;
+  }
+  .qty__b {
+    width: var(--touch);
+    height: var(--touch);
+    border: 0;
+    background: transparent;
+    color: var(--fg);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .qty__b--more { background: var(--accent); }
+  @media (hover: hover) { .qty__b:hover { background: var(--tag); } .qty__b--more:hover { background: var(--accent-light); } }
+  .qty__in {
+    width: 56px;
+    height: var(--touch);
+    border: 0;
+    background: transparent;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--fg);
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  .qty__in::-webkit-inner-spin-button, .qty__in::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .qty.is-live .qty__in { width: 44px; padding: 0; }
+  .qty__u { padding-right: 8px; font-size: 11px; color: var(--muted); }
+  .qty.is-live .qty__u { padding-right: 4px; margin-left: -4px; }
+
+  /* the free request */
+  .or {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 6px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-tile);
+    background: var(--card);
+  }
+  .or__title { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 18px; line-height: 1.1; }
+  .or__intro { margin: 0; font-size: 14px; line-height: 1.45; color: var(--muted); }
+  .or__add { display: flex; flex-direction: column; gap: 10px; }
+  .or__add .btn { align-self: flex-start; }
+  .or__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .or__item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 6px 6px 14px; border-radius: var(--r-tag); background: var(--tag); font-size: 14px; }
+  .or__x { width: var(--touch); height: var(--touch); flex: none; border: 0; border-radius: 999px; background: transparent; font-size: 20px; cursor: pointer; color: var(--fg); }
+  @media (hover: hover) { .or__x:hover { background: var(--paper); } }
+  [hidden] { display: none !important; }
+
+  /* fields (board: label 12/600, field 46 px, white, tag-pin border, radius 10) */
+  .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; font-size: 12px; font-weight: 600; }
+  .field__in {
+    width: 100%;
+    min-height: 46px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid var(--tag-pin);
+    background: #fff;
+    color: var(--fg);
+    font-size: 16px; /* ≥ 16 px: no zoom-on-focus on iOS */
+    font-weight: 400;
+  }
+  textarea.field__in { padding: 12px 14px; min-height: 72px; resize: vertical; line-height: 1.45; }
+  .field__in:focus-visible { outline: 2px solid var(--fg); outline-offset: 1px; }
+  .field__in[aria-invalid='true'] { border-color: var(--ox); box-shadow: 0 0 0 1px var(--ox); }
+  /* the error lines are made by src/scripts/order.ts, so they carry no scope attribute */
+  .order :global(.field__err) { font-size: 12px; font-weight: 600; color: var(--ox); }
+  .order :global(p.field__err) { margin: 0; font-size: 13px; }
+  .field-row { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .oa { margin: 0; padding: 0; border: 0; min-width: 0; display: grid; grid-template-columns: 96px minmax(0, 1fr); grid-template-areas: 'street street' 'nr pc' 'place place'; gap: 14px 8px; }
+  .oa__street { grid-area: street; }
+  .oa__nr { grid-area: nr; }
+  .oa__pc { grid-area: pc; }
+  .oa__place { grid-area: place; }
+  @supports selector(:has(*)) {
+    .oa { display: none; }
+    .order:has(#m-delivery:checked) .oa { display: grid; }
+  }
+  .check { display: flex; align-items: center; gap: 10px; font-size: 13px; min-height: var(--touch); cursor: pointer; }
+  .check input { width: 20px; height: 20px; margin: 0; accent-color: var(--fg); }
+
+  /* day and time chips (built by the script) */
+  .ow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .ow-days { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ow-times { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .ow-days :global(label), .ow-times :global(label) {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    min-height: var(--touch);
+    min-width: 52px;
+    padding: 0 10px;
+    border-radius: var(--r-chip);
+    border: 1px solid var(--line);
+    background: var(--card);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    font-variant-numeric: tabular-nums;
+  }
+  .ow-days :global(input), .ow-times :global(input) { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
+  .ow-days :global(input:checked + label), .ow-times :global(input:checked + label) { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+  .ow-days :global(input:focus-visible + label), .ow-times :global(input:focus-visible + label) { outline: 2px solid var(--fg); outline-offset: 2px; }
+  @media (hover: hover) {
+    .ow-days :global(input:not(:checked) + label:hover), .ow-times :global(input:not(:checked) + label:hover) { border-color: var(--fg); }
+  }
+  .ow-days[aria-invalid='true'], .ow-times[aria-invalid='true'] { outline: 2px solid var(--ox); outline-offset: 4px; border-radius: 12px; }
+
+  /* allergy */
+  .allergy {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-tile);
+    background: var(--card);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .allergy__icon { width: 20px; height: 20px; flex: none; color: var(--ox); margin-top: 1px; }
+  .allergy__title { margin: 0 0 6px; font-size: 14px; font-weight: 600; font-family: var(--f-ui); }
+  .allergy p { margin: 0 0 6px; }
+  .allergy p:last-child { margin: 0; }
+
+  /* the sends */
+  .send { display: flex; flex-direction: column; gap: 10px; }
+  .send__status { margin: 0; font-size: 14px; font-weight: 600; color: var(--ox); }
+  .send__status:empty { display: none; }
+  .send__promise { margin: 0; font-size: 13px; line-height: 1.45; color: var(--muted); }
+  .send__msg { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: var(--r-tag); background: var(--tag); }
+  .send__label { margin: 0; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .send__text { margin: 0; font-size: 14px; line-height: 1.45; overflow-wrap: anywhere; }
+  [data-submit][aria-busy='true'] { opacity: .7; cursor: progress; }
+
+  /* after the send: shown by the script, or by the URL's #bedankt / #fout without script */
+  .done { display: none; flex-direction: column; gap: 12px; margin: 8px 0 40px; padding: 24px 20px; border-radius: var(--r-tile); background: var(--card); border: 1px dashed var(--tag-pin); }
+  .done:target, .done.is-on { display: flex; }
+  .done--err { border-style: solid; border-color: var(--ox); }
+  .done__title { margin: 0; font-family: var(--f-display); font-weight: 500; font-size: 26px; line-height: 1.1; }
+  .done__ref, .done__note, .done__dry { margin: 0; font-size: 15px; line-height: 1.45; }
+  .done__ref strong { font-variant-numeric: tabular-nums; }
+  .done .btn { align-self: flex-start; }
+  .done:focus { outline: none; }
+
+  @media (min-width: 600px) {
+    .field-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+  }
+  @media (min-width: 960px) {
+    .order { display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, 420px); gap: 56px; align-items: start; padding-bottom: 80px; }
+    .order__main { gap: 40px; }
+    .order__side { position: sticky; top: 96px; }
+    .os__title { font-size: 34px; }
+    .ocat__list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+    .done { max-width: 720px; margin: 24px 0 80px; padding: 32px; }
+    .done__title { font-size: 34px; }
+  }
+</style>

@@ -218,6 +218,8 @@ if (built) {
     for (const p of pages) scan(p.file, p.html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/gi, ' '));
     for (const f of walk(join(root, 'src/content')).filter((f) => /\.(md|mdx)$/.test(f))) scan(rel(f), read(f));
     for (const f of walk(join(root, 'src/data')).filter((f) => f.endsWith('.json'))) scan(rel(f), read(f).replace(/"_source":\s*"(?:[^"\\]|\\.)*"/g, ''));
+    // the order mails (stage 5) are written by the functions, not the pages: their strings count too
+    for (const f of walk(join(root, 'api')).filter((f) => f.endsWith('.js'))) scan(rel(f), read(f).replace(/^\s*\/\/.*$/gm, ''));
     const list = [...found].map(([k, v]) => `${k}: ${[...v].join(' ')}`);
     if (!list.length) pass('placeholders', 'no placeholder string in dist/, src/content/, src/data/');
     else if (RELEASE) fail('placeholders', list.join('\n         '));
@@ -227,11 +229,13 @@ if (built) {
   // 8 — RO lint (mechanical subset of the Romanian bible §16)
   {
     const e = [];
-    const lint = (label, text) => {
+    // `dashText`: the rule is „no em/en dash in RO body” (CLAUDE.md) — a page's <title> is head, not body, and keeps the
+    // separator lexicon §6 gives it („Comandă online – ridicare sau livrare | Măcelăria John”); every other test reads it
+    const lint = (label, text, dashText = text) => {
       if (/[şţŞŢ]/.test(text)) e.push(`${label}: cedilla ş/ţ — use comma-below ș/ț`);
       if (/"/.test(text)) e.push(`${label}: straight double quote — use „…”`);
       if (/[“]/.test(text)) e.push(`${label}: “ — Romanian opens with „`);
-      if (/[–—]/.test(text)) e.push(`${label}: en/em dash in body`);
+      if (/[–—]/.test(dashText)) e.push(`${label}: en/em dash in body`);
       // a numeral followed by a proper noun (postal code + place: „8750 Zwevezele”) is not a counted noun
       const m = text.match(/(?<![\d.,:/])\b(?:[2-9]\d|\d{3,})\s+(?!de\b|%|€|kg\b|g\b|km\b|m\b|cm\b|ml\b|l\b|min\b|h\b|\p{Lu})\p{L}{3,}/u);
       if (m) e.push(`${label}: numeral ≥ 20 without „de”: «${m[0]}»`);
@@ -239,7 +243,7 @@ if (built) {
     const md = walk(join(root, 'src/content/ro')).filter((f) => /\.(md|mdx)$/.test(f));
     for (const f of md) lint(rel(f), read(f).replace(/^---[\s\S]*?---/, '').replace(/```[\s\S]*?```/g, '').replace(/\]\([^)]*\)/g, ']'));
     const roPages = content.filter((p) => /<html[^>]*lang="ro/i.test(p.html));
-    for (const p of roPages) lint(p.file, decode(visibleText(p.html)));
+    for (const p of roPages) lint(p.file, decode(visibleText(p.html)), decode(visibleText(p.html.replace(/<title>[\s\S]*?<\/title>/i, ' '))));
     verdict('ro-lint', e, `${md.length} RO content files + ${roPages.length} built RO pages: diacritics, quotes, dashes, „de”`);
     warn('ro-lint-manual', 'calque / kitsch lists (LR-C, LR-K) live in the Romanian bible outside this repo — reviewed by hand');
   }
@@ -336,7 +340,7 @@ if (built) {
   }
 
   // client JS budget (D-06 one island + D-12 hero loop + D-20 open chip + the header's menu and
-  // smart-sticky, build plan stage 0b2): a script ships only
+  // smart-sticky, build plan stage 0b2 + the bestelbon, stage 5): a script ships only
   // on a page that mounts its component, from /_astro/, never inline (CSP script-src 'self').
   {
     const js = walk(dist).filter((f) => /\.(js|mjs)$/.test(f));
@@ -347,6 +351,7 @@ if (built) {
       ['Header', /<header class="sign[\s"]/],
       ['OpenChip', /class="oc[\s"]/],
       ['QaBox', /<section class="qa[\s"]/],
+      ['OrderForm', /<form class="order[\s"]/],
     ];
     for (const p of pages)
       for (const tag of p.html.match(/<script[^>]*\ssrc="[^"]*"[^>]*>/gi) || []) {
@@ -354,7 +359,7 @@ if (built) {
         const file = src.split('/').pop();
         const m = mounts.find(([name]) => file.startsWith(name + '.'));
         if (!src.startsWith('/_astro/')) e.push(`${p.file}: ${src} not served from /_astro/`);
-        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / Header / OpenChip / QaBox)`);
+        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / Header / OpenChip / QaBox / OrderForm)`);
         else if (!m[1].test(p.html)) e.push(`${p.file}: ships ${file} without its component`);
       }
     verdict('client-js', e, `${js.length} JS files in dist; no inline script; each script ships only with its component`);
