@@ -1,0 +1,212 @@
+---
+// Category grid (D-13: static, it is navigation) — stage 3, board Main „bento: specialiteiten”:
+// Vers vlees (wide photo tile) · BBQ & gourmet (photo) · Traiteur (the board's oxblood tile; since the 07.10 revision it
+// carries q05 under an oxblood scrim, build plan §3b) · Roemeense specialiteiten (wide photo tile, with the RO page as a
+// second link). Photos: build plan §3b, alts lexicon §5.14 „Home photos”. Each tile is one link (the name, stretched over the tile);
+// the Traiteur CTA and the RO link are their own links above it. Nothing moves (D-13).
+// Desktop (derived, D-30): four columns, Vers vlees 2 × 2, BBQ and Traiteur on the first row, Roemeense on the second.
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import photos from '../data/photos.json';
+import type { Photo } from '../data/types';
+import { homeNl } from '../i18n/home';
+
+const t = homeNl.categories;
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/{hero,home}/*.{jpg,jpeg,png,webp}', { eager: true });
+// Each tile's photo is cropped at build time to the tile's landscape shape (fit cover at the focal point): the §3b
+// originals are partly tall (q20, q07: 1448 × 2048, 1530 × 2040) and a wide tile would otherwise fetch the whole
+// portrait (113–133 kB on the phone, measured 07.10). 4:3 suits the phone tiles and the desktop's tall Vers vlees tile
+// (object-fit still covers); Roemeense is the widest tile at every width: 16:9.
+// sharp crops by keyword, not by percentage: the focal point mapped to its third of the frame
+const gravity = (x: number, y: number) =>
+  [y < 40 ? 'top' : y > 60 ? 'bottom' : '', x < 40 ? 'left' : x > 60 ? 'right' : ''].filter(Boolean).join(' ') || 'center';
+const pic = (p: Photo, ratio: number) => {
+  const mod = files[`../assets/${p.src}`];
+  if (!mod) throw new Error(`photos.json categories: src/assets/${p.src} not found`);
+  const img = mod.default;
+  const width = Math.min(img.width, Math.round(img.height * ratio), 1600);
+  const fx = p.focalX ?? 50, fy = p.focalY ?? 50;
+  return {
+    img,
+    widths: [480, 768, 1080, 1600].filter((w) => w < width).concat(width),
+    crop: { width, height: Math.round(width / ratio), fit: 'cover' as const, position: gravity(fx, fy) },
+    pos: `object-position:${fx}% ${fy}%`,
+    alt: p.alt.nl,
+  };
+};
+const ratios = [4 / 3, 4 / 3, 4 / 3, 16 / 9];
+const [fresh, bbq, traiteur, ro] = (photos.categories as Photo[]).map((p, i) => pic(p, ratios[i]));
+const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
+---
+<section class="sec cats" aria-label={t.label}>
+  <div class="container cats__grid">
+    <article class="cat cat--fresh">
+      <Picture class="cat__img" src={fresh.img} {...fresh.crop} widths={fresh.widths} sizes="(min-width: 960px) 50vw, 100vw" formats={['avif', 'webp']} fallbackFormat="webp" quality={55} alt={fresh.alt} loading="lazy" decoding="async" fetchpriority="low" style={fresh.pos} />
+      <div class="cat__label cat__label--row">
+        <h3 class="cat__name"><a class="cat__link" href={t.fresh.href}>{t.fresh.name}</a></h3>
+        <p class="cat__sub">{t.fresh.sub}</p>
+      </div>
+    </article>
+
+    <article class="cat cat--bbq">
+      <Picture class="cat__img" src={bbq.img} {...bbq.crop} widths={bbq.widths} sizes="(min-width: 960px) 25vw, 50vw" formats={['avif', 'webp']} fallbackFormat="webp" quality={55} alt={bbq.alt} loading="lazy" decoding="async" fetchpriority="low" style={bbq.pos} />
+      <div class="cat__label">
+        <h3 class="cat__name cat__name--sm"><a class="cat__link" href={t.bbq.href}>{t.bbq.name}</a></h3>
+        <p class="cat__sub cat__sub--d">{t.bbq.sub}</p>
+      </div>
+    </article>
+
+    <article class="cat cat--traiteur">
+      <Picture class="cat__img" src={traiteur.img} {...traiteur.crop} widths={traiteur.widths} sizes="(min-width: 960px) 25vw, 50vw" formats={['avif', 'webp']} fallbackFormat="webp" quality={55} alt={traiteur.alt} loading="lazy" decoding="async" fetchpriority="low" style={traiteur.pos} />
+      <h3 class="cat__eyebrow"><a class="cat__link" href={t.traiteur.href}>{t.traiteur.name}</a></h3>
+      <p class="cat__lead">{t.traiteur.sub}</p>
+      <a class="cat__cta" href={t.traiteur.href}>{t.traiteur.cta}<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a>
+    </article>
+
+    <article class="cat cat--ro">
+      <Picture class="cat__img" src={ro.img} {...ro.crop} widths={ro.widths} sizes="(min-width: 960px) 50vw, 100vw" formats={['avif', 'webp']} fallbackFormat="webp" quality={60} alt={ro.alt} loading="lazy" decoding="async" fetchpriority="low" style={ro.pos} />
+      <div class="cat__label">
+        <h3 class="cat__name"><a class="cat__link" href={t.ro.href}>{t.ro.name}</a></h3>
+        <p class="cat__sub">{t.ro.sub} · <a class="cat__ro" href={t.ro.roHref} lang="ro" hreflang="ro">{t.ro.roLabel}<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a></p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  /* board Main: padding 8 20 28, 2 × 1fr, gap 10; tiles radius 14 on ink; heights 200 / 180 / 180 / 170 */
+  .cats { padding-top: 8px; }
+  .cats__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .cat {
+    position: relative;
+    isolation: isolate;
+    border-radius: var(--r-tile);
+    overflow: hidden;
+    background: var(--ink);
+    color: var(--on-ink);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .cat--fresh { grid-column: span 2; height: 200px; }
+  .cat--bbq { height: 180px; }
+  .cat--traiteur { height: 180px; }
+  .cat--ro { grid-column: span 2; height: 170px; }
+
+  /* the photo sits under the label (z −1 inside the tile's isolated stack), so the label stays in the flow
+     and the name's stretched link covers the whole tile */
+  .cat :global(picture) { position: absolute; inset: 0; z-index: -1; }
+  .cat :global(.cat__img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  .cat__label {
+    padding: 14px 16px;
+    background: linear-gradient(180deg, rgba(21,17,13,0) 0%, rgba(21,17,13,.88) 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .cat__label--row { flex-direction: row; justify-content: space-between; align-items: flex-end; gap: 12px; }
+  .cat__name {
+    margin: 0;
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1;
+    letter-spacing: 0;
+  }
+  .cat__name--sm { font-size: 19px; line-height: 1.05; }
+  .cat__sub { margin: 0; font-size: var(--fs-caption); line-height: 1.35; color: var(--on-ink-muted); }
+  .cat__sub--d { display: none; }
+
+  /* the tile's link: the name, stretched over the whole tile */
+  .cat__link { color: inherit; text-decoration: none; }
+  .cat__link::after { content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
+  .cat__link:focus-visible { outline: none; }
+  .cat:has(.cat__link:focus-visible) { outline: 2px solid var(--ox); outline-offset: 3px; }
+  @media (hover: hover) { .cat__link:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; } }
+
+  /* links that sit above the stretched one */
+  .cat__ro, .cat__cta { position: relative; z-index: 2; }
+  .cat__ro {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 24px;
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  @media (hover: hover) { .cat__ro:hover { text-decoration: underline; text-underline-offset: 3px; } }
+  .cat__ro:focus-visible, .cat__cta:focus-visible { outline: 2px solid var(--on-ink); outline-offset: 2px; }
+
+  /* Traiteur: the oxblood tile (board: padding 16, space-between, eyebrow F2D6C9, Fraunces 19/1.1, link 13/600) */
+  .cat--traiteur {
+    background: var(--ox);
+    color: var(--on-ox);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  /* the photo under an oxblood scrim: the tile still reads as the board's oxblood tile; text on the solid
+     oxblood end (≥ 4.5:1 for --on-ox and --ox-tint) */
+  .cat--traiteur::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(123,36,32,.62) 0%, rgba(123,36,32,.86) 45%, rgba(123,36,32,.97) 100%);
+  }
+  .cat--traiteur :global(picture) { z-index: -2; }
+  .cat__eyebrow {
+    margin: 0;
+    font-family: var(--f-ui);
+    font-size: var(--fs-eyebrow);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    line-height: 1.3;
+    text-transform: uppercase;
+    color: var(--ox-tint);
+  }
+  .cat__lead {
+    margin: 0;
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: 19px;
+    line-height: 1.1;
+  }
+  .cat__cta {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    margin-bottom: -12px;
+    color: var(--on-ox);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  @media (hover: hover) { .cat__cta:hover { text-decoration: underline; text-underline-offset: 3px; } }
+
+  @media (min-width: 960px) {
+    .cats { padding-top: 56px; }
+    .cats__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-rows: 280px 280px;
+      gap: 14px;
+    }
+    .cat--fresh { grid-column: 1 / span 2; grid-row: 1 / span 2; height: auto; }
+    .cat--bbq { grid-column: 3; grid-row: 1; height: auto; }
+    .cat--traiteur { grid-column: 4; grid-row: 1; height: auto; padding: 24px; }
+    .cat--ro { grid-column: 3 / span 2; grid-row: 2; height: auto; }
+    .cat__label { padding: 22px 24px; }
+    .cat__name { font-size: 32px; }
+    .cat__name--sm { font-size: 26px; }
+    .cat__sub { font-size: 14px; }
+    .cat__sub--d { display: block; }
+    .cat__lead { font-size: 26px; }
+    .cat__cta { font-size: 14px; }
+  }
+</style>

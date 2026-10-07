@@ -1,48 +1,104 @@
 ---
-// Hours card — reads hours.json. Stub emits an empty table when no data.
+// Hours card (brief §4) — stage 3, board Main „hours + address”: title + the live open chip, the week from hours.json
+// (today's row bold — open-chip.ts marks every [data-oc-day] row, as in the footer; without JS no row is marked),
+// then the address and the Route button. It carries id="openingsuren", the target of every open chip on the page
+// (D-20: tap → hours card); a page that shows this card tells Base, and the footer's hours drop the id.
+// Reused by Contact (stage 8). Card look: board Main (padding 18 18 16, radius 14, --card, hairline).
+import entity from '../data/entity.json';
 import hours from '../data/hours.json';
 import type { Day } from '../data/types';
+import OpenChip from './OpenChip.astro';
+import { routeHref, type Locale } from '../i18n/ui';
 
 export interface Props {
-  heading: string;
-  dayNames: Record<string, string>; // locale-provided
-  closedLabel: string;
+  locale: Locale;
+  title: string;
+  closed: string;
+  route: string;
 }
-
-const { heading, dayNames, closedLabel } = Astro.props;
+const { locale, title, closed, route } = Astro.props;
+const dash = locale === 'ro' ? '-' : '–'; // RO body: no en dash (LR-T03), as in the footer
 const regular = hours.regular as Day[];
-const order = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const dayFmt = new Intl.DateTimeFormat(locale === 'ro' ? 'ro-RO' : 'nl-BE', { weekday: 'long', timeZone: 'UTC' });
+const days = week.map((d, i) => {
+  const slots = regular.find((x) => x.dayOfWeek === d)?.slots ?? [];
+  return {
+    name: dayFmt.format(new Date(Date.UTC(2024, 0, 1 + i))), // 1 January 2024 was a Monday
+    text: slots.length ? slots.map((s) => `${s.open}${dash}${s.close}`).join(' · ') : closed,
+  };
+});
+const a = entity.address;
+const pin = '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle>';
 ---
-<section class="hrs card" aria-labelledby="hrs-title">
-  <h2 id="hrs-title" class="hrs__title">{heading}</h2>
-  <dl class="hrs__list">
-    {order.map((d) => {
-      const day = regular.find(x => x.dayOfWeek === d);
-      const slots = day?.slots || [];
-      return (
-        <div class="hrs__row">
-          <dt>{dayNames[d] || d}</dt>
-          <dd>
-            {slots.length === 0
-              ? closedLabel
-              : slots.map(s => `${s.open}–${s.close}`).join(' · ')}
-          </dd>
-        </div>
-      );
-    })}
+<div class="hrs" id="openingsuren">
+  <div class="hrs__head">
+    <h2 class="hrs__title">{title}</h2>
+    <OpenChip locale={locale} variant="p" />
+  </div>
+  <dl class="hrs__days">
+    {days.map((d, i) => (
+      <div data-oc-day={i}><dt>{d.name}</dt><dd>{d.text}</dd></div>
+    ))}
   </dl>
-</section>
+  <div class="hrs__addr">
+    <p><strong>{a.streetAddress}</strong><br />{a.postalCode} {a.addressLocality}</p>
+    <a class="btn btn--secondary btn--sm" href={routeHref(entity.geo.latitude, entity.geo.longitude)} rel="noopener">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={pin} />
+      <span>{route}</span>
+    </a>
+  </div>
+</div>
 
 <style>
-  .card {
-    background: var(--card);
+  .hrs {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px 18px 16px;
     border: 1px solid var(--line);
-    border-radius: var(--r-frame);
-    padding: 20px;
+    border-radius: var(--r-tile);
+    background: var(--card);
+    scroll-margin-top: calc(var(--nav-h) + 16px);
   }
-  .hrs__title { margin-top: 0; }
-  .hrs__list { margin: 0; display: grid; gap: 6px; }
-  .hrs__row { display: grid; grid-template-columns: 1fr auto; align-items: baseline; }
-  .hrs__row dt { font-weight: 600; }
-  .hrs__row dd { margin: 0; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .hrs__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .hrs__title {
+    margin: 0;
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.1;
+    letter-spacing: 0;
+  }
+  .hrs__days {
+    margin: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px 16px;
+    font-size: 13px;
+    line-height: 1.4;
+    font-variant-numeric: tabular-nums;
+  }
+  .hrs__days > div { display: contents; }
+  .hrs__days dt { color: var(--muted); }
+  .hrs__days dd { margin: 0; text-align: right; }
+  .hrs__days > .is-today > * { font-weight: 700; color: var(--fg); }
+  .hrs__addr {
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .hrs__addr p { margin: 0; font-size: 13px; line-height: 1.4; }
+  .hrs__addr strong { font-weight: 600; }
+
+  @media (min-width: 960px) {
+    .hrs { padding: 28px 28px 24px; gap: 16px; border-radius: var(--r-frame); }
+    .hrs__title { font-size: 26px; }
+    .hrs__days { font-size: 15px; gap: 8px 24px; }
+    .hrs__addr { padding-top: 16px; }
+    .hrs__addr p { font-size: 15px; }
+  }
 </style>

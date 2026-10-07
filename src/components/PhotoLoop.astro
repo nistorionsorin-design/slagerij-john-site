@@ -1,71 +1,141 @@
 ---
-// Photo loop (D-11): five tiles, each showing its home subject. The rotation
-// (9 s per place, 1,6 s crossfade, 0,8 s wave, opacity only) is not built yet;
-// this still state is also the prefers-reduced-motion state.
+// Photo loop „Bij ons” (D-11, brief §5) — stage 3. Five subjects (shop · people · craft · barbecue · platters) rotate
+// through five tiles: 9 s per place, 1,6 s crossfade, 0,8 s wave between tiles, opacity only. CSS only, as on the
+// canvas boards Main (390) and Raster (1440), ported 1:1: one 45 s keyframe per image, the delay of image j in tile i =
+// −(45 + 0,8·i + 9·((i − j) mod 5)) s, so each tile opens on its home subject (`.home`) and the subjects walk one tile on
+// every 9 s. Pause = a checkbox + label (WCAG 2.2.2; `:has(:checked)` holds every image). prefers-reduced-motion: no
+// animation, each tile shows its home photo, no pause control. No script (gate: client-js); the optional pause when
+// off-screen (brief §5) is left out for that reason.
+// The 25 <img> share one `sizes`, so each photo is fetched once whatever tile it is in; all lazy.
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import photos from '../data/photos.json';
 import type { Photo } from '../data/types';
+import { homeNl } from '../i18n/home';
 
-export interface Props {
-  locale: 'nl' | 'ro';
-  heading: string;
-  pauseLabel: string;
-}
-const { locale, heading, pauseLabel } = Astro.props;
-const tiles = (photos.loop as Photo[]).slice(0, 5);
+const t = homeNl.loop;
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/{hero,home,footer}/*.{jpg,jpeg,png,webp}', { eager: true });
+const subjects = (photos.loop as Photo[]).slice(0, 5).map((p) => {
+  const mod = files[`../assets/${p.src}`];
+  if (!mod) throw new Error(`photos.json loop: src/assets/${p.src} not found`);
+  const img = mod.default;
+  const max = Math.min(img.width, 1080);
+  return { img, widths: [480, 768, 1080].filter((w) => w < max).concat(max), pos: `object-position:${p.focalX ?? 50}% ${p.focalY ?? 50}%`, alt: p.alt.nl };
+});
+const n = subjects.length;
+const delay = (i: number, j: number) => -(45 + 0.8 * i + 9 * ((((i - j) % n) + n) % n));
+const sizes = '(min-width: 960px) 60vw, 100vw';
 ---
-<section class="loop" aria-labelledby="loop-title">
-  <h2 id="loop-title" class="loop__title">{heading}</h2>
-  <div class="loop__grid">
-    {tiles.length === 0
-      ? [0, 1, 2, 3, 4].map(() => <div class="loop__tile loop__tile--empty" aria-hidden="true"></div>)
-      : tiles.map((t) => (
-          <figure class="loop__tile">
-            <img
-              src={t.src}
-              alt={t.alt[locale]}
-              width={t.width}
-              height={t.height}
+<section class="loop sec plw" aria-labelledby="loop-title">
+  <div class="container loop__in">
+    <div class="sec__head loop__head">
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h2 class="sec__title sec__title--accent" id="loop-title">{t.title}</h2>
+    </div>
+    <div class="loop__grid">
+      {subjects.map((_, i) => (
+        <div class="pl">
+          {subjects.map((s, j) => (
+            <Picture
+              class:list={[{ home: i === j }]}
+              src={s.img}
+              widths={s.widths}
+              sizes={sizes}
+              formats={['avif', 'webp']}
+              fallbackFormat="webp"
+              quality={55}
+              alt={s.alt}
               loading="lazy"
               decoding="async"
-              style={`object-position:${t.focalX ?? 50}% ${t.focalY ?? 50}%`}
+              fetchpriority="low"
+              style={`${s.pos};animation-delay:${delay(i, j).toFixed(1)}s`}
             />
-          </figure>
-        ))
-    }
+          ))}
+        </div>
+      ))}
+    </div>
+    <div class="loop__ctl">
+      <p class="loop__hint">{t.hint}</p>
+      <span class="loop__pause">
+        <input type="checkbox" id="loop-pause" class="plp" data-pause />
+        <label for="loop-pause" class="btn-icon">
+          <span class="vh loop__say-pause">{t.pause}</span>
+          <span class="vh loop__say-play">{t.play}</span>
+          <svg class="ic-pause" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+          <svg class="ic-play" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg>
+        </label>
+      </span>
+    </div>
   </div>
-  {tiles.length > 0 && (
-    <button class="btn-icon loop__pause" type="button" aria-label={pauseLabel} aria-pressed="false" data-pause>
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-    </button>
-  )}
 </section>
 
 <style>
-  .loop { padding: 48px 0; }
-  .loop__title {
-    text-align: center;
-    margin-bottom: 24px;
+  /* ── motion: boards Main / Raster, 1:1 ── */
+  .pl :global(img) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    animation: pl 45s ease-in-out infinite;
   }
-  .loop__grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    padding: 0 20px;
+  @keyframes pl {
+    0%, 16.44% { opacity: 1; }
+    20%, 96.44% { opacity: 0; }
+    100% { opacity: 1; }
   }
-  .loop__tile {
-    aspect-ratio: 1 / 1;
-    border-radius: var(--r-tile);
-    overflow: hidden;
-    background: var(--tag);
-    margin: 0;
+  .plp { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
+  .plw:has(.plp:checked) .pl :global(img) { animation-play-state: paused; }
+  .plw .ic-play { display: none; }
+  .plw:has(.plp:checked) .ic-pause { display: none; }
+  .plw:has(.plp:checked) .ic-play { display: block; }
+  .plp:focus-visible + label { outline: 2px solid var(--fg); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    .pl :global(img) { animation: none; }
+    .pl :global(img.home) { opacity: 1; }
+    .loop__ctl { display: none; }
   }
-  .loop__tile img { width: 100%; height: 100%; object-fit: cover; }
-  .loop__tile--empty {
-    background: linear-gradient(135deg, var(--tag), var(--tag-line));
-  }
-  /* .btn-icon (buttons.css); this only places it */
-  .loop__pause { display: flex; margin: 16px auto 0; }
-  @media (max-width: 720px) {
-    .loop__grid { gap: 6px; padding: 0 12px; }
+  /* the label says what a tap will do (lexicon §5.15) */
+  .loop__say-play { display: none; }
+  .plw:has(.plp:checked) .loop__say-pause { display: none; }
+  .plw:has(.plp:checked) .loop__say-play { display: inline; }
+
+  /* ── layout: board Main (390): padding 28 20 24, gap 14, 2 × 1fr, gap 10, heights 160 / 160 / 150 (span 2) / 160 / 160 ── */
+  .loop__in { display: flex; flex-direction: column; gap: 14px; }
+  .loop__head { gap: 8px; }
+  .loop__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .pl { position: relative; height: 160px; border-radius: var(--r-tile); overflow: hidden; background: var(--ink); }
+  .pl:nth-child(3) { grid-column: span 2; height: 150px; }
+  .pl :global(picture) { display: contents; }
+  .loop__ctl { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .loop__hint { margin: 0; font-size: var(--fs-caption); line-height: 1.4; color: var(--muted); }
+  .loop__pause { position: relative; display: inline-flex; flex: 0 0 auto; }
+  .loop__pause .btn-icon { background: var(--card); border-color: var(--fg); color: var(--fg); }
+
+  /* ── board Raster (1440): padding 56, gap 24; head row = title left, hint + pause right (aligned to the foot);
+     grid 1.25fr 1fr 1fr × 300 300, gap 14, tile 1 spans both rows; radius 16 ── */
+  @media (min-width: 960px) {
+    .loop__in {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas: "head ctl" "grid grid";
+      gap: 24px 32px;
+      align-items: end;
+    }
+    .loop__head { grid-area: head; gap: 10px; }
+    .loop__head .sec__title { max-width: 900px; }
+    .loop__ctl { grid-area: ctl; gap: 14px; padding-bottom: 4px; }
+    .loop__hint { font-size: 13px; text-align: right; }
+    .loop__grid {
+      grid-area: grid;
+      grid-template-columns: 1.25fr 1fr 1fr;
+      grid-template-rows: 300px 300px;
+      gap: 14px;
+    }
+    .pl { height: auto; border-radius: var(--r-frame); }
+    .pl:nth-child(1) { grid-row: span 2; }
+    .pl:nth-child(3) { grid-column: auto; height: auto; }
   }
 </style>

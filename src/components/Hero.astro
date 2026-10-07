@@ -61,7 +61,7 @@ const loop = first && { ...first, wipe: 'w135' };
 <section class="hero hw" data-hero aria-labelledby="hero-title">
   <div class="hero__text on-ink-m">
     {/* board Desktop: the text column is space-between — this lead group on top, the trust
-        strip (stage 3) at the foot. On the phone the group is the whole block. */}
+        strip (stage 3, slot "trust") at the foot. On the phone the group is the whole block. */}
     <div class="hero__lead">
     <div class="hero__row">
       {/* the open chip (stage 2): on the dark photo on the phone, on the paper column from 960 px */}
@@ -90,6 +90,8 @@ const loop = first && { ...first, wipe: 'w135' };
       <a class="btn btn--secondary btn--lg" href={t.secondaryHref}>{t.secondary}</a>
     </div>
     </div>
+    {/* stage 3: the trust strip at the foot of the text column (desktop; the page passes it in) */}
+    {Astro.slots.has('trust') && <div class="hero__trust"><slot name="trust" /></div>}
   </div>
   <div class="hero__media">
     <div class="hb hb0" style={`animation-delay:${first.delay}s`}>

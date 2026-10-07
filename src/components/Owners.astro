@@ -1,0 +1,42 @@
+---
+// Owners (stage 3, board Main „owners”): the portrait (120 × 150, radius 12) beside eyebrow · name · one line · link to
+// Over ons. Strings: src/i18n/home.ts (lexicon §5.17 / §5.15; the link is a placeholder). The photo is the team portrait
+// (the footer's pinned print too; build plan §3b keeps it here and takes it out of the loop).
+import { Picture } from 'astro:assets';
+import portrait from '../assets/footer/john-en-georgiana-slagerij-john-zwevezele.webp';
+import { homeNl } from '../i18n/home';
+
+const t = homeNl.owners;
+const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
+---
+<div class="own">
+  <div class="own__photo">
+    <Picture src={portrait} widths={[240, 480]} sizes="(min-width: 960px) 240px, 120px" formats={['avif', 'webp']} fallbackFormat="webp" quality={60} alt={t.alt} loading="lazy" decoding="async" fetchpriority="low" />
+  </div>
+  <div class="own__text">
+    <p class="eyebrow">{t.eyebrow}</p>
+    <h2 class="own__name">{t.name}</h2>
+    <p class="own__line">{t.text}</p>
+    <a class="link-arrow own__more" href={t.href}>{t.more}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a>
+  </div>
+</div>
+
+<style>
+  .own { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; align-items: center; }
+  .own__photo { position: relative; width: 120px; height: 150px; border-radius: 12px; overflow: hidden; background: var(--ink); }
+  .own__photo :global(picture) { display: contents; }
+  .own__photo :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
+  .own__text { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .own__name { margin: 0; font-size: 24px; line-height: 1.05; letter-spacing: -0.01em; }
+  .own__line { margin: 0; font-size: 13px; line-height: 1.45; color: var(--muted); }
+  .own__more { font-size: 13px; align-self: flex-start; }
+
+  @media (min-width: 960px) {
+    .own { grid-template-columns: 240px minmax(0, 1fr); gap: 32px; align-items: end; }
+    .own__photo { width: 240px; height: 300px; border-radius: var(--r-frame); }
+    .own__text { gap: 12px; padding-bottom: 8px; }
+    .own__name { font-size: 44px; line-height: 1; letter-spacing: -0.02em; }
+    .own__line { font-size: var(--fs-body); line-height: 1.5; max-width: 42ch; }
+    .own__more { font-size: 14px; }
+  }
+</style>

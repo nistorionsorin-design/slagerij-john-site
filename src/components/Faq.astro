@@ -1,0 +1,74 @@
+---
+// FAQ (stage 3) — lexicon §5.11 via faq.json: visible HTML, no FAQ schema (S-04, U-17). Native <details>, no script;
+// each question is an h3 inside its <summary> (allowed: summary takes one heading). No canvas board: the look follows
+// the hours card and the hairlines of the page (D-30, judged in the browser). Desktop: heading left, questions right.
+import faq from '../data/faq.json';
+import type { FaqItem } from '../data/types';
+import type { Locale } from '../i18n/ui';
+import { keepUnits } from '../lib/typo';
+
+export interface Props { locale: Locale; title: string }
+const { locale, title } = Astro.props;
+const items = faq[locale] as FaqItem[];
+const plus = '<path d="M12 5v14M5 12h14"/>';
+---
+{items.length > 0 && (
+<section class="sec faq" aria-labelledby="faq-title">
+  <div class="container faq__in">
+    <h2 class="sec__title faq__title" id="faq-title">{title}</h2>
+    <div class="faq__list">
+      {items.map((it) => (
+        <details class="faq__item">
+          <summary>
+            <h3 class="faq__q">{it.q}</h3>
+            <svg class="faq__icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" set:html={plus} />
+          </summary>
+          <p class="faq__a">{keepUnits(it.a)}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+)}
+
+<style>
+  .faq__in { display: flex; flex-direction: column; gap: 14px; }
+  .faq__list { border-top: 1px solid var(--line); }
+  .faq__item { border-bottom: 1px solid var(--line); }
+  .faq__item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 56px;
+    padding: 12px 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__q {
+    margin: 0;
+    font-family: var(--f-ui);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
+  .faq__icon { flex: 0 0 auto; color: var(--ox); }
+  .faq__item[open] .faq__icon { transform: rotate(45deg); }
+  .faq__a { margin: 0 0 16px; max-width: 64ch; font-size: 14px; line-height: 1.5; color: var(--muted); }
+  @media (hover: hover) { .faq__item summary:hover .faq__q { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; } }
+
+  @media (min-width: 960px) {
+    .faq { padding-bottom: 96px; }
+    .faq__in {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 56px;
+      align-items: start;
+    }
+    .faq__q { font-size: 17px; }
+    .faq__item summary { min-height: 64px; }
+    .faq__a { font-size: var(--fs-body); }
+  }
+</style>

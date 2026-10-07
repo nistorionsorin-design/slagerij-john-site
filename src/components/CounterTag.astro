@@ -1,22 +1,31 @@
 ---
-// CounterTag — the butcher's price tag with pin hole. name · one cooking line · €/kg.
-// Stub: all content is slotted; no copy baked in.
+// CounterTag — the butcher's price tag (brief §4, board „Toog” · „Toogetiket · product”): name · one cooking line ·
+// price per unit, the pin hole on the left. The board's CSS 1:1: grid 1fr auto, padding 14 16 14 34, radius 10,
+// name Fraunces 600 19 px, line 12 px muted, price 26 px 700 tabular (a placeholder price 20 px, as on board Main).
+// Price colour: oxblood (brief §2–3 „prices in oxblood”; the hero's tags do the same).
+// Tones: paper (the counter) · ink („aanbevolen pakket”: dark, price in the accent yellow). Nothing is baked in.
 export interface Props {
   name: string;
   line?: string;
   price?: string;
   unit?: string;
+  tone?: 'paper' | 'ink';
+  /** heading level of the name inside its section */
+  as?: 'h3' | 'h4';
 }
-const { name, line, price, unit } = Astro.props;
+const { name, line, price, unit, tone = 'paper', as: H = 'h3' } = Astro.props;
+const placeholder = !!price && price.startsWith('[');
 ---
-<article class="tag">
-  <span class="tag__hole" aria-hidden="true"></span>
-  <h3 class="tag__name">{name}</h3>
-  {line && <p class="tag__line">{line}</p>}
+<article class:list={['tag', `tag--${tone}`]}>
+  <span class="tag__pin" aria-hidden="true"></span>
+  <div class="tag__text">
+    <H class="tag__name">{name}</H>
+    {line && <p class="tag__line">{line}</p>}
+  </div>
   {price && (
     <p class="tag__price">
-      <span class="tag__amount">{price}</span>
-      {unit && <span class="tag__unit">&nbsp;{unit}</span>}
+      <span class:list={['tag__amount', { 'tag__amount--ph': placeholder }]}>{price}</span>
+      {unit && <span class="tag__unit">{unit}</span>}
     </p>
   )}
 </article>
@@ -24,39 +33,44 @@ const { name, line, price, unit } = Astro.props;
 <style>
   .tag {
     position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px 14px 34px;
     background: var(--tag);
     border: 1px solid var(--tag-line);
     border-radius: var(--r-tag);
-    padding: 20px 16px 16px;
     color: var(--fg);
-    text-align: left;
   }
-  .tag__hole {
+  .tag__pin {
     position: absolute;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 10px; height: 10px;
-    border-radius: 50%;
+    left: 13px;
+    top: 50%;
+    margin-top: -6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
     background: var(--paper);
-    box-shadow: inset 0 0 0 1px var(--tag-line);
+    border: 1px solid var(--tag-pin);
   }
+  .tag__text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
   .tag__name {
-    font-family: var(--f-display);
-    font-size: 20px;
-    line-height: 1.1;
-    margin: 0 0 4px;
-  }
-  .tag__line {
-    font-size: var(--fs-caption);
-    color: var(--muted);
-    margin: 0 0 10px;
-  }
-  .tag__price {
     margin: 0;
-    color: var(--ox);
-    font-weight: 700;
-    font-size: 18px;
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: var(--fs-tag);
+    line-height: 1.1;
+    letter-spacing: 0;
   }
-  .tag__unit { font-weight: 500; color: var(--muted); font-size: 13px; }
+  .tag__line { margin: 0; font-size: var(--fs-caption); line-height: 1.35; color: var(--muted); }
+  .tag__price { margin: 0; display: flex; align-items: baseline; gap: 3px; font-variant-numeric: tabular-nums; }
+  .tag__amount { font-size: var(--fs-price); font-weight: 700; letter-spacing: -0.02em; color: var(--ox); }
+  .tag__amount--ph { font-size: 20px; }
+  .tag__unit { font-size: var(--fs-caption); color: var(--muted); }
+
+  .tag--ink { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+  .tag--ink .tag__pin { border: 0; }
+  .tag--ink .tag__line, .tag--ink .tag__unit { color: var(--on-ink-muted); }
+  .tag--ink .tag__amount { color: var(--accent); }
 </style>

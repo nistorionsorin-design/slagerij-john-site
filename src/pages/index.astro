@@ -1,15 +1,58 @@
 ---
-// Home NL. Stage 1: the hero. The body (trust strip, toog, categories, …) is stage 3.
-// Title and description: lexicon §5.12, home NL (shortened 06.10), verbatim.
+// Home NL. Stage 1: the hero. Stage 3: the body — trust strip · „Deze week op de toog” · category grid · Eindejaar ·
+// reviews · photo loop „Bij ons” · owners + hours card · FAQ (canvas boards Main + Raster; desktop derived, D-30).
+// Title and description: lexicon §5.12, home NL (shortened 06.10), verbatim. Body strings: src/i18n/home.ts.
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
+import TrustStrip from '../components/TrustStrip.astro';
+import ToogWeek from '../components/ToogWeek.astro';
+import CategoryGrid from '../components/CategoryGrid.astro';
+import SeasonBlock from '../components/SeasonBlock.astro';
+import Reviews from '../components/Reviews.astro';
+import PhotoLoop from '../components/PhotoLoop.astro';
+import Owners from '../components/Owners.astro';
+import Hours from '../components/Hours.astro';
+import Faq from '../components/Faq.astro';
+import { homeNl as t } from '../i18n/home';
+import '../styles/sections.css';
 const alternates = { nl: '/', ro: '/ro' };
 ---
 <Base
   title="Slagerij John – slager & traiteur in Zwevezele, zondag open"
   description="Slager & traiteur in Zwevezele: dagvers vlees, huisbereide gerechten, BBQ- en feestschotels, Roemeense specialiteiten. Zondag open. Bestel via WhatsApp."
-  locale="nl" path="/" alternates={alternates} navVariant="hero">
+  locale="nl" path="/" alternates={alternates} navVariant="hero" hoursCard>
   <main id="main">
-    <Hero locale="nl" />
+    <Hero locale="nl">
+      <TrustStrip slot="trust" place="hero" />
+    </Hero>
+    <TrustStrip place="band" />
+    <ToogWeek />
+    <CategoryGrid />
+    <SeasonBlock />
+    <Reviews />
+    <PhotoLoop />
+    <div class="sec visit">
+      <div class="container visit__in">
+        <Owners />
+        <Hours locale="nl" title={t.hours.title} closed={t.hours.closed} route={t.hours.route} />
+      </div>
+    </div>
+    <Faq locale="nl" title={t.faq.title} />
   </main>
 </Base>
+
+<style>
+  /* owners + hours: stacked on the phone (board Main: owners padding 24 20, the card below with 20 px margins),
+     side by side on desktop */
+  .visit { padding-top: 24px; }
+  .visit__in { display: flex; flex-direction: column; gap: 24px; }
+  @media (min-width: 960px) {
+    .visit { padding-top: 80px; }
+    .visit__in {
+      display: grid;
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: 56px;
+      align-items: center;
+    }
+  }
+</style>

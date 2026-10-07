@@ -1,0 +1,69 @@
+---
+// Eindejaar block (stage 3). Board Main draws it on ink; brief §2 keeps the dark for the hero only and board „Toog”
+// („Bestelbon · seizoen”, „Ossenbloed voor … seizoensblokken”) draws the seasonal block in oxblood — the brief wins
+// (truth order), so: oxblood, eyebrow in --ox-tint, Fraunces italic title, the light button (buttons.css .on-ink
+// .btn--light). Phone: board Main's box (margin 0 20, padding 22 20, radius 16). Desktop: one band, button right.
+import { homeNl } from '../i18n/home';
+const t = homeNl.season;
+---
+<section class="sec season-wrap" aria-labelledby="season-title">
+  <div class="container">
+    <div class="season on-ink">
+      <div class="season__text">
+        <p class="season__eyebrow">{t.eyebrow}</p>
+        <h2 class="season__title" id="season-title">{t.title}</h2>
+        <p class="season__line">{t.line}</p>
+      </div>
+      <a class="btn btn--light season__cta" href={t.href}>{t.cta}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .season-wrap { padding-top: 4px; }   /* board Main: 28 px under the category grid (its 24 + 4) */
+  .season {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 22px 20px;
+    border-radius: var(--r-frame);
+    background: var(--ox);
+    color: var(--on-ox);
+  }
+  .season__text { display: flex; flex-direction: column; gap: 10px; }
+  .season__eyebrow {
+    margin: 0;
+    font-size: var(--fs-eyebrow);
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1.3;
+    text-transform: uppercase;
+    color: var(--ox-tint);
+  }
+  .season__title {
+    margin: 0;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.02;
+    letter-spacing: 0;
+    color: var(--on-ox);
+  }
+  .season__line { margin: 0; font-size: 13px; line-height: 1.45; color: var(--ox-tint); }
+  .season__cta { align-self: flex-start; margin-top: 6px; }
+
+  @media (min-width: 960px) {
+    .season-wrap { padding-top: 56px; }
+    .season {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      padding: 40px 48px;
+      border-radius: var(--r-frame-lg);
+    }
+    .season__title { font-size: 44px; line-height: 1; }
+    .season__line { font-size: var(--fs-body); }
+    .season__cta { align-self: center; margin-top: 0; flex: 0 0 auto; }
+  }
+</style>

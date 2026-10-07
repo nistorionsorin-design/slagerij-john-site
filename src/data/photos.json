@@ -152,6 +152,101 @@
       }
     }
   ],
-  "loop": [],
+  "_loop_source": "Photo loop „Bij ons” (D-11, stage 3): shop · people · craft · barbecue · platters = q28 · q09 · q01 · p08 · p12 per docs/build-plan.md §3b; files byte-identical in src/assets/home/; alts NL/RO = lexicon §5.14 „Home photos” verbatim; focal points read from the photos. Claude Code, stage 3 (revised 07.10).",
+  "loop": [
+    {
+      "src": "home/toog-slagerij-john-zwevezele.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/vitrina.jpeg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "De toog van Slagerij John, vol voor de dag",
+        "ro": "Vitrina Măcelăriei John, plină pentru ziua de azi"
+      }
+    },
+    {
+      "src": "home/georgiana-en-john-op-een-barbecue.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.13 10.jpeg",
+      "focalX": 50,
+      "focalY": 40,
+      "alt": {
+        "nl": "Georgiana en John op een barbecue bij een club",
+        "ro": "Georgiana și John la un grătar de club"
+      }
+    },
+    {
+      "src": "home/john-in-de-koelcel-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 1.jpeg",
+      "focalX": 65,
+      "focalY": 40,
+      "alt": {
+        "nl": "John in de koelcel bij de rundskwartieren",
+        "ro": "John în camera frigorifică, lângă sferturile de vită"
+      }
+    },
+    {
+      "src": "home/mobiele-barbecue-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 21.00.24.jpeg",
+      "focalX": 50,
+      "focalY": 55,
+      "alt": {
+        "nl": "De barbecuetrailer met open grills",
+        "ro": "Remorca de grătar, cu grătarele deschise"
+      }
+    },
+    {
+      "src": "home/charcuterieschotel-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at11.jpeg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Charcuterieschotel op een feest, borden klaar",
+        "ro": "Platou de mezeluri la o petrecere, cu farfuriile pregătite"
+      }
+    }
+  ],
+  "_categories_source": "Category grid (D-13, stage 3): Vers vlees · BBQ & gourmet · Traiteur · Roemeense specialiteiten = q20 · q12 · q05 · q07 per docs/build-plan.md §3b; files byte-identical in src/assets/home/; alts NL/RO = lexicon §5.14 „Home photos” verbatim. Claude Code, stage 3 (revised 07.10).",
+  "categories": [
+    {
+      "src": "home/huisgemaakte-burgers-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/belgian meat.jpeg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Huisgemaakte burgers in de toog",
+        "ro": "Hamburgeri de casă în vitrină"
+      }
+    },
+    {
+      "src": "home/gourmetschotel-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.13 13.jpeg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Gourmetschotel: gepaneerde lapjes, worstjes, gemarineerde kip",
+        "ro": "Platou gourmet: șnițele, cârnăciori, pui marinat"
+      }
+    },
+    {
+      "src": "home/tapasschotels-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 5.jpeg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Tapasschotels met charcuterie en kaas op de toog",
+        "ro": "Platouri de tapas cu mezeluri și brânzeturi, pe tejghea"
+      }
+    },
+    {
+      "src": "home/verse-mici-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 7.jpeg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Verse mici, verpakt per schaal",
+        "ro": "Mici proaspeți, ambalați pe tăvi"
+      }
+    }
+  ],
   "gallery": []
 }

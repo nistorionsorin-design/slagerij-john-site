@@ -1,0 +1,41 @@
+/* Home body sections (stage 3) — the shared frame of the blocks below the hero.
+   Phone = canvas board Main (390): 20 px gutters, eyebrow 11/.16em ox, H2 Fraunces 500 30/1.05 (the toog heading;
+   „Bij ons” uses the italic 25 px accent). Desktop is derived (D-30): the 1440 container with 56 px gutters,
+   80 px between blocks, H2 at --fs-h2 desktop × 1.4. Tokens only. */
+.sec { padding: 28px 0 24px; }
+.sec__head { display: flex; flex-direction: column; gap: 10px; }
+.sec__title {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+}
+.sec__title--accent {
+  font-style: italic;
+  font-weight: 400;
+  font-size: 25px;
+  letter-spacing: -0.01em;
+}
+.sec__intro { margin: 0; font-size: 14px; line-height: 1.45; color: var(--muted); max-width: 56ch; }
+
+@media (min-width: 960px) {
+  .sec { padding: 80px 0 0; }
+  .sec__head { gap: 14px; }
+  .sec__title { font-size: 44px; line-height: 1; letter-spacing: -0.02em; }
+  .sec__title--accent { font-size: 44px; }
+  .sec__intro { font-size: var(--fs-body); line-height: 1.5; }
+}
+
+/* far below the fold: skip layout and paint until near (and keep their lazy photos from competing with the hero's
+   fonts during load); the intrinsic sizes are the measured heights, so the scrollbar does not jump */
+.cats, .loop, .visit, .faq { content-visibility: auto; }
+.cats { contain-intrinsic-size: auto 600px; }
+.loop { contain-intrinsic-size: auto 660px; }
+.visit { contain-intrinsic-size: auto 620px; }
+.faq { contain-intrinsic-size: auto 450px; }
+@media (min-width: 960px) {
+  .cats { contain-intrinsic-size: auto 630px; }
+  .loop { contain-intrinsic-size: auto 820px; }
+  .visit { contain-intrinsic-size: auto 480px; }
+  .faq { contain-intrinsic-size: auto 560px; }
+}

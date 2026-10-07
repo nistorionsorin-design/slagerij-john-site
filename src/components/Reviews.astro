@@ -1,43 +1,68 @@
 ---
-// Reviews — live Google rating + count fetched server-side (D-10). Stub shows
-// the shell; the fetch job writes to data/reviews.json on build or on a cron.
+// Reviews block (D-10, U-14, BE-09) — stage 3, board Main „reviews”: the Google figure large (Fraunces 64), five stars,
+// the count, and the source line of lexicon §5.7 with the link to all reviews. Rating and count come from
+// reviews.json (filled server-side by the Places fetch; until then the placeholders show and the stars are outlines,
+// so nothing is claimed). No quotes, no aggregateRating (D-10). Desktop (derived): the same row, larger.
 import reviews from '../data/reviews.json';
-export interface Props {
-  heading: string;
-  sourceLine: string;
-}
-const { heading, sourceLine } = Astro.props;
-const r = reviews.rating;
-const c = reviews.count;
+import { homeNl } from '../i18n/home';
+
+const t = homeNl.reviews;
+const hasRating = reviews.rating !== null;
+const rating = hasRating ? Number(reviews.rating).toLocaleString('nl-BE', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : homeNl.ratingPh;
+const count = reviews.count === null ? homeNl.countPh : String(reviews.count);
+const filled = hasRating ? Math.round(Number(reviews.rating)) : 0;
+const star = 'M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z';
 ---
-<section class="rev" aria-labelledby="rev-title">
-  <h2 id="rev-title" class="rev__title">{heading}</h2>
-  <div class="rev__fig">
-    <span class="rev__rating">{r ?? '—'}</span>
-    <span class="rev__out">/ 5</span>
-    <span class="rev__count">({c ?? '—'})</span>
+<section class="sec rev" aria-labelledby="rev-title">
+  <div class="container rev__in">
+    <p class:list={['rev__fig', { 'rev__fig--ph': !hasRating }]} aria-hidden={hasRating ? 'true' : undefined}>{rating}</p>
+    <div class="rev__text">
+      <span class="rev__stars" role="img" aria-label={t.starsLabel(rating)}>
+        {[0, 1, 2, 3, 4].map((i) => (
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill={i < filled ? 'currentColor' : 'none'} stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d={star} /></svg>
+        ))}
+      </span>
+      <h2 class="rev__count" id="rev-title">{t.count(count)}</h2>
+      <p class="rev__source">{t.source} <a href={t.href} rel="noopener">{t.link}</a></p>
+    </div>
   </div>
-  <p class="rev__source">{sourceLine}</p>
 </section>
 
 <style>
-  .rev {
-    padding: 24px 20px;
-    text-align: center;
-  }
+  /* board Main: padding 30 20 10, grid auto 1fr, gap 16 */
+  .rev { padding: 30px 0 10px; }
+  .rev__in { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: center; }
   .rev__fig {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 6px;
+    margin: 0;
     font-family: var(--f-display);
-    font-weight: 600;
+    font-weight: 500;
+    font-size: 64px;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    font-variant-numeric: lining-nums;
   }
-  .rev__rating { font-size: 44px; color: var(--ox); }
-  .rev__out { font-size: 20px; color: var(--muted); }
-  .rev__count { font-size: 18px; color: var(--muted); }
-  .rev__source {
-    font-size: var(--fs-caption);
-    color: var(--muted);
-    margin: 8px 0 0;
+  .rev__fig--ph { font-size: 32px; }   /* the placeholder, not the figure: keeps the text column readable */
+  .rev__text { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .rev__stars { display: inline-flex; gap: 2px; color: var(--fg); }
+  .rev__count {
+    margin: 0;
+    font-family: var(--f-ui);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0;
+  }
+  .rev__source { margin: 0; font-size: var(--fs-caption); line-height: 1.4; color: var(--muted); }
+  .rev__source a { font-weight: 600; }
+
+  @media (min-width: 960px) {
+    .rev { padding-top: 80px; padding-bottom: 0; }
+    .rev__in { gap: 28px; }
+    .rev__text { max-width: 640px; }
+    .rev__fig { font-size: 112px; }
+    .rev__fig--ph { font-size: 56px; }
+    .rev__stars svg { width: 20px; height: 20px; }
+    .rev__count { font-size: 18px; }
+    .rev__source { font-size: var(--fs-body); line-height: 1.5; }
   }
 </style>

@@ -1,4 +1,30 @@
 {
-  "nl": [],
+  "_source": "lexicon §5.11 FAQ bank as revised 07.10 (visible HTML, no FAQ schema — S-04), NL question and answer verbatim; the home shows these six (lexicon §4 home fan-out: open op zondag · levering · hoe bestellen · Roemeens?). A price in an answer is [PRIJS] and a {n} is [AANTAL] until FACTS.md has the owners' value (the old site's €45 / €10 / €11 / €15 are [OBSERVED], to confirm); the delivery figures are the §5.5 rules already on the footer (D6: owners confirm). RO = stage 9; the rest of §5.11 = stages 4–11. Claude Code, stage 3.",
+  "nl": [
+    {
+      "q": "Zijn jullie open op zondag?",
+      "a": "Ja, zondag van 08:00 tot 13:00; maandag vanaf 13:00."
+    },
+    {
+      "q": "Leveren jullie in Tielt / Lichtervelde / Roeselare?",
+      "a": "Ja. Lichtervelde en Wingene liggen binnen 10 km (gratis vanaf €50), Tielt en Roeselare binnen 20 km (gratis vanaf €100); de afstand telt vanaf de winkel."
+    },
+    {
+      "q": "Kan ik ook kleine hoeveelheden kopen?",
+      "a": "Ja. Aan de toog koopt u wat u nodig hebt; online bestelt u per kg of per pakket."
+    },
+    {
+      "q": "Wat zijn mici?",
+      "a": "Mici zijn gekruide Roemeense gehaktrolletjes van rund en varken, voor op de BBQ of in de pan; [PRIJS] per kg, ongeveer [AANTAL] stuks per kg."
+    },
+    {
+      "q": "Hoeveel is 1 colli?",
+      "a": "Een colli is een vast pakket van 5–10 kg; Colli Varken 1 bevat 1 kg spiering, 1 kg filet kotelet, 1 kg spek, 1 kg worst, 1 kg gehakt voor [PRIJS]."
+    },
+    {
+      "q": "Wat kost een gourmetschotel per persoon?",
+      "a": "Gourmet 9 soorten [PRIJS], 10 soorten [PRIJS], luxe [PRIJS] per persoon; fondue vanaf [PRIJS]."
+    }
+  ],
   "ro": []
 }

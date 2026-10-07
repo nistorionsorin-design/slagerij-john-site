@@ -1,0 +1,48 @@
+---
+// „Deze week op de toog” (stage 3, board Main #prijzen): eyebrow · heading · intro · three counter tags · link to the
+// prices. Tags from products.json `week` (placeholders until FACTS.md has the owners' prices and lines).
+// Desktop (derived, D-30): the heading block left, the tags stacked right — a price board.
+import products from '../data/products.json';
+import CounterTag from './CounterTag.astro';
+import { homeNl } from '../i18n/home';
+
+const t = homeNl.toog;
+const tags = products.week;
+const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
+---
+<section class="sec toog" id="prijzen" aria-labelledby="toog-title">
+  <div class="container toog__in">
+    <div class="sec__head">
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h2 class="sec__title" id="toog-title">{t.title}</h2>
+      <p class="sec__intro">{t.intro}</p>
+    </div>
+    <ul class="toog__tags">
+      {tags.map((g) => (
+        <li><CounterTag name={g.name.nl} line={g.line.nl} price={g.price.nl} unit={g.unit.nl} /></li>
+      ))}
+    </ul>
+    <a class="link-arrow toog__more" href={t.moreHref}>{t.more}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a>
+  </div>
+</section>
+
+<style>
+  .toog__in { display: flex; flex-direction: column; gap: 14px; }
+  .toog__tags { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .toog__more { align-self: flex-start; }
+
+  /* desktop: heading and link left, the tags right */
+  @media (min-width: 960px) {
+    .toog__in {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      grid-template-areas: "head tags" "more tags";
+      grid-template-rows: auto 1fr;
+      gap: 8px 56px;
+      align-items: start;
+    }
+    .toog__in > .sec__head { grid-area: head; }
+    .toog__tags { grid-area: tags; margin: 0; gap: 12px; }
+    .toog__more { grid-area: more; }
+  }
+</style>

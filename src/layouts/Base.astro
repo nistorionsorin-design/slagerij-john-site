@@ -24,9 +24,11 @@ export interface Props {
   noindex?: boolean;
   /** 'hero': the sign is dark glass over the hero photo; 'paper': solid ink, with a spacer below (stage 0b2). */
   navVariant?: 'paper' | 'hero';
+  /** the page shows the hours card (Hours.astro, id="openingsuren"): the footer's hours then drop that id */
+  hoursCard?: boolean;
 }
 
-const { title, description, locale, path, alternates, noindex = false, navVariant = 'paper' } = Astro.props;
+const { title, description, locale, path, alternates, noindex = false, navVariant = 'paper', hoursCard = false } = Astro.props;
 
 const origin = 'https://slagerij-john.be';
 const abs = (p: string) => `${origin}${p === '/' ? '/' : p}`;
@@ -110,7 +112,7 @@ const jsonld = entity.name
     <Header locale={locale} path={path} alternates={alt} variant={navVariant} />
     <slot />
     <Menu locale={locale} path={path} />
-    <Footer locale={locale} alternates={alt} />
+    <Footer locale={locale} alternates={alt} hoursAnchor={!hoursCard} />
     {/* the open chip's hours (D-20): data for src/scripts/open-chip.ts, not executed (CSP-safe) */}
     <script type="application/json" id="hours" set:html={JSON.stringify({ timeZone: hours.timeZone, regular: hours.regular, special: hours.special })} />
     <BottomBar

@@ -31,8 +31,10 @@ import { ui, menu, hero, footer, wa, routeHref, vatDisplay, type Locale } from '
 export interface Props {
   locale: Locale;
   alternates: { nl: string; ro: string };
+  /** the open chips' target #openingsuren — false when the page has its own hours card (Hours.astro, stage 3) */
+  hoursAnchor?: boolean;
 }
-const { locale, alternates } = Astro.props;
+const { locale, alternates, hoursAnchor = true } = Astro.props;
 const t = ui[locale];
 const f = footer[locale];
 const a = entity.address;
@@ -115,7 +117,7 @@ const icons = {
           {f.route}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.arrow}></svg>
         </a>
-        <div class="foot__hours" id="openingsuren">
+        <div class="foot__hours" id={hoursAnchor ? 'openingsuren' : undefined}>
           <h2 class="foot__eyebrow foot__hours-head">{f.hours}</h2>
           <dl class="foot__days">
             {days.map((d, i) => (

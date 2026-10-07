@@ -1,4 +1,25 @@
 {
+  "_source": "`week` = „Deze week op de toog” on the home (stage 3): the three tags of the canvas board Main. Names: Colli Varken 1 (lexicon §5.11 / §5.14, RO §5.14), Gourmet 9 soorten (§5.11; RO „BBQ și gourmet” per Dan 07.10, lexicon §5.15 home body strings), Mici (§5.14). Prices and cooking lines stay [PRIJS] / [KOOKLIJN] until FACTS.md has the owners' values (the old site's €45 / €10 are [OBSERVED], to confirm — FACTS „Known prices”). `items` / `categories` get their shape at stage 4 (Producten); `week` then points at items. Claude Code, stage 3.",
   "categories": [],
-  "items": []
+  "items": [],
+  "week": [
+    {
+      "name": { "nl": "Colli Varken 1", "ro": "Colli Porc 1" },
+      "line": { "nl": "[KOOKLIJN]", "ro": "[KOOKLIJN]" },
+      "price": { "nl": "[PRIJS]", "ro": "[PREȚ]" },
+      "unit": { "nl": "/colli", "ro": "/colli" }
+    },
+    {
+      "name": { "nl": "Gourmet 9 soorten", "ro": "BBQ și gourmet" },
+      "line": { "nl": "[KOOKLIJN]", "ro": "[KOOKLIJN]" },
+      "price": { "nl": "[PRIJS]", "ro": "[PREȚ]" },
+      "unit": { "nl": "/pers", "ro": "/pers." }
+    },
+    {
+      "name": { "nl": "Mici", "ro": "Mici" },
+      "line": { "nl": "[KOOKLIJN]", "ro": "[KOOKLIJN]" },
+      "price": { "nl": "[PRIJS]", "ro": "[PREȚ]" },
+      "unit": { "nl": "/kg", "ro": "/kg" }
+    }
+  ]
 }
