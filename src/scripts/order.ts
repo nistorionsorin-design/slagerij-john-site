@@ -320,7 +320,8 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
       const res = await r.json().catch(() => ({ ok: false, errors: ['send'] }));
       if (res.ok) {
         remember();
-        done(res.ref ?? ref, !!res.dryRun);
+        // the dry-run line never shows off the dev machine, whatever the server says
+        done(res.ref ?? ref, !!res.dryRun && /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname));
         return;
       }
       if (r.status === 422 && Array.isArray(res.errors)) showErrors(res.errors);

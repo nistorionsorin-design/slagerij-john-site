@@ -220,7 +220,8 @@ export default {
     const dry = env.ORDER_DRY_RUN === '1' || (!env.RESEND_API_KEY && !env.VERCEL);
     if (dry) {
       console.log(`\n[bestelbon · dry run — nothing sent] ${order.ref}\n── mail to the shop: ${m.shop.subject}\n${m.shop.text}\n── WhatsApp to the shop:\n${wa}\n── mail to ${order.email}: ${m.customer.subject}\n${m.customer.text}\n`);
-      return answer(200, { ok: true, ref: order.ref, dryRun: true });
+      // the page's English „dry run” line is for the dev server only: on Vercel (ORDER_DRY_RUN=1) the answer is plain ok
+      return answer(200, { ok: true, ref: order.ref, ...(env.VERCEL ? {} : { dryRun: true }) });
     }
     if (!env.RESEND_API_KEY || !env.ORDER_MAIL_FROM) {
       console.error('order: not configured (RESEND_API_KEY / ORDER_MAIL_FROM)');
