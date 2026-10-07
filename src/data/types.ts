@@ -22,6 +22,9 @@ export interface HeroPhoto extends Photo { tag: HeroTag }
 
 export interface Slot { open: string; close: string }
 export interface Day { dayOfWeek: string; slots: Slot[] }
+/** hours.json `special`: one calendar day (Brussels) that replaces the regular week; `slots: []` = closed.
+ *  e.g. { "date": "2026-11-01", "slots": [] } · { "date": "2026-12-24", "slots": [{ "open": "08:00", "close": "16:00" }] } */
+export interface SpecialDay { date: string; slots: Slot[] }
 
 export interface Product {
   id: string;

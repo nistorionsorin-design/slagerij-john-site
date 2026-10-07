@@ -111,6 +111,8 @@ const jsonld = entity.name
     <slot />
     <Menu locale={locale} path={path} />
     <Footer locale={locale} alternates={alt} />
+    {/* the open chip's hours (D-20): data for src/scripts/open-chip.ts, not executed (CSP-safe) */}
+    <script type="application/json" id="hours" set:html={JSON.stringify({ timeZone: hours.timeZone, regular: hours.regular, special: hours.special })} />
     <BottomBar
       telHref={`tel:${entity.telephone}`}
       waHref={wa(`bar-mobile-${locale}`)}

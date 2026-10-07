@@ -2,6 +2,8 @@
 // Source of every string is noted. Strings not in docs/lexicon.md §5–6 are
 // either page names from lexicon §4 / the canvas boards (flagged in the stage
 // report) or visible placeholders in [brackets] for Cowork to replace.
+import type { ChipState } from '../lib/open-state';
+
 export type Locale = 'nl' | 'ro';
 
 export interface NavItem {
@@ -122,6 +124,54 @@ export const hero = {
   },
 } satisfies Record<Locale, unknown>;
 
+// Open chip (stage 2, D-20 + addendum 07.10): the eight states of design/css/open-chip.css v1.1, verbatim (lexicon
+// §5.15: „Open chip: the eight states in design/css/open-chip.css”; the countdown also in §5.4). Each state =
+// [segment, time]: the segment (.s) names the state, the time (.t) sits on the card half — no „· ” between them,
+// the two tones carry the split. RO times: a hyphen in 08:00-18:00 (LR-T03, the file's RO „still”). Day names
+// lowercase (file + LR-T06). Closing-soon is the countdown („sluit over 20 min” / „închide în 20 min”).
+const chipDays: Record<Locale, string[]> = {
+  nl: ['maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag', 'zondag'],
+  ro: ['luni', 'marți', 'miercuri', 'joi', 'vineri', 'sâmbătă', 'duminică'],
+};
+export const chip: Record<Locale, { text: (s: ChipState) => [string, string] }> = {
+  nl: {
+    text: (s) => {
+      const when = (n: { inDays: number; weekday: number; open: string } | null) =>
+        n ? `opent ${n.inDays === 1 ? 'morgen' : chipDays.nl[n.weekday]} ${n.open}` : '';
+      switch (s.kind) {
+        case 'open': return ['Nu open', `sluit om ${s.close}`];
+        case 'closing-soon': return ['Nu open', `sluit over ${s.left} min`];
+        case 'special-open': return ['Nu open', `vandaag tot ${s.close} · feestdag`];
+        case 'closed-today': return ['Gesloten', `opent om ${s.open}`];
+        case 'closed-tomorrow':
+        case 'closed-day': return ['Gesloten', when(s.next)];
+        case 'special-closed': return ['Vandaag gesloten', when(s.next)];
+        case 'still': return s.slots.length
+          ? ['Vandaag', s.slots.map((x) => `${x.open}–${x.close}`).join(' · ')]
+          : ['Vandaag gesloten', ''];
+      }
+    },
+  },
+  ro: {
+    text: (s) => {
+      const when = (n: { inDays: number; weekday: number; open: string } | null) =>
+        n ? `deschide ${n.inDays === 1 ? 'mâine' : chipDays.ro[n.weekday]} la ${n.open}` : '';
+      switch (s.kind) {
+        case 'open': return ['Deschis acum', `închide la ${s.close}`];
+        case 'closing-soon': return ['Deschis acum', `închide în ${s.left} min`];
+        case 'special-open': return ['Deschis acum', `azi până la ${s.close} · sărbătoare`];
+        case 'closed-today': return ['Închis', `deschide la ${s.open}`];
+        case 'closed-tomorrow':
+        case 'closed-day': return ['Închis', when(s.next)];
+        case 'special-closed': return ['Azi închis', when(s.next)];
+        case 'still': return s.slots.length
+          ? ['Azi', s.slots.map((x) => `${x.open}-${x.close}`).join(' · ')]
+          : ['Azi închis', ''];
+      }
+    },
+  },
+};
+
 // Footer (stage 0c, boards „Footer · desktop 1440” / „Footer · mobiel 390”). Every string's source is noted.
 // Column heads, e-mail row, back-to-top, legal link names and the credit: lexicon §5.15 „Footer labels” /
 // „Footer credit” and §6 footer labels (added 07.10), verbatim.
@@ -135,9 +185,6 @@ export const footer = {
     printAlt: 'John en Georgiana · Bruggestraat 146A',
     /** §5.4 */
     closed: 'Gesloten',
-    /** open-chip.css „still” state (lexicon §5.15 → open-chip.css) */
-    today: 'Vandaag',
-    todayClosed: 'Vandaag gesloten',
     /** §5.3 bottom bar „Bel” + the number from entity.json */
     call: 'Bel',
     /** §5.15 footer labels (07.10) */
@@ -181,9 +228,6 @@ export const footer = {
     printAlt: 'John și Georgiana · Bruggestraat 146A',
     /** §5.4 RO aid */
     closed: 'Închis',
-    /** open-chip.css „still” state, RO */
-    today: 'Azi',
-    todayClosed: 'Azi închis',
     /** §5.3 bottom bar RO */
     call: 'Sună',
     /** §6 footer labels (07.10) */

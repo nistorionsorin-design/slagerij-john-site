@@ -161,3 +161,5 @@ html.menu-open .bar{visibility:hidden}
 .menu__row{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .menu__route{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin-left:auto;color:var(--on-ink);font-family:var(--f-ui);font-size:13px;font-weight:600;text-decoration:none}
 @media (hover:hover){.menu__social a:hover,.menu__route:hover{color:var(--on-ink);text-decoration:underline;text-underline-offset:4px}}
+/* stage 2: the open chip in the menu row keeps its natural width (open-chip.css v1.1) — if a state and Route do not fit one line, Route wraps below, right-aligned */
+.menu__row{flex-wrap:wrap;row-gap:4px}

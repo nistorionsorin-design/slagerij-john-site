@@ -21,6 +21,7 @@ import type { HeroPhoto } from '../data/types';
 import stampNl from '../assets/stamp.svg?raw';
 import stampRo from '../assets/stamp-ro.svg?raw';
 import WaIcon from './WaIcon.astro';
+import OpenChip from './OpenChip.astro';
 import { hero as copy, wa, type Locale } from '../i18n/ui';
 
 export interface Props { locale: Locale }
@@ -63,7 +64,8 @@ const loop = first && { ...first, wipe: 'w135' };
         strip (stage 3) at the foot. On the phone the group is the whole block. */}
     <div class="hero__lead">
     <div class="hero__row">
-      {/* stage 2: the open chip lands here, before the pause */}
+      {/* the open chip (stage 2): on the dark photo on the phone, on the paper column from 960 px */}
+      <OpenChip locale={locale} variant="im" />
       {/* the pause stands on ink at every width (the photo panel on desktop) → .on-ink */}
       <span class="hero__pause on-ink">
         <input type="checkbox" id="hero-pause" class="hp" data-pause />

@@ -3,11 +3,12 @@
 // state C). Rendered before the footer as a plain dark list (`.menu--flat`): that is the no-JS menu the
 // burger link points to. header.ts moves it next to the sign, hides it and opens it as the full-screen
 // overlay. Phone only; from 960 px header.css hides it and the links sit in the sign.
-// Foot (header.css v2.2): the open chip (stage 2) + Route · Bestel via WhatsApp · brand marks with their names.
+// Foot (header.css v2.2): the open chip (OpenChip.astro, stage 2) + Route · Bestel via WhatsApp · brand marks with their names.
 // No NL/RO here: the switch is in the sign, which stays above the overlay.
 import entity from '../data/entity.json';
 import BrandIcon from './BrandIcon.astro';
 import WaIcon from './WaIcon.astro';
+import OpenChip from './OpenChip.astro';
 import { social } from '../lib/social';
 import { menu, ui, wa, routeHref, type Locale } from '../i18n/ui';
 
@@ -31,7 +32,9 @@ const isCurrent = (href: string) => path === href || path.startsWith(href + '/')
   </nav>
   <div class="menu__foot on-ink">
     <div class="menu__row">
-      {/* stage 2: the open chip (.oc) lands here, left of Route */}
+      {/* the chip keeps its natural width (open-chip.css v1.1); Route is pushed right (margin-left: auto), so a
+          longer state moves nothing, and the row wraps if a state and Route do not fit one line. */}
+      <OpenChip locale={locale} variant="i" />
       <a class="menu__route" href={routeHref(entity.geo.latitude, entity.geo.longitude)} rel="noopener">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
         {t.bar.route}

@@ -8,12 +8,10 @@
 // One DOM for both boards: on the phone the first two columns dissolve (display: contents) into the tap
 // rows address · WhatsApp · e-mail, then the hours; the stamp and the back-to-top button exist twice
 // (one per layout, the other display: none).
-// The chip is the open-chip.css „still” state (today's hours from hours.json at build): stage 2 adds the
-// eight live states, the script and the reserved width. Today's row in the hours list is not marked yet
-// (needs the same script). Values from entity.json / hours.json / reviews.json; strings from ui.ts `footer`.
+// The chip is OpenChip.astro (stage 2: the eight live states); its script also marks today's row in the
+// hours list (bold, full paper colour, as on the boards) — without JS no row is marked. Values from entity.json / hours.json / reviews.json; strings from ui.ts `footer`.
 // The maker's credit (D-29): design/css/footer-credit.css 1:1 + design/svg/dga-mark.svg inlined (?raw, as the hero stamp).
 import { Image } from 'astro:assets';
-import '../styles/open-chip.css';
 import '../styles/footer-credit.css';
 import emblem from '../assets/logo/emblem.webp';
 import dgaMark from '../assets/dga-mark.svg?raw';
@@ -26,6 +24,7 @@ import BrandIcon from './BrandIcon.astro';
 import WaIcon from './WaIcon.astro';
 import LangSwitch from './LangSwitch.astro';
 import Stamp from './Stamp.astro';
+import OpenChip from './OpenChip.astro';
 import { social } from '../lib/social';
 import { ui, menu, hero, footer, wa, routeHref, vatDisplay, type Locale } from '../i18n/ui';
 
@@ -51,8 +50,6 @@ const days = week.map((d, i) => {
   // 1 January 2024 was a Monday
   return { name: dayFmt.format(new Date(Date.UTC(2024, 0, 1 + i))), text: slots.length ? slotText(slots) : f.closed };
 });
-const buildDay = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Brussels', weekday: 'long' }).format(new Date());
-const todaySlots = regular.find((d) => d.dayOfWeek === buildDay)?.slots ?? [];
 
 // Google figure: reviews.json (D-10: fetched server-side; until then the placeholders show)
 const rating = reviews.rating === null ? null : Number(reviews.rating).toLocaleString('nl-BE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
@@ -88,14 +85,7 @@ const icons = {
         <div class="foot__close">
           <p class="foot__eyebrow foot__close-eyebrow">{f.closeEyebrow}</p>
           <p class="foot__line">{f.closeLine}</p>
-          <a class="oc i still foot__chip" href="#openingsuren">
-            <span class="d" aria-hidden="true"></span>
-            {todaySlots.length ? (
-              <><span>{f.today}</span><span class="t">· {slotText(todaySlots)}</span></>
-            ) : (
-              <span>{f.todayClosed}</span>
-            )}
-          </a>
+          <OpenChip locale={locale} variant="i" class="foot__chip" />
         </div>
       </div>
       <div class="foot__cta">
@@ -128,8 +118,8 @@ const icons = {
         <div class="foot__hours" id="openingsuren">
           <h2 class="foot__eyebrow foot__hours-head">{f.hours}</h2>
           <dl class="foot__days">
-            {days.map((d) => (
-              <div><dt>{d.name}</dt><dd>{d.text}</dd></div>
+            {days.map((d, i) => (
+              <div data-oc-day={i}><dt>{d.name}</dt><dd>{d.text}</dd></div>
             ))}
           </dl>
         </div>
@@ -262,7 +252,8 @@ const icons = {
   .foot__print { grid-column: 1; grid-row: 1 / 4; align-self: end; }
   .foot__close-eyebrow { grid-column: 2; grid-row: 2; }
   .foot__line { grid-column: 2; grid-row: 3; }
-  .foot__chip { grid-column: 1 / -1; grid-row: 4; justify-self: start; margin-top: 2px; }
+  /* the chip is OpenChip.astro's element: Footer's scope does not reach it, hence :global */
+  .foot :global(.foot__chip) { grid-column: 1 / -1; grid-row: 4; justify-self: start; margin-top: 2px; }
 
   .foot__print {
     position: relative;
@@ -368,6 +359,8 @@ const icons = {
   }
   .foot__days > div { display: contents; }
   .foot__days dd { text-align: right; }
+  /* today's row (open-chip.ts sets .is-today; boards „Footer · desktop / mobiel”: 700, paper) */
+  .foot__days > .is-today > * { font-weight: 700; color: var(--on-ink); }
 
   .fpages { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; }
   .fl { color: var(--on-ink); text-decoration: none; font-size: 15px; line-height: 1.3; }
@@ -480,7 +473,7 @@ const icons = {
     }
     .foot__hello { display: flex; align-items: flex-end; gap: 36px; padding-top: 0; min-width: 0; flex: 1 1 640px; }
     .foot__close { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
-    .foot__chip { align-self: flex-start; margin-top: 0; }
+    .foot :global(.foot__chip) { align-self: flex-start; margin-top: 0; }
     .foot__print { width: 170px; flex: 0 0 auto; }
     .foot__photo { width: 150px; height: 180px; }
     .foot__print figcaption { font-size: 15px; }

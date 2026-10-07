@@ -1,58 +1,31 @@
 ---
-// Open chip, computed from hours.json in Europe/Brussels time AT BUILD.
-// A static build goes stale between deploys: the live version needs either a
-// scheduled rebuild or a few lines of client JS — decision for the build gate.
+// Open chip (stage 2, D-20 + addendum 07.10: treatment 2 „Segment”) — design/css/open-chip.css v1.1 ported 1:1
+// (src/styles/open-chip.css: byte-identical above its marked additions line). One link to the hours card
+// (#openingsuren, in the footer). Rendering contract of the file: the server renders the „still” state — today's
+// hours from hours.json at build (Europe/Brussels) — and src/scripts/open-chip.ts upgrades the same element to the
+// live state (computed in the browser from the hours inlined by Base.astro, every minute on the minute and when the
+// tab comes back). The chip hugs its text (no reserved width): it sits on its own line or at the start of a
+// space-between row, so a text change moves nothing else. Without JS the still text stays.
+// Variants: p = on paper/card, i = on ink, im = on ink on the phone and on paper from 960 px (the home hero: dark
+// photo on the phone, the paper column on desktop).
+import '../styles/open-chip.css';
 import hours from '../data/hours.json';
-import type { Day } from '../data/types';
+import { brussels, hoursOn, type HoursData } from '../lib/open-state';
+import { chip, type Locale } from '../i18n/ui';
 
 export interface Props {
-  openLabel: string;
-  closedLabel: string;
-  variant?: 'paper' | 'ink';
+  locale: Locale;
+  variant?: 'p' | 'i' | 'im';
+  class?: string;
 }
-const { openLabel, closedLabel, variant = 'paper' } = Astro.props;
-
-const days = hours.regular as Day[];
-const parts = new Intl.DateTimeFormat('en-GB', {
-  timeZone: 'Europe/Brussels',
-  weekday: 'long',
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: false,
-}).formatToParts(new Date());
-const get = (t: string) => parts.find((p) => p.type === t)?.value ?? '';
-const curMin = Number(get('hour')) * 60 + Number(get('minute'));
-const toMin = (t: string) => {
-  const [h, m] = t.split(':').map(Number);
-  return h * 60 + (m || 0);
-};
-const slots = days.find((d) => d.dayOfWeek === get('weekday'))?.slots ?? [];
-const openNow = slots.some((s) => toMin(s.open) <= curMin && curMin < toMin(s.close));
+const { locale, variant = 'p', class: extra } = Astro.props;
+const h = hours as HoursData;
+const { slots } = hoursOn(h, brussels(new Date(), h.timeZone).day);
+const [state, time] = chip[locale].text({ kind: 'still', slots });
+const look = variant === 'p' ? 'p' : 'i';
 ---
-<span class={`chip chip--${variant} ${openNow ? 'chip--open' : 'chip--closed'}`}>
-  <span class="chip__dot" aria-hidden="true"></span>
-  <span class="chip__label">{openNow ? openLabel : closedLabel}</span>
-</span>
+<a class:list={['oc', look, 'still', { 'oc--m': variant === 'im' }, extra]} href="#openingsuren" data-oc={locale}><span class="seg"><span class="d beat" aria-hidden="true"></span><span class="s">{state}</span></span><span class="t" hidden={!time}>{time}</span></a>
 
-<style>
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 12px;
-    border-radius: var(--r-chip);
-    font-size: var(--fs-caption);
-    font-weight: 600;
-    background: var(--card);
-    color: var(--fg);
-    border: 1px solid var(--line);
-  }
-  .chip__dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--muted);
-  }
-  .chip--open .chip__dot { background: var(--open); }
-  .chip--ink { background: rgba(255,255,255,.08); color: var(--on-ink); border-color: rgba(255,255,255,.18); }
-  .chip--ink.chip--open .chip__dot { background: var(--open-dark); }
-</style>
+<script>
+  import '../scripts/open-chip.ts';
+</script>

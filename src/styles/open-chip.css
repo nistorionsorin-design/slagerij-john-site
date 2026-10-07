@@ -1,47 +1,166 @@
-/* Open chip — D-20 settled 06.10 (Dan: „the chip stays but make it really nice”).
-   Source: canvas board „Open-chip · acht toestanden” (v17). Port 1:1 into OpenChip.astro + chip.js.
+/* ============================================================================
+   open-chip.css · v1.2 (07.10.2026 12:50; v1.1 11:40) — the open chip, treatment 2 „Segment”
+   v1.2 changes only the swap contract below (the fade was reversed on the next frame and only dipped — Claude Code's 1c report, 11:49); the CSS is identical to v1.1.
+   D-20 settled 06.10 (Dan: „the chip stays but make it really nice”) · addendum 07.10 11:28 (Dan: „yes 2” on the
+   three-treatment sheet design/open-chip-variants.html: 1 Kaart · 2 Segment · 3 Etiket).
+   v1 (06.10) was the canvas board „Open-chip · acht toestanden” (v17); this file supersedes the board.
+   Port 1:1 into OpenChip.astro + chip.js (additions below a marked line, as with the other design files).
 
-   Rendering contract
-   - Server renders the no-script state: <a class="oc p still" href="#openingsuren"><span class="d"></span><span>Vandaag</span><span class="t">· 08:00–18:00</span></a>
-     (today's slots from hours.json at build; RO: „Azi”). Same element, same width → CLS 0 when the script upgrades it.
-   - chip.js (external file; CSP script-src 'self') reads the hours inlined at build as
-     <script type="application/json" id="hours">{…hours.json…}</script> (data, not executed: allowed by the CSP),
-     computes the state in Europe/Brussels every 60 s and on `visibilitychange`, and rewrites the two text spans + the class.
+   The look
+   - One pill, two tones: the STATE is a filled segment (green open · oxblood closed · ink before the script runs) with
+     a dot and the state word in paper; the TIME sits on the card half in full ink. Same family as the active half of
+     the NL/RO switch (buttons.css .lang__seg[aria-current]).
+   - Same component everywhere (hero, overlay menu, footer); two surfaces: .p = on paper/card, .i = on ink (mobile hero).
+   - The chip hugs its text. No reserved width: in the hero and the footer it sits on its own line, so a text change moves
+     nothing else (CLS 0); in the menu row it keeps its natural width and the row may wrap (Claude Code, stage 2).
+   - Contrast: the time is --fg at weight 500 (16,9:1 on card; the v1 `.t{opacity:.78}` with the open green measured 3,72:1
+     — out); paper on the open segment 5,97:1; paper on the oxblood segment 9,3:1; ink on the ink-surface green 8,4:1.
+
+   Rendering contract (unchanged in substance)
+   - Server renders the no-script „still” state from today's slots in hours.json:
+       <a class="oc p still" href="#openingsuren"><span class="seg"><span class="d" aria-hidden="true"></span><span class="s">Vandaag</span></span><span class="t">08:00–18:00</span></a>
+     RO: „Azi” · „08:00-18:00” (hyphen, LR-T03: RO text takes no en dash).
+   - chip.js (external; CSP script-src 'self') reads the hours inlined at build as
+       <script type="application/json" id="hours">{…hours.json…}</script>
+     computes the state in Europe/Brussels every 60 s and on visibilitychange, rewrites .s / .t and the state class.
    - The chip is a link to the hours card (#openingsuren).
-   - Width: reserve the width of the longest string of the locale (min-width set per locale in the component) so no state shifts layout.
+   - Motion (WCAG 2.2.2 without a pause control): the halo beats THREE times (3 × 1,6 s = 4,8 s < 5 s) on load and on
+     every state change, then rests. chip.js adds class `beat` to .d after each rewrite and removes it on `animationend`;
+     the server-rendered chip starts with `beat` so the first paint beats once. When the text changes, chip.js fades
+     the two texts out, swaps them, and fades them in: add `swap` (opacity → 0 over 180 ms), WAIT for that fade
+     (transitionend on .t, or a 180 ms timeout as the fallback), THEN rewrite the spans, THEN remove `swap`
+     (opacity → 1 over 180 ms). Total ≈ 360 ms, under U-21's 400 ms. Removing `swap` on the next frame only dips
+     the opacity — that was the v1.1 wording and it was wrong.
+     prefers-reduced-motion: no beat, no fade, no lift (the script may still wait the 180 ms; nothing moves).
+   - Hover / focus: the button lift (−1 px, 160 ms), border to --fg; the focus ring is currentColor.
 
-   States (NL / RO — the RO strings are the lexicon's, not translations of the NL):
+   States (NL / RO — the RO strings are the lexicon's, not translations; the countdown line is new, 07.10):
      open            Nu open · sluit om 18:00                       Deschis acum · închide la 18:00
-     closing-soon    Nu open · sluit om 18:00 · nog 20 min          Deschis acum · închide la 18:00 · încă 20 de minute     (≤ 30 min before close)
+     closing-soon    Nu open · sluit over 20 min                    Deschis acum · închide în 20 min                       (≤ 30 min before close; the countdown replaces the clock time — 07.10, was „sluit om 18:00 · nog 20 min” / „· încă 20 de minute”, 346 px in RO)
      closed-today    Gesloten · opent om 13:00                      Închis · deschide la 13:00                              (opens later today)
      closed-tomorrow Gesloten · opent morgen 08:00                  Închis · deschide mâine la 08:00
      closed-day      Gesloten · opent zondag 08:00                  Închis · deschide duminică la 08:00                     (next opening > 1 day away; day name lowercase)
      special-open    Nu open · vandaag tot 13:00 · feestdag         Deschis acum · azi până la 13:00 · sărbătoare           (today has special hours)
      special-closed  Vandaag gesloten · opent maandag 13:00         Azi închis · deschide luni la 13:00                     (today closed by special hours)
-     still           Vandaag · 08:00–18:00                          Azi · 08:00–18:00                                       (no script)
-   Colour never carries the meaning alone: the first span always names the state.
+     still           Vandaag · 08:00–18:00                          Azi · 08:00-18:00                                       (no script)
+   The first part is the segment (.s), the second the time (.t). Colour never carries the meaning alone: the segment
+   always names the state.
 
-   Markup: <a class="oc {p|i} {open|closed|still}"><span class="d" aria-hidden="true"></span><span>STATE</span><span class="t">· TIME</span></a>
-     p = on paper/card · i = on ink (hero). */
+   Markup: <a class="oc {p|i} {open|closed|still}" href="#openingsuren">
+             <span class="seg"><span class="d" aria-hidden="true"></span><span class="s">STATE</span></span>
+             <span class="t">TIME</span>
+           </a>
+   Tokens used: --card --line --fg --ink --open --open-dark --ox --on-ink --on-ink-muted --f-ui --r-chip.
+   ============================================================================ */
 
-.oc{display:inline-flex;align-items:center;gap:9px;min-height:36px;box-sizing:border-box;padding:0 14px 0 11px;border-radius:var(--r-chip,999px);font-family:var(--f-ui);font-size:13px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap;text-decoration:none}
-.oc .t{font-weight:500;opacity:.78}
-.oc .d{position:relative;width:8px;height:8px;border-radius:999px;flex:0 0 auto}
-.oc .d::after{content:"";position:absolute;inset:-4px;border-radius:999px;background:inherit;opacity:.3}
-.oc.open .d::after{animation:oc-halo 2.4s ease-out infinite}
-@keyframes oc-halo{0%{transform:scale(.55);opacity:.5}70%{transform:scale(1.45);opacity:0}100%{transform:scale(1.45);opacity:0}}
+.oc {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  box-sizing: border-box;
+  min-height: 36px;
+  padding: 3px;
+  border-radius: var(--r-chip, 999px);
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--fg);
+  font-family: var(--f-ui);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: transform .16s ease, border-color .16s ease;
+}
 
-/* on paper / card */
-.oc.p{background:var(--card);border:1px solid var(--line);color:var(--fg)}
-.oc.p.open{color:var(--open)}.oc.p.open .d{background:var(--open)}
-.oc.p.closed{color:var(--ox)}.oc.p.closed .d{background:var(--ox)}
-.oc.p.still .d{background:var(--muted)}
+/* the state segment */
+.oc .seg {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 28px;
+  padding: 0 11px 0 9px;
+  border-radius: 999px;
+  color: var(--on-ink);
+}
+.oc .s { font-weight: 600; }
 
-/* on ink (hero) */
-.oc.i{background:rgba(21,17,13,.62);border:1px solid rgba(244,237,224,.25);color:var(--on-ink);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.oc.i.open .d{background:var(--open-dark)}
-.oc.i.closed .d{background:var(--on-ink-muted)}
-.oc.i.still .d{background:var(--on-ink-muted);opacity:.7}
+/* the time, on the card half */
+.oc .t {
+  padding: 0 12px 0 10px;
+  font-weight: 500;
+  color: var(--fg);
+}
 
-.oc:focus-visible{outline:2px solid currentColor;outline-offset:2px}
-@media (prefers-reduced-motion:reduce){.oc.open .d::after{animation:none;opacity:.3}}
+/* the dot and its halo */
+.oc .d { position: relative; width: 8px; height: 8px; border-radius: 999px; flex: 0 0 auto; }
+.oc .d::after { content: ""; position: absolute; inset: -4px; border-radius: 999px; background: inherit; opacity: .28; }
+.oc.open .d.beat::after { animation: oc-halo 1.6s ease-out 3; }
+@keyframes oc-halo {
+  0%   { transform: scale(.55); opacity: .5; }
+  70%  { transform: scale(1.45); opacity: 0; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+
+/* ---------- on paper / card (.p) ---------- */
+.oc.p.open   .seg { background: var(--open); }
+.oc.p.closed .seg { background: var(--ox); }
+.oc.p.still  .seg { background: var(--fg); }
+.oc.p .d { background: var(--card); }
+.oc.p.still .d { opacity: .7; }
+
+/* ---------- on ink (.i, the mobile hero) ---------- */
+.oc.i {
+  background: rgba(21, 17, 13, .62);
+  border-color: rgba(244, 237, 224, .25);
+  color: var(--on-ink);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.oc.i .t { color: var(--on-ink); }
+.oc.i.open   .seg { background: var(--open-dark); color: var(--ink); }
+.oc.i.closed .seg { background: var(--on-ink); color: var(--ink); }
+.oc.i.still  .seg { background: var(--on-ink-muted); color: var(--ink); }
+.oc.i .d { background: var(--ink); }
+.oc.i.still .d { opacity: .7; }
+
+/* ---------- state change: 180 ms fade of the two texts ---------- */
+.oc .s, .oc .t { transition: opacity .18s ease; }
+.oc.swap .s, .oc.swap .t { opacity: 0; }
+
+/* ---------- hover, active, focus ---------- */
+@media (hover: hover) {
+  .oc:hover { transform: translateY(-1px); border-color: var(--fg); }
+  .oc.i:hover { border-color: var(--on-ink); }
+}
+.oc:active { transform: translateY(0); }
+.oc:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc, .oc .s, .oc .t { transition: none; }
+  .oc.open .d.beat::after { animation: none; opacity: .28; }
+  .oc:hover { transform: none; }
+}
+
+/* ===================== additions (Claude Code, stage 2) — everything above this line is design/css/open-chip.css v1.2, byte-identical =====================
+   1 · `oc--m` (OpenChip variant "im", the home hero): the .i chip on the phone's dark photo takes the .p look from 960 px,
+       where the chip stands on the paper column — the same values as the file's .p rules.
+   2 · a chip never runs out of its row: the segment stays whole; if a narrow screen cannot hold the time, the time is
+       cut with an ellipsis instead of overflowing (no state reaches that at 360 px today — a guard, not a look).
+   3 · an empty time (no next opening known within two weeks) is not shown, so the card half does not stand empty. */
+@media (min-width: 960px) {
+  .oc.i.oc--m { background: var(--card); border-color: var(--line); color: var(--fg); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .oc.i.oc--m .t { color: var(--fg); }
+  .oc.i.oc--m.open   .seg { background: var(--open); color: var(--on-ink); }
+  .oc.i.oc--m.closed .seg { background: var(--ox); color: var(--on-ink); }
+  .oc.i.oc--m.still  .seg { background: var(--fg); color: var(--on-ink); }
+  .oc.i.oc--m .d { background: var(--card); }
+}
+@media (min-width: 960px) and (hover: hover) {
+  .oc.i.oc--m:hover { border-color: var(--fg); }
+}
+.oc { max-width: 100%; }
+.oc .seg { flex: 0 0 auto; }
+.oc .t { min-width: 0; overflow: hidden; text-overflow: ellipsis; padding-block: .2em; margin-block: -.2em; }   /* the padding keeps descenders out of the clip */
+.oc .t[hidden] { display: none; }
