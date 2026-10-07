@@ -152,7 +152,7 @@
       }
     }
   ],
-  "_loop_source": "Photo loop „Bij ons” (D-11, stage 3): shop · people · craft · barbecue · platters = q28 · q09 · q01 · p08 · p12 per docs/build-plan.md §3b; files byte-identical in src/assets/home/; alts NL/RO = lexicon §5.14 „Home photos” verbatim; focal points read from the photos. Claude Code, stage 3 (revised 07.10).",
+  "_loop_source": "Photo loop „Bij ons” (D-11, stage 3 + addendum, stage 3b): six photos in five tiles — shop · people · craft · barbecue · platters = q28 · q09 · q01 · p08 · p12 (docs/build-plan.md §3b), the sixth = q25 (row 3b), never a tile's home photo; files byte-identical in src/assets/home/; alts NL/RO = lexicon §5.14 „Home photos” and the 3b row, verbatim; focal points read from the photos. Claude Code, stages 3 / 3b (07.10).",
   "loop": [
     {
       "src": "home/toog-slagerij-john-zwevezele.jpg",
@@ -202,6 +202,16 @@
       "alt": {
         "nl": "Charcuterieschotel op een feest, borden klaar",
         "ro": "Platou de mezeluri la o petrecere, cu farfuriile pregătite"
+      }
+    },
+    {
+      "src": "home/slaatjes-in-kommetjes-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/plate 2.jpeg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Slaatjes in kleine kommetjes voor een buffet",
+        "ro": "Salate în boluri mici, pentru bufet"
       }
     }
   ],
