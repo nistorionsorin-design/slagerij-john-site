@@ -140,3 +140,7 @@
   .on-ink-m .lang__seg:hover{color:var(--on-ink);background:rgba(244,237,224,.10)}
 }
 
+
+/* .btn--lg-d: md on the phone, lg from 960 px (stage 0c: the footer's call button — board „Footer · mobiel 390”
+   draws it md, „Footer · desktop 1440” lg). Same values as .btn--lg above. */
+@media (min-width:960px){.btn--lg-d{min-height:var(--btn-h-lg);padding:0 22px;font-size:16px}}

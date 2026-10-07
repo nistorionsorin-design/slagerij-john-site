@@ -1,0 +1,47 @@
+/* Open chip — D-20 settled 06.10 (Dan: „the chip stays but make it really nice”).
+   Source: canvas board „Open-chip · acht toestanden” (v17). Port 1:1 into OpenChip.astro + chip.js.
+
+   Rendering contract
+   - Server renders the no-script state: <a class="oc p still" href="#openingsuren"><span class="d"></span><span>Vandaag</span><span class="t">· 08:00–18:00</span></a>
+     (today's slots from hours.json at build; RO: „Azi”). Same element, same width → CLS 0 when the script upgrades it.
+   - chip.js (external file; CSP script-src 'self') reads the hours inlined at build as
+     <script type="application/json" id="hours">{…hours.json…}</script> (data, not executed: allowed by the CSP),
+     computes the state in Europe/Brussels every 60 s and on `visibilitychange`, and rewrites the two text spans + the class.
+   - The chip is a link to the hours card (#openingsuren).
+   - Width: reserve the width of the longest string of the locale (min-width set per locale in the component) so no state shifts layout.
+
+   States (NL / RO — the RO strings are the lexicon's, not translations of the NL):
+     open            Nu open · sluit om 18:00                       Deschis acum · închide la 18:00
+     closing-soon    Nu open · sluit om 18:00 · nog 20 min          Deschis acum · închide la 18:00 · încă 20 de minute     (≤ 30 min before close)
+     closed-today    Gesloten · opent om 13:00                      Închis · deschide la 13:00                              (opens later today)
+     closed-tomorrow Gesloten · opent morgen 08:00                  Închis · deschide mâine la 08:00
+     closed-day      Gesloten · opent zondag 08:00                  Închis · deschide duminică la 08:00                     (next opening > 1 day away; day name lowercase)
+     special-open    Nu open · vandaag tot 13:00 · feestdag         Deschis acum · azi până la 13:00 · sărbătoare           (today has special hours)
+     special-closed  Vandaag gesloten · opent maandag 13:00         Azi închis · deschide luni la 13:00                     (today closed by special hours)
+     still           Vandaag · 08:00–18:00                          Azi · 08:00–18:00                                       (no script)
+   Colour never carries the meaning alone: the first span always names the state.
+
+   Markup: <a class="oc {p|i} {open|closed|still}"><span class="d" aria-hidden="true"></span><span>STATE</span><span class="t">· TIME</span></a>
+     p = on paper/card · i = on ink (hero). */
+
+.oc{display:inline-flex;align-items:center;gap:9px;min-height:36px;box-sizing:border-box;padding:0 14px 0 11px;border-radius:var(--r-chip,999px);font-family:var(--f-ui);font-size:13px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap;text-decoration:none}
+.oc .t{font-weight:500;opacity:.78}
+.oc .d{position:relative;width:8px;height:8px;border-radius:999px;flex:0 0 auto}
+.oc .d::after{content:"";position:absolute;inset:-4px;border-radius:999px;background:inherit;opacity:.3}
+.oc.open .d::after{animation:oc-halo 2.4s ease-out infinite}
+@keyframes oc-halo{0%{transform:scale(.55);opacity:.5}70%{transform:scale(1.45);opacity:0}100%{transform:scale(1.45);opacity:0}}
+
+/* on paper / card */
+.oc.p{background:var(--card);border:1px solid var(--line);color:var(--fg)}
+.oc.p.open{color:var(--open)}.oc.p.open .d{background:var(--open)}
+.oc.p.closed{color:var(--ox)}.oc.p.closed .d{background:var(--ox)}
+.oc.p.still .d{background:var(--muted)}
+
+/* on ink (hero) */
+.oc.i{background:rgba(21,17,13,.62);border:1px solid rgba(244,237,224,.25);color:var(--on-ink);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.oc.i.open .d{background:var(--open-dark)}
+.oc.i.closed .d{background:var(--on-ink-muted)}
+.oc.i.still .d{background:var(--on-ink-muted);opacity:.7}
+
+.oc:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.oc.open .d::after{animation:none;opacity:.3}}

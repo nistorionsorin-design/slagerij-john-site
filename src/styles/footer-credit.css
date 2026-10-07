@@ -1,0 +1,93 @@
+/* ============================================================================
+   footer-credit.css · v1 (07.10.2026) — the maker's credit in the legal bar
+   Variant 1 „Handtekening” (D-29, Dan 07.10 10:44 on the three-variant sheet design/footer-credit-variants.html).
+
+   One link to https://dg-advisory.net/ : the DGA mark (design/svg/dga-mark.svg, INLINED, currentColor, 34 px high,
+   with its „< Advisory />” tag) + eyebrow „Website door” (RO „Site realizat de”) + name „DG Advisory”.
+   Rest: paper at 74 %. Hover / focus: 100 %, paper underline under the name, the mark's slash in DGA blue #9ec1ff —
+   the only colour the DGA brand allows on the mark (brand.md, locked 11.08.2026); the letters stay paper.
+   Place: last item of the legal bar — right end on desktop (after the NL/RO switch, the bar's own 18 px gap),
+   last row on the phone, left-aligned. Nothing else in the bar changes.
+
+   Tokens used: --on-ink --on-ink-muted --f-ui.
+   Markup (Footer.astro):
+     <a class="credit foot__credit" href="https://dg-advisory.net/" rel="noopener">
+       {inline design/svg/dga-mark.svg — it carries class="credit__mark" aria-hidden="true"}
+       <span class="credit__txt"><span class="credit__k">{f.credit.k}</span><span class="credit__n">{f.credit.n}</span></span>
+     </a>
+   Claude Code ports this file 1:1 (additions below a marked line, as with the other design files).
+   ============================================================================ */
+
+.credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;                      /* ≈ the height of the D at 34 px = the brand's clear space */
+  min-height: 44px;               /* tap target (U-02); the look stays 34 px */
+  color: var(--on-ink-muted);
+  text-decoration: none;
+  opacity: .74;
+  transition: opacity .2s ease;
+}
+.credit__mark {
+  display: block;
+  height: 34px;
+  width: auto;
+  aspect-ratio: 1411 / 1008;      /* the SVG's viewBox; keeps the box before the SVG paints */
+  color: var(--on-ink);
+  fill: currentColor;
+  flex: 0 0 auto;
+}
+.credit__mark .dga-slash { stroke: currentColor; transition: stroke .2s ease; }
+.credit__txt { display: block; min-width: 0; }
+.credit__k {
+  display: block;
+  font-family: var(--f-ui);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: var(--on-ink-muted);
+  white-space: nowrap;
+}
+.credit__n {
+  display: block;
+  font-family: var(--f-ui);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--on-ink);
+  white-space: nowrap;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: text-decoration-color .2s ease;
+}
+
+/* hover: full strength, underline, blue slash */
+@media (hover: hover) {
+  .credit:hover { opacity: 1; }
+  .credit:hover .credit__n { text-decoration-color: var(--on-ink); }
+  .credit:hover .dga-slash { stroke: #9ec1ff; }
+}
+/* keyboard: the same look plus the paper ring every on-ink control has */
+.credit:focus-visible { opacity: 1; outline: 2px solid var(--on-ink); outline-offset: 4px; border-radius: 4px; }
+.credit:focus-visible .credit__n { text-decoration-color: var(--on-ink); }
+.credit:focus-visible .dga-slash { stroke: #9ec1ff; }
+
+@media (prefers-reduced-motion: reduce) {
+  .credit, .credit__n, .credit__mark .dga-slash { transition: none; }
+}
+
+/* placement in the legal bar (Footer.astro .foot__legal-in): phone = last row, left; desktop = after the switch, right end */
+.foot__credit { order: 4; align-self: flex-start; }
+@media (min-width: 960px) {
+  .foot__credit { order: 0; align-self: center; }
+}
+
+/* ===== site additions (Claude Code, stage 0c) — below this line only; everything above is design/css/footer-credit.css 1:1 ===== */
+/* Footer.astro leaves the credit's order and alignment to the rules above. On desktop the 44 px tap target is 2 px taller
+   than the NL/RO switch (42) that set the bar's row height; -1 px above and below keeps the row — and everything else in
+   the bar — where it was, without shrinking the target. */
+@media (min-width: 960px) { .foot__credit { margin-block: -1px; } }

@@ -122,6 +122,104 @@ export const hero = {
   },
 } satisfies Record<Locale, unknown>;
 
+// Footer (stage 0c, boards „Footer · desktop 1440” / „Footer · mobiel 390”). Every string's source is noted.
+// Column heads, e-mail row, back-to-top, legal link names and the credit: lexicon §5.15 „Footer labels” /
+// „Footer credit” and §6 footer labels (added 07.10), verbatim.
+export const footer = {
+  nl: {
+    /** lexicon §5.17 „Kom langs” block: eyebrow + closing line (the board's „Tot binnenkort in de Bruggestraat.” is not in the lexicon) */
+    closeEyebrow: 'Kom langs',
+    closeLine: 'Zaterdag open tot 18:00, zondag tot 13:00.',
+    /** the pinned print: caption = §5.15 menu sub-line, alt = §5.17 photo caption */
+    printCaption: 'John & Georgiana',
+    printAlt: 'John en Georgiana · Bruggestraat 146A',
+    /** §5.4 */
+    closed: 'Gesloten',
+    /** open-chip.css „still” state (lexicon §5.15 → open-chip.css) */
+    today: 'Vandaag',
+    todayClosed: 'Vandaag gesloten',
+    /** §5.3 bottom bar „Bel” + the number from entity.json */
+    call: 'Bel',
+    /** §5.15 footer labels (07.10) */
+    visit: 'Bezoek ons',
+    /** §5.3 */
+    route: 'Route',
+    /** lexicon §4 word (/contact cluster: „openingsuren”) */
+    hours: 'Openingsuren',
+    /** §5.15 footer labels; also the order page's name in the page list */
+    order: 'Bestellen',
+    orderHref: '/bestellen',
+    mail: 'E-mail',
+    /** §5.5, three sentences verbatim (old site's rules — owners confirm, D6) */
+    orderNote: 'Afhalen in de winkel, op het uur dat u kiest. Gratis levering tot 10 km vanaf €50; tot 20 km vanaf €100; daarbuiten €1 per km. Levering maandag tot zaterdag vanaf 18:00.',
+    /** §5.3 */
+    orderOnline: 'Bestel online',
+    pages: "Pagina's",
+    follow: 'Volg ons',
+    /** §5.17 „Google 5,0 · 22 beoordelingen”, the figures from reviews.json (placeholders while it is empty) */
+    reviews: (rating: string, count: string) => `Google ${rating} · ${count} beoordelingen.`,
+    ratingPh: '[SCORE]',
+    countPh: '[AANTAL]',
+    /** §5.7, first sentence */
+    reviewsSource: 'Beoordelingen komen rechtstreeks van Google en worden dagelijks bijgewerkt.',
+    toTop: 'Naar boven',
+    /** §5.15 legal link names; NL slugs not in the lexicon yet (pages come at stage 10) */
+    legal: [
+      { label: 'Privacy', href: '/privacy' },
+      { label: 'Algemene voorwaarden', href: '/algemene-voorwaarden' },
+      { label: 'Allergenen', href: '/allergenen' },
+    ],
+    /** D-29 + §5.15 „Footer credit”: eyebrow + name, two strings */
+    credit: { k: 'Website door', n: 'DG Advisory', href: 'https://dg-advisory.net/' },
+  },
+  ro: {
+    /** §5.17 reading aid „Vino la noi” + §6 closing line (LR-V09) */
+    closeEyebrow: 'Vino la noi',
+    closeLine: 'Vino sâmbătă până la 18:00 sau duminică până la 13:00.',
+    /** §6 menu sub-line; alt = §5.17 photo caption, RO aid */
+    printCaption: 'John și Georgiana',
+    printAlt: 'John și Georgiana · Bruggestraat 146A',
+    /** §5.4 RO aid */
+    closed: 'Închis',
+    /** open-chip.css „still” state, RO */
+    today: 'Azi',
+    todayClosed: 'Azi închis',
+    /** §5.3 bottom bar RO */
+    call: 'Sună',
+    /** §6 footer labels (07.10) */
+    visit: 'Ne găsești aici',
+    /** §5.3 bottom bar RO */
+    route: 'Drum',
+    /** lexicon §4 word (/ro/contact cluster: „program”) */
+    hours: 'Program',
+    /** §6 footer labels */
+    order: 'Comandă',
+    orderHref: '/ro/comanda',
+    mail: 'E-mail',
+    /** §5.5 RO aid (pickup) + §6 „Delivery” verbatim (hyphen in „Luni-sâmbătă” since 07.10, LR-T03) */
+    orderNote: 'Ridicare din magazin, la ora pe care o alegi. Livrăm gratuit până la 10 km la comenzi de la 50 € și până la 20 km de la 100 €. Peste 20 km, 1 € pe km. Luni-sâmbătă, de la 18:00.',
+    /** §5.3 */
+    orderOnline: 'Comandă online',
+    pages: 'Pagini',
+    follow: 'Urmărește-ne',
+    /** §6 „Google 5,0 · 22 de recenzii” („de” from 20 up) */
+    reviews: (rating: string, count: string) => `Google ${rating} · ${count}${/^\d+$/.test(count) && (Number(count) % 100 >= 20 || Number(count) % 100 === 0) && Number(count) > 0 ? ' de' : ''} recenzii.`,
+    ratingPh: '[SCOR]',
+    countPh: '[NUMĂR]',
+    /** §5.7 RO aid, first sentence */
+    reviewsSource: 'Recenziile vin direct de la Google și se actualizează zilnic.',
+    toTop: 'Înapoi sus',
+    /** §6 legal link names with their /ro slugs (07.10) */
+    legal: [
+      { label: 'Confidențialitate', href: '/ro/confidentialitate' },
+      { label: 'Termeni și condiții', href: '/ro/termeni' },
+      { label: 'Alergeni', href: '/ro/alergeni' },
+    ],
+    /** D-29 + §6 credit */
+    credit: { k: 'Site realizat de', n: 'DG Advisory', href: 'https://dg-advisory.net/' },
+  },
+} satisfies Record<Locale, unknown>;
+
 /** WhatsApp always goes through the /wa redirect (lexicon §5.10, §9), never a raw wa.me link. */
 export const wa = (src: string) => `/wa?src=${encodeURIComponent(src)}`;
 

@@ -8,10 +8,13 @@ export interface Props {
   nlHref: string;
   roHref: string;
   label: string;
+  /** segment text; the footer shows the full names (lexicon §5.15: „Nederlands · Română”) */
+  nlText?: string;
+  roText?: string;
 }
-const { current, nlHref, roHref, label } = Astro.props;
+const { current, nlHref, roHref, label, nlText = 'NL', roText = 'RO' } = Astro.props;
 ---
 <nav class="lang" aria-label={label}>
-  <a class="lang__seg" href={nlHref} hreflang="nl-BE" lang="nl" aria-current={current === 'nl' ? 'page' : undefined}>NL</a>
-  <a class="lang__seg" href={roHref} hreflang="ro-BE" lang="ro" aria-current={current === 'ro' ? 'page' : undefined}>RO</a>
+  <a class="lang__seg" href={nlHref} hreflang="nl-BE" lang="nl" aria-current={current === 'nl' ? 'page' : undefined}>{nlText}</a>
+  <a class="lang__seg" href={roHref} hreflang="ro-BE" lang="ro" aria-current={current === 'ro' ? 'page' : undefined}>{roText}</a>
 </nav>

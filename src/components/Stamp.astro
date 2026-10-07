@@ -4,10 +4,10 @@
 // ink: paper rings on a dark ground, rotated 8°. It was the ring stamp on the desktop hero photo until
 // stage 1c (hero-seam.css v1.5: the hero's stamp is now the inline ink SVG, design/svg/stamp.svg) — v1.5
 // no longer sizes `.stamp`, so a dark-ground use (footer, stage 0c) sets its own size and padding.
-export interface Props { variant?: 'paper' | 'ink' }
-const { variant = 'paper' } = Astro.props;
+export interface Props { variant?: 'paper' | 'ink'; class?: string }
+const { variant = 'paper', class: cls } = Astro.props;
 ---
-<span class={`stamp stamp--${variant}`}>
+<span class:list={['stamp', `stamp--${variant}`, cls]}>
   <span class="stamp__text"><slot /></span>
 </span>
 

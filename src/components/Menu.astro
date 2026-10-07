@@ -6,8 +6,9 @@
 // Foot (header.css v2.2): the open chip (stage 2) + Route · Bestel via WhatsApp · brand marks with their names.
 // No NL/RO here: the switch is in the sign, which stays above the overlay.
 import entity from '../data/entity.json';
-import BrandIcon, { type Brand } from './BrandIcon.astro';
+import BrandIcon from './BrandIcon.astro';
 import WaIcon from './WaIcon.astro';
+import { social } from '../lib/social';
 import { menu, ui, wa, routeHref, type Locale } from '../i18n/ui';
 
 export interface Props {
@@ -17,18 +18,7 @@ export interface Props {
 const { locale, path } = Astro.props;
 const t = ui[locale];
 const isCurrent = (href: string) => path === href || path.startsWith(href + '/');
-
-// Brand marks (brief §3, design/icons/README.md): one colour, the name beside each.
-// Facebook, TikTok, Too Good To Go = entity.json sameAs; Google Maps = the shop's listing by name + address.
-const same = (host: string) => entity.sameAs.find((u) => u.includes(host));
-const a = entity.address;
-const mapsQuery = encodeURIComponent(`${entity.name}, ${a.streetAddress}, ${a.postalCode} ${a.addressLocality}`);
-const social = [
-  { brand: 'facebook', name: 'Facebook', href: same('facebook.com') },
-  { brand: 'tiktok', name: 'TikTok', href: same('tiktok.com') },
-  { brand: 'google-maps', name: 'Google Maps', href: `https://www.google.com/maps/search/?api=1&query=${mapsQuery}` },
-  { brand: 'too-good-to-go', name: 'Too Good To Go', href: same('toogoodtogo.com') },
-].filter((s): s is { brand: Brand; name: string; href: string } => Boolean(s.href));
+// Brand marks (brief §3, design/icons/README.md): one colour, the name beside each — src/lib/social.ts.
 ---
 <div class="menu menu--flat" id="menu" data-menu>
   <nav class="menu__links" aria-label={t.menu}>

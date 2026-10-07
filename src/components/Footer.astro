@@ -1,10 +1,33 @@
 ---
-// Footer — canvas boards Main / Contact: wordmark, legal line, NAP line, NL/RO links.
-// Emblem small on its own tile (D-19). Values from entity.json, never typed here.
+// Footer (stage 0c) — canvas boards „Footer · desktop 1440” and „Footer · mobiel 390” (06.10), their CSS read
+// from the board files: one dark block (on-ink) — closing line + open chip + two buttons · four columns
+// (Bezoek ons with the hours · Bestellen · Pagina's · Volg ons + stamp + Google figure) · the signature
+// (emblem on its paper tile ≤ 96 px, D-19, + the Fraunces wordmark 176 px / 58 px in two lines on the phone)
+// · legal bar with the NL/RO switch and the credit. Buttons, icon button, link-arrow and NL/RO from
+// buttons.css (.on-ink variants); the chip from open-chip.css.
+// One DOM for both boards: on the phone the first two columns dissolve (display: contents) into the tap
+// rows address · WhatsApp · e-mail, then the hours; the stamp and the back-to-top button exist twice
+// (one per layout, the other display: none).
+// The chip is the open-chip.css „still” state (today's hours from hours.json at build): stage 2 adds the
+// eight live states, the script and the reserved width. Today's row in the hours list is not marked yet
+// (needs the same script). Values from entity.json / hours.json / reviews.json; strings from ui.ts `footer`.
+// The maker's credit (D-29): design/css/footer-credit.css 1:1 + design/svg/dga-mark.svg inlined (?raw, as the hero stamp).
 import { Image } from 'astro:assets';
+import '../styles/open-chip.css';
+import '../styles/footer-credit.css';
 import emblem from '../assets/logo/emblem.webp';
+import dgaMark from '../assets/dga-mark.svg?raw';
+import portrait from '../assets/footer/john-en-georgiana-slagerij-john-zwevezele.webp';
 import entity from '../data/entity.json';
-import { ui, vatDisplay, type Locale } from '../i18n/ui';
+import hours from '../data/hours.json';
+import reviews from '../data/reviews.json';
+import type { Day } from '../data/types';
+import BrandIcon from './BrandIcon.astro';
+import WaIcon from './WaIcon.astro';
+import LangSwitch from './LangSwitch.astro';
+import Stamp from './Stamp.astro';
+import { social } from '../lib/social';
+import { ui, menu, hero, footer, wa, routeHref, vatDisplay, type Locale } from '../i18n/ui';
 
 export interface Props {
   locale: Locale;
@@ -12,71 +35,542 @@ export interface Props {
 }
 const { locale, alternates } = Astro.props;
 const t = ui[locale];
+const f = footer[locale];
 const a = entity.address;
+const tel = `tel:${entity.telephone}`;
+const route = routeHref(entity.geo.latitude, entity.geo.longitude);
+
+// Hours: a range is 08:00–18:00 in NL; RO body text takes no en dash (LR-T03), so 08:00-18:00.
+const dash = locale === 'ro' ? '-' : '–';
+const regular = hours.regular as Day[];
+const week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const dayFmt = new Intl.DateTimeFormat(locale === 'ro' ? 'ro-RO' : 'nl-BE', { weekday: 'long', timeZone: 'UTC' });
+const slotText = (slots: Day['slots']) => slots.map((s) => `${s.open}${dash}${s.close}`).join(' · ');
+const days = week.map((d, i) => {
+  const slots = regular.find((x) => x.dayOfWeek === d)?.slots ?? [];
+  // 1 January 2024 was a Monday
+  return { name: dayFmt.format(new Date(Date.UTC(2024, 0, 1 + i))), text: slots.length ? slotText(slots) : f.closed };
+});
+const buildDay = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Brussels', weekday: 'long' }).format(new Date());
+const todaySlots = regular.find((d) => d.dayOfWeek === buildDay)?.slots ?? [];
+
+// Google figure: reviews.json (D-10: fetched server-side; until then the placeholders show)
+const rating = reviews.rating === null ? null : Number(reviews.rating).toLocaleString('nl-BE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const count = reviews.count === null ? null : String(reviews.count);
+const reviewLine = f.reviews(rating ?? f.ratingPh, count ?? f.countPh);
+
+// Page links = the overlay menu (lexicon §5.15 / §6); the phone board adds Bestellen as an eighth.
+const pages = menu[locale];
+const stampText = hero[locale].stamp;
+const year = new Date().getFullYear();
+// the SVG file opens with a provenance comment (it mentions „<img>”); the page ships the <svg> only
+const creditMark = dgaMark.replace(/<!--[\s\S]*?-->\s*/g, '');
+
+const icons = {
+  pin: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle>',
+  phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"></path>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path>',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"></path>',
+  up: '<path d="M12 19V5M6 11l6-6 6 6"></path>',
+};
 ---
-<footer class="foot">
+<footer class="foot on-ink">
   <div class="container foot__in">
-    <div class="foot__brand">
-      <Image class="foot__emblem" src={emblem} width={56} height={56} densities={[1, 2]} alt="" />
-      <div class="foot__text">
-        <span class="foot__mark">{entity.name}</span>
-        <span>{entity.legalName} · {vatDisplay(entity.vatID)} · <a href={`mailto:${entity.email}`}>{entity.email}</a></span>
-        <address class="foot__nap">
-          {a.streetAddress}, {a.postalCode} {a.addressLocality} · <a href={`tel:${entity.telephone}`}>{entity.telephoneDisplay}</a>
-        </address>
+    <div class="foot__top">
+      <div class="foot__hello">
+        <figure class="foot__print">
+          <span class="foot__pin" aria-hidden="true"></span>
+          <span class="foot__photo">
+            <Image src={portrait} widths={[112, 150, 224, 300]} sizes="(min-width: 960px) 150px, 112px" alt={f.printAlt} loading="lazy" decoding="async" fetchpriority="low" />
+          </span>
+          <figcaption>{f.printCaption}</figcaption>
+        </figure>
+        <div class="foot__close">
+          <p class="foot__eyebrow foot__close-eyebrow">{f.closeEyebrow}</p>
+          <p class="foot__line">{f.closeLine}</p>
+          <a class="oc i still foot__chip" href="#openingsuren">
+            <span class="d" aria-hidden="true"></span>
+            {todaySlots.length ? (
+              <><span>{f.today}</span><span class="t">· {slotText(todaySlots)}</span></>
+            ) : (
+              <span>{f.todayClosed}</span>
+            )}
+          </a>
+        </div>
+      </div>
+      <div class="foot__cta">
+        <a class="btn btn--primary btn--lg" href={wa(`footer-${locale}`)}>
+          <WaIcon />
+          <span>{t.order}</span>
+        </a>
+        <a class="btn btn--secondary btn--lg-d" href={tel}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.phone}></svg>
+          <span>{f.call} {entity.telephoneDisplay}</span>
+        </a>
       </div>
     </div>
-    <nav class="foot__lang" aria-label={t.lang}>
-      <a href={alternates.nl} hreflang="nl-BE" lang="nl" aria-current={locale === 'nl' ? 'true' : undefined}>{t.footer.nl}</a>
-      <a href={alternates.ro} hreflang="ro-BE" lang="ro" aria-current={locale === 'ro' ? 'true' : undefined}>{t.footer.ro}</a>
-    </nav>
+
+    <div class="foot__cols">
+      <div class="fcol fcol--visit">
+        <h2 class="foot__eyebrow fcol__head">{f.visit}</h2>
+        <a class="frow frow--addr" href={route} rel="noopener">
+          <span class="frow__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.pin}></svg></span>
+          <span class="frow__txt">
+            <span class="frow__lbl">{f.visit}</span>
+            <span class="frow__val"><span class="frow__street">{a.streetAddress}</span><span class="frow__sep">, </span><span class="frow__city">{a.postalCode} {a.addressLocality}</span></span>
+          </span>
+          <span class="frow__go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.arrow}></svg></span>
+        </a>
+        <a class="link-arrow foot__arrow fcol__route" href={route} rel="noopener">
+          {f.route}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.arrow}></svg>
+        </a>
+        <div class="foot__hours" id="openingsuren">
+          <h2 class="foot__eyebrow foot__hours-head">{f.hours}</h2>
+          <dl class="foot__days">
+            {days.map((d) => (
+              <div><dt>{d.name}</dt><dd>{d.text}</dd></div>
+            ))}
+          </dl>
+        </div>
+      </div>
+
+      <div class="fcol fcol--order">
+        <h2 class="foot__eyebrow fcol__head">{f.order}</h2>
+        <a class="frow frow--wa" href={wa(`footer-row-${locale}`)}>
+          <span class="frow__ic"><WaIcon /></span>
+          <span class="frow__txt"><span class="frow__lbl">WhatsApp</span><span class="frow__val">{entity.telephoneDisplay}</span></span>
+          <span class="frow__go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.arrow}></svg></span>
+        </a>
+        <a class="frow frow--tel" href={tel}>
+          <span class="frow__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.phone}></svg></span>
+          <span class="frow__txt"><span class="frow__lbl">{f.call}</span><span class="frow__val">{entity.telephoneDisplay}</span></span>
+        </a>
+        <a class="frow frow--mail" href={`mailto:${entity.email}`}>
+          <span class="frow__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.mail}></svg></span>
+          <span class="frow__txt"><span class="frow__lbl">{f.mail}</span><span class="frow__val">{entity.email}</span></span>
+          <span class="frow__go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.arrow}></svg></span>
+        </a>
+        <p class="fcol__note">{f.orderNote}</p>
+        <a class="link-arrow foot__arrow fcol__online" href={f.orderHref}>
+          {f.orderOnline}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.arrow}></svg>
+        </a>
+      </div>
+
+      <nav class="fcol fcol--pages" aria-labelledby="foot-pages">
+        <h2 class="foot__eyebrow" id="foot-pages">{f.pages}</h2>
+        <ul class="fpages">
+          {pages.map((p) => <li><a class="fl" href={p.href}>{p.label}</a></li>)}
+          <li class="fpages__order"><a class="fl" href={f.orderHref}>{f.order}</a></li>
+        </ul>
+      </nav>
+
+      <div class="fcol fcol--follow">
+        <h2 class="foot__eyebrow">{f.follow}</h2>
+        <ul class="fsocial">
+          {social.map((s) => (
+            <li>
+              <a class="fl fsocial__chip" href={s.href} rel="noopener">
+                <BrandIcon name={s.brand} />
+                <span>{s.name}{s.brand === 'google-maps' && rating ? ` · ${rating} ★` : ''}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <div class="ffig">
+          <Stamp variant="ink" class="foot__stamp foot__stamp--d">{stampText}</Stamp>
+          <p class="ffig__text"><span class="ffig__num">{reviewLine}</span> {f.reviewsSource}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot__sign">
+      <div class="foot__brand">
+        <span class="foot__tile"><Image src={emblem} width={76} height={76} densities={[1, 2]} alt={entity.name} loading="lazy" decoding="async" fetchpriority="low" /></span>
+        <span class="foot__word" aria-hidden="true"><span>Slagerij</span> <span>John</span></span>
+      </div>
+      <Stamp variant="ink" class="foot__stamp foot__stamp--m">{stampText}</Stamp>
+      <a class="btn-icon foot__up foot__up--d" href="#top" aria-label={f.toTop}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.up}></svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="foot__legal">
+    <div class="container foot__legal-in">
+      <p class="foot__copy">© {year} {entity.legalName} · {vatDisplay(entity.vatID)}</p>
+      <ul class="foot__legal-links">
+        {f.legal.map((l) => <li><a class="fs" href={l.href}>{l.label}</a></li>)}
+      </ul>
+      <div class="foot__switch">
+        <LangSwitch current={locale} nlHref={alternates.nl} roHref={alternates.ro} label={t.lang} nlText={t.footer.nl} roText={t.footer.ro} />
+        <a class="btn-icon foot__up foot__up--m" href="#top" aria-label={f.toTop}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.up}></svg>
+        </a>
+      </div>
+      <a class="credit foot__credit" href={f.credit.href} rel="noopener">
+        <Fragment set:html={creditMark} />
+        <span class="credit__txt"><span class="credit__k">{f.credit.k}</span><span class="credit__n">{f.credit.n}</span></span>
+      </a>
+    </div>
   </div>
 </footer>
 
 <style>
+  /* Values from the two board files; the board's inline styles map 1:1 to the rules here. */
   .foot {
-    border-top: 1px solid var(--line);
-    padding: 26px 0 28px;
-    /* keep clear of the fixed bottom bar on mobile (U-03) */
-    padding-bottom: calc(28px + var(--bar) + env(safe-area-inset-bottom, 0px));
-    font-size: var(--fs-caption);
-    line-height: 1.5;
-    color: var(--muted);
+    --hair: rgba(244, 237, 224, 0.18);
+    background: var(--ink);
+    color: var(--on-ink);
+    font-family: var(--f-ui);
+    font-size: 15px;
+    line-height: 1.4;
+    overflow: hidden; /* the 176 px wordmark never scrolls the page sideways */
   }
-  .foot__in { display: flex; flex-direction: column; gap: var(--space-3); }
-  .foot__brand { display: flex; align-items: flex-start; gap: var(--space-3); }
-  .foot__emblem {
-    width: 56px;
-    height: 56px;
-    border-radius: var(--r-tag);
-    background: #FDFDFD;
-    border: 1px solid var(--line);
-    flex: 0 0 auto;
+  /* no blanket `.foot a { color }`: it would beat .btn--primary's ink text (buttons.css). Each link class below
+     sets its own colour; buttons, NL/RO and the chip take theirs from buttons.css / open-chip.css. */
+  .foot a:focus-visible { outline-color: var(--on-ink); }
+  .foot p, .foot ul, .foot dl, .foot dd, .foot figure { margin: 0; }
+  .foot ul { list-style: none; padding: 0; }
+
+  .foot__eyebrow {
+    margin: 0;
+    font-family: var(--f-ui);
+    font-size: 11px;
+    line-height: 1.3;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--on-ink-muted);
+    opacity: 0.85;
+    text-wrap: wrap;
   }
-  .foot__text { display: flex; flex-direction: column; gap: 6px; }
-  .foot__mark {
+
+  /* ---------- top: the pinned print, the closing line, the chip, two buttons ---------- */
+  .foot__in { padding-top: 32px; }
+  .foot__top { display: flex; flex-direction: column; gap: 12px; padding-bottom: 22px; }
+  .foot__hello {
+    display: grid;
+    grid-template-columns: 132px minmax(0, 1fr);
+    grid-template-rows: 1fr auto auto auto;
+    column-gap: 18px;
+    row-gap: 10px;
+    padding-top: 8px;
+  }
+  .foot__close { display: contents; }
+  .foot__print { grid-column: 1; grid-row: 1 / 4; align-self: end; }
+  .foot__close-eyebrow { grid-column: 2; grid-row: 2; }
+  .foot__line { grid-column: 2; grid-row: 3; }
+  .foot__chip { grid-column: 1 / -1; grid-row: 4; justify-self: start; margin-top: 2px; }
+
+  .foot__print {
+    position: relative;
+    width: 132px;
+    padding: 10px 10px 34px;
+    border-radius: 12px;
+    background: var(--paper);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset, 0 14px 32px -12px rgba(0, 0, 0, 0.6);
+    transform: rotate(-3deg);
+  }
+  .foot__pin {
+    position: absolute;
+    left: 50%;
+    top: -7px;
+    margin-left: -7px;
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: var(--paper);
+    border: 2px solid var(--ox);
+  }
+  .foot__photo {
+    display: block;
+    width: 112px;
+    height: 134px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--ink);
+  }
+  .foot__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
+  .foot__print figcaption {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 9px;
+    text-align: center;
+    font-family: var(--f-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 12.5px;
+    line-height: 1;
+    color: var(--fg);
+    white-space: nowrap;
+  }
+  .foot__line {
     font-family: var(--f-display);
     font-optical-sizing: auto;
-    font-weight: 600;
-    font-size: 16px;
-    color: var(--fg);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 1.02;
+    text-wrap: balance;
   }
-  .foot__nap { font-style: normal; }
-  .foot__nap a { white-space: nowrap; }
-  .foot a { color: inherit; }
-  .foot a:hover { color: var(--fg); }
-  .foot__lang { display: flex; gap: 14px; margin-top: 6px; }
-  .foot__lang a {
-    font-weight: 600;
+
+  .foot__cta { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+  .foot__cta .btn { width: 100%; }
+
+  /* ---------- the columns; on the phone a list of tap rows and three blocks ---------- */
+  .foot__cols { display: flex; flex-direction: column; }
+  .fcol--visit, .fcol--order { display: contents; }
+  /* desktop-only pieces; .foot-prefixed so the later .frow / .link-arrow display rules cannot bring them back */
+  .foot .fcol__head, .foot .fcol__route, .foot .frow--tel, .foot .fcol__note, .foot .fcol__online { display: none; }
+  .frow--addr { order: 1; }
+  .frow--wa { order: 2; }
+  .frow--mail { order: 3; }
+  .foot__hours { order: 4; }
+  .fcol--pages { order: 5; }
+  .fcol--follow { order: 6; }
+
+  .frow {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr) 18px;
+    gap: 12px;
+    align-items: center;
+    min-height: 52px;
+    border-top: 1px solid var(--hair);
+    color: var(--on-ink);
     text-decoration: none;
-    min-height: var(--touch);
+  }
+  .frow__ic, .frow__go { display: inline-flex; color: var(--on-ink-muted); }
+  .frow__ic :global(svg) { width: 20px; height: 20px; }
+  .frow__go :global(svg) { width: 18px; height: 18px; }
+  .frow__txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .frow__lbl { font-size: 12px; color: var(--on-ink-muted); }
+  .frow__val { font-size: 15px; font-weight: 600; overflow-wrap: anywhere; }
+  @media (hover: hover) { .frow:hover .frow__val { text-decoration: underline; text-underline-offset: 4px; } }
+
+  .foot__hours, .fcol--pages, .fcol--follow {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-top: 1px solid var(--hair);
+    padding: 18px 0 20px;
+  }
+  .fcol--follow { padding-bottom: 22px; }
+  .foot__days {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 5px 18px;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    color: var(--on-ink-muted);
+  }
+  .foot__days > div { display: contents; }
+  .foot__days dd { text-align: right; }
+
+  .fpages { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; }
+  .fl { color: var(--on-ink); text-decoration: none; font-size: 15px; line-height: 1.3; }
+  @media (hover: hover) { .fl:hover { text-decoration: underline; text-underline-offset: 4px; } }
+  .fpages .fl { display: flex; align-items: center; min-height: 28px; }
+
+  .fsocial { display: flex; flex-wrap: wrap; gap: 8px; }
+  .fsocial__chip {
     display: inline-flex;
     align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 14px 0 12px;
+    border-radius: 999px;
+    border: 1px solid var(--hair);
+    font-size: 13px;
+    font-weight: 600;
   }
-  .foot__lang a[aria-current] { color: var(--fg); }
+  .ffig__text { font-size: 13px; line-height: 1.5; color: var(--on-ink-muted); }
+  .ffig__num { color: var(--on-ink); font-weight: 600; }
 
+  /* ---------- the signature ---------- */
+  .foot__sign {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    border-top: 1px solid var(--hair);
+    padding-top: 24px;
+  }
+  .foot__brand { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .foot__tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    background: var(--paper);
+    overflow: hidden;
+    flex: 0 0 auto;
+  }
+  .foot__tile img { width: 56px; height: 56px; object-fit: contain; }
+  .foot__word {
+    font-family: var(--f-display);
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-size: 58px;
+    line-height: 0.88;
+    letter-spacing: -0.045em;
+    color: var(--on-ink);
+    white-space: nowrap;
+  }
+  .foot__word > span { display: block; }
+
+  /* 96 px on the phone board; the lexicon's stamp line (§5.16) is longer than the board's, so 108 px with 10 px
+     padding keeps „KLASSIEKERS” inside the inner ring */
+  .foot :global(.foot__stamp) {
+    width: 108px;
+    height: 108px;
+    padding: 10px;
+    flex: 0 0 auto;
+    border: 2px solid var(--on-ink);
+    box-shadow: inset 0 0 0 5px var(--ink), inset 0 0 0 6px var(--on-ink);
+    color: var(--on-ink);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    line-height: 1.35;
+    transform: rotate(8deg);
+  }
+  .foot :global(.foot__stamp--d), .foot__up--d { display: none; }
+
+  /* ---------- legal bar ---------- */
+  .foot__legal {
+    margin-top: 22px;
+    border-top: 1px solid var(--hair);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--on-ink-muted);
+  }
+  .foot__legal-in {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 16px;
+    /* clear of the fixed bottom bar on the phone (U-03) */
+    padding-bottom: calc(24px + var(--bar) + env(safe-area-inset-bottom, 0px));
+  }
+  .foot__switch { order: 1; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .foot__legal-links { order: 2; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+  .foot__copy { order: 3; }
+  .fs { color: var(--on-ink-muted); font-size: 12px; text-decoration: none; }
+  @media (hover: hover) { .fs:hover { color: var(--on-ink); text-decoration: underline; text-underline-offset: 3px; } }
+
+  .foot__arrow { color: var(--on-ink); min-height: 32px; }
+
+  /* ---------- desktop: board „Footer · desktop 1440” ---------- */
   @media (min-width: 960px) {
-    .foot { padding-bottom: 32px; }
-    .foot__in { flex-direction: row; align-items: center; justify-content: space-between; }
+    .foot__in { padding-top: 56px; }
+
+    .foot__top {
+      flex-direction: row;
+      flex-wrap: wrap; /* below ~1250 px the two buttons drop under the closing line */
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 28px 40px;
+      padding-bottom: 36px;
+      border-bottom: 1px solid var(--hair);
+    }
+    .foot__hello { display: flex; align-items: flex-end; gap: 36px; padding-top: 0; min-width: 0; flex: 1 1 640px; }
+    .foot__close { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+    .foot__chip { align-self: flex-start; margin-top: 0; }
+    .foot__print { width: 170px; flex: 0 0 auto; }
+    .foot__photo { width: 150px; height: 180px; }
+    .foot__print figcaption { font-size: 15px; }
+    .foot__line { font-size: clamp(32px, 2.8vw, 40px); line-height: 1; letter-spacing: -0.015em; max-width: 560px; }
+    .foot__cta { flex-direction: row; gap: 12px; margin-top: 0; flex: 0 0 auto; }
+    .foot__cta .btn { width: auto; }
+
+    .foot__cols {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr 0.9fr 1.1fr;
+      gap: 40px;
+      padding: 36px 0 40px;
+      border-bottom: 1px solid var(--hair);
+    }
+    .fcol--visit, .fcol--order, .fcol--pages, .fcol--follow {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      border: 0;
+      padding: 0;
+    }
+    .fcol--follow { gap: 16px; }
+    .foot .fcol__head, .foot .frow--tel { display: flex; }
+    .foot .fcol__route, .foot .fcol__online { display: inline-flex; align-self: flex-start; }
+    .foot .fcol__note { display: block; }
+    .frow--addr, .frow--wa, .frow--mail, .foot__hours, .fcol--pages, .fcol--follow { order: 0; }
+
+    .frow {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      min-height: 28px;
+      border: 0;
+      color: var(--on-ink);
+    }
+    .frow__ic :global(svg) { width: 18px; height: 18px; }
+    .frow__go { display: none; }
+    .frow__txt { display: block; }
+    .frow__lbl { font-size: 15px; font-weight: 600; color: var(--on-ink); }
+    .frow__lbl::after { content: " · "; font-weight: 400; }
+    .frow__val { font-size: 15px; font-weight: 400; }
+    .frow--mail .frow__lbl, .frow--addr .frow__lbl { display: none; }
+    .frow--addr { align-items: flex-start; }
+    .frow--addr .frow__val { font-weight: 400; }
+    .frow__street { font-weight: 600; display: block; }
+    .frow__sep { display: none; }
+    @media (hover: hover) { .frow:hover .frow__val { text-decoration: underline; text-underline-offset: 4px; } }
+
+    .foot__hours { border-top: 1px solid var(--hair); padding: 12px 0 0; gap: 0; }
+    .foot__hours-head {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
+    .fcol__note { font-size: 13px; line-height: 1.5; color: var(--on-ink-muted); border-top: 1px solid var(--hair); padding-top: 12px; }
+
+    .fpages { display: flex; flex-direction: column; gap: 9px; }
+    .fpages .fl { display: inline; min-height: 0; }
+    .fpages__order { display: none; }
+    .fsocial { gap: 10px; }
+
+    .ffig { display: flex; align-items: center; gap: 18px; margin-top: 6px; }
+    .foot :global(.foot__stamp--d) { display: inline-flex; width: 118px; height: 118px; padding: 12px; transform: rotate(-7deg); }
+    .foot :global(.foot__stamp--m) { display: none; }
+
+    .foot__sign { border: 0; padding-top: 40px; gap: 32px; }
+    .foot__brand { flex-direction: row; align-items: flex-end; gap: 28px; }
+    .foot__tile { width: 84px; height: 84px; }
+    .foot__tile img { width: 76px; height: 76px; }
+    /* 176 px at 1440 (the board); narrower laptops scale it so the line never reaches the button */
+    .foot__word { font-size: min(176px, 15vw); }
+    .foot__word > span { display: inline; }
+    .foot__up--d { display: inline-flex; flex: 0 0 auto; }
+
+    .foot__legal { margin-top: 28px; }
+    .foot__legal-in {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 18px;
+      padding-top: 18px;
+      padding-bottom: 24px;
+    }
+    .foot__copy, .foot__legal-links, .foot__switch { order: 0; }
+    .foot__legal-links { gap: 6px 18px; }
+    .foot__switch { margin-left: auto; }
+    .foot__up--m { display: none; }
+  }
+
+  /* narrow laptops (960–1199): the board's four columns become two by two */
+  @media (min-width: 960px) and (max-width: 1199.98px) {
+    .foot__cols { grid-template-columns: 1fr 1fr; gap: 36px 40px; }
   }
 </style>
