@@ -1,25 +1,163 @@
 {
-  "_source": "`week` = „Deze week op de toog” on the home (stage 3): the three tags of the canvas board Main. Names: Colli Varken 1 (lexicon §5.11 / §5.14, RO §5.14), Gourmet 9 soorten (§5.11; RO „BBQ și gourmet” per Dan 07.10, lexicon §5.15 home body strings), Mici (§5.14). Prices and cooking lines stay [PRIJS] / [KOOKLIJN] until FACTS.md has the owners' values (the old site's €45 / €10 are [OBSERVED], to confirm — FACTS „Known prices”). `items` / `categories` get their shape at stage 4 (Producten); `week` then points at items. Claude Code, stage 3.",
-  "categories": [],
-  "items": [],
-  "week": [
-    {
-      "name": { "nl": "Colli Varken 1", "ro": "Colli Porc 1" },
-      "line": { "nl": "[KOOKLIJN]", "ro": "[KOOKLIJN]" },
-      "price": { "nl": "[PRIJS]", "ro": "[PREȚ]" },
-      "unit": { "nl": "/colli", "ro": "/colli" }
+  "_source": "Stage 4 (Claude Code, 07.10; revised 07.10 after lexicon §5.19 + §6 „Product names RO”): the shape for /producten, the home's „Deze week op de toog” and the bestelbon (stage 5). `categories` = the sections of the canvas board Producten + BBQ & gourmet (D-13; the home's gourmet tag lives there, its page is a later stage); NL names = lexicon §2.2 / §4 / §5.15, RO = §6 „Product names RO” categories. `items` = the board's tags; NL names from the word bank §2.2 / §2.4 (search demand — NOT the confirmed assortment: Cowork replaces them from the owners' price list, stage 15), RO names = the §6 table verbatim. Colli Varken 1's line = its contents (§5.11 NL, §6 table RO; the old site's colli, [OBSERVED], to check with John). Mici's line = the lexicon's (§2.4 gloss NL, §6 product-card example RO — §5.19: „every cooking line [KOOKLIJN] except Mici”). price null = not in FACTS.md → the tag shows [PRIJS] / [PREȚ]; the old site's €45 / €10 stay out until the owners confirm them (FACTS „Known prices”). `week` = ids into `items`. Units: kg · pers · colli · stuk · liter.",
+  "categories": [
+    { "id": "rund", "name": { "nl": "Rund", "ro": "Vită" }
     },
-    {
-      "name": { "nl": "Gourmet 9 soorten", "ro": "BBQ și gourmet" },
-      "line": { "nl": "[KOOKLIJN]", "ro": "[KOOKLIJN]" },
-      "price": { "nl": "[PRIJS]", "ro": "[PREȚ]" },
-      "unit": { "nl": "/pers", "ro": "/pers." }
+    { "id": "varken", "name": { "nl": "Varken", "ro": "Porc" }
     },
-    {
-      "name": { "nl": "Mici", "ro": "Mici" },
-      "line": { "nl": "[KOOKLIJN]", "ro": "[KOOKLIJN]" },
-      "price": { "nl": "[PRIJS]", "ro": "[PREȚ]" },
-      "unit": { "nl": "/kg", "ro": "/kg" }
+    { "id": "kip", "name": { "nl": "Kip & kalkoen", "ro": "Pui și curcan" }
+    },
+    { "id": "lam", "name": { "nl": "Lam", "ro": "Miel" }
+    },
+    { "id": "roemeens", "name": { "nl": "Roemeense specialiteiten", "ro": "Mici și specialități" }
+    },
+    { "id": "colli", "name": { "nl": "Colli's", "ro": "Colli" }
+    },
+    { "id": "gourmet", "name": { "nl": "BBQ & gourmet", "ro": "BBQ și gourmet" }
     }
+  ],
+  "items": [
+    { "id": "rundsgebraad", "category": "rund", "name": { "nl": "Rundsgebraad", "ro": "Friptură de vită" },
+      "line": {
+        "nl": "[KOOKLIJN]",
+        "ro": "[KOOKLIJN]"
+      },
+      "price": null,
+      "unit": "kg"
+    },
+    { "id": "entrecote", "category": "rund", "name": { "nl": "Entrecote", "ro": "Antricot de vită" },
+      "line": {
+        "nl": "[KOOKLIJN]",
+        "ro": "[KOOKLIJN]"
+      },
+      "price": null,
+      "unit": "kg"
+    },
+    { "id": "stoofvlees", "category": "rund", "name": { "nl": "Stoofvlees", "ro": "Carne de vită pentru tocăniță" },
+      "line": {
+        "nl": "[KOOKLIJN]",
+        "ro": "[KOOKLIJN]"
+      },
+      "price": null,
+      "unit": "kg"
+    },
+    { "id": "gehakt", "category": "rund", "name": { "nl": "Gehakt", "ro": "Carne tocată" },
+      "line": {
+        "nl": "[KOOKLIJN]",
+        "ro": "[KOOKLIJN]"
+      },
+      "price": null,
+      "unit": "kg"
+    },
+    { "id": "varkenshaasje", "category": "varken", "name": { "nl": "Varkenshaasje", "ro": "Mușchiuleț de porc" },
+      "line": {
+        "nl": "[KOOKLIJN]",
+        "ro": "[KOOKLIJN]"
+      },
+      "price": null,
+      "unit": "kg"
+    },
+    { "id": "spiering", "category": "varken", "name": { "nl": "Spiering", "ro": "Ceafă de porc" },
+      "line": {
+        "nl": "[KOOKLIJN]",
+        "ro": "[KOOKLIJN]"
+      },
+      "price": null,
+      "unit": "kg"
+    },
+    { "id": "ribbetjes", "category": "varken", "name": { "nl": "Ribbetjes", "ro": "Coaste de porc" },
+      "line": {
+        "nl": "[KOOKLIJN]",
+        "ro": "[KOOKLIJN]"
+      },
+      "price": null,
+      "unit": "kg"
+    },
+    { "id": "braadworst", "category": "varken", "name": { "nl": "Braadworst", "ro": "Cârnați proaspeți de porc" },
+      "line": {
+        "nl": "[KOOKLIJN]",
+        "ro": "[KOOKLIJN]"
+      },
+      "price": null,
+      "unit": "kg"
+    },
+    { "id": "kipfilet", "category": "kip", "name": { "nl": "Kipfilet", "ro": "Piept de pui" },
+      "line": {
+        "nl": "[KOOKLIJN]",
+        "ro": "[KOOKLIJN]"
+      },
+      "price": null,
+      "unit": "kg"
+    },
+    { "id": "kippenboutjes", "category": "kip", "name": { "nl": "Kippenboutjes", "ro": "Pulpe de pui" },
+      "line": {
+        "nl": "[KOOKLIJN]",
+        "ro": "[KOOKLIJN]"
+      },
+      "price": null,
+      "unit": "kg"
+    },
+    { "id": "kalkoengebraad", "category": "kip", "name": { "nl": "Kalkoengebraad", "ro": "Friptură de curcan" },
+      "line": {
+        "nl": "[KOOKLIJN]",
+        "ro": "[KOOKLIJN]"
+      },
+      "price": null,
+      "unit": "kg"
+    },
+    { "id": "lamsbout", "category": "lam", "name": { "nl": "Lamsbout", "ro": "Pulpă de miel" },
+      "line": {
+        "nl": "[KOOKLIJN]",
+        "ro": "[KOOKLIJN]"
+      },
+      "price": null,
+      "unit": "kg"
+    },
+    { "id": "mici", "category": "roemeens", "name": { "nl": "Mici", "ro": "Mici" },
+      "line": {
+        "nl": "Gekruide gehaktrolletjes voor op de BBQ",
+        "ro": "8 minute pe grătar încins, întorși o singură dată."
+      },
+      "price": null,
+      "unit": "kg"
+    },
+    { "id": "gerookte-worst", "category": "roemeens", "name": { "nl": "Gerookte worst", "ro": "Cârnați afumați" },
+      "line": {
+        "nl": "[KOOKLIJN]",
+        "ro": "[KOOKLIJN]"
+      },
+      "price": null,
+      "unit": "kg"
+    },
+    { "id": "pastrami", "category": "roemeens", "name": { "nl": "Pastrami", "ro": "Pastramă" },
+      "line": {
+        "nl": "[KOOKLIJN]",
+        "ro": "[KOOKLIJN]"
+      },
+      "price": null,
+      "unit": "kg"
+    },
+    { "id": "colli-varken-1", "category": "colli", "name": { "nl": "Colli Varken 1", "ro": "Colli Porc 1" },
+      "line": {
+        "nl": "5 kg: spiering, filet kotelet, spek, worst, gehakt",
+        "ro": "5 kg: ceafă, cotlet, piept de porc, cârnați, carne tocată"
+      },
+      "price": null,
+      "unit": "colli",
+      "featured": true
+    },
+    { "id": "gourmet-9", "category": "gourmet", "name": { "nl": "Gourmet 9 soorten", "ro": "Platou gourmet, 9 feluri" },
+      "line": {
+        "nl": "[KOOKLIJN]",
+        "ro": "[KOOKLIJN]"
+      },
+      "price": null,
+      "unit": "pers"
+    }
+  ],
+  "week": [
+    "colli-varken-1",
+    "gourmet-9",
+    "mici"
   ]
 }

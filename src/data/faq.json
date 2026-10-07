@@ -26,5 +26,29 @@
       "a": "Gourmet 9 soorten [PRIJS], 10 soorten [PRIJS], luxe [PRIJS] per persoon; fondue vanaf [PRIJS]."
     }
   ],
-  "ro": []
+  "ro": [],
+  "pages": {
+    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4.",
+    "producten": {
+      "nl": [
+        {
+          "q": "Kan ik ook kleine hoeveelheden kopen?",
+          "a": "Ja. Aan de toog koopt u wat u nodig hebt; online bestelt u per kg of per pakket."
+        },
+        {
+          "q": "Wat zijn mici?",
+          "a": "Mici zijn gekruide Roemeense gehaktrolletjes van rund en varken, voor op de BBQ of in de pan; [PRIJS] per kg, ongeveer [AANTAL] stuks per kg."
+        },
+        {
+          "q": "Zijn jullie open op zondag?",
+          "a": "Ja, zondag van 08:00 tot 13:00; maandag vanaf 13:00."
+        },
+        {
+          "q": "Leveren jullie in Tielt / Lichtervelde / Roeselare?",
+          "a": "Ja. Lichtervelde en Wingene liggen binnen 10 km (gratis vanaf €50), Tielt en Roeselare binnen 20 km (gratis vanaf €100); de afstand telt vanaf de winkel."
+        }
+      ],
+      "ro": []
+    }
+  }
 }

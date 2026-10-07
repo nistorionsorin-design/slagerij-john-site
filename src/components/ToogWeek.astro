@@ -1,13 +1,13 @@
 ---
 // „Deze week op de toog” (stage 3, board Main #prijzen): eyebrow · heading · intro · three counter tags · link to the
-// prices. Tags from products.json `week` (placeholders until FACTS.md has the owners' prices and lines).
+// prices. Tags = products.json `week`, ids into `items` (stage 4; placeholders until FACTS.md has the owners' prices and lines).
 // Desktop (derived, D-30): the heading block left, the tags stacked right — a price board.
-import products from '../data/products.json';
 import CounterTag from './CounterTag.astro';
+import { products, item, priceLabel, unitLabel } from '../lib/price';
 import { homeNl } from '../i18n/home';
 
 const t = homeNl.toog;
-const tags = products.week;
+const tags = products.week.map(item);
 const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 ---
 <section class="sec toog" id="prijzen" aria-labelledby="toog-title">
@@ -19,7 +19,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
     </div>
     <ul class="toog__tags">
       {tags.map((g) => (
-        <li><CounterTag name={g.name.nl} line={g.line.nl} price={g.price.nl} unit={g.unit.nl} /></li>
+        <li><CounterTag name={g.name.nl} line={g.line.nl} price={priceLabel(g, 'nl')} unit={unitLabel(g.unit, 'nl')} /></li>
       ))}
     </ul>
     <a class="link-arrow toog__more" href={t.moreHref}>{t.more}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a>

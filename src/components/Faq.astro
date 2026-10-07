@@ -7,9 +7,14 @@ import type { FaqItem } from '../data/types';
 import type { Locale } from '../i18n/ui';
 import { keepUnits } from '../lib/typo';
 
-export interface Props { locale: Locale; title: string }
-const { locale, title } = Astro.props;
-const items = faq[locale] as FaqItem[];
+export interface Props {
+  locale: Locale;
+  title: string;
+  /** a page's own questions (faq.json `pages`, stage 4); default = the home's list */
+  page?: Exclude<keyof typeof faq.pages, '_source'>;
+}
+const { locale, title, page } = Astro.props;
+const items = (page ? faq.pages[page][locale] : faq[locale]) as FaqItem[];
 const plus = '<path d="M12 5v14M5 12h14"/>';
 ---
 {items.length > 0 && (

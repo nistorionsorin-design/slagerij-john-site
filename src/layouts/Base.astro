@@ -26,9 +26,11 @@ export interface Props {
   navVariant?: 'paper' | 'hero';
   /** the page shows the hours card (Hours.astro, id="openingsuren"): the footer's hours then drop that id */
   hoursCard?: boolean;
+  /** the page's own JSON-LD nodes (BreadcrumbList, Product …), one more ld+json block after the shop's */
+  jsonld?: Record<string, unknown>[];
 }
 
-const { title, description, locale, path, alternates, noindex = false, navVariant = 'paper', hoursCard = false } = Astro.props;
+const { title, description, locale, path, alternates, noindex = false, navVariant = 'paper', hoursCard = false, jsonld: pageLd } = Astro.props;
 
 const origin = 'https://slagerij-john.be';
 const abs = (p: string) => `${origin}${p === '/' ? '/' : p}`;
@@ -106,6 +108,7 @@ const jsonld = entity.name
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />
+    {pageLd && pageLd.length > 0 && <script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@graph': pageLd })} />}
   </head>
   <body>
     <a class="skip" href="#main">{t.skip}</a>

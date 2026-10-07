@@ -4,6 +4,8 @@
 // name Fraunces 600 19 px, line 12 px muted, price 26 px 700 tabular (a placeholder price 20 px, as on board Main).
 // Price colour: oxblood (brief §2–3 „prices in oxblood”; the hero's tags do the same).
 // Tones: paper (the counter) · ink („aanbevolen pakket”: dark, price in the accent yellow). Nothing is baked in.
+// Stage 4: `id` = the product's anchor (/producten#mici, also the Product @id in its JSON-LD); the price never wraps
+// (board Producten: white-space nowrap on the price).
 export interface Props {
   name: string;
   line?: string;
@@ -12,11 +14,12 @@ export interface Props {
   tone?: 'paper' | 'ink';
   /** heading level of the name inside its section */
   as?: 'h3' | 'h4';
+  id?: string;
 }
-const { name, line, price, unit, tone = 'paper', as: H = 'h3' } = Astro.props;
+const { name, line, price, unit, tone = 'paper', as: H = 'h3', id } = Astro.props;
 const placeholder = !!price && price.startsWith('[');
 ---
-<article class:list={['tag', `tag--${tone}`]}>
+<article class:list={['tag', `tag--${tone}`]} id={id}>
   <span class="tag__pin" aria-hidden="true"></span>
   <div class="tag__text">
     <H class="tag__name">{name}</H>
@@ -64,7 +67,7 @@ const placeholder = !!price && price.startsWith('[');
     letter-spacing: 0;
   }
   .tag__line { margin: 0; font-size: var(--fs-caption); line-height: 1.35; color: var(--muted); }
-  .tag__price { margin: 0; display: flex; align-items: baseline; gap: 3px; font-variant-numeric: tabular-nums; }
+  .tag__price { margin: 0; display: flex; align-items: baseline; gap: 3px; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .tag__amount { font-size: var(--fs-price); font-weight: 700; letter-spacing: -0.02em; color: var(--ox); }
   .tag__amount--ph { font-size: 20px; }
   .tag__unit { font-size: var(--fs-caption); color: var(--muted); }

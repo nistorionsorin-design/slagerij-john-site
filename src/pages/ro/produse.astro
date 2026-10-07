@@ -1,0 +1,26 @@
+---
+// STUB until stage 9 (RO pages): the head carries lexicon §6 „Produse” meta (57 / 150); the H1 stays the brand name
+// until stage 9 builds the page from §6. It exists at stage 4 only so /producten has its
+// reciprocal hreflang pair (gate: every hreflang target is a built page that links back).
+import Base from '../../layouts/Base.astro';
+const alternates = { nl: '/producten', ro: '/ro/produse' };
+// BreadcrumbList (lexicon §8.4, required on every page but home): the brand for the home, the page = §6 menu name
+const jsonld = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Măcelăria John', item: 'https://slagerij-john.be/ro' },
+      { '@type': 'ListItem', position: 2, name: 'Produse și prețuri', item: 'https://slagerij-john.be/ro/produse' },
+    ],
+  },
+];
+---
+<Base title="Carne proaspătă, prețuri/kg în Zwevezele | Măcelăria John" description="Vită, porc, pui și miel, proaspete zilnic, prețuri la kilogram ca la tejghea. Colli, pachete BBQ, mici și specialități românești. Comandă pe WhatsApp." locale="ro" path="/ro/produse" alternates={alternates} jsonld={jsonld}>
+  <main id="main" class="container stub">
+    <h1>Măcelăria John</h1>
+  </main>
+</Base>
+
+<style>
+  .stub { padding-top: 48px; padding-bottom: 48px; min-height: 50vh; }
+</style>
