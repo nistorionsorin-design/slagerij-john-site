@@ -5,6 +5,8 @@ export interface Photo {
   src: string;
   /** the original it was copied from (assets/raw/…) */
   from?: string;
+  /** another file for desktop (≥ 960 px) at the same place — art direction, e.g. a wide photo for a wide tile */
+  srcDesktop?: string;
   width?: number;
   height?: number;
   /** object-position, % */

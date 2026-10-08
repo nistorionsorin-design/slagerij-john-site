@@ -258,5 +258,49 @@
       }
     }
   ],
+  "_traiteur_source": "Stage 6 (Claude Code, 08.10): /traiteur — the four tiles of lexicon §5.21 in page order (files from design/photos-inventory.md: p05 · q14 · q06 on the phone / q05 from 960 px (srcDesktop, the home grid file) · p08 = the home loop file, reused like tile 3; 08.10 15:40, was q10), the new ones copied byte-identical from assets/raw/2026-10-05-whatsapp/ into src/assets/traiteur/; alts NL/RO = §5.21 verbatim (tile 3 = §5.14 grid „Traiteur”, tile 4 = §5.14 loop row „barbecue”). Focal points read off the photos (judged, not from a board). The page head is hero frame 5 (the board Traiteur), hero[4] above.",
+  "traiteur": [
+    {
+      "src": "traiteur/koude-schotel-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 3.jpeg",
+      "focalX": 45,
+      "focalY": 50,
+      "alt": {
+        "nl": "Koude schotel met charcuterie op een lange tafel",
+        "ro": "Platou rece cu mezeluri pe o masă lungă"
+      }
+    },
+    {
+      "src": "traiteur/bbq-schalen-gemarineerd-vlees.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.13 9.jpeg",
+      "focalX": 50,
+      "focalY": 55,
+      "alt": {
+        "nl": "Twee BBQ-schalen met gemarineerd vlees op de toog",
+        "ro": "Două tăvi de BBQ cu carne marinată, pe tejghea"
+      }
+    },
+    {
+      "src": "traiteur/feestschotels-tapas-op-de-toog.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 6.jpeg",
+      "srcDesktop": "home/tapasschotels-slagerij-john.jpg",
+      "focalX": 50,
+      "focalY": 60,
+      "alt": {
+        "nl": "Tapasschotels met charcuterie en kaas op de toog",
+        "ro": "Platouri de tapas cu mezeluri și brânzeturi, pe tejghea"
+      }
+    },
+    {
+      "src": "home/mobiele-barbecue-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 21.00.24.jpeg",
+      "focalX": 50,
+      "focalY": 55,
+      "alt": {
+        "nl": "De barbecuetrailer met open grills",
+        "ro": "Remorca de grătar, cu grătarele deschise"
+      }
+    }
+  ],
   "gallery": []
 }

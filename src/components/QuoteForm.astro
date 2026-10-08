@@ -1,0 +1,171 @@
+---
+// QuoteForm — „Vraag een offerte” (stage 6, /traiteur#offerte; lexicon §5.21 „Offerte form”). The board Traiteur's
+// oxblood block (eyebrow · italic title · the WhatsApp-bericht preview · the light button), with the plan's five fields
+// + the optional name. The send is WhatsApp only in this stage (D-31): through /wa?src=traiteur-form, which logs the
+// click and opens wa.me with the §5.21 message.
+// Without script it is a plain GET form to /wa: the template travels as `text`, the fields as their own names, and the
+// function swaps each [bracket word] for its field (src/lib/quote-core.js); the browser's `required` checks apply.
+// src/scripts/quote.ts adds the live preview, today as the earliest date, the §5.21 error line under each field, and
+// builds the same message itself. Its strings travel as one application/json block (CSP: no inline script).
+import WaIcon from './WaIcon.astro';
+import entity from '../data/entity.json';
+import { brussels, iso } from '../lib/order-core.js';
+import { traiteurNl } from '../i18n/traiteur';
+
+export interface Props {
+  locale?: 'nl';
+  t: typeof traiteurNl.quote;
+  occasions: string[];
+  /** /wa?src= (lexicon §9) */
+  src: string;
+}
+const { locale = 'nl', t, occasions, src } = Astro.props;
+// the select shows the occasions with a capital, as options do; each option's value is the message's wording with
+// the article (§5.21 08.10 15:40: „voor een verjaardag” … „Iets anders” → „voor een feest")
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+if (t.msgFeest.length !== occasions.length) throw new Error('traiteur.ts quote.msgFeest: one per occasion');
+const options = [...occasions.map((o, i) => ({ value: t.msgFeest[i], label: cap(o) })), { value: t.msgOther, label: t.other }];
+// the earliest date at build time; the script moves it to today
+const today = iso(brussels().day);
+const scriptData = { locale, src, msg: t.msg, errors: t.errors };
+---
+<form class="qf on-ink" method="get" action="/wa" data-quote aria-labelledby="qf-title">
+  <input type="hidden" name="src" value={src} />
+  <input type="hidden" name="lang" value={locale} />
+  <input type="hidden" name="text" value={t.msg} />
+
+  <div class="qf__head">
+    <p class="qf__eyebrow">{t.eyebrow}</p>
+    <h2 class="qf__title" id="qf-title">{t.title}</h2>
+    <p class="qf__intro">{t.intro}</p>
+  </div>
+
+  <div class="qf__fields">
+    <p class="qf__note"><span aria-hidden="true">* </span>{t.required}</p>
+    <label class="field qf__feest">
+      <span class="field__l">{t.feest}<span class="qf__req" aria-hidden="true">*</span></span>
+      <select class="field__in" name="feest" required>
+        <option value="">—</option>
+        {options.map((o) => <option value={o.value}>{o.label}</option>)}
+      </select>
+    </label>
+    <label class="field">
+      <span class="field__l">{t.datum}<span class="qf__req" aria-hidden="true">*</span></span>
+      <input class="field__in" type="date" name="datum" min={today} required />
+    </label>
+    <label class="field">
+      <span class="field__l">{t.aantal}<span class="qf__req" aria-hidden="true">*</span></span>
+      <input class="field__in" type="number" name="aantal" inputmode="numeric" min="1" max="2000" step="1" required />
+    </label>
+    <label class="field">
+      <span class="field__l">{t.plaats}<span class="qf__req" aria-hidden="true">*</span></span>
+      <input class="field__in" type="text" name="plaats" autocomplete="address-level2" maxlength="60" required />
+    </label>
+    <label class="field">
+      <span class="field__l">{t.telefoon}<span class="qf__req" aria-hidden="true">*</span></span>
+      <input class="field__in" type="tel" name="telefoon" autocomplete="tel" maxlength="30" required />
+    </label>
+    <label class="field">
+      <span class="field__l">{t.naam}</span>
+      <input class="field__in" type="text" name="naam" autocomplete="name" maxlength="80" />
+    </label>
+  </div>
+
+  <div class="qf__send">
+    <div class="qf__msg">
+      <p class="qf__label">{t.msgLabel}</p>
+      <p class="qf__text" data-quote-preview>{t.msg}</p>
+    </div>
+    <div class="qf__buttons">
+      <button class="btn btn--light btn--lg" type="submit"><WaIcon /><span>{t.submit}</span></button>
+      <a class="btn btn--secondary btn--lg" href={`tel:${entity.telephone}`}>{t.call}</a>
+    </div>
+    <p class="qf__promise">{t.promise}</p>
+  </div>
+</form>
+
+<script type="application/json" id="quote-data" set:html={JSON.stringify(scriptData)} />
+
+<script>
+  import '../scripts/quote.ts';
+</script>
+
+<style>
+  /* board Traiteur „#offerte”: oxblood block, radius 16, padding 22 20, gap 12; eyebrow 11/.16em in the board's pale
+     rose; title Fraunces italic 30; the message on the tag colour, radius 10; the button paper-light (buttons.css
+     .on-ink .btn--light). Fields = the bestelbon's (label 12/600, 46 px, white, radius 10), labels in paper. */
+  .qf {
+    --qf-rose: #F2D6C9; /* the board's eyebrow/value colour on oxblood: 7,7:1 */
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 22px 20px;
+    border-radius: var(--r-frame);
+    background: var(--ox);
+    color: var(--on-ox);
+    scroll-margin-top: 72px;
+  }
+  .qf__head { display: flex; flex-direction: column; gap: 10px; }
+  .qf__eyebrow { margin: 0; font-size: var(--fs-eyebrow); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--qf-rose); }
+  .qf__title { margin: 0; font-family: var(--f-display); font-style: italic; font-weight: 400; font-size: 30px; line-height: 1.02; letter-spacing: -0.01em; color: var(--on-ox); }
+  .qf__intro { margin: 0; font-size: 14px; line-height: 1.45; max-width: 52ch; }
+
+  .qf__fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px 10px; padding-top: 14px; border-top: 1px solid rgba(244, 237, 224, 0.3); }
+  .qf__fields > .field { grid-column: 1 / -1; }
+  .qf__note { grid-column: 1 / -1; margin: 0; font-size: 12px; color: var(--qf-rose); }
+  .qf__req { margin-left: 2px; color: var(--qf-rose); }
+  .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; font-size: 12px; font-weight: 600; color: var(--on-ox); }
+  .field__in {
+    width: 100%;
+    min-height: 46px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid var(--tag-pin);
+    background: #fff;
+    color: var(--fg);
+    font-family: var(--f-ui);
+    font-size: 16px; /* ≥ 16 px: no zoom-on-focus on iOS */
+    font-weight: 400;
+  }
+  select.field__in { appearance: auto; }
+  .field__in:focus-visible { outline: 2px solid var(--on-ox); outline-offset: 2px; }
+  /* on oxblood an oxblood error disappears: the field takes the accent ring, the line is the pale rose, bold */
+  .field__in[aria-invalid='true'] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+  .qf :global(.field__err) { font-size: 13px; font-weight: 600; color: var(--qf-rose); }
+  .qf :global(.field__err)::before { content: '! '; color: var(--accent); }
+
+  .qf__send { display: flex; flex-direction: column; gap: 12px; }
+  .qf__msg { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: var(--r-tag); background: var(--tag); color: var(--fg); }
+  .qf__label { margin: 0; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .qf__text { margin: 0; font-size: 14px; line-height: 1.45; overflow-wrap: anywhere; }
+  .qf__buttons { display: flex; flex-direction: column; gap: 10px; }
+  .qf__buttons .btn { width: 100%; }
+  .qf__promise { margin: 0; font-size: 13px; line-height: 1.45; color: var(--qf-rose); }
+
+  @media (min-width: 640px) {
+    .qf__fields > .field { grid-column: auto; }
+    .qf__fields > .qf__feest { grid-column: 1 / -1; }
+  }
+
+  /* ── desktop (derived, D-30): head + message + send left, the fields right ── */
+  @media (min-width: 960px) {
+    .qf {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      grid-template-areas: 'head fields' 'send fields';
+      grid-template-rows: auto 1fr;
+      gap: 28px 56px;
+      padding: 48px;
+      border-radius: var(--r-frame-lg);
+      scroll-margin-top: 88px;
+    }
+    .qf__head { grid-area: head; gap: 14px; }
+    .qf__title { font-size: 44px; }
+    .qf__intro { font-size: var(--fs-body); line-height: 1.5; }
+    .qf__fields { grid-area: fields; align-self: start; padding-top: 0; border-top: 0; }
+    .qf__send { grid-area: send; align-self: end; gap: 14px; }
+    .qf__buttons { flex-direction: row; flex-wrap: wrap; }
+    .qf__buttons .btn { width: auto; }
+    .qf__text { font-size: 15px; }
+  }
+</style>

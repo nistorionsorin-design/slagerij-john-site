@@ -28,7 +28,7 @@
   ],
   "ro": [],
   "pages": {
-    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4. /bestellen = lexicon §5.11 „Bestellen” (three items, added 07.10 for stage 5; §5.20 „FAQ on the page”), NL and RO verbatim; [BETALING] / [PLATĂ] stay visible until D6. Claude Code, stage 5 revision.",
+    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4. /bestellen = lexicon §5.11 „Bestellen” (three items, added 07.10 for stage 5; §5.20 „FAQ on the page”), NL and RO verbatim; [BETALING] / [PLATĂ] stay visible until D6. Claude Code, stage 5 revision. /traiteur = lexicon §5.11 „Traiteur” (five items, added 08.10 for stage 6; §5.21 „FAQ on the page”), NL and RO verbatim, in that order; [PRIJS] / [PREȚ] stay visible until the owners answer (owners sheet D). Claude Code, stage 6.",
     "producten": {
       "nl": [
         {
@@ -77,6 +77,52 @@
         {
           "q": "Cum plătesc?",
           "a": "La ridicare, în magazin, sau la livrare, la ușă: [PLATĂ]. Nu plătești online."
+        }
+      ]
+    },
+    "traiteur": {
+      "nl": [
+        {
+          "q": "Wat is de gemiddelde kostprijs van een traiteur?",
+          "a": "Koude schotels vanaf [PRIJS] per persoon, warm buffet vanaf [PRIJS] per persoon, hapjes vanaf [PRIJS] per stuk. Stuur ons datum en aantal, dan krijgt u een prijs op maat."
+        },
+        {
+          "q": "Wat kost een barbecue aan huis voor 20 personen?",
+          "a": "[PRIJS] per persoon. Wat inbegrepen is — kok, grill, materiaal — leest u in uw offerte; stuur ons datum, plaats en aantal."
+        },
+        {
+          "q": "Hoe lang vooraf moet ik bestellen?",
+          "a": "Stuur uw aanvraag zodra u de datum kent; voor een barbecue aan huis en in december liefst enkele weken vooraf. Een koude schotel of hapjes voor morgen: bel ons even."
+        },
+        {
+          "q": "Leveren jullie, of haal ik af?",
+          "a": "Allebei. Afhalen in de winkel in Zwevezele, of levering aan huis: gratis tot 10 km vanaf €50, tot 20 km vanaf €100; de afstand telt vanaf de winkel."
+        },
+        {
+          "q": "Komt er iemand mee koken of bedienen?",
+          "a": "Bij een barbecue aan huis: ja, John staat aan de grill. Schotels, buffetten en hapjes komen kant-en-klaar; wilt u bediening erbij, vraag het bij uw offerte."
+        }
+      ],
+      "ro": [
+        {
+          "q": "Cât costă un traiteur de persoană?",
+          "a": "Platouri reci de la [PREȚ] de persoană, bufet cald de la [PREȚ] de persoană, aperitive de la [PREȚ] bucata. Trimite-ne data și numărul de persoane și primești un preț pe măsură."
+        },
+        {
+          "q": "Cât costă un grătar la domiciliu pentru 20 de persoane?",
+          "a": "[PREȚ] de persoană. Ce e inclus (bucătar, grătar, materiale) scrie în ofertă; trimite-ne data, localitatea și numărul de persoane."
+        },
+        {
+          "q": "Cu cât timp înainte comand?",
+          "a": "Scrie-ne imediat ce știi data; pentru un grătar la domiciliu și în decembrie, de preferat cu câteva săptămâni înainte. Un platou rece sau aperitive pentru mâine: sună-ne."
+        },
+        {
+          "q": "Livrați sau ridic eu?",
+          "a": "Amândouă. Ridici din magazin, în Zwevezele, sau livrăm acasă: gratuit până la 10 km de la 50 €, până la 20 km de la 100 €; distanța se măsoară de la magazin."
+        },
+        {
+          "q": "Vine cineva să gătească sau să servească?",
+          "a": "La grătar la domiciliu, da: John stă la grătar. Platourile, bufetele și aperitivele vin gata pregătite; dacă vrei și servire, cere-o odată cu oferta."
         }
       ]
     }

@@ -200,7 +200,7 @@ if (built) {
       }
       if ((p.html.match(/fetchpriority="high"/gi) || []).length > 1) e.push(`${p.file}: more than one fetchpriority=high`);
     }
-    for (const ph of [...photos.hero, ...photos.loop, ...photos.gallery])
+    for (const ph of [...photos.hero, ...photos.loop, ...photos.gallery, ...(photos.traiteur ?? [])])
       if (!ph.alt?.nl?.trim() || !ph.alt?.ro?.trim()) e.push(`photos.json: ${ph.src} lacks alt NL/RO`);
     verdict('images', e, `${n} <img>: width/height, alt, lazy, AVIF/WebP`);
     if (!n) warn('images-empty', 'no images built yet → hero ≤ 90 kB mobile is not exercised');
@@ -340,7 +340,7 @@ if (built) {
   }
 
   // client JS budget (D-06 one island + D-12 hero loop + D-20 open chip + the header's menu and
-  // smart-sticky, build plan stage 0b2 + the bestelbon, stage 5): a script ships only
+  // smart-sticky, build plan stage 0b2 + the bestelbon, stage 5 + the traiteur quote form, stage 6): a script ships only
   // on a page that mounts its component, from /_astro/, never inline (CSP script-src 'self').
   {
     const js = walk(dist).filter((f) => /\.(js|mjs)$/.test(f));
@@ -352,6 +352,7 @@ if (built) {
       ['OpenChip', /class="oc[\s"]/],
       ['QaBox', /<section class="qa[\s"]/],
       ['OrderForm', /<form class="order[\s"]/],
+      ['QuoteForm', /<form class="qf[\s"]/],
     ];
     for (const p of pages)
       for (const tag of p.html.match(/<script[^>]*\ssrc="[^"]*"[^>]*>/gi) || []) {
@@ -359,7 +360,7 @@ if (built) {
         const file = src.split('/').pop();
         const m = mounts.find(([name]) => file.startsWith(name + '.'));
         if (!src.startsWith('/_astro/')) e.push(`${p.file}: ${src} not served from /_astro/`);
-        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / Header / OpenChip / QaBox / OrderForm)`);
+        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / Header / OpenChip / QaBox / OrderForm / QuoteForm)`);
         else if (!m[1].test(p.html)) e.push(`${p.file}: ships ${file} without its component`);
       }
     verdict('client-js', e, `${js.length} JS files in dist; no inline script; each script ships only with its component`);

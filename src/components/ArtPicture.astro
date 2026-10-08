@@ -1,0 +1,51 @@
+---
+// ArtPicture — one <picture> with a phone crop and, optionally, a desktop crop (≥ 960 px) of the same or another file
+// (art direction, which Astro's <Picture> does not do). Stage 6 (/traiteur): the page head (portrait on the phone,
+// landscape on desktop) and the tiles (lexicon §5.21 tile 3: q06 on the phone, q05 from 960). Each crop is cut at build
+// to its box's shape at the photo's focal point (as CategoryGrid does), AVIF + WebP, so no device fetches pixels it
+// crops away. The <img> carries the phone crop's size (CLS 0: the CSS gives every box its own size).
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Crop {
+  img: ImageMetadata;
+  /** width / height of the box the photo fills */
+  ratio: number;
+  /** the widest variant (px) */
+  max: number;
+  sizes: string;
+  focalX?: number;
+  focalY?: number;
+}
+export interface Props {
+  mobile: Crop;
+  desktop?: Crop;
+  alt: string;
+  class?: string;
+  quality?: number;
+  /** the page's LCP image: eager + fetchpriority high */
+  priority?: boolean;
+}
+const { mobile, desktop, alt, class: cls, quality = 55, priority = false } = Astro.props;
+
+// sharp crops by keyword, not by percentage: the focal point mapped to its third of the frame
+const gravity = (x = 50, y = 50) =>
+  [y < 40 ? 'top' : y > 60 ? 'bottom' : '', x < 40 ? 'left' : x > 60 ? 'right' : ''].filter(Boolean).join(' ') || 'center';
+const steps = [480, 768, 1080, 1600, 2040];
+const build = async (c: Crop) => {
+  const width = Math.min(c.img.width, Math.round(c.img.height * c.ratio), c.max);
+  const height = Math.round(width / c.ratio);
+  const opts = { src: c.img, width, height, fit: 'cover' as const, position: gravity(c.focalX, c.focalY), quality, widths: steps.filter((w) => w < width).concat(width) };
+  const [avif, webp] = await Promise.all([getImage({ ...opts, format: 'avif' }), getImage({ ...opts, format: 'webp' })]);
+  return { width, height, avif: avif.srcSet.attribute, webp: webp.srcSet.attribute, src: webp.src, sizes: c.sizes };
+};
+const m = await build(mobile);
+const d = desktop ? await build(desktop) : null;
+const pos = `object-position:${mobile.focalX ?? 50}% ${mobile.focalY ?? 50}%`;
+---
+<picture class={cls}>
+  {d && <source media="(min-width: 960px)" type="image/avif" srcset={d.avif} sizes={d.sizes} width={d.width} height={d.height} />}
+  {d && <source media="(min-width: 960px)" type="image/webp" srcset={d.webp} sizes={d.sizes} width={d.width} height={d.height} />}
+  <source type="image/avif" srcset={m.avif} sizes={m.sizes} />
+  <img src={m.src} srcset={m.webp} sizes={m.sizes} width={m.width} height={m.height} alt={alt} loading={priority ? 'eager' : 'lazy'} decoding="async" fetchpriority={priority ? 'high' : 'low'} style={pos} />
+</picture>

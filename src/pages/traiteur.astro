@@ -1,0 +1,331 @@
+---
+// /traiteur — Traiteur & barbecue aan huis (stage 6). Canvas board Traiteur (mobile 390) is the concept (D-30), its
+// sections in order: the dark photo head (eyebrow · H1 · accent) · lead + Vraag een offerte + Bel ons · four photo tiles
+// (static, D-13) · prices per person (counter tags) · occasions · the quote form (#offerte) · region · FAQ · byline.
+// Desktop derived (D-30): the head is one dark print with the text over its left side; tiles in a 3-column mosaic
+// that keeps each photo's own shape (two wide, two 4:3); tags right of their heading (the /producten pattern); the form in two columns.
+// Strings: src/i18n/traiteur.ts (lexicon §5.21). FAQ: the five §5.11 „Traiteur” items (faq.json pages.traiteur).
+// JSON-LD (§5.21): BreadcrumbList (§8.4) + WebPage (§8.2) about the shop's @id — no Offer and no FoodService node while
+// every price here is [PRIJS] (S-03).
+import type { ImageMetadata } from 'astro';
+import Base from '../layouts/Base.astro';
+import ArtPicture from '../components/ArtPicture.astro';
+import CounterTag from '../components/CounterTag.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import Faq from '../components/Faq.astro';
+import entity from '../data/entity.json';
+import photos from '../data/photos.json';
+import type { Photo } from '../data/types';
+import { item, priceLabel } from '../lib/price';
+import { traiteurNl as t } from '../i18n/traiteur';
+import '../styles/sections.css';
+
+const origin = 'https://slagerij-john.be';
+const path = '/traiteur';
+const alternates = { nl: '/traiteur', ro: '/ro/catering' };
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/{hero,home,traiteur}/*.{jpg,jpeg,png,webp}', { eager: true });
+const file = (src: string) => {
+  const m = files[`../assets/${src}`];
+  if (!m) throw new Error(`photos.json: src/assets/${src} not found`);
+  return m.default;
+};
+
+// the head = hero frame 5, John at the grill (the board's photo): square on the phone, 2:1 on desktop; AVIF quality 40 (≈ 32 kB at 768 px, the mobile LCP — measured 08.10: q50 = 53 kB, LCP 3,1 s), under the scrim it holds
+const head = (photos.hero as Photo[])[4];
+const headPic = {
+  mobile: { img: file(head.src), ratio: 1, max: 1080, sizes: '100vw', focalX: head.focalX, focalY: head.focalY },
+  // the 2:1 band keeps the top of the frame: John's face sits in its top fifth (the hero's 50 % centre would cut it)
+  // drawn width = the print's width, or twice its height (min-height 640) where the print is narrower than 2:1
+  desktop: { img: file(head.src), ratio: 2, max: 2040, sizes: 'max(1280px, min(100vw, 1440px) - 112px)', focalX: head.focalX, focalY: 20 },
+};
+
+// the tiles: phone = the board's 2-column grid (1:1, 1:1, 7:4 wide, 2:1 wide); desktop = a 3-column mosaic
+// („t1 t1 t2 / t3 t4 t4”): the two wide photos (the platter, the BBQ trailer — tile 4 since 08.10 15:40, §5.21) in the
+// wide slots, the two 4:3 photos at 4:3-ish
+const shapes = [
+  { m: 1, d: 2.9, dSizes: '60vw' },
+  { m: 1, d: 1.43, dSizes: '30vw' },
+  { m: 1.75, d: 1.43, dSizes: '30vw' },
+  { m: 2.05, d: 2.9, dSizes: '60vw' },
+];
+const tiles = (photos.traiteur as Photo[]).map((p, i) => ({
+  ...t.tiles.items[i],
+  alt: p.alt.nl,
+  mobile: { img: file(p.src), ratio: shapes[i].m, max: 1080, sizes: shapes[i].m > 1.2 ? '100vw' : '50vw', focalX: p.focalX, focalY: p.focalY },
+  desktop: { img: file(p.srcDesktop ?? p.src), ratio: shapes[i].d, max: 1600, sizes: shapes[i].dSizes, focalX: p.focalX, focalY: p.focalY },
+}));
+
+// per person: a row tied to a product takes that product's price (gourmet 9 = the bestelbon's), else its own string
+const rows = t.perPerson.rows.map((r) => ({ ...r, price: r.product ? priceLabel(item(r.product), 'nl') : r.price, unit: r.unit ?? t.perPerson.unit }));
+
+const jsonld = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t.crumbs.home, item: `${origin}/` },
+      { '@type': 'ListItem', position: 2, name: t.crumbs.page, item: `${origin}${path}` },
+    ],
+  },
+  {
+    '@type': 'WebPage',
+    '@id': `${origin}${path}#webpage`,
+    url: `${origin}${path}`,
+    name: t.title,
+    description: t.description,
+    inLanguage: 'nl-BE',
+    isPartOf: { '@type': 'WebSite', '@id': `${origin}/#website`, url: `${origin}/`, name: 'Slagerij John' },
+    about: { '@id': `${origin}/#shop` },
+  },
+];
+
+const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
+---
+<Base title={t.title} description={t.description} locale="nl" path={path} alternates={alternates} jsonld={jsonld}>
+  <main id="main" class="tr">
+    <div class="tr-headwrap">
+      <section class="th" aria-labelledby="th-title">
+        <div class="th__media">
+          <ArtPicture class="th__pic" mobile={headPic.mobile} desktop={headPic.desktop} alt={head.alt.nl} quality={40} priority />
+        </div>
+        <div class="th__title">
+          <p class="eyebrow th__eyebrow">{t.eyebrow}</p>
+          <h1 class="th__h1" id="th-title">{t.h1} <span class="accent th__accent">{t.accent}</span></h1>
+        </div>
+        <div class="th__body">
+          <p class="th__lead">{t.lead}</p>
+          <div class="th__buttons">
+            <a class="btn btn--quote btn--lg" href="#offerte">{t.primary}</a>
+            <a class="btn btn--secondary btn--lg" href={`tel:${entity.telephone}`}>{t.call}</a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="container tt" aria-labelledby="tt-title">
+      <h2 class="vh" id="tt-title">{t.tiles.label}</h2>
+      <ul class="tt__grid">
+        {tiles.map((x, i) => (
+          <li class={`tt__tile tt__tile--${i + 1}`}>
+            <ArtPicture class="tt__pic" mobile={x.mobile} desktop={x.desktop} alt={x.alt} />
+            <div class="tt__label">
+              <h3 class="tt__name">{x.name}</h3>
+              <p class="tt__sub">{x.sub}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="container tp" aria-labelledby="tp-title">
+      <div class="tp__head">
+        <p class="eyebrow">{t.perPerson.eyebrow}</p>
+        <h2 class="tp__title" id="tp-title">{t.perPerson.title}</h2>
+        <p class="tp__intro">{t.perPerson.intro}</p>
+      </div>
+      <ul class="tp__tags">
+        {rows.map((r) => (
+          <li><CounterTag name={r.name} line={r.line} price={r.price} unit={r.unit} tone={r.ink ? 'ink' : 'paper'} /></li>
+        ))}
+      </ul>
+      <div class="tp__more">
+        <p>{t.perPerson.more}</p>
+        <a class="link-arrow" href={t.perPerson.moreHref}>{t.perPerson.moreLink}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a>
+      </div>
+    </section>
+
+    <section class="container to" aria-labelledby="to-title">
+      <h2 class="eyebrow to__title" id="to-title">{t.occasions.eyebrow}</h2>
+      <ul class="to__chips">
+        {t.occasions.items.map((o) => <li class="to__chip">{o}</li>)}
+      </ul>
+    </section>
+
+    <section class="container tq" id="offerte">
+      <QuoteForm t={t.quote} occasions={t.occasions.items} src="traiteur-form" />
+    </section>
+
+    <section class="container tg" aria-labelledby="tg-title">
+      <h2 class="eyebrow tg__title" id="tg-title">{t.region.eyebrow}</h2>
+      <p class="tg__line">{t.region.line}</p>
+      <p class="tg__towns">{t.region.towns.join(' · ')}</p>
+      <p class="tg__line">{t.region.closing}</p>
+    </section>
+
+    <Faq locale="nl" title={t.faq} page="traiteur" />
+
+    <div class="container tr-byline">
+      <p>{t.byline}</p>
+    </div>
+  </main>
+</Base>
+
+<style>
+  /* ── phone = board Traiteur (390) ── */
+  /* the head: a 400 px dark photo, full bleed, with eyebrow · H1 · accent at its foot over the board's two scrims;
+     the lead and the two buttons below it on paper */
+  .th { display: grid; grid-template-areas: 'media' 'body'; background: var(--paper); }
+  .th__media, .th__title { grid-area: media; }
+  .th__media { position: relative; height: 400px; background: var(--ink); overflow: hidden; }
+  .th__media :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .th__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(21, 17, 13, 0.35) 0%, rgba(21, 17, 13, 0.05) 30%, rgba(21, 17, 13, 0.35) 55%, rgba(21, 17, 13, 0.96) 100%),
+      rgba(21, 17, 13, 0.24);
+  }
+  .th__title {
+    position: relative;
+    z-index: 1;
+    align-self: end;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 var(--gutter) 22px;
+    color: var(--on-ink);
+  }
+  .th__eyebrow { margin: 0; color: var(--accent); }
+  .th__h1 { margin: 0; font-size: 36px; line-height: 1.02; letter-spacing: -0.02em; color: var(--on-ink); }
+  .th__accent { display: block; margin-top: 12px; font-size: var(--fs-accent); line-height: 1.05; color: var(--accent); }
+  .th__body { grid-area: body; display: flex; flex-direction: column; gap: 12px; padding: 22px var(--gutter) 8px; }
+  .th__lead { margin: 0; font-size: 15px; line-height: 1.45; max-width: 60ch; }
+  .th__buttons { display: flex; flex-direction: column; gap: 10px; }
+  .th__buttons .btn { width: 100%; }
+
+  /* tiles (board: 2 columns, gap 10, radius 14 on ink, heights 170 / 170 / 200 / 170; label at the foot over a scrim) */
+  .tt { padding-top: 20px; padding-bottom: 4px; }
+  .tt__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .tt__tile { position: relative; height: 170px; border-radius: var(--r-tile); overflow: hidden; background: var(--ink); color: var(--on-ink); }
+  .tt__tile--3 { grid-column: span 2; height: 200px; }
+  .tt__tile--4 { grid-column: span 2; }
+  .tt__tile :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .tt__label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 28px 14px 12px;
+    background: linear-gradient(180deg, rgba(21, 17, 13, 0) 0%, rgba(21, 17, 13, 0.88) 100%);
+  }
+  .tt__name { margin: 0; font-family: var(--f-display); font-weight: 500; font-size: 19px; line-height: 1.05; color: var(--on-ink); }
+  .tt__sub { margin: 0; font-size: 12px; line-height: 1.35; color: var(--on-ink-muted); }
+
+  /* prices per person (board: eyebrow · H2 26 · counter tags gap 10; the last one ink) */
+  .tp { display: flex; flex-direction: column; gap: 14px; padding-top: 28px; padding-bottom: 8px; }
+  .tp__head { display: flex; flex-direction: column; gap: 14px; }
+  .tp__head .eyebrow { margin: 0; }
+  .tp__title { margin: 0; font-size: 26px; line-height: 1.05; letter-spacing: -0.015em; }
+  .tp__intro { margin: 0; font-size: 14px; line-height: 1.45; color: var(--muted); max-width: 56ch; }
+  .tp__tags { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .tp__more { display: flex; flex-direction: column; gap: 2px; }
+  .tp__more p { margin: 0; font-size: 14px; line-height: 1.45; }
+  .tp__more .link-arrow { align-self: flex-start; }
+
+  /* occasions: text chips, no links (board: tag colour, 32 px, 13/500) */
+  .to { display: flex; flex-direction: column; gap: 12px; padding-top: 24px; padding-bottom: 24px; }
+  /* the two eyebrow-sized h2s keep the eyebrow's UI face (an h2 takes the display face from tokens.css) */
+  .to__title, .tg__title { margin: 0; font-family: var(--f-ui); font-weight: 600; letter-spacing: 0.16em; }
+  .to__chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .to__chip { display: inline-flex; align-items: center; min-height: 32px; padding: 0 12px; border-radius: var(--r-chip); background: var(--tag); font-size: 13px; font-weight: 500; }
+
+  .tq { scroll-margin-top: 64px; }
+
+  /* region */
+  .tg { display: flex; flex-direction: column; gap: 10px; padding-top: 26px; }
+  .tg__line { margin: 0; font-size: 14px; line-height: 1.45; color: var(--muted); }
+  .tg__towns { margin: 0; font-size: 14px; line-height: 1.6; font-weight: 600; max-width: 62ch; }
+
+  .tr-byline { padding-top: 20px; padding-bottom: 28px; }
+  .tr-byline p { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12px; line-height: 1.5; color: var(--muted); }
+
+  /* ── desktop (derived, D-30) ── */
+  @media (min-width: 960px) {
+    /* the head: one dark print in the container, the photo 2:1 behind, the text column over its left side */
+    .tr-headwrap { max-width: var(--container); margin: 0 auto; padding: 32px var(--gutter) 0; }
+    .th {
+      position: relative;
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      grid-template-areas: 'title .' 'body .';
+      grid-template-rows: 1fr auto;
+      min-height: min(640px, calc(100svh - 140px));
+      border-radius: var(--r-frame-lg);
+      overflow: hidden;
+      background: var(--ink);
+    }
+    .th__media { grid-area: auto; position: absolute; inset: 0; height: auto; }
+    .th__media::after {
+      background:
+        linear-gradient(90deg, rgba(21, 17, 13, 0.92) 0%, rgba(21, 17, 13, 0.78) 38%, rgba(21, 17, 13, 0.15) 70%, rgba(21, 17, 13, 0) 100%),
+        linear-gradient(180deg, rgba(21, 17, 13, 0.25) 0%, rgba(21, 17, 13, 0) 30%, rgba(21, 17, 13, 0.45) 100%);
+    }
+    .th__title { grid-area: title; gap: 16px; padding: 64px 0 0 56px; }
+    .th__h1 { font-size: clamp(48px, 4.4vw, 68px); line-height: 1; letter-spacing: -0.025em; }
+    .th__accent { margin-top: 14px; font-size: clamp(30px, 2.6vw, 40px); }
+    .th__body { position: relative; z-index: 1; gap: 22px; padding: 24px 0 56px 56px; color: var(--on-ink); }
+    .th__lead { font-size: var(--fs-lead); line-height: 1.5; color: var(--on-ink-muted); }
+    .th__buttons { flex-direction: row; flex-wrap: wrap; gap: 12px; }
+    .th__buttons .btn { width: auto; }
+    /* on the dark print the outline button takes the on-ink skin (buttons.css .on-ink, scoped to desktop here) */
+    .th__buttons .btn--secondary { color: var(--on-ink); border-color: rgba(244, 237, 224, 0.55); }
+    .th__buttons .btn--secondary:focus-visible { outline-color: var(--on-ink); }
+  }
+  @media (min-width: 960px) and (hover: hover) {
+    .th__buttons .btn--secondary:hover { background: rgba(244, 237, 224, 0.1); border-color: var(--on-ink); box-shadow: none; }
+  }
+  @media (min-width: 960px) {
+    .tt { padding-top: 56px; padding-bottom: 0; }
+    .tt__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-areas: 't1 t1 t2' 't3 t4 t4';
+      grid-template-rows: 300px 300px;
+      gap: 16px;
+    }
+    .tt__tile, .tt__tile--3, .tt__tile--4 { height: auto; grid-column: auto; border-radius: var(--r-frame); }
+    .tt__tile--1 { grid-area: t1; }
+    .tt__tile--2 { grid-area: t2; }
+    .tt__tile--3 { grid-area: t3; }
+    .tt__tile--4 { grid-area: t4; }
+    .tt__label { padding: 48px 22px 20px; gap: 6px; }
+    .tt__name { font-size: 26px; }
+    .tt__sub { font-size: 14px; }
+
+    .tp {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      grid-template-areas: 'head tags' 'more tags';
+      grid-template-rows: auto 1fr;
+      gap: 16px 56px;
+      align-items: start;
+      padding-top: 80px;
+      padding-bottom: 0;
+    }
+    .tp__head { grid-area: head; }
+    .tp__title { font-size: 44px; line-height: 1; letter-spacing: -0.02em; }
+    .tp__intro { font-size: var(--fs-body); line-height: 1.5; }
+    .tp__tags { grid-area: tags; gap: 12px; }
+    .tp__more { grid-area: more; gap: 6px; }
+    .tp__more p { font-size: var(--fs-body); line-height: 1.5; color: var(--muted); max-width: 44ch; }
+
+    .to { flex-direction: row; align-items: center; gap: 24px; padding-top: 56px; padding-bottom: 40px; }
+    .to__chip { min-height: 36px; padding: 0 16px; font-size: 14px; }
+
+    .tq { scroll-margin-top: 80px; }
+
+    .tg {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 10px 56px;
+      padding-top: 80px;
+    }
+    .tg__title { grid-row: span 3; }
+    .tg__line { font-size: var(--fs-body); }
+    .tg__towns { font-family: var(--f-display); font-weight: 500; font-size: 26px; line-height: 1.35; letter-spacing: -0.01em; }
+
+    .tr-byline { padding-top: 56px; padding-bottom: 80px; }
+  }
+</style>
