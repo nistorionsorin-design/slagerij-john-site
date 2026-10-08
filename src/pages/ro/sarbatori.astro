@@ -1,0 +1,41 @@
+---
+// STUB until stage 9 (RO pages): /ro/sarbatori exists at stage 7 only so /feestmenu-eindejaar has its reciprocal
+// hreflang pair (gate: every hreflang target is a built page that links back). Meta (50 / 155), eyebrow, H1, accent and
+// lead = lexicon §6 „Sărbători” verbatim ([DATA] / [ORA] swapped for menus.json's values once they are set); the rest of
+// the RO page (photo, steps, the menu with „Porc de Crăciun”, holiday hours, FAQ) is stage 9.
+import Base from '../../layouts/Base.astro';
+import { menu, fillMenu } from '../../lib/menu';
+const alternates = { nl: '/feestmenu-eindejaar', ro: '/ro/sarbatori' };
+const fill = (s: string) => fillMenu(s, menu('eindejaar-2026'), 'ro');
+// BreadcrumbList (lexicon §8.4; §6 „Sărbători”: Acasă › Sărbători — the home item as the other RO stubs name it)
+const jsonld = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Măcelăria John', item: 'https://slagerij-john.be/ro' },
+      { '@type': 'ListItem', position: 2, name: 'Sărbători', item: 'https://slagerij-john.be/ro/sarbatori' },
+    ],
+  },
+];
+---
+<Base title="Meniu de Crăciun și Revelion 2026 | Măcelăria John" description="Meniu de Crăciun și Revelion 2026 în Zwevezele: gourmet, platouri reci, aperitive, carne de sărbători. Ridicare pe 24 și 31 decembrie. Comandă pe WhatsApp." locale="ro" path="/ro/sarbatori" alternates={alternates} jsonld={jsonld}>
+  <main id="main" class="container stub">
+    <p class="eyebrow">Sărbători 2026</p>
+    <h1 class="stub__h1">Meniul de Crăciun și Revelion 2026: ridicare din Zwevezele. <span class="accent stub__accent">{fill('Comandă până pe [DATA].')}</span></h1>
+    <p class="stub__lead">{fill('Ridicare pe 24 și 31 decembrie, între [ORA] și [ORA]. Gourmet, fondue, platouri reci, aperitive și carne de sărbători, ca acasă.')}</p>
+  </main>
+</Base>
+
+<style>
+  /* the /ro/catering stub's sizes until stage 9 */
+  .stub { display: flex; flex-direction: column; gap: 14px; padding-top: 24px; padding-bottom: 48px; min-height: 50vh; }
+  .stub__h1 { margin: 0; font-size: 38px; line-height: 1.02; letter-spacing: -0.02em; }
+  .stub__accent { display: block; margin-top: 8px; font-size: var(--fs-accent); line-height: 1.05; }
+  .stub__lead { margin: 0; font-size: 15px; line-height: 1.45; max-width: 60ch; }
+  @media (min-width: 960px) {
+    .stub { padding-top: 56px; gap: 18px; }
+    .stub__h1 { font-size: 64px; line-height: 1; }
+    .stub__accent { margin-top: 12px; font-size: 40px; }
+    .stub__lead { font-size: 17px; line-height: 1.5; }
+  }
+</style>

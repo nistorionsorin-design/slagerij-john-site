@@ -3,7 +3,9 @@
 // free request list · the slip and the WhatsApp text, recomputed on every change · the delivery quote · the details
 // remembered on this device (localStorage, nothing sent anywhere — order-flow §3) · the send as JSON with the same
 // reference the WhatsApp text quotes. Every rule is src/lib/order-core.js — the same code the server runs.
-import { readOrder, daysFor, dayLabel, money, qtyLabel, waText, newRef, qtyRule, toMin } from '../lib/order-core.js';
+// Stage 7: ?menu=<param> shows that seasonal menu's section on top; once a row of it is chosen, the days are the menu's
+// own (menus.json `pickup`) and the WhatsApp text opens with the menu's §5.10 message.
+import { readOrder, daysFor, dayLabel, money, qtyLabel, waText, newRef, qtyRule, toMin, menuOf, menuOpen } from '../lib/order-core.js';
 
 type Unit = 'kg' | 'pers' | 'colli' | 'stuk' | 'liter';
 interface Item { id: string; category: string; name: Partial<Record<'nl' | 'ro', string>>; unit: Unit; price: number | null; priceFrom?: boolean; min?: number; step?: number }
@@ -11,6 +13,7 @@ interface Data {
   locale: 'nl' | 'ro';
   items: Item[];
   delivery: { pickup: { leadDays: number; cutoff: string | null; stepMin: number; horizonDays: number }; [k: string]: unknown };
+  menus: { menus: { id: string; param: string; deadline: string | null; [k: string]: unknown }[] };
   qtyUnit: Record<Unit, string>;
   t: {
     slip: { pickup: string; delivery: string; pay: string; payDelivery: string; whenPending: string; total: string; priceTbc: string; empty: string; fee: Record<string, string> };
@@ -30,7 +33,7 @@ if (form && dataEl && hoursEl) init(form, JSON.parse(dataEl.textContent ?? '{}')
 function init(form: HTMLFormElement, d: Data, hours: unknown) {
   const { locale, t } = d;
   const products = { items: d.items };
-  const data = { products, hours, delivery: d.delivery };
+  const data = { products, hours, delivery: d.delivery, menus: d.menus };
   const ref = newRef();
   const $ = <T extends Element = HTMLElement>(s: string, root: ParentNode = form) => root.querySelector<T>(s);
   const $$ = <T extends Element = HTMLElement>(s: string, root: ParentNode = form) => [...root.querySelectorAll<T>(s)];
@@ -40,6 +43,20 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
   // the script checks the fields itself (same rules as the server, the lexicon §5.20 error line under the field);
   // without it the browser's own required/pattern checks stay in force
   form.noValidate = true;
+
+  // ── the seasonal menu asked for in the address (?menu=eindejaar): its section shows on top; past its deadline
+  //    (menus.json, once FACTS.md has it) the rows give way to the closed line ──
+  const wanted = new URLSearchParams(location.search).get('menu');
+  const wantedMenu = d.menus.menus.find((m) => m.param === wanted);
+  const menuBox = wantedMenu ? $(`[data-season="${wantedMenu.param}"]`) : null;
+  if (wantedMenu && menuBox) {
+    menuBox.hidden = false;
+    if (!menuOpen(wantedMenu)) {
+      menuBox.querySelector('.ocat__list')?.remove();
+      $('[data-season-note]', menuBox)!.hidden = true;
+      $('[data-season-closed]', menuBox)!.hidden = false;
+    }
+  }
 
   // ── steppers ──
   for (const box of $$('.qty')) {
@@ -97,8 +114,12 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
     return '';
   };
 
+  const items = () => Object.fromEntries($$<HTMLInputElement>('.qty__in').map((f) => [f.name.slice(2), f.value]));
+  let menuId = '';
   function renderDays() {
-    days = daysFor(method(), hours, d.delivery);
+    const m = menuOf(items(), d.menus);
+    menuId = m?.id ?? '';
+    days = daysFor(method(), hours, d.delivery, undefined, m);
     if (!days.some((x) => x.date === state.date)) state.date = '';
     daysBox.replaceChildren(...days.flatMap((x) => chip('date', x.date, dayLabel(x.date, locale, 'chip'), daySub(x.times), x.date === state.date)));
     renderTimes();
@@ -135,6 +156,19 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
     renderDays();
   };
   for (const r of $$<HTMLInputElement>('input[name="method"]')) r.addEventListener('change', () => { syncMethod(); update(); });
+
+  // ── a menu row chosen: pickup only (lexicon §5.22, 08.10 17:50) — the delivery card leaves, the menu's line shows,
+  //    a delivery already chosen turns into pickup; the server refuses a menu order for delivery all the same ──
+  const methodBox = $('.om')!;
+  const syncMenu = (id: string) => {
+    methodBox.classList.toggle('is-menu', !!id);
+    for (const el of $$('[data-delivery]', methodBox)) el.hidden = !!id;
+    for (const el of $$<HTMLElement>('[data-season-pickup]', methodBox)) el.hidden = el.dataset.seasonPickup !== id;
+    if (id && method() === 'delivery') {
+      $<HTMLInputElement>('#m-pickup')!.checked = true;
+      for (const n of addressFields) field(n)!.required = false;
+    }
+  };
 
   // ── free requests: one line each, listed under the field (the no-script textarea becomes their carrier) ──
   const reqArea = $<HTMLTextAreaElement>('[data-requests]')!;
@@ -201,7 +235,7 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
     method: method(),
     date: state.date,
     time: state.time,
-    items: Object.fromEntries($$<HTMLInputElement>('.qty__in').map((f) => [f.name.slice(2), f.value])),
+    items: items(),
     requests: state.requests,
     name: field('name')!.value,
     phone: field('phone')!.value,
@@ -226,6 +260,12 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
 
   function update() {
     const { order } = readOrder(input(), data);
+    // a menu row chosen or dropped: the day list changes to (or back from) the menu's own days
+    if ((order.menu?.id ?? '') !== menuId) {
+      syncMenu(order.menu?.id ?? '');
+      renderDays();
+      return update();
+    }
     for (const row of $$('.oi')) {
       const q = Number($<HTMLInputElement>('.qty__in', row)!.value) || 0;
       row.classList.toggle('is-on', q > 0);
@@ -279,6 +319,12 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
         const title = document.getElementById('os-products')!;
         title.after(errLine('items', t.errors.items, 'p'));
         first ??= title;
+        continue;
+      }
+      // the server refused delivery for a menu order (the page normally prevents it): the menu's pickup line is the reason
+      if (e === 'method') {
+        const line = $<HTMLElement>('[data-season-pickup]:not([hidden])');
+        first ??= line ?? methodBox;
         continue;
       }
       const f = field(e);

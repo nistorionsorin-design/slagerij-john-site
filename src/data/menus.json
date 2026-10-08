@@ -1,0 +1,27 @@
+{
+  "_source": "Stage 7 (Claude Code, 08.10): the shape of lexicon §5.22 „menus.json”. One menu `eindejaar-2026`, opened in the bestelbon by `?menu=` + its `param`; `deadline` ISO date or null → [DATUM]; `pickup` = the two days the plan assumes (24 and 31 December, build plan row 7 — B 3 / B 11 confirm them), `from`/`to` null → [UUR] and the day's opening hours in the bestelbon; `items` = the board's seven stand-in rows (§5.22 table), `price` null → [PRIJS] (Gourmet 9's €10 on the board is the old site's price, FACTS — not used), `unit` kg | pers | stuk (gourmet 9 and luxe: min 2 persons, as gourmet-9 in products.json); `message` = lexicon §5.10 eindejaar without its dots — the bestelbon puts the order after it (§5.22 „the bestelbon fills the dots”); `pickupOnly` = the line the bestelbon shows when a menu row is chosen (menu orders are pickup only — §5.22 „Answers to Claude Code's stage-7 report”, 08.10 17:50; RO kept for stage 9); `mail` = the menu's word in the shop's mail (subject NL „Bestelling {REF} · Eindejaarsmenu · afhalen …”, first line RO „… · meniul de sărbători · ridicare …”, same source). The rows have the products.json shape so the bestelbon lists them under „Eindejaarsmenu 2026” (/bestellen?menu=eindejaar). The owners' folder replaces the rows wholesale (B 11); Cowork fills this file at stage 15.",
+  "menus": [
+    {
+      "id": "eindejaar-2026",
+      "param": "eindejaar",
+      "name": { "nl": "Eindejaarsmenu 2026", "ro": "Meniul de sărbători 2026" },
+      "message": { "nl": "Dag, ik wil bestellen uit het eindejaarsmenu:", "ro": "Bună, vreau să comand din meniul de sărbători:" },
+      "pickupOnly": { "nl": "Het eindejaarsmenu haalt u af in de winkel, op 24 of 31 december.", "ro": "Meniul de sărbători se ridică din magazin, pe 24 sau 31 decembrie." },
+      "mail": { "nl": "Eindejaarsmenu", "ro": "meniul de sărbători" },
+      "deadline": null,
+      "pickup": [
+        { "date": "2026-12-24", "from": null, "to": null },
+        { "date": "2026-12-31", "from": null, "to": null }
+      ],
+      "items": [
+        { "id": "ej26-gourmet-9", "name": { "nl": "Gourmet, 9 soorten", "ro": "Platou gourmet, 9 feluri" }, "price": null, "unit": "pers", "min": 2 },
+        { "id": "ej26-gourmet-luxe", "name": { "nl": "Gourmet luxe", "ro": "Gourmet de lux" }, "price": null, "unit": "pers", "min": 2 },
+        { "id": "ej26-fondue", "name": { "nl": "Fondue", "ro": "Fondue" }, "price": null, "unit": "pers" },
+        { "id": "ej26-koude-schotel", "name": { "nl": "Koude schotel", "ro": "Platou rece" }, "price": null, "unit": "pers" },
+        { "id": "ej26-tapasschotel", "name": { "nl": "Tapasschotel", "ro": "Platou de tapas" }, "price": null, "unit": "stuk" },
+        { "id": "ej26-dessertbuffet", "name": { "nl": "Dessertbuffet", "ro": "Bufet de deserturi" }, "price": null, "unit": "pers" },
+        { "id": "ej26-roemeens-feestvlees", "name": { "nl": "Roemeens feestvlees", "ro": "Carne de sărbători românească" }, "price": null, "unit": "kg" }
+      ]
+    }
+  ]
+}

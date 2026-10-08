@@ -6,12 +6,17 @@
 // src/scripts/order.ts adds the live slip, the −/+ steppers, the day and time chips from the opening hours, the free
 // request list, the delivery quote, the remembered details and the WhatsApp send with the whole order pre-filled.
 // The script's data travels as one application/json block (CSP: no inline script); the rules are src/lib/order-core.js.
+// Stage 7: each seasonal menu (menus.json) is a group on top of the products, hidden; the script shows it when the page
+// is opened with ?menu=<param> (/bestellen?menu=eindejaar, lexicon §5.22) and then offers only the menu's own days.
+// The link from the page carries the section's fragment (#cat-menu-<id>): CSS :target shows it from the first paint, so
+// nothing shifts and it shows without script too (no-script: until another anchor is followed; the quantities still post).
 import type { Product } from '../data/types';
 import delivery from '../data/delivery.json';
 import WaIcon from './WaIcon.astro';
 import OrderSlip from './OrderSlip.astro';
 import { products, priceLabel, unitLabel } from '../lib/price';
-import { qtyRule, fromMin, waText } from '../lib/order-core.js';
+import { menus, fillMenu } from '../lib/menu';
+import { qtyRule, fromMin, waText, menuRows, menuOpen } from '../lib/order-core.js';
 import { bestellenNl as t } from '../i18n/bestellen';
 import allergens from '../data/allergens.json';
 
@@ -24,7 +29,16 @@ const section = (id: string) => {
   if (!c) throw new Error(`products.json: no category "${id}"`);
   return { ...c, items: products.items.filter((p) => p.category === id && p.orderable !== false) };
 };
-const groups = [...packs, ...counter].map(section).filter((c) => c.items.length);
+// the seasonal menus first (hidden until ?menu=…); a menu past its deadline at build shows its closed line, no rows
+const menuRowsAll = menuRows({ menus: menus.menus.map((m) => ({ ...m, deadline: null })) }) as Product[];
+const menuGroups = menus.menus.map((m) => ({
+  id: `menu-${m.id}`,
+  name: m.name,
+  items: menuOpen(m) ? menuRowsAll.filter((p) => p.category === `menu-${m.id}`) : [],
+  menu: { param: m.param, note: fillMenu(t.menu.note, m, locale), closed: t.menu.closed, open: menuOpen(m) },
+}));
+interface Group { id: string; name: { nl: string; ro: string }; items: Product[]; menu?: { param: string; note: string; closed: string; open: boolean } }
+const groups: Group[] = [...menuGroups, ...[...packs, ...counter].map(section).filter((c) => c.items.length)];
 const pills = [
   ...groups.filter((c) => packs.includes(c.id)).map((c) => ({ href: `#cat-${c.id}`, label: c.name.nl })),
   { href: `#cat-${counter[0]}`, label: t.products.kgGroup },
@@ -38,10 +52,11 @@ const allTimes = [...new Set([...Array.from({ length: 20 }, (_, i) => fromMin(8 
 // what the script needs; the hours come from Base.astro's #hours block
 const scriptData = {
   locale,
-  items: products.items
+  items: [...menuRowsAll, ...products.items]
     .filter((p) => p.orderable !== false)
     .map((p) => ({ id: p.id, category: p.category, name: { [locale]: p.name[locale] }, unit: p.unit, price: p.price, priceFrom: p.priceFrom, min: p.min, step: p.step })),
   delivery: { ...delivery, _source: undefined },
+  menus: { menus: menus.menus },
   qtyUnit,
   t: { slip: t.slip, when: t.when, send: t.send, done: t.done, details: { required: t.details.required }, errors: t.errors },
 };
@@ -64,11 +79,12 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
         <span class="om__title">{t.method.pickup}</span>
         <span class="om__sub">{t.method.pickupSub}</span>
       </label>
-      <input class="om__in" type="radio" name="method" id="m-delivery" value="delivery" />
-      <label class="om__card" for="m-delivery">
+      <input class="om__in" type="radio" name="method" id="m-delivery" value="delivery" data-delivery />
+      <label class="om__card" for="m-delivery" data-delivery>
         <span class="om__title">{t.method.delivery}</span>
         <span class="om__sub">{t.method.deliverySub}</span>
       </label>
+      {menus.menus.map((m) => <p class="om__only" data-season-pickup={m.id} hidden>{m.pickupOnly.nl}</p>)}
     </fieldset>
 
     <section class="os" aria-labelledby="os-products">
@@ -78,8 +94,10 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
         {pills.map((p) => <a class="pill" href={p.href}>{p.label}</a>)}
       </nav>
       {groups.map((c) => (
-        <div class="ocat" id={`cat-${c.id}`}>
+        <div class:list={['ocat', { 'ocat--menu': !!c.menu }]} id={`cat-${c.id}`} hidden={!!c.menu} data-season={c.menu?.param}>
           <h3 class="ocat__title">{c.name.nl}</h3>
+          {c.menu && <p class="ocat__note" data-season-note hidden={!c.menu.open}>{c.menu.note}</p>}
+          {c.menu && <p class="ocat__note ocat__note--closed" data-season-closed hidden={c.menu.open}>{c.menu.closed}</p>}
           <ul class="ocat__list">
             {c.items.map((p) => {
               const r = qtyRule(p);
@@ -256,6 +274,9 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
 
   /* pickup / delivery */
   .om { margin: 0; padding: 0; border: 0; min-width: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  /* a menu row chosen (stage 7, §5.22 08.10 17:50): pickup only — the delivery card leaves, the menu's line shows */
+  .om.is-menu { grid-template-columns: 1fr; }
+  .om__only { grid-column: 1 / -1; margin: 2px 0 0; font-size: 14px; line-height: 1.45; font-weight: 600; color: var(--ox); }
   .om__in { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
   .om__card {
     display: flex;
@@ -303,6 +324,16 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
   .ocat { display: flex; flex-direction: column; gap: 10px; scroll-margin-top: 96px; }
   .ocat__title { margin: 8px 0 0; font-family: var(--f-display); font-weight: 600; font-size: 20px; line-height: 1.1; }
   .ocat__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  /* stage 7: the seasonal menu on top — the oxblood of the seasonal blocks (brief §3) as a hairline frame; the rows
+     keep the counter-tag look of every other group */
+  .ocat[hidden], .ocat__note[hidden] { display: none; }
+  /* opened from the Eindejaar page as /bestellen?menu=eindejaar#cat-menu-eindejaar-2026: the fragment shows the section
+     from the first paint (no layout shift, and without script too); order.ts then keeps it open past a pill click */
+  .ocat--menu:target { display: flex !important; } /* beats the form-wide [hidden] { display: none !important } */
+  .ocat--menu { margin-top: 6px; padding: 14px 14px 16px; border: 1.5px solid var(--ox); border-radius: var(--r-tile); }
+  .ocat--menu .ocat__title { margin-top: 0; color: var(--ox); }
+  .ocat__note { margin: 0; font-size: 14px; line-height: 1.45; color: var(--muted); }
+  .ocat__note--closed { color: var(--fg); font-weight: 600; }
   .oi {
     position: relative;
     display: flex;

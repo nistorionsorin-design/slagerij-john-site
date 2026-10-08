@@ -1,0 +1,262 @@
+---
+// /feestmenu-eindejaar — Eindejaarsmenu 2026 (stage 7). Canvas board Eindejaar (mobile 390) is the concept (D-30), its
+// sections in order: the dark head, text only (eyebrow · H1 · accent · lead · two buttons) · the photo band (q19) ·
+// three steps · the menu card (#feestmenu, oxblood) · the „Și în română” box · the holiday hours card · FAQ · byline.
+// Desktop derived (D-30): the head and the photo side by side as two prints (ink left, photo right); below, the steps,
+// the RO box and the holiday hours left, the menu card right.
+// Strings: src/i18n/eindejaar.ts (lexicon §5.22). Menu rows, deadline, pickup hours: menus.json (src/lib/menu.ts swaps
+// a set value into [DATUM] / [UUR]); holiday rows: hours.json `special`. FAQ: the three §5.11 „Eindejaar” items
+// (faq.json pages.eindejaar). No script on this page: the deadline is text only (build plan row 7).
+// JSON-LD (§5.22): BreadcrumbList (§8.4) + WebPage (§8.2) about the shop's @id — no Event for the folder (§8.6), no
+// Offer while a price is [PRIJS] (S-03); at stage 15 the rows become §8.3 Product + Offer with validThrough.
+import type { ImageMetadata } from 'astro';
+import Base from '../layouts/Base.astro';
+import ArtPicture from '../components/ArtPicture.astro';
+import WaIcon from '../components/WaIcon.astro';
+import Faq from '../components/Faq.astro';
+import photos from '../data/photos.json';
+import hours from '../data/hours.json';
+import type { Photo, SpecialDay, Unit } from '../data/types';
+import { menu, fillMenu } from '../lib/menu';
+import { priceLabel } from '../lib/price';
+import { wa } from '../i18n/ui';
+import { eindejaarNl as t } from '../i18n/eindejaar';
+import '../styles/sections.css';
+
+const origin = 'https://slagerij-john.be';
+const path = '/feestmenu-eindejaar';
+const alternates = { nl: '/feestmenu-eindejaar', ro: '/ro/sarbatori' };
+const m = menu('eindejaar-2026');
+const fill = (s: string) => fillMenu(s, m, 'nl');
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/eindejaar/*.{jpg,jpeg,png,webp}', { eager: true });
+const band = (photos.eindejaar as Photo[])[0];
+const bandImg = files[`../assets/${band.src}`]?.default;
+if (!bandImg) throw new Error(`photos.json: src/assets/${band.src} not found`);
+// phone: the board's 200 px band in the 20 px gutters (≈ 7:4); desktop: the right-hand print, near square
+const bandPic = {
+  mobile: { img: bandImg, ratio: 1.75, max: 1080, sizes: 'calc(100vw - 40px)', focalX: band.focalX, focalY: band.focalY },
+  desktop: { img: bandImg, ratio: 1, max: 1330, sizes: '(min-width: 1440px) 560px, 40vw', focalX: band.focalX, focalY: band.focalY },
+};
+
+// the card's units as the §5.22 table writes them
+const unit: Partial<Record<Unit, string>> = { pers: '/pers.', stuk: '/stuk', kg: '/kg' };
+const rows = m.items.map((i) => ({ name: i.name.nl, price: priceLabel({ ...i, id: i.id, category: '', line: { nl: '', ro: '' } }, 'nl'), unit: unit[i.unit] ?? '' }));
+
+// holiday hours: hours.json `special` for the four days; no entry → [UREN], `slots: []` → gesloten
+const special = (hours.special ?? []) as SpecialDay[];
+const holiday = t.holiday.days.map((d) => {
+  const sp = special.find((s) => s.date === d.date);
+  const text = !sp ? t.holiday.unknown : !sp.slots.length ? t.holiday.closed : sp.slots.map((s) => `${s.open}–${s.close}`).join(', ');
+  return { ...d, text };
+});
+
+const waHref = `${wa(t.waSrc)}&text=${encodeURIComponent(t.waMessage)}`;
+
+const jsonld = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t.crumbs.home, item: `${origin}/` },
+      { '@type': 'ListItem', position: 2, name: t.crumbs.page, item: `${origin}${path}` },
+    ],
+  },
+  {
+    '@type': 'WebPage',
+    '@id': `${origin}${path}#webpage`,
+    url: `${origin}${path}`,
+    name: t.title,
+    description: t.description,
+    inLanguage: 'nl-BE',
+    isPartOf: { '@type': 'WebSite', '@id': `${origin}/#website`, url: `${origin}/`, name: 'Slagerij John' },
+    about: { '@id': `${origin}/#shop` },
+  },
+];
+---
+<Base title={t.title} description={t.description} locale="nl" path={path} alternates={alternates} jsonld={jsonld}>
+  <main id="main" class="ej">
+    <div class="ej-top">
+      <section class="eh on-ink" aria-labelledby="eh-title">
+        <p class="eyebrow eh__eyebrow">{t.eyebrow}</p>
+        <h1 class="eh__h1" id="eh-title">{t.h1} <span class="accent eh__accent">{fill(t.accent)}</span></h1>
+        <p class="eh__lead">{fill(t.lead)}</p>
+        <div class="eh__buttons">
+          <a class="btn btn--primary btn--lg" href={t.primaryHref}>{t.primary}</a>
+          <a class="btn btn--secondary btn--lg" href={waHref} rel="nofollow"><WaIcon /><span>{t.whatsapp}</span></a>
+        </div>
+      </section>
+      <div class="ep">
+        <ArtPicture class="ep__pic" mobile={bandPic.mobile} desktop={bandPic.desktop} alt={band.alt.nl} quality={50} priority />
+      </div>
+    </div>
+
+    <div class="container ej-body">
+      <section class="es" aria-labelledby="es-title">
+        <h2 class="eyebrow es__title" id="es-title">{t.steps.eyebrow}</h2>
+        <ol class="es__list">
+          {t.steps.items.map((s, i) => (
+            <li class="es__step"><span class="es__n" aria-hidden="true">{i + 1}</span><span>{fill(s)}</span></li>
+          ))}
+        </ol>
+      </section>
+
+      <section class="em on-ink" id="feestmenu" aria-labelledby="em-title">
+        <p class="em__eyebrow">{t.card.eyebrow}</p>
+        <h2 class="em__title" id="em-title">{t.card.title}</h2>
+        <dl class="em__rows">
+          {rows.map((r) => (
+            <div class="em__row"><dt>{r.name}</dt><dd>{r.price} {r.unit}</dd></div>
+          ))}
+        </dl>
+        <div class="em__msg">
+          <p class="em__msg-label">{t.card.msgLabel}</p>
+          <p class="em__msg-text">{t.waMessage}</p>
+        </div>
+        <a class="btn btn--light em__folder" href={t.card.folderHref}>{t.card.folder}</a>
+        <p class="em__deadline">{fill(t.card.deadline)}</p>
+      </section>
+
+      <div class="er">
+        <div class="er__box" lang="ro">
+          <p class="er__label">{t.ro.label}</p>
+          <p class="er__text">{fillMenu(t.ro.text, m, 'ro')}</p>
+        </div>
+        <a class="er__link" href={t.ro.href} lang="ro" hreflang="ro-BE">{t.ro.link}</a>
+      </div>
+
+      <section class="eo" aria-labelledby="eo-title">
+        <h2 class="eo__title" id="eo-title">{t.holiday.eyebrow}</h2>
+        <dl class="eo__rows">
+          {holiday.map((d) => (
+            <div class="eo__row"><dt>{d.label}</dt><dd>{d.text}</dd></div>
+          ))}
+        </dl>
+        <p class="eo__other">{t.holiday.other}</p>
+      </section>
+    </div>
+
+    <Faq locale="nl" title={t.faq} page="eindejaar" />
+
+    <div class="container ej-byline">
+      <p>{t.byline}</p>
+    </div>
+  </main>
+</Base>
+
+<style>
+  /* ── phone = board Eindejaar (390) ── */
+  /* the head: ink, text only, full bleed (board: padding 22 20 26, gap 14, H1 Fraunces 38, accent italic 30 yellow,
+     lead 14 on-ink-muted, two full-width buttons) */
+  .eh { display: flex; flex-direction: column; gap: 14px; padding: 22px var(--gutter) 26px; background: var(--ink); color: var(--on-ink); }
+  .eh__eyebrow { margin: 0; color: var(--accent); }
+  .eh__h1 { margin: 0; font-size: 38px; line-height: 1.02; letter-spacing: -0.02em; color: var(--on-ink); }
+  .eh__accent { display: block; margin-top: 14px; font-size: 30px; line-height: 1.02; color: var(--accent); }
+  .eh__lead { margin: 0; font-size: 14px; line-height: 1.45; color: var(--on-ink-muted); max-width: 60ch; }
+  .eh__buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+  .eh__buttons .btn { width: 100%; }
+
+  /* the photo band (board: 20 px gutters, 200 px, radius 14) */
+  .ep { padding: 20px var(--gutter) 0; }
+  .ep :global(picture) { display: block; height: 200px; border-radius: var(--r-tile); overflow: hidden; background: var(--ink); }
+  .ep :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+  .ej-body { display: flex; flex-direction: column; }
+
+  /* three steps (board: eyebrow ox, 36 px ox-ring numerals in Fraunces 17, text 15) */
+  .es { display: flex; flex-direction: column; gap: 12px; padding: 26px 0 24px; }
+  .es__title { margin: 0; font-family: var(--f-ui); font-weight: 600; letter-spacing: 0.16em; }
+  .es__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .es__step { display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center; font-size: 15px; line-height: 1.4; }
+  .es__n {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--ox);
+    border-radius: 999px;
+    color: var(--ox);
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: 17px;
+  }
+
+  /* the menu card (board: oxblood, padding 22 20, radius 16, eyebrow ox-tint, italic title 28, rows 14 tabular under a
+     paper hairline, the message on a tag-coloured slip, the light button) */
+  .em { display: flex; flex-direction: column; gap: 10px; padding: 22px 20px; border-radius: var(--r-frame); background: var(--ox); color: var(--on-ox); scroll-margin-top: 72px; }
+  .em__eyebrow { margin: 0; font-size: var(--fs-eyebrow); font-weight: 600; letter-spacing: 0.16em; line-height: 1.3; text-transform: uppercase; color: var(--ox-tint); }
+  .em__title { margin: 0; font-style: italic; font-weight: 400; font-size: 28px; line-height: 1.02; letter-spacing: 0; color: var(--on-ox); }
+  .em__rows { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 0; padding-top: 12px; border-top: 1px solid rgba(244, 237, 224, 0.3); font-size: 14px; font-variant-numeric: tabular-nums; }
+  .em__row { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; }
+  .em__row dt { min-width: 0; }
+  .em__row dd { margin: 0; flex: 0 0 auto; white-space: nowrap; }
+  .em__msg { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; padding: 12px 14px; border-radius: 10px; background: var(--tag); color: var(--fg); }
+  .em__msg-label { margin: 0; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .em__msg-text { margin: 0; font-size: 14px; line-height: 1.45; }
+  .em__folder { align-self: flex-start; }
+  .em__deadline { margin: 0; font-size: 13px; line-height: 1.45; color: var(--ox-tint); }
+
+  /* „Și în română” (board: tag-coloured box, label 11 upper muted, text 14; the link under it) */
+  .er { display: flex; flex-direction: column; gap: 10px; padding-top: 20px; }
+  .er__box { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 10px; background: var(--tag); }
+  .er__label { margin: 0; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .er__text { margin: 0; font-size: 14px; line-height: 1.45; }
+  .er__link { align-self: flex-start; display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; font-weight: 600; }
+
+  /* holiday hours (board: the hours card — padding 18, hairline, radius 14, --card; title Fraunces 20; rows 13 tabular) */
+  .eo { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; padding: 18px; border: 1px solid var(--line); border-radius: var(--r-tile); background: var(--card); }
+  .eo__title { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 20px; line-height: 1.1; letter-spacing: 0; }
+  .eo__rows { display: flex; flex-direction: column; gap: 6px; margin: 0; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .eo__row { display: flex; justify-content: space-between; gap: 16px; }
+  .eo__row dt { color: var(--muted); }
+  .eo__row dd { margin: 0; }
+  .eo__other { margin: 0; font-size: 13px; line-height: 1.45; color: var(--muted); }
+
+  .ej-byline { padding-top: 20px; padding-bottom: 28px; }
+  .ej-byline p { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12px; line-height: 1.5; color: var(--muted); }
+
+  /* ── desktop (derived, D-30) ── */
+  @media (min-width: 960px) {
+    /* two prints side by side: the ink head left (text column), the photo right, same height */
+    .ej-top {
+      display: grid;
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: 16px;
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 32px var(--gutter) 0;
+    }
+    .eh { justify-content: center; gap: 20px; min-height: min(600px, calc(100svh - 140px)); padding: 56px; border-radius: var(--r-frame-lg); }
+    .eh__h1 { font-size: clamp(48px, 4.4vw, 68px); line-height: 1; letter-spacing: -0.025em; }
+    .eh__accent { margin-top: 16px; font-size: clamp(30px, 2.6vw, 40px); }
+    .eh__lead { font-size: var(--fs-lead); line-height: 1.5; }
+    .eh__buttons { flex-direction: row; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+    .eh__buttons .btn { width: auto; }
+    .ep { padding: 0; }
+    .ep :global(picture) { height: 100%; border-radius: var(--r-frame-lg); }
+
+    /* steps, RO box, holiday hours left; the menu card right */
+    .ej-body {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      grid-template-areas: 'steps menu' 'ro menu' 'hours menu' '. menu';
+      grid-template-rows: auto auto auto 1fr;
+      gap: 0 56px;
+      align-items: start;
+      padding-top: 72px;
+    }
+    .es { grid-area: steps; gap: 18px; padding: 0; }
+    .es__step { font-size: var(--fs-body); }
+    .em { grid-area: menu; gap: 14px; padding: 40px 48px; border-radius: var(--r-frame-lg); scroll-margin-top: 96px; }
+    .em__title { font-size: 44px; line-height: 1; }
+    .em__rows { gap: 12px; margin-top: 8px; padding-top: 18px; font-size: var(--fs-body); }
+    .em__msg { padding: 14px 18px; }
+    .em__msg-text { font-size: var(--fs-body); }
+    .em__deadline { font-size: 14px; }
+    .er { grid-area: ro; padding-top: 32px; }
+    .eo { grid-area: hours; margin-top: 24px; padding: 22px 24px; }
+    .eo__rows { font-size: 14px; gap: 8px; }
+
+    .ej-byline { padding-top: 56px; padding-bottom: 80px; }
+  }
+</style>

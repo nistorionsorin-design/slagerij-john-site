@@ -190,8 +190,8 @@
       "focalX": 50,
       "focalY": 55,
       "alt": {
-        "nl": "De barbecuetrailer met open grills",
-        "ro": "Remorca de grătar, cu grătarele deschise"
+        "nl": "Een varken aan het spit boven de open grill, voor de barbecuetrailer",
+        "ro": "Un porc la proțap deasupra grătarului deschis, în fața remorcii de grătar"
       }
     },
     {
@@ -297,8 +297,23 @@
       "focalX": 50,
       "focalY": 55,
       "alt": {
-        "nl": "De barbecuetrailer met open grills",
-        "ro": "Remorca de grătar, cu grătarele deschise"
+        "nl": "Een varken aan het spit boven de open grill, voor de barbecuetrailer",
+        "ro": "Un porc la proțap deasupra grătarului deschis, în fața remorcii de grătar"
+      }
+    }
+  ],
+  "_eindejaar_source": "Stage 7 (Claude Code, 08.10): /feestmenu-eindejaar — the photo band under the head, q19 (design/photos-inventory.md §B3, the only festive shot), copied byte-identical from assets/raw/2026-10-05-whatsapp/ into src/assets/eindejaar/; alts NL/RO = lexicon §5.22 verbatim (the board alt „Feestbuffet van Slagerij John” replaced, §5.14). Focal point read off the photo (the platter and the tree).",
+  "eindejaar": [
+    {
+      "src": "eindejaar/feestschotel-eindejaar-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.1christmas.jpeg",
+      "width": 2048,
+      "height": 1330,
+      "focalX": 48,
+      "focalY": 52,
+      "alt": {
+        "nl": "Feestschotel met gepaneerde brochettes en een kerstboompje op de toog",
+        "ro": "Platou festiv cu frigărui pane și un brăduț de Crăciun, pe tejghea"
       }
     }
   ],

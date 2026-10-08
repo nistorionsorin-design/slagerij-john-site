@@ -84,3 +84,24 @@ export interface Delivery {
   pickup: { leadDays: number; cutoff: string | null; stepMin: number; horizonDays: number };
   currency: string;
 }
+
+/** menus.json (stage 7, lexicon §5.22): a seasonal menu the bestelbon lists on top when opened with ?menu=…
+ *  `deadline` null → [DATUM] (nothing closes before FACTS.md has the date); `pickup` from/to null → [UUR] and the
+ *  day's opening hours. Items have the products.json row shape (no category, no line). */
+export interface MenuItem { id: string; name: L10n; price: number | null; unit: Unit; min?: number; step?: number }
+export interface Menu {
+  id: string;
+  /** /bestellen?menu=<param> opens the bestelbon with this menu on top */
+  param: string;
+  name: L10n;
+  /** §5.10: the WhatsApp opening the bestelbon puts before the order when a row of this menu is chosen */
+  message: L10n;
+  /** the line the bestelbon shows once a row of this menu is chosen: menu orders are pickup only (§5.22, 08.10 17:50) */
+  pickupOnly: L10n;
+  /** the menu's word in the shop's mail subject (NL) and first line (RO) */
+  mail: L10n;
+  deadline: string | null;
+  pickup: { date: string; from: string | null; to: string | null }[];
+  items: MenuItem[];
+}
+export interface Menus { menus: Menu[] }

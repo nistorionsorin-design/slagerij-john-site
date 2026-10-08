@@ -16,7 +16,7 @@ import { readFileSync } from 'node:fs';
 import { readOrder, waText, dayLabel, money, lineText, addressLine } from '../src/lib/order-core.js';
 
 const json = (f) => JSON.parse(readFileSync(new URL(`../src/data/${f}`, import.meta.url), 'utf8'));
-const data = () => ({ products: json('products.json'), hours: json('hours.json'), delivery: json('delivery.json') });
+const data = () => ({ products: json('products.json'), hours: json('hours.json'), delivery: json('delivery.json'), menus: json('menus.json') });
 const entity = json('entity.json');
 
 const page = { nl: '/bestellen', ro: '/ro/comanda' };
@@ -26,7 +26,8 @@ const page = { nl: '/bestellen', ro: '/ro/comanda' };
 // [PLACEHOLDER] — the gate scans this file and fails on it under --release (C-04).
 const T = {
   nl: {
-    subjectShop: (o) => `Bestelling ${o.ref} · ${o.method === 'delivery' ? 'levering' : 'afhalen'} ${dayLabel(o.date, 'nl')} ${o.time}`,
+    // a menu order names its menu (lexicon §5.22, 08.10 17:50): „Bestelling {REF} · Eindejaarsmenu · afhalen {dag} {uur}”
+    subjectShop: (o) => `Bestelling ${o.ref} · ${o.menu ? `${o.menu.mail.nl} · ` : ''}${o.method === 'delivery' ? 'levering' : 'afhalen'} ${dayLabel(o.date, 'nl')} ${o.time}`,
     subjectCustomer: (o) => `Uw bestelling ${o.ref} bij ${entity.name}`,
     pickup: 'Afhalen',
     delivery: 'Levering',
@@ -47,7 +48,8 @@ const T = {
     hours: 'Openingsuren',
   },
   ro: {
-    subjectShop: (o) => `Comandă ${o.ref} · ${o.method === 'delivery' ? 'livrare' : 'ridicare'} ${dayLabel(o.date, 'ro')} ${o.time}`,
+    // RO orders (stage 9): the menu's word as in the shop's first line below
+    subjectShop: (o) => `Comandă ${o.ref} · ${o.menu ? `${o.menu.mail.ro} · ` : ''}${o.method === 'delivery' ? 'livrare' : 'ridicare'} ${dayLabel(o.date, 'ro')} ${o.time}`,
     subjectCustomer: (o) => `Comanda ta ${o.ref} la ${entity.alternateName}`,
     pickup: 'Ridicare',
     delivery: 'Livrare',
@@ -76,20 +78,31 @@ const intl = (phone) => {
   return d.startsWith('00') ? d.slice(2) : d.startsWith('0') ? `32${d.slice(1)}` : d;
 };
 
-/** The slip as text lines and as an HTML table — the same rows in the shop's mail and the customer's. */
+/** The slip as text lines and as an HTML table — the same rows in the shop's mail and the customer's. A menu order's
+ *  menu rows come first, under the menu's name (menus.json `name`, lexicon §5.22 08.10 17:50); a heading row has
+ *  no second cell (null). */
 function slip(o, t) {
+  const line = (l) => [lineText({ ...l, sum: null }, o.locale), l.sum === null ? t.unknownPrice : money(l.sum, o.locale, true)];
+  const menuLines = o.lines.filter((l) => l.menu);
+  const otherLines = o.lines.filter((l) => !l.menu);
   const rows = [
-    ...o.lines.map((l) => [lineText({ ...l, sum: null }, o.locale), l.sum === null ? t.unknownPrice : money(l.sum, o.locale, true)]),
+    // the menu group, then a spacer (both cells null) before the rest so a counter row never reads as part of the menu
+    ...(menuLines.length ? [[o.menu?.name ?? '', null], ...menuLines.map(line), ...(otherLines.length || o.requests.length ? [[null, null]] : [])] : []),
+    ...otherLines.map(line),
     ...o.requests.map((r) => [`„${r}”`, t.unknownPrice]),
   ];
   if (o.quote) rows.push([t.feeLabel, t.fee[o.quote.status]]);
   rows.push([t.total, o.total === null || o.requests.length ? t.unknownPrice : money(o.total, o.locale, true)]);
   const when = `${o.method === 'delivery' ? t.delivery : t.pickup}: ${dayLabel(o.date, o.locale, 'long')}, ${o.time}${o.address ? ` · ${addressLine(o.address)}` : ''}`;
-  const text = [when, '', ...rows.map(([a, b]) => `${a}  ${b}`)].join('\n');
+  const text = [when, '', ...rows.map(([a, b]) => (a === null ? '' : b === null ? `${a}:` : `${a}  ${b}`))].join('\n');
   const html =
     `<p style="margin:0 0 12px;font-weight:600">${esc(when)}</p>` +
     `<table style="border-collapse:collapse;width:100%;max-width:520px;font-size:15px">` +
-    rows.map(([a, b], i) => `<tr style="border-top:1px solid #D9CDB8${i === rows.length - 1 ? ';font-weight:700' : ''}"><td style="padding:8px 12px 8px 0">${esc(a)}</td><td style="padding:8px 0;text-align:right;white-space:nowrap">${esc(b)}</td></tr>`).join('') +
+    rows.map(([a, b], i) => (a === null
+      ? `<tr><td colspan="2" style="padding:6px 0"></td></tr>`
+      : b === null
+      ? `<tr style="border-top:1px solid #D9CDB8"><td colspan="2" style="padding:10px 0 4px;font-weight:700;color:#7B2420">${esc(a)}</td></tr>`
+      : `<tr style="border-top:1px solid #D9CDB8${i === rows.length - 1 ? ';font-weight:700' : ''}"><td style="padding:8px 12px 8px 0">${esc(a)}</td><td style="padding:8px 0;text-align:right;white-space:nowrap">${esc(b)}</td></tr>`)).join('') +
     `</table>`;
   return { text, html };
 }
@@ -107,7 +120,8 @@ function mails(o, hours) {
   const who = [`${t.name}: ${o.name}`, `${t.tel}: ${o.phone}`, `${t.email}: ${o.email}`];
   const remarks = o.remarks ? `${t.remarks}: ${o.remarks}` : '';
   // the shop: a one-line RO header for John and Georgiana (lexicon §5.20 „Mails”), then the slip, then the customer
-  const header = `Comandă nouă de pe site · ${o.ref} · ${o.method === 'delivery' ? 'livrare' : 'ridicare'} ${dayLabel(o.date, 'ro')} ${o.time}`;
+  // a menu order: „Comandă nouă de pe site · {REF} · meniul de sărbători · ridicare {zi} {oră}” (§5.22, 08.10 17:50)
+  const header = `Comandă nouă de pe site · ${o.ref} · ${o.menu ? `${o.menu.mail.ro} · ` : ''}${o.method === 'delivery' ? 'livrare' : 'ridicare'} ${dayLabel(o.date, 'ro')} ${o.time}`;
   const shop = {
     subject: t.subjectShop(o),
     replyTo: o.email,

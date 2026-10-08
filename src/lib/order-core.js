@@ -73,8 +73,57 @@ export function deliveryDays(hours, delivery, at = new Date()) {
   return out;
 }
 
-export const daysFor = (method, hours, delivery, at) =>
-  method === 'delivery' ? deliveryDays(hours, delivery, at) : pickupDays(hours, delivery, at);
+/** A seasonal menu (menus.json, stage 7): open until its deadline (Brussels day, inclusive); a null deadline never
+ *  closes — nothing closes automatically before FACTS.md has the date (build plan row 7). */
+export function menuOpen(menu, at = new Date(), timeZone = 'Europe/Brussels') {
+  return !menu.deadline || iso(brussels(at, timeZone).day) <= menu.deadline;
+}
+
+/** The menu's rows as bestelbon products (the products.json shape; category = „menu-<id>”), open menus only. */
+export function menuRows(menus, at = new Date()) {
+  return (menus?.menus ?? [])
+    .filter((m) => menuOpen(m, at))
+    .flatMap((m) => m.items.map((i) => ({ ...i, category: `menu-${m.id}`, line: { nl: '', ro: '' }, menu: m.id })));
+}
+
+/** The open menu an order takes a row from (its rows' quantities > 0), or null. */
+export function menuOf(items, menus, at = new Date()) {
+  const ids = Object.entries(items ?? {}).filter(([, q]) => Number(String(q ?? '').replace(',', '.')) > 0).map(([id]) => id);
+  return (menus?.menus ?? []).find((m) => menuOpen(m, at) && m.items.some((i) => ids.includes(i.id))) ?? null;
+}
+
+/** An order with menu rows is for the menu's own days (menus.json `pickup`, from the earliest day on): pickup at the
+ *  menu's hours (`from`/`to`, else the day's opening hours), delivery at the evening times if the day is a delivery
+ *  day. A day the shop closes (hours.json `special`) drops out. */
+export function menuDays(menu, method, hours, delivery, at = new Date()) {
+  const now = brussels(at, hours.timeZone);
+  const first = earliest(delivery.pickup, now);
+  const out = [];
+  for (const p of menu.pickup) {
+    const d = fromIso(p.date);
+    if (d < first) continue;
+    const h = hoursOn(hours, d);
+    if (!h.slots.length) continue;
+    if (method === 'delivery') {
+      if (delivery.days.includes(WEEK[weekday(d)])) out.push({ date: p.date, times: [...delivery.times] });
+      continue;
+    }
+    const lo = p.from ? toMin(p.from) : 0;
+    const hi = p.to ? toMin(p.to) : 24 * 60;
+    const step = delivery.pickup.stepMin;
+    const times = h.slots.flatMap((s) => {
+      const t = [];
+      for (let m = Math.max(toMin(s.open), lo); m + step <= Math.min(toMin(s.close), hi); m += step) t.push(fromMin(m));
+      return t;
+    });
+    if (times.length) out.push({ date: p.date, times });
+  }
+  return out;
+}
+
+export const daysFor = (method, hours, delivery, at, menu = null) =>
+  menu ? menuDays(menu, method, hours, delivery, at)
+    : method === 'delivery' ? deliveryDays(hours, delivery, at) : pickupDays(hours, delivery, at);
 
 /** Quantity rule of a product: kg in steps of 0,5 (min 0,5), everything else in whole units; products.json may set
  *  `min` (gourmet „vanaf 2 personen”) or `step`. */
@@ -162,27 +211,31 @@ const cleanBlock = (v, max) => String(v ?? '').replace(/\r\n?/g, '\n').replace(/
 /** Reads an order (the page's JSON, or the no-script form mapped to the same shape by api/order.js), checks it against
  *  the data and the clock, and returns the clean order with every price computed here — never the browser's.
  *  `errors` = the field names that need the customer's attention. */
-export function readOrder(input, { products, hours, delivery }, at = new Date()) {
+export function readOrder(input, { products, hours, delivery, menus }, at = new Date()) {
   const errors = [];
   const locale = input.lang === 'ro' ? 'ro' : 'nl';
   const method = input.method === 'delivery' ? 'delivery' : 'pickup';
 
-  const byId = new Map(products.items.map((p) => [p.id, p]));
+  // menu rows (stage 7) count only while their menu is open; a closed menu's row is dropped like an unknown id
+  const byId = new Map([...products.items, ...menuRows(menus, at)].map((p) => [p.id, p]));
+  const menu = menuOf(input.items, menus, at);
   const lines = [];
   for (const [id, q] of Object.entries(input.items ?? {})) {
     const p = byId.get(id);
     if (!p || p.orderable === false) continue;
     const qty = snapQty(p, q);
     if (!qty) continue;
-    lines.push({ id, name: p.name[locale], unit: p.unit, qty, price: p.price, sum: p.price === null ? null : +(p.price * qty).toFixed(2) });
+    lines.push({ id, name: p.name[locale], unit: p.unit, qty, price: p.price, sum: p.price === null ? null : +(p.price * qty).toFixed(2), menu: p.menu ?? null });
   }
   const requests = (Array.isArray(input.requests) ? input.requests : [input.requests])
     .map((r) => clean(r, 200))
     .filter(Boolean)
     .slice(0, 10);
   if (!lines.length && !requests.length) errors.push('items');
+  // a menu order is collected in the shop (lexicon §5.22, 08.10 17:50): delivery is refused, the page shows pickup only
+  if (menu && method === 'delivery') errors.push('method');
 
-  const days = daysFor(method, hours, delivery, at);
+  const days = daysFor(method, hours, delivery, at, menu);
   const day = days.find((d) => d.date === input.date);
   if (!day) errors.push('date');
   else if (!day.times.includes(input.time)) errors.push('time');
@@ -211,6 +264,7 @@ export function readOrder(input, { products, hours, delivery }, at = new Date())
   return {
     errors,
     order: {
+      menu: menu ? { id: menu.id, name: menu.name[locale], message: menu.message[locale], pickupOnly: menu.pickupOnly[locale], mail: menu.mail } : null,
       ref: /^SJ-\d{4}-[2-9A-HJ-NP-Z]{4}$/.test(input.ref ?? '') ? input.ref : newRef(at),
       locale,
       method,
@@ -236,12 +290,14 @@ export const addressLine = (a) => (a ? `${a.street} ${a.nr}, ${a.postcode} ${a.p
 export const lineText = (l, locale) => `${qtyLabel(l.qty, l.unit)} ${l.name}${l.sum === null ? '' : ` (${money(l.sum, locale)})`}`;
 
 /** The WhatsApp text (docs/order-flow.md §5), also the body of the shop's WhatsApp notification. Delivery adds the
- *  address after the moment; a free request goes in „…” among the lines. */
+ *  address after the moment; a free request goes in „…” among the lines. An order with menu rows opens with the menu's
+ *  §5.10 message („Dag, ik wil bestellen uit het eindejaarsmenu: Bestelling SJ-… · …”, lexicon §5.22: the bestelbon
+ *  fills the dots). */
 export function waText(o) {
   const ro = o.locale === 'ro';
   const when = `${ro ? (o.method === 'delivery' ? 'Livrare' : 'Ridicare') : o.method === 'delivery' ? 'Levering' : 'Afhalen'} ${o.date ? dayLabel(o.date, o.locale, 'short') : '…'} ${o.time || '…'}`;
   return [
-    `${ro ? 'Comandă' : 'Bestelling'} ${o.ref}`,
+    `${o.menu ? `${o.menu.message} ` : ''}${ro ? 'Comandă' : 'Bestelling'} ${o.ref}`,
     o.address ? `${when}, ${addressLine(o.address)}` : when,
     ...o.lines.map((l) => lineText(l, o.locale)),
     ...o.requests.map((r) => `„${r}”`),

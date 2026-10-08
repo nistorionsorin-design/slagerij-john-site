@@ -35,6 +35,14 @@ export const bestellenNl = {
     qty: 'Aantal', // the number field's label (screen readers)
   },
 
+  /** stage 7: the menu section on top when the bestelbon opens with ?menu=eindejaar (lexicon §5.22 „menus.json”).
+   *  The section's title = menus.json `name`. [UUR] / [DATUM] are swapped for menus.json's values once they are set;
+   *  `closed` replaces the rows once the deadline (FACTS.md) has passed. */
+  menu: {
+    note: 'Afhalen op 24 of 31 december, van [UUR] tot [UUR]. Bestellen tot [DATUM].',
+    closed: 'De besteltermijn voor het eindejaarsmenu is verstreken. Bel ons, dan kijken wij wat kan.',
+  },
+
   /** free request (order-flow §2.3): §5.20 */
   request: {
     title: 'Niet gevonden wat u zoekt?',

@@ -28,7 +28,7 @@
   ],
   "ro": [],
   "pages": {
-    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4. /bestellen = lexicon §5.11 „Bestellen” (three items, added 07.10 for stage 5; §5.20 „FAQ on the page”), NL and RO verbatim; [BETALING] / [PLATĂ] stay visible until D6. Claude Code, stage 5 revision. /traiteur = lexicon §5.11 „Traiteur” (five items, added 08.10 for stage 6; §5.21 „FAQ on the page”), NL and RO verbatim, in that order; [PRIJS] / [PREȚ] stay visible until the owners answer (owners sheet D). Claude Code, stage 6.",
+    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4. /bestellen = lexicon §5.11 „Bestellen” (three items, added 07.10 for stage 5; §5.20 „FAQ on the page”), NL and RO verbatim; [BETALING] / [PLATĂ] stay visible until D6. Claude Code, stage 5 revision. /traiteur = lexicon §5.11 „Traiteur” (five items, added 08.10 for stage 6; §5.21 „FAQ on the page”), NL and RO verbatim, in that order; [PRIJS] / [PREȚ] stay visible until the owners answer (owners sheet D). Claude Code, stage 6. /feestmenu-eindejaar = lexicon §5.11 „Eindejaar” (three items, added 08.10 for stage 7; §5.22 „FAQ on the page”), NL and RO verbatim, in that order; the third = the „Bestellen” item „Hoe betaal ik?” unchanged; [DATUM] / [UUR] / [BETALING] (RO [DATA] / [ORA] / [PLATĂ]) stay visible until the owners answer (B 3, B 11, D6). Claude Code, stage 7.",
     "producten": {
       "nl": [
         {
@@ -123,6 +123,36 @@
         {
           "q": "Vine cineva să gătească sau să servească?",
           "a": "La grătar la domiciliu, da: John stă la grătar. Platourile, bufetele și aperitivele vin gata pregătite; dacă vrei și servire, cere-o odată cu oferta."
+        }
+      ]
+    },
+    "eindejaar": {
+      "nl": [
+        {
+          "q": "Tot wanneer kan ik bestellen voor Kerstmis?",
+          "a": "Eindejaarsmenu bestellen tot [DATUM]; afhalen op 24 en 31 december van [UUR] tot [UUR]."
+        },
+        {
+          "q": "Kan ik een gourmetschotel thuis laten bezorgen?",
+          "a": "Ja: gratis tot 10 km vanaf €50, tot 20 km vanaf €100; de afstand telt vanaf de winkel. Voor 24 en 31 december: vraag het ons bij de bestelling."
+        },
+        {
+          "q": "Hoe betaal ik?",
+          "a": "Bij afhaling in de winkel of bij levering aan de deur: [BETALING]. Online betalen is niet nodig."
+        }
+      ],
+      "ro": [
+        {
+          "q": "Până când pot comanda pentru Crăciun?",
+          "a": "Comenzi din meniul de sărbători până pe [DATA]; ridicare pe 24 și 31 decembrie, între [ORA] și [ORA]."
+        },
+        {
+          "q": "Livrați platoul acasă?",
+          "a": "Da: gratuit până la 10 km de la 50 €, până la 20 km de la 100 €; distanța se măsoară de la magazin. Pentru 24 și 31 decembrie: întreabă-ne la comandă."
+        },
+        {
+          "q": "Cum plătesc?",
+          "a": "La ridicare, în magazin, sau la livrare, la ușă: [PLATĂ]. Nu plătești online."
         }
       ]
     }
