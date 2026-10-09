@@ -60,15 +60,22 @@
   unicode-range: U+0102-0103, U+0218-021B;
 }
 
-/* Metric-matched fallbacks so the swap does not reflow (U-22, CLS). size-adjust = the measured
-   width ratio of the brand font to its fallback (canvas measureText on the hero strings,
-   06.10): Fraunces 500 / Georgia 0,888 · Fraunces italic / Georgia italic 0,813 ·
-   Inter Tight / Arial 0,956. Ascent/descent = the shipped files' hhea values (Fraunces
-   0,978 / 0,255 · Inter Tight 0,969 / 0,241), divided by size-adjust, as the overrides
-   are applied to the adjusted size. */
+/* Metric-matched fallbacks so the swap does not reflow (U-22, CLS). size-adjust = the width of the brand
+   font over the local fallback's, one face per weight the site uses, so bold text gets the real bold
+   fallback (Georgia Bold / Arial Bold), not a synthetic one. Measured 09.10 (stage 7b) on every visible
+   Latin text leaf of the NL pages at 360 / 412 / 1440 px, letter-spacing off, length-weighted:
+   Inter Tight / Arial 400 0,963 · 500 1,020 (Arial has no medium) · 600 / Arial Bold 0,943 ·
+   700 / Arial Bold 0,949; Fraunces 600 / Georgia Bold 0,933 (the counter tags, 18–20 px); Fraunces italic
+   / Georgia Italic 0,950 at 15–44 px (desktop), 0,961 at 12–30 px (phone). Fraunces 500 follows its
+   optical-size axis (1,04–1,08 at 19–44 px, 0,99 at 56–64, 0,88 for the desktop hero H1 at opsz 120),
+   so one value per scale cannot fit every size: the 06.10 values stay, chosen for the first screen —
+   0,888 on desktop (the hero H1, two lines) and 1,079 on the phone (below). Ascent/descent = the shipped
+   files' hhea values (Fraunces 0,978 / 0,255 · Inter Tight 0,969 / 0,241), divided by size-adjust, as the
+   overrides are applied to the adjusted size. */
 @font-face {
   font-family: 'Fraunces Fallback';
   font-style: normal;
+  font-weight: 1 549;
   src: local('Georgia'), local('Times New Roman');
   size-adjust: 88.8%;
   ascent-override: 110.1%;
@@ -77,20 +84,32 @@
 }
 @font-face {
   font-family: 'Fraunces Fallback';
+  font-style: normal;
+  font-weight: 550 1000;
+  src: local('Georgia Bold'), local('Georgia-Bold'), local('Times New Roman Bold');
+  size-adjust: 93.3%;
+  ascent-override: 104.8%;
+  descent-override: 27.3%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Fraunces Fallback';
   font-style: italic;
-  src: local('Georgia Italic'), local('Times New Roman Italic');
-  size-adjust: 81.3%;
-  ascent-override: 120.3%;
-  descent-override: 31.4%;
+  src: local('Georgia Italic'), local('Georgia-Italic'), local('Times New Roman Italic');
+  size-adjust: 95%;
+  ascent-override: 102.9%;
+  descent-override: 26.8%;
   line-gap-override: 0%;
 }
 /* Phone sizes: Fraunces' optical-size axis draws wider letters at 42 px than at 92 px
    (measured: „Slagerij & traiteur” 341 px real vs 279 px on the desktop fallback at 42 px),
    so the phone type scale gets its own fallback, 1,215 × wider: 0,888 × 1,215 = 1,079.
-   tokens.css picks it below 960 px. */
+   tokens.css picks it below 960 px. The 600 face is the same as on desktop (no optical-size
+   difference at 18–20 px); the italic is the phone measurement above. */
 @font-face {
   font-family: 'Fraunces Fallback Small';
   font-style: normal;
+  font-weight: 1 549;
   src: local('Georgia'), local('Times New Roman');
   size-adjust: 107.9%;
   ascent-override: 90.6%;
@@ -99,18 +118,56 @@
 }
 @font-face {
   font-family: 'Fraunces Fallback Small';
+  font-style: normal;
+  font-weight: 550 1000;
+  src: local('Georgia Bold'), local('Georgia-Bold'), local('Times New Roman Bold');
+  size-adjust: 93.3%;
+  ascent-override: 104.8%;
+  descent-override: 27.3%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Fraunces Fallback Small';
   font-style: italic;
-  src: local('Georgia Italic'), local('Times New Roman Italic');
-  size-adjust: 98.8%;
-  ascent-override: 99%;
-  descent-override: 25.8%;
+  src: local('Georgia Italic'), local('Georgia-Italic'), local('Times New Roman Italic');
+  size-adjust: 96.1%;
+  ascent-override: 101.8%;
+  descent-override: 26.5%;
   line-gap-override: 0%;
 }
 @font-face {
   font-family: 'Inter Tight Fallback';
-  src: local('Arial'), local('Helvetica');
-  size-adjust: 95.6%;
-  ascent-override: 101.4%;
-  descent-override: 25.2%;
+  font-weight: 1 450;
+  src: local('Arial'), local('ArialMT'), local('Helvetica');
+  size-adjust: 96.3%;
+  ascent-override: 100.6%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Inter Tight Fallback';
+  font-weight: 451 549;
+  src: local('Arial'), local('ArialMT'), local('Helvetica');
+  size-adjust: 102%;
+  ascent-override: 95%;
+  descent-override: 23.6%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Inter Tight Fallback';
+  font-weight: 550 650;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Helvetica Bold'), local('Helvetica-Bold');
+  size-adjust: 94.3%;
+  ascent-override: 102.8%;
+  descent-override: 25.6%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Inter Tight Fallback';
+  font-weight: 651 1000;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Helvetica Bold'), local('Helvetica-Bold');
+  size-adjust: 94.9%;
+  ascent-override: 102.1%;
+  descent-override: 25.4%;
   line-gap-override: 0%;
 }

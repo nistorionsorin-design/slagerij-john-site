@@ -14,6 +14,26 @@ import Menu from '../components/Menu.astro';
 import Footer from '../components/Footer.astro';
 import BottomBar from '../components/BottomBar.astro';
 import { ui, home, wa, routeHref, type Locale } from '../i18n/ui';
+// Stage 7b: the woff2 files the first screen uses, preloaded. The same files fonts.css references (Vite emits one
+// /_astro/ copy each), so the preload is the request the @font-face uses. Without it the fonts are found only after
+// style and layout and fetched at VeryHigh priority, which Lighthouse's simulation counts as render-blocking (the
+// 2,3 s first paint on every page, 08.10). A preload starts them from the first bytes of <head>; fetchpriority low
+// keeps them behind the hero photo (the mobile LCP): at High they shared its bandwidth and the home LCP jumped to
+// 5,2 s in 2 of 5 Lighthouse runs, at low 3,3 s in 5 of 5 (09.10). The text meanwhile shows in the metric-matched
+// fallback (fonts.css), so the swap does not reflow.
+import frauncesNormal from '@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2?url';
+import frauncesItalic from '@fontsource-variable/fraunces/files/fraunces-latin-opsz-italic.woff2?url';
+import interTight from '@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2?url';
+import frauncesNormalRo from '../assets/fonts/fraunces-ro-opsz-normal.woff2?url';
+import frauncesItalicRo from '../assets/fonts/fraunces-ro-opsz-italic.woff2?url';
+import interTightRo from '../assets/fonts/inter-tight-ro-wght-normal.woff2?url';
+
+const fontFiles = {
+  display: [frauncesNormal, frauncesNormalRo],
+  italic: [frauncesItalic, frauncesItalicRo],
+  ui: [interTight, interTightRo],
+} as const;
+type FontKey = keyof typeof fontFiles;
 
 export interface Props {
   title: string;
@@ -28,9 +48,13 @@ export interface Props {
   hoursCard?: boolean;
   /** the page's own JSON-LD nodes (BreadcrumbList, Product …), one more ld+json block after the shop's */
   jsonld?: Record<string, unknown>[];
+  /** the font families the first screen draws (stage 7b): their woff2 files are preloaded — the Latin file, plus the
+      Romanian subset (Ă ă Ș ș Ț ț) on a ro page. Default: all three; /bestellen has no italic above the fold. */
+  fonts?: FontKey[];
 }
 
-const { title, description, locale, path, alternates, noindex = false, navVariant = 'paper', hoursCard = false, jsonld: pageLd } = Astro.props;
+const { title, description, locale, path, alternates, noindex = false, navVariant = 'paper', hoursCard = false, jsonld: pageLd, fonts = ['display', 'italic', 'ui'] } = Astro.props;
+const preloads = fonts.map((k) => (locale === 'ro' ? fontFiles[k] : fontFiles[k].slice(0, 1))).flat();
 
 const origin = 'https://slagerij-john.be';
 const abs = (p: string) => `${origin}${p === '/' ? '/' : p}`;
@@ -83,6 +107,7 @@ const jsonld = entity.name
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    {preloads.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin fetchpriority="low" />)}
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#F4EDE0" />

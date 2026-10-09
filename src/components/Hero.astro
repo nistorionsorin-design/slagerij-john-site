@@ -10,6 +10,9 @@
 // on /ro), inlined so its text uses the page fonts; the RO title scales to .76 to stay two lines. No stamp
 // on the photo any more (the ring stamp left the hero 06.10 20:05; Stamp.astro stays for the footer).
 // Frame 1 is a plain <img fetchpriority="high"> at opacity 1 from first paint (LCP).
+// Frames 2–5 (the <template>) are fetchpriority="low" (stage 7b): they sit in the viewport under frame 1, so Chrome
+// could boost them to High, and Lighthouse then counted ~300 kB as LCP-critical (home mobile LCP 4,6–4,7 s in 3 of 6
+// runs, 09.10, once the font preloads made `load` fire before the first paint).
 // Frames 2–5, the loop frame and tags 2–5 sit in <template>s; src/scripts/hero.ts
 // inserts them after `load`. Without JS, mask support or motion: one still.
 import { Picture } from 'astro:assets';
@@ -125,6 +128,7 @@ const loop = first && { ...first, wipe: 'w135' };
             alt={f.p.alt[locale]}
             loading="lazy"
             decoding="async"
+            fetchpriority="low"
             style={f.style}
           />
         </div>

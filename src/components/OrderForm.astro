@@ -19,6 +19,8 @@ import { menus, fillMenu } from '../lib/menu';
 import { qtyRule, fromMin, waText, menuRows, menuOpen } from '../lib/order-core.js';
 import { bestellenNl as t } from '../i18n/bestellen';
 import allergens from '../data/allergens.json';
+// stage 7b: shows ?menu=…'s section during parsing (no shift); the file says why it is a classic script
+import seasonJs from '../scripts/OrderForm.season.js?url';
 
 const locale = 'nl';
 // the board's order: the packs and the traiteur first, then the counter by the kilo (one pill for the whole group)
@@ -93,7 +95,7 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
       <nav class="os__pills" aria-labelledby="os-products">
         {pills.map((p) => <a class="pill" href={p.href}>{p.label}</a>)}
       </nav>
-      {groups.map((c) => (
+      {groups.map((c) => (<>
         <div class:list={['ocat', { 'ocat--menu': !!c.menu }]} id={`cat-${c.id}`} hidden={!!c.menu} data-season={c.menu?.param}>
           <h3 class="ocat__title">{c.name.nl}</h3>
           {c.menu && <p class="ocat__note" data-season-note hidden={!c.menu.open}>{c.menu.note}</p>}
@@ -127,7 +129,8 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
             })}
           </ul>
         </div>
-      ))}
+        {c.menu && c.id === menuGroups[menuGroups.length - 1].id && <script is:inline src={seasonJs}></script>}
+      </>))}
 
       <div class="or">
         <h3 class="or__title">{t.request.title}</h3>
