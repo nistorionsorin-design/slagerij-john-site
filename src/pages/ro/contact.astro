@@ -1,0 +1,38 @@
+---
+// STUB until stage 9 (RO pages): /ro/contact exists at stage 8 only so /contact has its reciprocal hreflang pair (gate:
+// every hreflang target is a built page that links back). Meta (56 / 151), eyebrow, H1 and accent = lexicon §6
+// „Contact” verbatim (src/i18n/contact.ts `ro`); the rest of the RO page (chip, buttons, rows, hours, special days,
+// map, pickup/delivery, FAQ, byline) is stage 9 — the strings are already in contact.ts and faq.json.
+import Base from '../../layouts/Base.astro';
+import { contact } from '../../i18n/contact';
+const t = contact.ro;
+const alternates = { nl: '/contact', ro: '/ro/contact' };
+// BreadcrumbList (lexicon §8.4; §6 „Contact”: Acasă › Contact)
+const jsonld = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t.crumbs.home, item: 'https://slagerij-john.be/ro' },
+      { '@type': 'ListItem', position: 2, name: t.crumbs.page, item: 'https://slagerij-john.be/ro/contact' },
+    ],
+  },
+];
+---
+<Base title={t.title} description={t.description} locale="ro" path="/ro/contact" alternates={alternates} jsonld={jsonld}>
+  <main id="main" class="container stub">
+    <p class="eyebrow">{t.eyebrow}</p>
+    <h1 class="stub__h1">{t.h1} <span class="accent stub__accent">{t.accent}</span></h1>
+  </main>
+</Base>
+
+<style>
+  /* the /ro/sarbatori stub's sizes until stage 9 */
+  .stub { display: flex; flex-direction: column; gap: 14px; padding-top: 24px; padding-bottom: 48px; min-height: 50vh; }
+  .stub__h1 { margin: 0; font-size: 38px; line-height: 1.02; letter-spacing: -0.02em; }
+  .stub__accent { display: block; margin-top: 8px; font-size: var(--fs-accent); line-height: 1.05; }
+  @media (min-width: 960px) {
+    .stub { padding-top: 56px; gap: 18px; }
+    .stub__h1 { font-size: 64px; line-height: 1; }
+    .stub__accent { margin-top: 12px; font-size: 40px; }
+  }
+</style>

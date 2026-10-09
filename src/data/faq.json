@@ -28,7 +28,7 @@
   ],
   "ro": [],
   "pages": {
-    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4. /bestellen = lexicon §5.11 „Bestellen” (three items, added 07.10 for stage 5; §5.20 „FAQ on the page”), NL and RO verbatim; [BETALING] / [PLATĂ] stay visible until D6. Claude Code, stage 5 revision. /traiteur = lexicon §5.11 „Traiteur” (five items, added 08.10 for stage 6; §5.21 „FAQ on the page”), NL and RO verbatim, in that order; [PRIJS] / [PREȚ] stay visible until the owners answer (owners sheet D). Claude Code, stage 6. /feestmenu-eindejaar = lexicon §5.11 „Eindejaar” (three items, added 08.10 for stage 7; §5.22 „FAQ on the page”), NL and RO verbatim, in that order; the third = the „Bestellen” item „Hoe betaal ik?” unchanged; [DATUM] / [UUR] / [BETALING] (RO [DATA] / [ORA] / [PLATĂ]) stay visible until the owners answer (B 3, B 11, D6). Claude Code, stage 7.",
+    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4. /bestellen = lexicon §5.11 „Bestellen” (three items, added 07.10 for stage 5; §5.20 „FAQ on the page”), NL and RO verbatim; [BETALING] / [PLATĂ] stay visible until D6. Claude Code, stage 5 revision. /traiteur = lexicon §5.11 „Traiteur” (five items, added 08.10 for stage 6; §5.21 „FAQ on the page”), NL and RO verbatim, in that order; [PRIJS] / [PREȚ] stay visible until the owners answer (owners sheet D). Claude Code, stage 6. /feestmenu-eindejaar = lexicon §5.11 „Eindejaar” (three items, added 08.10 for stage 7; §5.22 „FAQ on the page”), NL and RO verbatim, in that order; the third = the „Bestellen” item „Hoe betaal ik?” unchanged; [DATUM] / [UUR] / [BETALING] (RO [DATA] / [ORA] / [PLATĂ]) stay visible until the owners answer (B 3, B 11, D6). Claude Code, stage 7. /contact = lexicon §5.11 „Contact” (four items, added 09.10 for stage 8; §5.23 „FAQ”), NL and RO verbatim, in that order (open op zondag · leveren Tielt / Lichtervelde / Roeselare · open op feestdagen · bellen om te bestellen); [WHATSAPP-ANTWOORD] / [WHATSAPP-RĂSPUNS] stay visible until B 5. Claude Code, stage 8.",
     "producten": {
       "nl": [
         {
@@ -153,6 +153,44 @@
         {
           "q": "Cum plătesc?",
           "a": "La ridicare, în magazin, sau la livrare, la ușă: [PLATĂ]. Nu plătești online."
+        }
+      ]
+    },
+    "contact": {
+      "nl": [
+        {
+          "q": "Zijn jullie open op zondag?",
+          "a": "Ja, zondag van 08:00 tot 13:00; maandag vanaf 13:00."
+        },
+        {
+          "q": "Leveren jullie in Tielt / Lichtervelde / Roeselare?",
+          "a": "Ja. Lichtervelde en Wingene liggen binnen 10 km (gratis vanaf €50), Tielt en Roeselare binnen 20 km (gratis vanaf €100); de afstand telt vanaf de winkel."
+        },
+        {
+          "q": "Zijn jullie open op feestdagen?",
+          "a": "Dat leest u hierboven bij Feestdagen. Op dagen die daar niet staan, gelden de gewone openingsuren; twijfelt u, stuur even een WhatsApp."
+        },
+        {
+          "q": "Kan ik ook bellen om te bestellen?",
+          "a": "Ja, tijdens de openingsuren op 0466 18 64 57. Via WhatsApp kan het altijd; wij antwoorden [WHATSAPP-ANTWOORD]."
+        }
+      ],
+      "ro": [
+        {
+          "q": "Sunteți deschiși duminica?",
+          "a": "Da, duminica între 08:00 și 13:00; luni de la 13:00."
+        },
+        {
+          "q": "Livrați în Tielt / Lichtervelde / Roeselare?",
+          "a": "Da. Lichtervelde și Wingene sunt la mai puțin de 10 km (gratuit de la 50 €), Tielt și Roeselare la mai puțin de 20 km (gratuit de la 100 €). Distanța se măsoară de la magazin."
+        },
+        {
+          "q": "Sunteți deschiși de sărbători?",
+          "a": "Vezi mai sus, la Sărbători legale. În zilele care nu apar acolo, programul obișnuit; dacă nu ești sigur, scrie-ne pe WhatsApp."
+        },
+        {
+          "q": "Pot comanda și prin telefon?",
+          "a": "Da, în programul magazinului, la 0466 18 64 57. Pe WhatsApp poți scrie oricând; răspundem [WHATSAPP-RĂSPUNS]."
         }
       ]
     }

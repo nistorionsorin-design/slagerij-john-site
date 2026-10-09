@@ -1,0 +1,292 @@
+---
+// /contact — Openingsuren, adres en contact (stage 8). Canvas board Contact (mobile 390) is the concept (D-30), its
+// sections in order: the paper head (eyebrow · H1 · accent · open chip · Bestel via WhatsApp · Bel ons) · the three
+// contact rows · the hours card + the Monday line · the special days card · the map with the address box · Afhalen en
+// levering · FAQ · byline. Desktop derived (D-30): the head left and the contact rows right; below, the hours and the
+// special days left, the map right; then pickup/delivery and the FAQ in the FAQ's 5 / 7 columns.
+// Strings: src/i18n/contact.ts (lexicon §5.23). Hours: hours.json (Hours.astro — this page carries #openingsuren, the
+// target of both chips); special days: every hours.json `special` entry from today on, the board's four [UREN] rows
+// while it is empty. FAQ: the four §5.11 „Contact” items (faq.json pages.contact). No contact form (§5.23).
+// The map is a picture, not a widget (BE-05: 0 third-party requests): src/assets/contact/, drawn from an OpenStreetMap
+// export by scripts/contact-map.mjs, with the ODbL line under it. No script of its own (the chip's is OpenChip's).
+// JSON-LD (§5.23): the shop's node by @id gets hasMap (+ specialOpeningHoursSpecification once `special` has rows),
+// WebPage typed ContactPage (§8.2), BreadcrumbList (§8.4). Nothing else.
+import Base from '../layouts/Base.astro';
+import ArtPicture from '../components/ArtPicture.astro';
+import Hours from '../components/Hours.astro';
+import OpenChip from '../components/OpenChip.astro';
+import WaIcon from '../components/WaIcon.astro';
+import Faq from '../components/Faq.astro';
+import entity from '../data/entity.json';
+import hours from '../data/hours.json';
+import type { SpecialDay } from '../data/types';
+import { brussels } from '../lib/open-state';
+import { mapsProfile } from '../lib/social';
+import { wa, routeHref } from '../i18n/ui';
+import { contact } from '../i18n/contact';
+import mapPhone from '../assets/contact/kaart-zwevezele.png';
+import mapWide from '../assets/contact/kaart-zwevezele-breed.png';
+import '../styles/sections.css';
+
+const t = contact.nl;
+const origin = 'https://slagerij-john.be';
+const path = '/contact';
+const alternates = { nl: '/contact', ro: '/ro/contact' };
+
+const tel = `tel:${entity.telephone}`;
+const waHead = `${wa(t.waSrcHead)}&text=${encodeURIComponent(t.waMessage)}`;
+const waRows = wa(t.waSrcRows);
+const mail = `mailto:${entity.email}`;
+const route = routeHref(entity.geo.latitude, entity.geo.longitude);
+const a = entity.address;
+
+// special days: every `special` entry from today (Brussels, at build) on, by date; none yet → the board's four rows
+const today = brussels(new Date(), hours.timeZone).day.toISOString().slice(0, 10);
+const special = ((hours.special ?? []) as SpecialDay[]).filter((s) => s.date >= today).sort((x, y) => x.date.localeCompare(y.date));
+const dateFmt = new Intl.DateTimeFormat('nl-BE', { day: 'numeric', month: 'long', timeZone: 'UTC' });
+const specialRows = special.length
+  ? special.map((s) => ({
+      label: dateFmt.format(new Date(`${s.date}T00:00:00Z`)),
+      text: s.slots.length ? s.slots.map((x) => `${x.open}–${x.close}`).join(' · ') : t.closed,
+    }))
+  : t.special.days.map((label) => ({ label, text: t.special.unknown }));
+
+const icon = {
+  tel: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  pin: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+};
+
+const rows = [
+  { key: 'tel', label: t.rows.tel, value: entity.telephoneDisplay, href: tel },
+  { key: 'wa', label: t.rows.wa, value: entity.telephoneDisplay, href: waRows },
+  { key: 'mail', label: t.rows.mail, value: entity.email, href: mail },
+] as const;
+
+// the map's two crops are the two files' own shapes (5:3 phone, 5:4 desktop): ArtPicture cuts nothing away
+const mapPic = {
+  mobile: { img: mapPhone, ratio: 5 / 3, max: 1050, sizes: 'calc(100vw - 40px)' },
+  desktop: { img: mapWide, ratio: 5 / 4, max: 1520, sizes: '(min-width: 1440px) 760px, 54vw' },
+};
+
+const shop = {
+  hasMap: mapsProfile,
+  ...(special.length && {
+    specialOpeningHoursSpecification: special.flatMap((s) =>
+      (s.slots.length ? s.slots : [{ open: '00:00', close: '00:00' }]).map((x) => ({
+        '@type': 'OpeningHoursSpecification',
+        validFrom: s.date,
+        validThrough: s.date,
+        opens: x.open,
+        closes: x.close,
+      })),
+    ),
+  }),
+};
+
+const jsonld = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t.crumbs.home, item: `${origin}/` },
+      { '@type': 'ListItem', position: 2, name: t.crumbs.page, item: `${origin}${path}` },
+    ],
+  },
+  {
+    '@type': 'ContactPage',
+    '@id': `${origin}${path}#webpage`,
+    url: `${origin}${path}`,
+    name: t.title,
+    description: t.description,
+    inLanguage: 'nl-BE',
+    isPartOf: { '@type': 'WebSite', '@id': `${origin}/#website`, url: `${origin}/`, name: 'Slagerij John' },
+    about: { '@id': `${origin}/#shop` },
+  },
+];
+---
+<Base title={t.title} description={t.description} locale="nl" path={path} alternates={alternates} jsonld={jsonld} shop={shop} hoursCard>
+  <main id="main" class="ct">
+    <div class="container ct-top">
+      <section class="ch" aria-labelledby="ch-title">
+        <p class="eyebrow ch__eyebrow">{t.eyebrow}</p>
+        <h1 class="ch__h1" id="ch-title">{t.h1} <span class="accent ch__accent">{t.accent}</span></h1>
+        <OpenChip locale="nl" variant="p" class="ch__chip" />
+        <div class="ch__buttons">
+          <a class="btn btn--primary btn--lg" href={waHead} rel="nofollow"><WaIcon size={20} /><span>{t.whatsapp}</span></a>
+          <a class="btn btn--secondary btn--lg" href={tel}>{t.call}</a>
+        </div>
+      </section>
+
+      <ul class="cr" role="list">
+        {rows.map((r) => (
+          <li>
+            <a class="cr__row" href={r.href} rel={r.key === 'wa' ? 'nofollow' : undefined}>
+              {r.key === 'wa' ? (
+                <WaIcon size={20} />
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icon[r.key]} />
+              )}
+              <span class="cr__text"><span class="cr__label">{r.label}</span><span class="cr__value">{r.value}</span></span>
+              <svg class="cr__arrow" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icon.arrow} />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="container ct-body">
+      <div class="ct-when">
+        <Hours locale="nl" title={t.hours} closed={t.closed} route={t.route} />
+        <p class="ct-note">{t.hoursNote}</p>
+
+        <section class="cs" id="feestdagen" aria-labelledby="cs-title">
+          <h2 class="eyebrow cs__title" id="cs-title">{t.special.eyebrow}</h2>
+          <dl class="cs__rows">
+            {specialRows.map((d) => (
+              <div class="cs__row"><dt>{d.label}</dt><dd>{d.text}</dd></div>
+            ))}
+          </dl>
+          <p class="cs__other">{t.special.other}</p>
+        </section>
+      </div>
+
+      <figure class="cm">
+        <div class="cm__frame">
+          <ArtPicture class="cm__pic" mobile={mapPic.mobile} desktop={mapPic.desktop} alt={t.map.alt} quality={60} />
+          <div class="cm__addr">
+            <p><strong>{a.streetAddress}</strong><br />{a.postalCode} {a.addressLocality}</p>
+            <a class="btn btn--secondary btn--sm" href={route} rel="noopener">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icon.pin} />
+              <span>{t.route}</span>
+            </a>
+          </div>
+        </div>
+        <figcaption class="cm__osm">{t.map.osm}</figcaption>
+      </figure>
+    </div>
+
+    <section class="container cp" aria-labelledby="cp-title">
+      <h2 class="eyebrow cp__title" id="cp-title">{t.pickup.eyebrow}</h2>
+      <div class="cp__text">
+        {t.pickup.lines.map((l) => <p>{l}</p>)}
+        <p class="cp__muted">{t.pickup.pay}</p>
+        <p class="cp__muted">{t.pickup.parking}</p>
+      </div>
+    </section>
+
+    <Faq locale="nl" title={t.faq} page="contact" />
+
+    <div class="container ct-byline">
+      <p>{t.byline}</p>
+    </div>
+  </main>
+</Base>
+
+<style>
+  /* ── phone = board Contact (390) ── */
+  /* the head (board: padding 24 20, gap 14, H1 Fraunces 500 38/1.02, accent italic 26 ox, chip, two full-width
+     buttons) */
+  .ch { display: flex; flex-direction: column; gap: 14px; padding: 24px 0; }
+  .ch__eyebrow { margin: 0; }
+  .ch__h1 { margin: 0; font-size: 38px; line-height: 1.02; letter-spacing: -0.02em; }
+  .ch__accent { display: block; margin-top: 14px; font-size: var(--fs-accent); line-height: var(--lh-accent); }
+  .ch :global(.ch__chip) { align-self: flex-start; }
+  .ch__buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 2px; }
+  .ch__buttons .btn { width: 100%; }
+
+  /* the three contact rows (board: one card, padding 4 18, rows 56 px under hairlines, icon · label 12 muted over the
+     value 15/600 tabular · arrow) */
+  .cr { list-style: none; margin: 0; padding: 4px 18px; border: 1px solid var(--line); border-radius: var(--r-tile); background: var(--card); }
+  .cr li + li { border-top: 1px solid var(--line); }
+  .cr__row { display: grid; grid-template-columns: 20px minmax(0, 1fr) 18px; gap: 12px; align-items: center; min-height: 56px; color: var(--fg); text-decoration: none; }
+  .cr__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .cr__label { font-size: 12px; line-height: 1.3; color: var(--muted); }
+  .cr__value { font-size: 15px; font-weight: 600; line-height: 1.3; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .cr__arrow { color: var(--ox); transition: transform 0.2s ease; }
+  @media (hover: hover) {
+    .cr__row:hover .cr__value { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .cr__row:hover .cr__arrow { transform: translateX(3px); }
+  }
+  @media (prefers-reduced-motion: reduce) { .cr__arrow { transition: none; } }
+
+  .ct-body { display: flex; flex-direction: column; padding-top: 16px; }
+  .ct-when { display: flex; flex-direction: column; }
+  .ct-note { margin: 0; padding-top: 10px; font-size: 13px; line-height: 1.45; color: var(--muted); }
+
+  /* special days (board: the hours card's look, the eyebrow as its title, rows 13 tabular) */
+  .cs { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; padding: 18px; border: 1px solid var(--line); border-radius: var(--r-tile); background: var(--card); scroll-margin-top: calc(var(--nav-h) + 16px); }
+  .cs__title { margin: 0; font-family: var(--f-ui); font-weight: 600; }
+  .cs__rows { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 16px; margin: 0; font-size: 13px; line-height: 1.4; font-variant-numeric: tabular-nums; }
+  .cs__row { display: contents; }
+  .cs__row dt { color: var(--muted); }
+  .cs__row dd { margin: 0; text-align: right; }
+  .cs__other { margin: 0; font-size: 13px; line-height: 1.45; color: var(--muted); }
+
+  /* the map (board: 20 px above, radius 14, tag ground + tag-line border, the address box 12 px in from the bottom;
+     the box keeps the picture's own shape — 5:3 here, 350 × 210 at 390 — so the pin always sits above the box) */
+  .cm { margin: 20px 0 0; }
+  .cm__frame { position: relative; aspect-ratio: 5 / 3; border: 1px solid var(--tag-line); border-radius: var(--r-tile); overflow: hidden; background: var(--tag); }
+  .cm :global(picture) { display: block; width: 100%; height: 100%; }
+  .cm :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .cm__addr {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-tag);
+    background: var(--card);
+  }
+  .cm__addr p { margin: 0; font-size: 13px; line-height: 1.4; }
+  .cm__addr strong { font-weight: 600; }
+  .cm__osm { margin-top: 6px; font-size: var(--fs-caption); line-height: 1.4; color: var(--muted); }
+
+  /* Afhalen en levering (board: padding 26 20 0, gap 10, eyebrow ox, lines 14/1.45, the two open facts muted) */
+  .cp { display: flex; flex-direction: column; gap: 10px; padding-top: 26px; }
+  .cp__title { margin: 0; font-family: var(--f-ui); font-weight: 600; }
+  .cp__text { display: flex; flex-direction: column; gap: 10px; }
+  .cp__text p { margin: 0; font-size: 14px; line-height: 1.45; max-width: 64ch; }
+  .cp__text .cp__muted { color: var(--muted); }
+
+  .ct-byline { padding-top: 20px; padding-bottom: 28px; }
+  .ct-byline p { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12px; line-height: 1.5; color: var(--muted); }
+
+  /* ── desktop (derived, D-30) ── */
+  @media (min-width: 960px) {
+    /* the head left, the contact rows right, bottoms aligned */
+    .ct-top { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 56px; align-items: end; padding-top: 56px; }
+    .ch { gap: 20px; padding: 0; }
+    .ch__h1 { font-size: clamp(48px, 4.4vw, 68px); line-height: 1; letter-spacing: -0.025em; max-width: 14em; }
+    .ch__accent { margin-top: 16px; }
+    .ch__buttons { flex-direction: row; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+    .ch__buttons .btn { width: auto; }
+    .cr { padding: 8px 28px; border-radius: var(--r-frame); }
+    .cr__row { grid-template-columns: 22px minmax(0, 1fr) 18px; gap: 16px; min-height: 72px; }
+    .cr__label { font-size: 13px; }
+    .cr__value { font-size: 18px; }
+
+    /* hours + special days left, the map right */
+    .ct-body { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; align-items: start; padding-top: 72px; }
+    .ct-note { padding-top: 12px; font-size: 14px; }
+    .cs { margin-top: 24px; padding: 22px 24px; border-radius: var(--r-frame); }
+    .cs__rows { font-size: 14px; gap: 8px 24px; }
+    .cs__other { font-size: 14px; }
+    .cm { margin: 0; }
+    .cm__frame { aspect-ratio: 5 / 4; border-radius: var(--r-frame-lg); }
+    .cm__addr { left: 20px; right: auto; bottom: 20px; gap: 24px; padding: 14px 16px; }
+    .cm__addr p { font-size: 15px; }
+
+    /* pickup/delivery in the FAQ's columns (heading left, text right) */
+    .cp { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; align-items: start; padding-top: 80px; }
+    .cp__text { gap: 12px; }
+    .cp__text p { font-size: var(--fs-body); line-height: 1.5; }
+
+    .ct-byline { padding-top: 0; padding-bottom: 80px; }
+  }
+</style>

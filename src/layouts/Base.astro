@@ -51,9 +51,12 @@ export interface Props {
   /** the font families the first screen draws (stage 7b): their woff2 files are preloaded — the Latin file, plus the
       Romanian subset (Ă ă Ș ș Ț ț) on a ro page. Default: all three; /bestellen has no italic above the fold. */
   fonts?: FontKey[];
+  /** extra properties of the shop's own node (stage 8, /contact: hasMap, specialOpeningHoursSpecification) — the same
+      @id, so the page extends the entity instead of declaring a second one (lexicon §8.1) */
+  shop?: Record<string, unknown>;
 }
 
-const { title, description, locale, path, alternates, noindex = false, navVariant = 'paper', hoursCard = false, jsonld: pageLd, fonts = ['display', 'italic', 'ui'] } = Astro.props;
+const { title, description, locale, path, alternates, noindex = false, navVariant = 'paper', hoursCard = false, jsonld: pageLd, fonts = ['display', 'italic', 'ui'], shop } = Astro.props;
 const preloads = fonts.map((k) => (locale === 'ro' ? fontFiles[k] : fontFiles[k].slice(0, 1))).flat();
 
 const origin = 'https://slagerij-john.be';
@@ -93,6 +96,7 @@ const jsonld = entity.name
           closes: s.close,
         })),
       ),
+      ...shop,
     }
   : {
       '@context': 'https://schema.org',
