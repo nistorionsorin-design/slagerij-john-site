@@ -331,7 +331,8 @@ if (built) {
     if (!/:focus-visible/.test(read(join(root, 'src/styles/tokens.css')))) e.push('no :focus-visible style');
     for (const p of pages) {
       const bar = p.html.match(/<nav class="bar"[\s\S]*?<\/nav>/i)?.[0];
-      if (bar && (/<button/i.test(bar) || (bar.match(/<a\s[^>]*href=/gi) || []).length !== 3)) e.push(`${p.file}: bottom bar must be three real <a href>`);
+      // four since row 8b (D-33): Bel · WhatsApp · Bestel · Route
+      if (bar && (/<button/i.test(bar) || (bar.match(/<a\s[^>]*href=/gi) || []).length !== 4)) e.push(`${p.file}: bottom bar must be four real <a href>`);
       const qa = p.html.match(/<section class="qa"[\s\S]*?<\/section>/i)?.[0];
       if (qa && !/class="qa__auto"[^>]*>\s*[^<\s]/.test(qa)) e.push(`${p.file}: Q&A box lacks the automated-assistant label`);
       if (qa && !/<label[^>]*for="qa-input"/.test(qa)) e.push(`${p.file}: Q&A input has no label`);

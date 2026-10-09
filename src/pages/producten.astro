@@ -97,7 +97,10 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
         <h1 class="pp-intro__h1">{t.h1} <span class="accent pp-intro__accent">{t.accent}</span></h1>
         <p class="pp-intro__lead">{t.lead}</p>
         <OpenChip locale="nl" variant="p" class="pp-intro__chip" />
-        <a class="btn btn--primary btn--lg pp-intro__cta" href={wa('producten-intro')}><WaIcon /><span>{t.order}</span></a>
+        <div class="pp-intro__cta">
+          <a class="btn btn--primary btn--lg" href={wa('producten-intro')}><WaIcon /><span>{t.order}</span></a>
+          <a class="btn btn--secondary btn--lg" href={t.onlineHref}>{t.online}</a>
+        </div>
         <fieldset class="pp-pills">
           <legend class="vh">{t.filter.legend}</legend>
           <input class="pp-pills__in" type="radio" name="pp-filter" id="f-all" checked />
@@ -176,7 +179,10 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
   .pp-intro__accent { display: block; margin-top: 6px; font-size: var(--fs-accent); }
   .pp-intro__lead { margin: 0; font-size: 15px; line-height: 1.45; color: var(--fg); max-width: 56ch; }
   .pp-intro :global(.pp-intro__chip) { align-self: flex-start; }
-  .pp-intro__cta { width: 100%; }
+  /* row 8b (D-33): WhatsApp primary + Bestel online secondary — stacked full width on the phone, side by side from 960
+     (the hero's .hero__cta pattern) */
+  .pp-intro__cta { display: flex; flex-direction: column; gap: 10px; }
+  .pp-intro__cta .btn { width: 100%; }
 
   .pp-pills { margin: 0; padding: 0; border: 0; min-width: 0; display: flex; flex-wrap: wrap; gap: 8px; }
   /* the radio stays in the tab order (arrow keys move the choice); the label is what you see */
@@ -280,7 +286,8 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
     .pp-intro__h1 { font-size: clamp(48px, 4.4vw, 64px); line-height: 1; letter-spacing: -0.025em; }
     .pp-intro__accent { margin-top: 10px; font-size: clamp(30px, 2.6vw, 40px); }
     .pp-intro__lead { font-size: var(--fs-lead); line-height: 1.5; }
-    .pp-intro__cta { width: auto; align-self: flex-start; }
+    .pp-intro__cta { flex-direction: row; gap: 12px; align-self: flex-start; }
+    .pp-intro__cta .btn { width: auto; }
     .pp-pills { margin-top: 6px; }
     .pp-photo { padding-top: 0; }
     .pp-photo :global(img) { height: auto; aspect-ratio: 4 / 3; border-radius: var(--r-frame-lg); }

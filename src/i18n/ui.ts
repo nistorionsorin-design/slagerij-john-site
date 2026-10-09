@@ -17,8 +17,11 @@ export const home: Record<Locale, string> = { nl: '/', ro: '/ro' };
 
 // Page names: lexicon §4 (the cluster → page map) and the canvas Desktop board.
 // "BBQ & gourmet" is the category name settled in D-13.
+// Row 8b (D-33, 09.10): Bestellen / Comandă first — lexicon §5.15 „Overlay menu, first item” (the desktop nav takes the
+// same label, „the desktop nav gets Bestellen first”).
 export const nav: Record<Locale, NavItem[]> = {
   nl: [
+    { label: 'Bestellen', href: '/bestellen' },
     { label: 'Producten', href: '/producten' },
     { label: 'BBQ & gourmet', href: '/bbq-pakketten' },
     { label: 'Traiteur', href: '/traiteur' },
@@ -26,6 +29,7 @@ export const nav: Record<Locale, NavItem[]> = {
     { label: 'Contact', href: '/contact' },
   ],
   ro: [
+    { label: 'Comandă', href: '/ro/comanda' },
     { label: 'Produse', href: '/ro/produse' },
     { label: 'Grătar', href: '/ro/gratar' },
     { label: 'Catering', href: '/ro/catering' },
@@ -37,9 +41,11 @@ export const nav: Record<Locale, NavItem[]> = {
 // Overlay menu (stage 0b2, design/css/header.css + board „Header · mobiel 390”): seven links,
 // each with its sub-line — lexicon §5.15 (NL) and §6 (RO), 06.10 18:45, verbatim.
 // „bestel vóór [DATUM]” / „comandă până pe [DATA]” stay placeholders until FACTS has the deadline.
+// Row 8b (D-33, 09.10): eight links — the first is Bestellen / Comandă with its sub-line, lexicon §5.15 verbatim.
 export interface MenuItem { label: string; sub: string; href: string }
 export const menu: Record<Locale, MenuItem[]> = {
   nl: [
+    { label: 'Bestellen', sub: 'online, afhalen of levering', href: '/bestellen' },
     { label: 'Producten & prijzen', sub: "per kg · colli's", href: '/producten' },
     { label: 'BBQ & gourmet', sub: 'pakketten · steengrill', href: '/bbq-pakketten' },
     { label: 'Traiteur', sub: 'feesten · BBQ aan huis', href: '/traiteur' },
@@ -49,6 +55,7 @@ export const menu: Record<Locale, MenuItem[]> = {
     { label: 'Contact', sub: 'uren · route', href: '/contact' },
   ],
   ro: [
+    { label: 'Comandă', sub: 'online, ridicare sau livrare', href: '/ro/comanda' },
     { label: 'Produse și prețuri', sub: 'pe kg · colli', href: '/ro/produse' },
     { label: 'Grătar și gourmet', sub: 'pachete · steengrill', href: '/ro/gratar' },
     { label: 'Catering', sub: 'petreceri · grătar la domiciliu', href: '/ro/catering' },
@@ -72,8 +79,8 @@ export const ui = {
     place: 'Zwevezele · Wingene',
     /** lexicon §5.3 primary CTA */
     order: 'Bestel via WhatsApp',
-    /** lexicon §5.3 bottom bar */
-    bar: { tel: 'Bel', wa: 'WhatsApp', route: 'Route', label: 'Bel · WhatsApp · Route' },
+    /** lexicon §5.3 bottom bar, four items since row 8b (D-33): Bel · WhatsApp · Bestel · Route */
+    bar: { tel: 'Bel', wa: 'WhatsApp', order: 'Bestel', orderHref: '/bestellen', route: 'Route', label: 'Bel · WhatsApp · Bestel · Route' },
     /** canvas footer */
     footer: { nl: 'Nederlands', ro: 'Română' },
   },
@@ -86,8 +93,8 @@ export const ui = {
     place: 'Zwevezele · Wingene',
     /** lexicon §5.3 */
     order: 'Comandă pe WhatsApp',
-    /** lexicon §5.3 */
-    bar: { tel: 'Sună', wa: 'WhatsApp', route: 'Drum', label: 'Sună · WhatsApp · Drum' },
+    /** lexicon §5.3, four items since row 8b (D-33): Sună · WhatsApp · Comandă · Drum */
+    bar: { tel: 'Sună', wa: 'WhatsApp', order: 'Comandă', orderHref: '/ro/comanda', route: 'Drum', label: 'Sună · WhatsApp · Comandă · Drum' },
     footer: { nl: 'Nederlands', ro: 'Română' },
   },
 } satisfies Record<Locale, unknown>;
@@ -95,14 +102,16 @@ export const ui = {
 // Hero (stage 1). title + accent = lexicon §5.1 option 1 (NL) / §6 option 1 (RO), split
 // at the sentence break as on the canvas; sub = the §1 one-liner (§5.2) verbatim;
 // CTAs = §5.3; pause / play labels = §5.15; stamp = §5.16 (both added 06.10 for stage 1).
+// Row 8b (D-33, 09.10): the secondary is Bestel online → /bestellen (was „Bekijk de prijzen”; the counter tags
+// right under the hero keep their own „Bekijk de prijzen” link).
 export const hero = {
   nl: {
     title: 'Slagerij & traiteur in Zwevezele.',
     accent: 'Ook open op zondag.',
     sub: 'Slagerij John is een ambachtelijke slagerij en traiteur in Zwevezele (Wingene), met dagvers vlees, huisbereide gerechten, BBQ- en feestschotels en Roemeense specialiteiten zoals mici en gerookte worst. Open op zondag.',
     primary: 'Bestel via WhatsApp',
-    secondary: 'Bekijk de prijzen',
-    secondaryHref: '/producten',
+    secondary: 'Bestel online',
+    secondaryHref: '/bestellen',
     pause: "Pauzeer de foto's",
     /** lexicon §5.15: the label when the photos are paused */
     play: "Speel de foto's af",
@@ -114,8 +123,8 @@ export const hero = {
     accent: 'Deschis și duminica.',
     sub: 'Măcelăria John este măcelărie și magazin românesc în Zwevezele, lângă Tielt, Roeselare și Brugge: carne proaspătă zilnic, mici și cârnați de casă, afumături, platouri pentru grătar și petreceri. Deschis și duminica.',
     primary: 'Comandă pe WhatsApp',
-    secondary: 'Vezi prețurile',
-    secondaryHref: '/ro/produse',
+    secondary: 'Comandă online',
+    secondaryHref: '/ro/comanda',
     /** §5.15 gives only a reading aid for RO; the RO surface strings come with stage 9 */
     pause: '[PAUZĂ]',
     play: '[PORNEȘTE]',

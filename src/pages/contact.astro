@@ -114,7 +114,8 @@ const jsonld = [
         <OpenChip locale="nl" variant="p" class="ch__chip" />
         <div class="ch__buttons">
           <a class="btn btn--primary btn--lg" href={waHead} rel="nofollow"><WaIcon size={20} /><span>{t.whatsapp}</span></a>
-          <a class="btn btn--secondary btn--lg" href={tel}>{t.call}</a>
+          {/* row 8b (D-33): Bestel online replaces Bel ons — the phone is the first row underneath */}
+          <a class="btn btn--secondary btn--lg" href={t.onlineHref}>{t.online}</a>
         </div>
       </section>
 

@@ -19,8 +19,11 @@ export const contact = {
     whatsapp: 'Bestel via WhatsApp',
     waSrcHead: 'contact-head',
     waMessage: 'Dag, ik wil graag bestellen bij Slagerij John:',
-    /** §5.15 */
+    /** §5.15 — no longer in the head since row 8b (the phone is the first row underneath); kept for Dan's „keep three” */
     call: 'Bel ons',
+    /** §5.3 secondary of the head since row 8b (D-33) → the bestelbon */
+    online: 'Bestel online',
+    onlineHref: '/bestellen',
 
     /** §5.23 contact rows (one card, each row a link) */
     rows: { tel: 'Telefoon', wa: 'WhatsApp', mail: 'E-mail' },
@@ -84,6 +87,9 @@ export const contact = {
     waSrcHead: 'contact-head',
     waMessage: 'Bună, aș vrea să comand la Măcelăria John:',
     call: 'Sună-ne',
+    /** §5.3 (row 8b, D-33) — used by the RO page at stage 9 */
+    online: 'Comandă online',
+    onlineHref: '/ro/comanda',
     rows: { tel: 'Telefon', wa: 'WhatsApp', mail: 'E-mail' },
     waSrcRows: 'contact-rows',
     hours: 'Program',

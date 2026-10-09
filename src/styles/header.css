@@ -128,7 +128,7 @@
 }
 /* entrance: the links rise 10 px and fade, staggered 40 ms, 320 ms — after the tap, never at page load */
 .menu:not([hidden]) .menu__links a{animation:menu-in .32s cubic-bezier(.2,.6,.2,1) both}
-.menu__links a:nth-child(1){animation-delay:.02s}.menu__links a:nth-child(2){animation-delay:.06s}.menu__links a:nth-child(3){animation-delay:.10s}.menu__links a:nth-child(4){animation-delay:.14s}.menu__links a:nth-child(5){animation-delay:.18s}.menu__links a:nth-child(6){animation-delay:.22s}.menu__links a:nth-child(7){animation-delay:.26s}
+.menu__links a:nth-child(1){animation-delay:.02s}.menu__links a:nth-child(2){animation-delay:.06s}.menu__links a:nth-child(3){animation-delay:.10s}.menu__links a:nth-child(4){animation-delay:.14s}.menu__links a:nth-child(5){animation-delay:.18s}.menu__links a:nth-child(6){animation-delay:.22s}.menu__links a:nth-child(7){animation-delay:.26s}.menu__links a:nth-child(8){animation-delay:.30s}   /* row 8b (D-33): eight links, Bestellen first; not in design/css/header.css v2.4 yet */
 @keyframes menu-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.menu:not([hidden]) .menu__links a{animation:none}}
 @media (min-width:960px){.menu{display:none!important}}

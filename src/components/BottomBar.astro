@@ -1,5 +1,7 @@
 ---
-// BottomBar — mobile fixed action bar Bel · WhatsApp · Route, 72 px (U-03).
+// BottomBar — mobile fixed action bar Bel · WhatsApp · Bestel · Route, 72 px (U-03; four cells since row 8b, D-33).
+// Bestel → the bestelbon (/bestellen · /ro/comanda), a plain cell like Bel and Route: WhatsApp stays the one yellow
+// cell (the single primary, brief §2). Its icon is the Lucide clipboard-list (the order slip).
 // Canvas Contact board: paper ground, hairline on top, the WhatsApp cell yellow with
 // the button radius (a pill since stage 0b, --r-btn). Three real <a href> (gate a11y). Hidden on desktop.
 // The WhatsApp icon is WaIcon (board „Merkiconen” A/B); Route keeps the Lucide pin: its label is
@@ -8,13 +10,17 @@ import WaIcon from './WaIcon.astro';
 export interface Props {
   telHref: string;
   waHref: string;
+  orderHref: string;
   mapHref: string;
   telLabel: string;
   waLabel: string;
+  orderLabel: string;
   mapLabel: string;
   navLabel: string;
+  /** the page's own path: the Bestel cell carries aria-current on the bestelbon */
+  path: string;
 }
-const { telHref, waHref, mapHref, telLabel, waLabel, mapLabel, navLabel } = Astro.props;
+const { telHref, waHref, orderHref, mapHref, telLabel, waLabel, orderLabel, mapLabel, navLabel, path } = Astro.props;
 ---
 <nav class="bar" aria-label={navLabel}>
   <a class="bar__link" href={telHref}>
@@ -24,6 +30,10 @@ const { telHref, waHref, mapHref, telLabel, waLabel, mapLabel, navLabel } = Astr
   <a class="bar__link bar__link--accent" href={waHref}>
     <WaIcon size={20} />
     <span>{waLabel}</span>
+  </a>
+  <a class="bar__link" href={orderHref} aria-current={path === orderHref ? 'page' : undefined}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4M12 16h4M8 11h.01M8 16h.01"/></svg>
+    <span>{orderLabel}</span>
   </a>
   <a class="bar__link" href={mapHref} rel="noopener">
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
@@ -38,7 +48,8 @@ const { telHref, waHref, mapHref, telLabel, waLabel, mapLabel, navLabel } = Astr
     z-index: 50;
     min-height: var(--bar);
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
     padding: 8px 10px 10px;
     padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
     background: var(--paper);

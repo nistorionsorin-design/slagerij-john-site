@@ -150,11 +150,14 @@ const jsonld = entity.name
     <BottomBar
       telHref={`tel:${entity.telephone}`}
       waHref={wa(`bar-mobile-${locale}`)}
+      orderHref={t.bar.orderHref}
       mapHref={routeHref(entity.geo.latitude, entity.geo.longitude)}
       telLabel={t.bar.tel}
       waLabel={t.bar.wa}
+      orderLabel={t.bar.order}
       mapLabel={t.bar.route}
       navLabel={t.bar.label}
+      path={path}
     />
   </body>
 </html>

@@ -15,6 +15,9 @@ export const productenNl = {
   lead: "Dagvers rund, varken, kip en lam, per kilo of per stuk — en onze Roemeense specialiteiten en colli's.",
   /** §5.3 primary */
   order: 'Bestel via WhatsApp',
+  /** §5.3 secondary beside it (row 8b, D-33) → the bestelbon */
+  online: 'Bestel online',
+  onlineHref: '/bestellen',
 
   /** §5.19 category pills (settled 07.10 16:55) = a filter, „Alles” selected by default; one pill per section,
    *  the label = the category name in products.json (the page renders them). The legend (screen readers only) =
