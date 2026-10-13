@@ -1,7 +1,7 @@
 // /bestellen (stage 5) — the bestelbon, docs/order-flow.md; canvas board Bestellen (mobile 390), desktop derived (D-30).
 // Strings: lexicon §5.20 (07.10 17:40), one line per key in this order, swapped 1:1; §5.3 / §5.5 / §5.15 / §5.18 / §5.19
 // where §5.20 points to them. Left visible until FACTS.md has the value: [BETALING] (D6) and [PRIJS].
-// NL only: /ro/comanda is stage 9 (lexicon §6 „Comandă”).
+// /ro/comanda (stage 9) = `bestellenRo`, lexicon §6 „Comandă” (+ §6 „Sărbători” for the menu lines), same keys.
 
 export const bestellenNl = {
   /** meta: §5.20 (60 / 144) */
@@ -82,6 +82,8 @@ export const bestellenNl = {
     /** §5.20 privacy line (order-flow §5, GDPR art. 13); its last two words link to the privacy page */
     privacy: 'Uw gegevens gebruiken wij alleen voor deze bestelling en bewaren wij 90 dagen. Geen account, geen nieuwsbrief. Meer in',
     privacyLink: 'ons privacybeleid',
+    /** §5.15 legal link (the page comes at stage 10) */
+    privacyHref: '/privacy',
   },
 
   /** allergen notice (order-flow §2.6): §5.18 accent + §5.18 „Uw verantwoordelijkheid” + the workshop notice
@@ -146,3 +148,130 @@ export const bestellenNl = {
   /** BreadcrumbList (lexicon §8.4: „Home” + the page's name) */
   crumbs: { home: 'Home', page: 'Bestellen' },
 };
+
+/** /ro/comanda (stage 9) — lexicon §6 „Comandă” (07.10 17:40), verbatim, keys of `bestellenNl`. The menu lines = §6
+ *  „Sărbători” (the bestelbon's section note and the closed line). [PLATĂ] and [PREȚ] stay visible until FACTS.md. */
+export const bestellenRo = {
+  title: 'Comandă online – ridicare sau livrare | Măcelăria John',
+  description: 'Comandă online la Măcelăria John: carne proaspătă, colli, gourmet, tapas și preparate calde. Ridici din magazin sau livrăm acasă, la ora pe care o alegi.',
+
+  eyebrow: 'Comandă',
+  h1: 'Comandă ca la tejghea.',
+  lead: 'Alegi produsele, ziua și ora; plătești când ridici sau la livrare. Fără cont.',
+
+  /** deliverySub = the §5.5 RO delivery rule */
+  method: {
+    legend: 'Ridicare sau livrare?',
+    pickup: 'Ridicare din magazin, la ora pe care o alegi.',
+    pickupSub: 'Fără comandă minimă la ridicare.',
+    delivery: 'Livrare la domiciliu',
+    deliverySub: 'Livrare gratuită până la 10 km de la 50 €; până la 20 km de la 100 €; peste, 1 € pe km. Livrăm de luni până sâmbătă, de la 18:00.',
+  },
+
+  products: {
+    eyebrow: '1 · Produse',
+    title: 'Ce să fie?',
+    kgGroup: 'Carne proaspătă la kilogram',
+    less: 'Mai puțin',
+    more: 'Mai mult',
+    qty: 'Cantitate',
+  },
+
+  /** §6 „Sărbători”: the bestelbon's note and the line after the deadline */
+  menu: {
+    note: 'Ridicare pe 24 sau 31 decembrie, între [ORA] și [ORA]. Comenzi până pe [DATA].',
+    closed: 'Termenul pentru meniul de sărbători a trecut. Sună-ne, vedem ce se poate.',
+  },
+
+  request: {
+    title: 'Nu găsești ce cauți?',
+    intro: 'Scrie aici; vedem ce se poate.',
+    label: 'Produs sau cerere',
+    add: 'Adaugă la comandă',
+    remove: 'Șterge',
+  },
+
+  when: {
+    eyebrow: '2 · Când',
+    titlePickup: 'Când ridici?',
+    titleDelivery: 'Când livrăm?',
+    day: 'Ziua',
+    time: 'Ora',
+    note: 'Doar orele când magazinul e deschis.',
+    noteDelivery: 'Livrare de luni până sâmbătă, de la 18:00.',
+    none: 'Alege mai întâi ziua.',
+  },
+
+  details: {
+    eyebrow: '3 · Datele tale',
+    title: 'Pentru cine e comanda?',
+    name: 'Nume',
+    phone: 'Telefon',
+    email: 'E-mail',
+    remarks: 'Observații',
+    street: 'Strada',
+    nr: 'Nr.',
+    postcode: 'Cod poștal',
+    place: 'Localitatea',
+    remember: 'Ține minte datele mele pe acest dispozitiv',
+    required: 'Câmp obligatoriu',
+    /** §6 privacy line; its last words link to the privacy page (§6 legal link, stage 10) */
+    privacy: 'Datele tale le folosim doar pentru comanda asta și le păstrăm 90 de zile. Fără cont, fără newsletter. Mai mult în',
+    privacyLink: 'politica de confidențialitate',
+    privacyHref: '/ro/confidentialitate',
+  },
+
+  allergy: {
+    title: 'Alergie gravă? Sună-ne înainte.',
+    duty: 'Spune-ne de orice alergie gravă înainte să comanzi, la telefon sau în magazin. Fără acest anunț nu putem ține cont de ea.',
+  },
+
+  slip: {
+    title: 'Bonul tău de comandă',
+    empty: 'Încă n-ai ales nimic.',
+    pickup: 'Ridicare',
+    delivery: 'Livrare',
+    whenPending: 'Alege ziua și ora.',
+    pay: 'Plata la ridicare: [PLATĂ]',
+    payDelivery: 'Plata la livrare: [PLATĂ]',
+    total: 'Total',
+    priceTbc: '[PREȚ]',
+    feeLabel: 'Costul livrării',
+    fee: { free: 'Gratuit', fee: '1 € pe km; confirmăm suma.', 'below-minimum': 'Minimum 50 € pentru livrare', outside: 'Sună-ne', unknown: '[PREȚ]' },
+    legal: 'Carnea proaspătă nu se returnează (art. VI.53, 4° WER).',
+  },
+
+  send: {
+    submit: 'Trimite comanda',
+    whatsapp: 'Comandă pe WhatsApp',
+    promise: 'Primești imediat o confirmare pe e-mail. Apoi îți confirmăm comanda pe WhatsApp sau la telefon.',
+    msgLabel: 'Mesaj WhatsApp',
+    /** §5.10 home RO */
+    msgEmpty: 'Bună, aș vrea să comand la Măcelăria John:',
+    sending: 'Se trimite…',
+  },
+
+  done: {
+    thanks: 'Mulțumim, comanda a fost trimisă.',
+    ref: 'Referința ta',
+    error: 'Nu s-a trimis. Încearcă din nou sau comandă pe WhatsApp.',
+    fix: 'Verifică câmpurile marcate.',
+    call: 'Sună-ne',
+  },
+
+  errors: {
+    name: 'Scrie-ți numele.',
+    phone: 'Scrie un număr de telefon.',
+    email: 'Scrie o adresă de e-mail validă.',
+    address: 'Completează adresa.',
+    items: 'Alege cel puțin un produs.',
+    when: 'Alege ziua și ora.',
+  },
+
+  /** the RO FAQ heading of §6 „Acasă” / „Catering” */
+  faq: 'Ce ne întreabă clienții',
+  /** §6 „Comandă”: Acasă › Comandă */
+  crumbs: { home: 'Acasă', page: 'Comandă' },
+};
+
+export const bestellenT = { nl: bestellenNl, ro: bestellenRo };

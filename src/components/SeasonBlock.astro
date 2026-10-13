@@ -3,8 +3,11 @@
 // („Bestelbon · seizoen”, „Ossenbloed voor … seizoensblokken”) draws the seasonal block in oxblood — the brief wins
 // (truth order), so: oxblood, eyebrow in --ox-tint, Fraunces italic title, the light button (buttons.css .on-ink
 // .btn--light). Phone: board Main's box (margin 0 20, padding 22 20, radius 16). Desktop: one band, button right.
-import { homeNl } from '../i18n/home';
-const t = homeNl.season;
+import { homeT } from '../i18n/home';
+import type { Locale } from '../i18n/ui';
+export interface Props { locale?: Locale }
+const { locale = 'nl' } = Astro.props;
+const t = homeT[locale].season;
 ---
 <section class="sec season-wrap" aria-labelledby="season-title">
   <div class="container">

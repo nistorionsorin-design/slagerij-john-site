@@ -4,12 +4,16 @@
 // reviews.json (filled server-side by the Places fetch; until then the placeholders show and the stars are outlines,
 // so nothing is claimed). No quotes, no aggregateRating (D-10). Desktop (derived): the same row, larger.
 import reviews from '../data/reviews.json';
-import { homeNl } from '../i18n/home';
+import { homeT } from '../i18n/home';
+import type { Locale } from '../i18n/ui';
 
-const t = homeNl.reviews;
+export interface Props { locale?: Locale }
+const { locale = 'nl' } = Astro.props;
+const h = homeT[locale];
+const t = h.reviews;
 const hasRating = reviews.rating !== null;
-const rating = hasRating ? Number(reviews.rating).toLocaleString('nl-BE', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : homeNl.ratingPh;
-const count = reviews.count === null ? homeNl.countPh : String(reviews.count);
+const rating = hasRating ? Number(reviews.rating).toLocaleString(locale === 'ro' ? 'ro-RO' : 'nl-BE', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : h.ratingPh;
+const count = reviews.count === null ? h.countPh : String(reviews.count);
 const filled = hasRating ? Math.round(Number(reviews.rating)) : 0;
 const star = 'M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z';
 ---

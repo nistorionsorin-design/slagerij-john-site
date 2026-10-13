@@ -237,8 +237,9 @@ if (built) {
       if (/[“]/.test(text)) e.push(`${label}: “ — Romanian opens with „`);
       if (/[–—]/.test(dashText)) e.push(`${label}: en/em dash in body`);
       // a numeral followed by a proper noun (postal code + place: „8750 Zwevezele”) is not a counted noun, nor is a
-      // calendar date („pe 24 și 31 decembrie”, stage 7: the day of a month takes no „de”)
-      const m = text.match(/(?<![\d.,:/])\b(?:[2-9]\d|\d{3,})\s+(?!de\b|%|€|kg\b|g\b|km\b|m\b|cm\b|ml\b|l\b|min\b|h\b|\p{Lu}|(?:ianuarie|februarie|martie|aprilie|mai|iunie|iulie|august|septembrie|octombrie|noiembrie|decembrie)\b)\p{L}{3,}/u);
+      // calendar date („pe 24 și 31 decembrie”, stage 7: the day of a month takes no „de”; „și” is too short to match,
+      // stage 9 adds the other pair of days „pe 24 sau 31 decembrie”)
+      const m = text.match(/(?<![\d.,:/])\b(?:[2-9]\d|\d{3,})\s+(?!de\b|%|€|kg\b|g\b|km\b|m\b|cm\b|ml\b|l\b|min\b|h\b|\p{Lu}|sau\s+\d{1,2}\s+(?:ianuarie|februarie|martie|aprilie|mai|iunie|iulie|august|septembrie|octombrie|noiembrie|decembrie)\b|(?:ianuarie|februarie|martie|aprilie|mai|iunie|iulie|august|septembrie|octombrie|noiembrie|decembrie)\b)\p{L}{3,}/u);
       if (m) e.push(`${label}: numeral ≥ 20 without „de”: «${m[0]}»`);
     };
     const md = walk(join(root, 'src/content/ro')).filter((f) => /\.(md|mdx)$/.test(f));

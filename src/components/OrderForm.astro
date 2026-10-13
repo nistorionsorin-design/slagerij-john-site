@@ -17,12 +17,15 @@ import OrderSlip from './OrderSlip.astro';
 import { products, priceLabel, unitLabel } from '../lib/price';
 import { menus, fillMenu } from '../lib/menu';
 import { qtyRule, fromMin, waText, menuRows, menuOpen } from '../lib/order-core.js';
-import { bestellenNl as t } from '../i18n/bestellen';
+import { bestellenT } from '../i18n/bestellen';
+import type { Locale } from '../i18n/ui';
 import allergens from '../data/allergens.json';
 // stage 7b: shows ?menu=…'s section during parsing (no shift); the file says why it is a classic script
 import seasonJs from '../scripts/OrderForm.season.js?url';
 
-const locale = 'nl';
+export interface Props { locale?: Locale }
+const { locale = 'nl' } = Astro.props;
+const t = bestellenT[locale];
 // the board's order: the packs and the traiteur first, then the counter by the kilo (one pill for the whole group)
 const packs = ['colli', 'gourmet', 'tapas', 'warm', 'dessert'];
 const counter = ['rund', 'varken', 'kip', 'lam', 'roemeens'];
@@ -42,7 +45,7 @@ const menuGroups = menus.menus.map((m) => ({
 interface Group { id: string; name: { nl: string; ro: string }; items: Product[]; menu?: { param: string; note: string; closed: string; open: boolean } }
 const groups: Group[] = [...menuGroups, ...[...packs, ...counter].map(section).filter((c) => c.items.length)];
 const pills = [
-  ...groups.filter((c) => packs.includes(c.id)).map((c) => ({ href: `#cat-${c.id}`, label: c.name.nl })),
+  ...groups.filter((c) => packs.includes(c.id)).map((c) => ({ href: `#cat-${c.id}`, label: c.name[locale] })),
   { href: `#cat-${counter[0]}`, label: t.products.kgGroup },
 ];
 
@@ -63,7 +66,7 @@ const scriptData = {
   t: { slip: t.slip, when: t.when, send: t.send, done: t.done, details: { required: t.details.required }, errors: t.errors },
 };
 
-const waEmpty = `/wa?src=bestelbon&text=${encodeURIComponent(t.send.msgEmpty)}`;
+const waEmpty = `/wa?src=${locale === 'ro' ? 'ro-comanda' : 'bestelbon'}&text=${encodeURIComponent(t.send.msgEmpty)}`;
 // the WhatsApp preview before anything is chosen: the order-flow §5 frame with nothing in it
 const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', time: '', lines: [], requests: [], name: '', phone: '', address: null });
 ---
@@ -86,7 +89,7 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
         <span class="om__title">{t.method.delivery}</span>
         <span class="om__sub">{t.method.deliverySub}</span>
       </label>
-      {menus.menus.map((m) => <p class="om__only" data-season-pickup={m.id} hidden>{m.pickupOnly.nl}</p>)}
+      {menus.menus.map((m) => <p class="om__only" data-season-pickup={m.id} hidden>{m.pickupOnly[locale]}</p>)}
     </fieldset>
 
     <section class="os" aria-labelledby="os-products">
@@ -97,7 +100,7 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
       </nav>
       {groups.map((c) => (<>
         <div class:list={['ocat', { 'ocat--menu': !!c.menu }]} id={`cat-${c.id}`} hidden={!!c.menu} data-season={c.menu?.param}>
-          <h3 class="ocat__title">{c.name.nl}</h3>
+          <h3 class="ocat__title">{c.name[locale]}</h3>
           {c.menu && <p class="ocat__note" data-season-note hidden={!c.menu.open}>{c.menu.note}</p>}
           {c.menu && <p class="ocat__note ocat__note--closed" data-season-closed hidden={c.menu.open}>{c.menu.closed}</p>}
           <ul class="ocat__list">
@@ -108,8 +111,8 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
                 <li class="oi" data-item={p.id}>
                   <span class="oi__pin" aria-hidden="true"></span>
                   <div class="oi__text">
-                    <p class="oi__name" id={`n-${p.id}`}>{p.name.nl}</p>
-                    {p.line.nl && <p class="oi__line">{p.line.nl}</p>}
+                    <p class="oi__name" id={`n-${p.id}`}>{p.name[locale]}</p>
+                    {p.line[locale] && <p class="oi__line">{p.line[locale]}</p>}
                   </div>
                   <div class="oi__foot">
                     <p class="oi__price">
@@ -117,11 +120,11 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
                       <span class="oi__unit">{unitLabel(p.unit, locale)}</span>
                     </p>
                     <div class="qty">
-                      <button class="qty__b" type="button" data-step="-1" aria-label={`${t.products.less}: ${p.name.nl}`} hidden>−</button>
-                      <label class="vh" for={`q-${p.id}`}>{t.products.qty}: {p.name.nl}</label>
+                      <button class="qty__b" type="button" data-step="-1" aria-label={`${t.products.less}: ${p.name[locale]}`} hidden>−</button>
+                      <label class="vh" for={`q-${p.id}`}>{t.products.qty}: {p.name[locale]}</label>
                       <input class="qty__in" type="number" inputmode="decimal" id={`q-${p.id}`} name={`q-${p.id}`} value="0" min="0" max={r.max} step={r.step} data-min={r.min} />
                       {qtyUnit[p.unit] && <span class="qty__u" aria-hidden="true">{qtyUnit[p.unit]}</span>}
-                      <button class="qty__b qty__b--more" type="button" data-step="1" aria-label={`${t.products.more}: ${p.name.nl}`} hidden>+</button>
+                      <button class="qty__b qty__b--more" type="button" data-step="1" aria-label={`${t.products.more}: ${p.name[locale]}`} hidden>+</button>
                     </div>
                   </div>
                 </li>
@@ -166,7 +169,7 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
         <label class="field">
           <span class="field__l">{t.when.time}</span>
           <select class="field__in" name="time" required>
-            <option value="">—</option>
+            <option value="">{locale === 'ro' ? '' : '—'}</option>{/* RO: no dash in the body (LR-T03) — the empty choice stays blank */}
             {allTimes.map((x) => <option value={x}>{x}</option>)}
           </select>
         </label>
@@ -220,14 +223,14 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
         <input type="checkbox" data-remember-check checked />
         <span>{t.details.remember}</span>
       </label>
-      <p class="os__note">{t.details.privacy} <a href="/privacy">{t.details.privacyLink}</a>.</p>
+      <p class="os__note">{t.details.privacy} <a href={t.details.privacyHref}>{t.details.privacyLink}</a>.</p>
     </section>
 
     <aside class="allergy" aria-labelledby="allergy-title">
       <svg class="allergy__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
       <div>
         <h2 class="allergy__title" id="allergy-title">{t.allergy.title}</h2>
-        <p>{allergens.workshop_notice_nl}</p>
+        <p>{locale === 'ro' ? allergens.workshop_notice_ro : allergens.workshop_notice_nl}</p>
         <p>{t.allergy.duty}</p>
       </div>
     </aside>

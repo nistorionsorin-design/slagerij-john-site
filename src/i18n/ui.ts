@@ -125,9 +125,9 @@ export const hero = {
     primary: 'Comandă pe WhatsApp',
     secondary: 'Comandă online',
     secondaryHref: '/ro/comanda',
-    /** §5.15 gives only a reading aid for RO; the RO surface strings come with stage 9 */
-    pause: '[PAUZĂ]',
-    play: '[PORNEȘTE]',
+    /** lexicon §5.15 / §6 „Acasă” (13.10): the RO surface strings */
+    pause: 'Oprește fotografiile',
+    play: 'Pornește fotografiile',
     /** lexicon §5.16, RO surface */
     stamp: 'Clasice flamande · Gust românesc · Din 2025',
   },

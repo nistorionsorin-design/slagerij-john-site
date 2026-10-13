@@ -1,6 +1,7 @@
 // /producten (stage 4) — canvas board Producten (mobile 390); desktop derived (D-30). Strings: lexicon §5.19
 // „Producten & prijzen” (07.10, incl. its 16:45 addendum) unless noted. What is still in [BRACKETS] waits for a fact
-// (gate: WARN in dev, FAIL under --release). NL only: /ro/produse is stage 9 (lexicon §6 „Produse”).
+// (gate: WARN in dev, FAIL under --release). /ro/produse (stage 9) = `productenRo`, lexicon §6 „Produse” + the D-33 RO
+// line (13.10), same keys.
 
 export const productenNl = {
   /** §5.19 meta (57 / 150) */
@@ -70,3 +71,64 @@ export const productenNl = {
   /** BreadcrumbList (lexicon §8.4: „Home” + the page's name) */
   crumbs: { home: 'Home', page: 'Producten & prijzen' },
 };
+
+/** /ro/produse (stage 9) — lexicon §6 „Produse” (07.10) + „D-33 on the RO pages” (13.10), verbatim, keys of `productenNl`.
+ *  Where §6 has no line of its own the page takes a §6 string already in use (noted per key). */
+export const productenRo = {
+  /** §6 Produse meta (57 / 150) */
+  title: 'Carne proaspătă, prețuri/kg în Zwevezele | Măcelăria John',
+  description: 'Vită, porc, pui și miel, proaspete zilnic, prețuri la kilogram ca la tejghea. Colli, pachete BBQ, mici și specialități românești. Comandă pe WhatsApp.',
+
+  eyebrow: 'Produse și prețuri',
+  h1: 'Carne proaspătă, prețuri la kilogram.',
+  accent: 'Ca la tejghea.',
+  lead: 'Vită, porc, pui și miel, proaspete zilnic, la kilogram sau la bucată, plus specialitățile noastre românești și pachetele colli.',
+  /** D-33 RO line: intro = Comandă pe WhatsApp + Comandă online → /ro/comanda */
+  order: 'Comandă pe WhatsApp',
+  online: 'Comandă online',
+  onlineHref: '/ro/comanda',
+
+  /** §6 pills „Toate · Vită · …” (the names = products.json `name.ro`); legend = §6 nav „Produse” */
+  filter: {
+    legend: 'Produse',
+    all: 'Toate',
+  },
+
+  /** no §6 heading for these two sections: they carry the §6 category name (the pill), no eyebrow, no NL link */
+  roemeens: {
+    eyebrow: '',
+    title: 'Mici și specialități',
+    roLabel: '',
+    roHref: '',
+  },
+  colli: {
+    title: 'Colli',
+  },
+
+  note: 'Prețuri ca la tejghea, actualizate la [DATA].',
+
+  /** order block: title + primary = §6 Produse; secondary = the D-33 RO line („Comandă online” replaces „Vezi pachetele
+   *  colli” → /ro/colli until that page exists); pickup / minimum / payment = §6 „Comandă”; delivery = §6 „Delivery”;
+   *  label = §6 „Mesaj WhatsApp”; message = §5.10 home RO */
+  card: {
+    title: 'Comanzi? Pe WhatsApp sau la tejghea.',
+    pickup: 'Ridicare din magazin, la ora pe care o alegi.',
+    minimum: 'Fără comandă minimă la ridicare.',
+    delivery: 'Livrăm gratuit până la 10 km la comenzi de la 50 € și până la 20 km de la 100 €. Peste 20 km, 1 € pe km. Luni-sâmbătă, de la 18:00.',
+    pay: 'Plata la ridicare: [PLATĂ]',
+    msgLabel: 'Mesaj WhatsApp',
+    msg: 'Bună, aș vrea să comand la Măcelăria John:',
+    cta: 'Comandă pe WhatsApp',
+    secondary: 'Comandă online',
+    secondaryHref: '/ro/comanda',
+  },
+
+  /** the RO FAQ heading of §6 „Acasă” / „Catering” */
+  faq: 'Ce ne întreabă clienții',
+  /** §5.13 RO, as /ro/contact */
+  byline: 'De John și Georgiana, Măcelăria John · actualizat la [DATA].',
+  /** §8.4 with the §6 home crumb „Acasă” */
+  crumbs: { home: 'Acasă', page: 'Produse și prețuri' },
+};
+
+export const productenT = { nl: productenNl, ro: productenRo };

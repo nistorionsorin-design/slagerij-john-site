@@ -86,7 +86,7 @@ const loop = first && { ...first, wipe: 'w135' };
     </div>
     <p class="hero__sub">{t.sub}</p>
     <div class="hero__cta">
-      <a class="btn btn--primary btn--lg" href={wa(`home-hero`)}>
+      <a class="btn btn--primary btn--lg" href={wa(locale === 'ro' ? 'ro-home-hero' : 'home-hero')}>
         <WaIcon />
         <span>{t.primary}</span>
       </a>

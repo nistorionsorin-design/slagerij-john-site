@@ -287,7 +287,7 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
 
     const text = waText({ ...order, date: state.date, time: state.time });
     waPreview.textContent = text;
-    wa.href = `/wa?src=bestelbon&text=${encodeURIComponent(text)}`;
+    wa.href = `/wa?src=${locale === 'ro' ? 'ro-comanda' : 'bestelbon'}&text=${encodeURIComponent(text)}`;
   }
 
   // ── the send ──

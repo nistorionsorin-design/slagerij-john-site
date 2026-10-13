@@ -1,7 +1,8 @@
 // Home body (stage 3) — the sections below the hero, canvas board Main (390) + Raster (photo loop, 1440); the
 // desktop of the other sections is derived from Main (D-30). Every string's source is noted. Strings the board
 // carries were placeholders until lexicon §5.15 „Home body strings” (07.10) gave them; what is still in [BRACKETS] waits
-// for a fact (gate: WARN in dev, FAIL under --release). NL only: the RO home is stage 9 (lexicon §6).
+// for a fact (gate: WARN in dev, FAIL under --release). The RO home (stage 9) = `homeRo`, lexicon §6 „Acasă” (13.10),
+// same keys; the home components take the locale and read `homeT[locale]`.
 
 export const homeNl = {
   /** lexicon §5.6 trust strip, the five items verbatim. The Google figure comes from reviews.json (D-10);
@@ -96,3 +97,82 @@ export const homeNl = {
     title: 'Wat klanten ons vragen',
   },
 };
+
+/** Romanian count form (LR-T14, lexicon §6 „Acasă” count rule): 1 → „o recenzie” · 2-19 → „{n} recenzii” · from 20 →
+ *  „{n} de recenzii” (and so on per hundred: 101-119 without „de”, as the footer's §6 line does). A placeholder stays as
+ *  it is, with the plural. */
+export const roReviews = (count: string) => {
+  if (!/^\d+$/.test(count)) return `${count} recenzii`;
+  const n = Number(count);
+  if (n === 1) return 'o recenzie';
+  return `${n}${n % 100 >= 20 || (n % 100 === 0 && n > 0) ? ' de' : ''} recenzii`;
+};
+
+/** The RO home (stage 9) — lexicon §6 „Acasă” (13.10), verbatim, in the keys and order of `homeNl`. */
+export const homeRo = {
+  trust: {
+    label: 'Pe ce poți conta',
+    google: (rating: string, count: string) => `Google ${rating} (${roReviews(count)})`,
+    items: ['Măcelar autorizat', 'Deschis duminica', 'Livrare gratuită până la 10 km', 'Partener Too Good To Go'],
+  },
+  ratingPh: '[NOTĂ]',
+  countPh: '[NUMĂR]',
+
+  toog: {
+    eyebrow: 'Săptămâna asta pe tejghea',
+    title: 'De pe tejghea, cu prețul lângă.',
+    intro: 'Prețuri ca în magazin, la kilogram. Comandă pe WhatsApp sau treci pe la noi.',
+    more: 'Vezi prețurile',
+    moreHref: '/ro/produse',
+  },
+
+  /** the overlay's names (§6 interface strings); the RO tile has no second-language link (NL is in the sign) */
+  categories: {
+    label: 'Produse',
+    fresh: { name: 'Carne proaspătă', sub: 'pe kg · colli', href: '/ro/produse' },
+    bbq: { name: 'Grătar și gourmet', sub: 'pachete · steengrill', href: '/ro/gratar' },
+    traiteur: { name: 'Catering', sub: 'petreceri · grătar la domiciliu', href: '/ro/catering', cta: 'Cere o ofertă' },
+    ro: { name: 'Mici și specialități', sub: 'mici · cârnați afumați', href: '/ro/mici-si-specialitati' },
+  },
+
+  season: {
+    eyebrow: 'Sărbători',
+    title: 'Comandă până pe [DATA].',
+    line: 'Ridicare pe 24 și 31 decembrie, între [ORA] și [ORA].',
+    cta: 'Vezi meniul de sărbători',
+    href: '/ro/sarbatori',
+  },
+
+  reviews: {
+    count: (count: string) => roReviews(count),
+    source: 'Recenziile vin direct de la Google și se actualizează zilnic.',
+    link: 'Vezi toate recenziile pe Google Maps.',
+    href: 'https://www.google.com/maps?cid=16864215184050152248',
+    starsLabel: (rating: string) => `${rating} din 5`,
+  },
+
+  loop: {
+    eyebrow: 'La noi',
+    title: 'Magazinul, oamenii, meseria, grătarul și platourile.',
+    hint: 'Fotografiile își schimbă încet locul; cu butonul le oprești.',
+    pause: 'Oprește fotografiile',
+    play: 'Pornește fotografiile',
+  },
+
+  owners: {
+    eyebrow: 'Despre noi',
+    name: 'John și Georgiana',
+    text: 'Din 7 februarie 2025, John și Georgiana stau la tejghea în Bruggestraat 146A, în fosta brutărie.',
+    alt: 'John și Georgiana · Bruggestraat 146A',
+    more: 'Mai multe despre noi',
+    href: '/ro/despre-noi',
+  },
+
+  hours: { title: 'Program', closed: 'Închis', route: 'Cum ajungi' },
+
+  faq: {
+    title: 'Ce ne întreabă clienții',
+  },
+};
+
+export const homeT = { nl: homeNl, ro: homeRo };

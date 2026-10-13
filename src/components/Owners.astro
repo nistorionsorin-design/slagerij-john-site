@@ -4,9 +4,12 @@
 // (the footer's pinned print too; build plan §3b keeps it here and takes it out of the loop).
 import { Picture } from 'astro:assets';
 import portrait from '../assets/footer/john-en-georgiana-slagerij-john-zwevezele.webp';
-import { homeNl } from '../i18n/home';
+import { homeT } from '../i18n/home';
+import type { Locale } from '../i18n/ui';
 
-const t = homeNl.owners;
+export interface Props { locale?: Locale }
+const { locale = 'nl' } = Astro.props;
+const t = homeT[locale].owners;
 const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 ---
 <div class="own">

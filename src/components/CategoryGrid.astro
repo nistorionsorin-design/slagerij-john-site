@@ -9,9 +9,14 @@ import { Picture } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import photos from '../data/photos.json';
 import type { Photo } from '../data/types';
-import { homeNl } from '../i18n/home';
+import { homeT } from '../i18n/home';
+import type { Locale } from '../i18n/ui';
 
-const t = homeNl.categories;
+export interface Props { locale?: Locale }
+const { locale = 'nl' } = Astro.props;
+const t = homeT[locale].categories;
+// the NL tile links its RO page too (lexicon §6 name); the RO tile has no second-language link (§6 „Acasă”)
+const roLink = 'roLabel' in t.ro ? { label: t.ro.roLabel, href: t.ro.roHref } : null;
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/{hero,home}/*.{jpg,jpeg,png,webp}', { eager: true });
 // Each tile's photo is cropped at build time to the tile's landscape shape (fit cover at the focal point): the §3b
 // originals are partly tall (q20, q07: 1448 × 2048, 1530 × 2040) and a wide tile would otherwise fetch the whole
@@ -31,7 +36,7 @@ const pic = (p: Photo, ratio: number) => {
     widths: [480, 768, 1080, 1600].filter((w) => w < width).concat(width),
     crop: { width, height: Math.round(width / ratio), fit: 'cover' as const, position: gravity(fx, fy) },
     pos: `object-position:${fx}% ${fy}%`,
-    alt: p.alt.nl,
+    alt: p.alt[locale],
   };
 };
 const ratios = [4 / 3, 4 / 3, 4 / 3, 16 / 9];
@@ -67,7 +72,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
       <Picture class="cat__img" src={ro.img} {...ro.crop} widths={ro.widths} sizes="(min-width: 960px) 50vw, 100vw" formats={['avif', 'webp']} fallbackFormat="webp" quality={60} alt={ro.alt} loading="lazy" decoding="async" fetchpriority="low" style={ro.pos} />
       <div class="cat__label">
         <h3 class="cat__name"><a class="cat__link" href={t.ro.href}>{t.ro.name}</a></h3>
-        <p class="cat__sub">{t.ro.sub} · <a class="cat__ro" href={t.ro.roHref} lang="ro" hreflang="ro">{t.ro.roLabel}<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a></p>
+        <p class="cat__sub">{t.ro.sub}{roLink && <> · <a class="cat__ro" href={roLink.href} lang="ro" hreflang="ro">{roLink.label}<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a></>}</p>
       </div>
     </article>
   </div>

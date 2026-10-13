@@ -7,13 +7,16 @@
 // function swaps each [bracket word] for its field (src/lib/quote-core.js); the browser's `required` checks apply.
 // src/scripts/quote.ts adds the live preview, today as the earliest date, the §5.21 error line under each field, and
 // builds the same message itself. Its strings travel as one application/json block (CSP: no inline script).
+// Stage 9 (/ro/catering): each field's `name` is its [bracket word] in the locale's template (`t.fields`: NL feest · datum
+// · aantal · plaats · telefoon, RO eveniment · data · număr · localitate · telefon), so both paths fill the RO message too.
 import WaIcon from './WaIcon.astro';
 import entity from '../data/entity.json';
 import { brussels, iso } from '../lib/order-core.js';
 import { traiteurNl } from '../i18n/traiteur';
+import type { Locale } from '../i18n/ui';
 
 export interface Props {
-  locale?: 'nl';
+  locale?: Locale;
   t: typeof traiteurNl.quote;
   occasions: string[];
   /** /wa?src= (lexicon §9) */
@@ -27,7 +30,8 @@ if (t.msgFeest.length !== occasions.length) throw new Error('traiteur.ts quote.m
 const options = [...occasions.map((o, i) => ({ value: t.msgFeest[i], label: cap(o) })), { value: t.msgOther, label: t.other }];
 // the earliest date at build time; the script moves it to today
 const today = iso(brussels().day);
-const scriptData = { locale, src, msg: t.msg, errors: t.errors };
+const f = t.fields;
+const scriptData = { locale, src, msg: t.msg, errors: t.errors, fields: f };
 ---
 <form class="qf on-ink" method="get" action="/wa" data-quote aria-labelledby="qf-title">
   <input type="hidden" name="src" value={src} />
@@ -44,26 +48,26 @@ const scriptData = { locale, src, msg: t.msg, errors: t.errors };
     <p class="qf__note"><span aria-hidden="true">* </span>{t.required}</p>
     <label class="field qf__feest">
       <span class="field__l">{t.feest}<span class="qf__req" aria-hidden="true">*</span></span>
-      <select class="field__in" name="feest" required>
-        <option value="">—</option>
+      <select class="field__in" name={f.feest} required>
+        <option value="">{locale === 'ro' ? '' : '—'}</option>{/* RO: no dash in the body (LR-T03) — the empty choice stays blank */}
         {options.map((o) => <option value={o.value}>{o.label}</option>)}
       </select>
     </label>
     <label class="field">
       <span class="field__l">{t.datum}<span class="qf__req" aria-hidden="true">*</span></span>
-      <input class="field__in" type="date" name="datum" min={today} required />
+      <input class="field__in" type="date" name={f.datum} min={today} required />
     </label>
     <label class="field">
       <span class="field__l">{t.aantal}<span class="qf__req" aria-hidden="true">*</span></span>
-      <input class="field__in" type="number" name="aantal" inputmode="numeric" min="1" max="2000" step="1" required />
+      <input class="field__in" type="number" name={f.aantal} inputmode="numeric" min="1" max="2000" step="1" required />
     </label>
     <label class="field">
       <span class="field__l">{t.plaats}<span class="qf__req" aria-hidden="true">*</span></span>
-      <input class="field__in" type="text" name="plaats" autocomplete="address-level2" maxlength="60" required />
+      <input class="field__in" type="text" name={f.plaats} autocomplete="address-level2" maxlength="60" required />
     </label>
     <label class="field">
       <span class="field__l">{t.telefoon}<span class="qf__req" aria-hidden="true">*</span></span>
-      <input class="field__in" type="tel" name="telefoon" autocomplete="tel" maxlength="30" required />
+      <input class="field__in" type="tel" name={f.telefoon} autocomplete="tel" maxlength="30" required />
     </label>
     <label class="field">
       <span class="field__l">{t.naam}</span>

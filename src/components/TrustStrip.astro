@@ -11,13 +11,15 @@
 // Icons: Lucide, stroke 2 (brief §3); Too Good To Go = the neutral bag from BrandIcon until the official badge.
 import reviews from '../data/reviews.json';
 import BrandIcon from './BrandIcon.astro';
-import { homeNl as t } from '../i18n/home';
+import { homeT } from '../i18n/home';
+import type { Locale } from '../i18n/ui';
 import { keepUnits } from '../lib/typo';
 
-export interface Props { place: 'hero' | 'band' }
-const { place } = Astro.props;
+export interface Props { place: 'hero' | 'band'; locale?: Locale }
+const { place, locale = 'nl' } = Astro.props;
+const t = homeT[locale];
 
-const rating = reviews.rating === null ? t.ratingPh : Number(reviews.rating).toLocaleString('nl-BE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const rating = reviews.rating === null ? t.ratingPh : Number(reviews.rating).toLocaleString(locale === 'ro' ? 'ro-RO' : 'nl-BE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const count = reviews.count === null ? t.countPh : String(reviews.count);
 
 const icons = {

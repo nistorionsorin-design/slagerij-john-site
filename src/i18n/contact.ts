@@ -3,7 +3,7 @@
 // §5.4 / §5.5 / §5.10 / §5.13 / §5.15 where §5.23 points to them. The hours come from hours.json (regular + `special`),
 // never from this file. Left visible until FACTS.md has the value: [UREN] (B 3), [BETAALWIJZEN] (B 6), [PARKING]
 // (Dan's question), [WHATSAPP-ANTWOORD] (B 5, in faq.json), [DATUM] (the byline). No contact form (§5.23).
-// `ro` = lexicon §6 „Contact”, same keys: the stub /ro/contact uses its meta and head; the full RO page is stage 9.
+// `ro` = lexicon §6 „Contact” + the D-33 RO line (13.10), same keys: the full /ro/contact since stage 9.
 
 export const contact = {
   nl: {
@@ -87,7 +87,7 @@ export const contact = {
     waSrcHead: 'contact-head',
     waMessage: 'Bună, aș vrea să comand la Măcelăria John:',
     call: 'Sună-ne',
-    /** §5.3 (row 8b, D-33) — used by the RO page at stage 9 */
+    /** §5.3 + the D-33 RO line (13.10): the head's secondary */
     online: 'Comandă online',
     onlineHref: '/ro/comanda',
     rows: { tel: 'Telefon', wa: 'WhatsApp', mail: 'E-mail' },

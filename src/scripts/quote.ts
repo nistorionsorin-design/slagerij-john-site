@@ -6,7 +6,8 @@ import { brussels, iso } from '../lib/order-core.js';
 import { fillQuote } from '../lib/quote-core.js';
 
 type Key = 'feest' | 'datum' | 'aantal' | 'plaats' | 'telefoon';
-interface Data { locale: 'nl' | 'ro'; src: string; msg: string; errors: Record<Key, string> }
+/** `fields`: each key's field name = its [bracket word] in the locale's template (stage 9, QuoteForm.astro) */
+interface Data { locale: 'nl' | 'ro'; src: string; msg: string; errors: Record<Key, string>; fields: Record<Key, string> }
 
 const form = document.querySelector<HTMLFormElement>('[data-quote]');
 const dataEl = document.getElementById('quote-data');
@@ -14,7 +15,7 @@ if (form && dataEl) init(form, JSON.parse(dataEl.textContent ?? '{}') as Data);
 
 function init(form: HTMLFormElement, d: Data) {
   const keys = Object.keys(d.errors) as Key[];
-  const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement;
+  const field = (k: Key) => form.elements.namedItem(d.fields[k]) as HTMLInputElement | HTMLSelectElement;
   const preview = form.querySelector<HTMLElement>('[data-quote-preview]')!;
   const today = iso(brussels().day);
   // the script checks the fields itself (the §5.21 line under the field); without it the browser's checks stay
@@ -22,7 +23,7 @@ function init(form: HTMLFormElement, d: Data) {
   (field('datum') as HTMLInputElement).min = today;
 
   const values = () => Object.fromEntries(keys.map((k) => [k, field(k).value.trim()])) as Record<Key, string>;
-  const message = () => fillQuote(d.msg, values(), d.locale);
+  const message = () => { const v = values(); return fillQuote(d.msg, Object.fromEntries(keys.map((k) => [d.fields[k], v[k]])), d.locale); };
   const render = () => { preview.textContent = message(); };
 
   // one rule per field, the same as the server would need: a date from today on, a whole number of persons ≥ 1,
@@ -41,7 +42,7 @@ function init(form: HTMLFormElement, d: Data) {
   };
   const mark = (k: Key) => {
     const f = field(k);
-    const line = Object.assign(document.createElement('span'), { className: 'field__err', id: `qf-err-${k}`, textContent: d.errors[k] });
+    const line = Object.assign(document.createElement('span'), { className: 'field__err', id: `qf-err-${d.fields[k]}`, textContent: d.errors[k] });
     f.setAttribute('aria-invalid', 'true');
     f.setAttribute('aria-describedby', line.id);
     f.after(line);

@@ -4,9 +4,12 @@
 // Desktop (derived, D-30): the heading block left, the tags stacked right — a price board.
 import CounterTag from './CounterTag.astro';
 import { products, item, priceLabel, unitLabel } from '../lib/price';
-import { homeNl } from '../i18n/home';
+import { homeT } from '../i18n/home';
+import type { Locale } from '../i18n/ui';
 
-const t = homeNl.toog;
+export interface Props { locale?: Locale }
+const { locale = 'nl' } = Astro.props;
+const t = homeT[locale].toog;
 const tags = products.week.map(item);
 const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 ---
@@ -19,7 +22,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
     </div>
     <ul class="toog__tags">
       {tags.map((g) => (
-        <li><CounterTag name={g.name.nl} line={g.line.nl} price={priceLabel(g, 'nl')} unit={unitLabel(g.unit, 'nl')} /></li>
+        <li><CounterTag name={g.name[locale]} line={g.line[locale]} price={priceLabel(g, locale)} unit={unitLabel(g.unit, locale)} /></li>
       ))}
     </ul>
     <a class="link-arrow toog__more" href={t.moreHref}>{t.more}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a>
