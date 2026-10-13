@@ -1,0 +1,92 @@
+/* Eindejaar menu card — „de kaart” · v1 (13.10.2026 12:05; Dan 11:53: „1” on design/menu-card-variants.html — treatment 1 „Menukaart”)
+   Dan, 13.10 11:39, on the 15a build: „arrange them more nicely and delimited so they get easily seen”.
+   Source of truth for the oxblood card `.em` of /feestmenu-eindejaar and /ro/sarbatori (views/Eindejaar.astro). Port 1:1 into
+   site/src/styles/menu-card.css (imported by the view, global like header.css) and delete the scoped .em* rules from the view —
+   this file carries the whole card, not a delta. Tokens from tokens.css (--ox --on-ox --ox-tint --tag --fg --muted --f-display --f-ui
+   --r-frame --r-frame-lg). Rendered on the real 51 rows of docs/data/price-list.json with the real fonts at 350 px (phone) and 742 px
+   (the 7fr column at 1440); two columns from 1200 px, where that column is ≥ 600 px.
+
+   The idea: a printed menu card. Every rubric opens with its name in italic Fraunces on a paper rule — the eye finds the eight
+   rubrics before it reads a row — and every row runs a dotted line from the dish to its price, so a price is never read against
+   the wrong dish. A row of rubric pills under the title jumps to a rubric (sideways scroll on the phone, wrapping on desktop).
+   The unit sits muted next to the price so the figure carries the row.
+
+   Markup (NL shown; RO = the same keys from lexicon §6 Sărbători; the ids are the section ids of price-list.json):
+   <section class="em on-ink" id="feestmenu" aria-labelledby="em-title">
+     <p class="em__eyebrow">Het eindejaarsmenu</p>
+     <h2 class="em__title" id="em-title">Van tapas tot dessert.</h2>
+     <nav class="em__index" aria-label="Rubrieken"><a href="#em-tapas">Tapas</a><a href="#em-gourmet">Fondue &amp; gourmet</a> … 8 links, the section names …</nav>
+     <div class="em__sections">
+       <div class="em__sec" id="em-tapas">
+         <h3 class="em__sec-title"><span class="em__sec-name">Tapas</span></h3>                      ← the warm section adds <span class="em__sec-note">per portie van 200 g</span>
+         <dl class="em__rows">
+           <div class="em__row"><dt>Tapas 2<span class="em__line">4–5 pers.</span></dt><dd><span class="em__price">€30</span><span class="em__unit">/stuk</span></dd></div>
+           …
+         </dl>
+       </div>
+       … 8 sections in the brochure's order …
+     </div>
+     <p class="em__owners">Ook Roemeense feestgerechten op bestelling: ciorbă, sarmale, salade de boeuf, cozonac.</p>
+     <div class="em__msg"><p class="em__msg-label">WhatsApp-bericht</p><p class="em__msg-text">Dag, ik wil bestellen uit het eindejaarsmenu: …</p></div>
+     <a class="btn btn--light em__folder" href="#feestmenu">Bekijk de feestfolder</a>
+     <p class="em__deadline">Bestellen tot [DATUM]. Afhalen op 24 en 31 december.</p>
+   </section>
+   New since the 15a build: the <nav class="em__index"> row, <span class="em__sec-name"> around the section name, and the price split
+   into <span class="em__price"> + <span class="em__unit"> (the 15a build printed „€30 /stuk” as one text). The „vanaf” of the fondue
+   row stays inside .em__price („vanaf €10”). RO: „30 €” + „/buc.”, a hyphen in „4-5 persoane” (LR-T03). */
+
+/* ---------- the card ---------- */
+.em{border-radius:var(--r-frame);background:var(--ox);color:var(--on-ox);display:flex;flex-direction:column;gap:10px;padding:22px 20px;scroll-margin-top:72px}
+.em__eyebrow{font-size:var(--fs-eyebrow);letter-spacing:.16em;text-transform:uppercase;color:var(--ox-tint);margin:0;font-weight:600;line-height:1.3}
+.em__title{font-family:var(--f-display);font-optical-sizing:auto;letter-spacing:0;color:var(--on-ox);margin:0;font-size:28px;font-style:italic;font-weight:400;line-height:1.02}
+
+/* ---------- the rubric index: paper pills, one row, sideways scroll on the phone (bleeds to the card edge), wraps on desktop ---------- */
+.em__index{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:2px -20px 0;padding:2px 20px 6px;-webkit-overflow-scrolling:touch}
+.em__index::-webkit-scrollbar{display:none}
+.em__index a{flex:0 0 auto;display:inline-flex;align-items:center;min-height:30px;padding:0 11px;border-radius:999px;background:rgba(244,237,224,.12);border:1px solid rgba(244,237,224,.22);color:var(--on-ox);font-family:var(--f-ui);font-size:12px;font-weight:600;letter-spacing:.01em;text-decoration:none;white-space:nowrap}
+.em__index a:focus-visible{outline:2px solid var(--on-ox);outline-offset:2px}
+@media (hover:hover){.em__index a:hover{background:rgba(244,237,224,.2)}}
+
+/* ---------- the rubrics ---------- */
+.em__sections{display:flex;flex-direction:column;gap:26px;margin:8px 0 0}
+.em__sec{display:flex;flex-direction:column;gap:10px;scroll-margin-top:84px}
+.em__sec-title{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px;margin:0;padding-bottom:7px;border-bottom:1px solid rgba(244,237,224,.32);font-family:var(--f-display);font-optical-sizing:auto;font-style:italic;font-weight:400;font-size:23px;line-height:1.05;letter-spacing:0;color:var(--on-ox)}
+.em__sec-note{font-family:var(--f-ui);font-style:normal;font-weight:400;font-size:12px;letter-spacing:.02em;color:var(--ox-tint);white-space:nowrap}
+
+/* ---------- the rows: dish · dotted leader · price ---------- */
+.em__rows{font-variant-numeric:tabular-nums;display:flex;flex-direction:column;gap:9px;margin:0;font-size:14px;line-height:1.35}
+.em__row{position:relative;display:flex;justify-content:space-between;align-items:baseline;gap:14px}
+.em__row::before{content:"";position:absolute;left:0;right:0;top:.72em;border-bottom:1px dotted rgba(244,237,224,.42)}   /* the leader, under both texts */
+.em__row dt{position:relative;z-index:1;flex:0 1 auto;min-width:0;padding-right:8px;background:var(--ox)}                  /* the texts mask the dots behind them */
+.em__row dd{position:relative;z-index:1;flex:none;margin:0;padding-left:8px;white-space:nowrap;background:var(--ox)}
+.em__line{display:block;margin-top:1px;font-size:12px;line-height:1.35;color:var(--ox-tint)}
+.em__price{font-weight:600}
+.em__unit{margin-left:2px;font-size:12px;color:var(--ox-tint)}
+
+/* ---------- the foot of the card: the owners' line, the WhatsApp box, the folder button, the deadline ---------- */
+.em__owners{border-top:1px solid rgba(244,237,224,.3);margin:4px 0 0;padding-top:12px;font-size:14px;font-style:italic;line-height:1.45}
+.em__msg{background:var(--tag);color:var(--fg);border-radius:10px;display:flex;flex-direction:column;gap:4px;margin-top:4px;padding:12px 14px}
+.em__msg-label{letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0;font-size:11px;font-weight:600}
+.em__msg-text{margin:0;font-size:14px;line-height:1.45}
+.em__folder{align-self:flex-start}
+.em__deadline{color:var(--ox-tint);margin:0;font-size:13px;line-height:1.45}
+
+/* ---------- desktop sizes (the view's own 960 step, kept) ---------- */
+@media (min-width:960px){
+  .em{border-radius:var(--r-frame-lg);gap:14px;padding:40px 48px;scroll-margin-top:96px}
+  .em__title{font-size:44px;line-height:1}
+  .em__index{margin:4px 0 0;padding:0;flex-wrap:wrap;overflow:visible}
+  .em__sec-title{font-size:26px}
+  .em__rows{font-size:var(--fs-body);gap:10px}
+  .em__line{font-size:13px}
+  .em__owners{font-size:var(--fs-body)}
+  .em__msg{padding:14px 18px}
+  .em__msg-text{font-size:var(--fs-body)}
+  .em__deadline{font-size:14px}
+}
+/* ---------- two columns of rubrics once the card column is ≥ 600 px (the 7fr column at 1200 = 601); a rubric never splits ---------- */
+@media (min-width:1200px){
+  .em__sections{display:block;columns:2;column-gap:44px}
+  .em__sec{break-inside:avoid;margin-bottom:26px}
+}
+@media (prefers-reduced-motion:reduce){.em__index{scroll-behavior:auto}}

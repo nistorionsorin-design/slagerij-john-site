@@ -5,7 +5,8 @@
 // Desktop derived (D-30): the head and the photo side by side as two prints (ink left, photo right); below, the steps,
 // the RO box and the holiday hours left, the menu card right.
 // Strings: src/i18n/eindejaar.ts (lexicon §5.22). Menu card (row 15a, 13.10): the owners' folder's eight sections in
-// its order, each row name · line · price + unit, then the owners' line. Menu rows, deadline, pickup hours: menus.json (src/lib/menu.ts swaps
+// its order, each row name · line · price + unit, then the owners' line. Row 15b (D-35): the look is
+// src/styles/menu-card.css (the printed menu card) — the rubric index under the title, the price and its unit apart. Menu rows, deadline, pickup hours: menus.json (src/lib/menu.ts swaps
 // a set value into [DATUM] / [UUR]); holiday rows: hours.json `special`. FAQ: the three §5.11 „Eindejaar” items
 // (faq.json pages.eindejaar). No script on this page: the deadline is text only (build plan row 7).
 // JSON-LD (§5.22): BreadcrumbList (§8.4) + WebPage (§8.2) about the shop's @id — no Event for the folder (§8.6), no
@@ -25,6 +26,8 @@ import { priceLabel } from '../lib/price';
 import { wa, type Locale } from '../i18n/ui';
 import { eindejaarT } from '../i18n/eindejaar';
 import '../styles/sections.css';
+// row 15b (13.10, D-35): the menu card „Menukaart” — design/css/menu-card.css v1 ported 1:1, global like header.css
+import '../styles/menu-card.css';
 
 export interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -59,10 +62,10 @@ const row = (i: MenuItem): Row => ({
   unit: unit[i.unit] ?? '',
 });
 // row 15a: the owners' folder's eight sections in its order (menus.json `sections`); the page's extra rows (RO: Porc de
-// Crăciun, D 7) close the card without a heading
+// Crăciun, D 7) close the card as a ninth rubric with its own index pill (row 15b, §6 Sărbători 13.10 13:00)
 const sections = [
   ...m.sections.map((s) => ({ id: s.id, name: s.name[locale], note: s.note?.[locale], rows: m.items.filter((i) => i.section === s.id).map(row) })),
-  ...(t.card.extraRows.length ? [{ id: 'extra', name: '', note: undefined, rows: t.card.extraRows as Row[] }] : []),
+  ...(t.card.extraSection && t.card.extraRows.length ? [{ ...t.card.extraSection, note: undefined, rows: t.card.extraRows as Row[] }] : []),
 ].filter((s) => s.rows.length);
 
 // holiday hours: hours.json `special` for the four days; no entry → [UREN], `slots: []` → gesloten
@@ -125,15 +128,18 @@ const jsonld = [
       <section class="em on-ink" id={t.card.id} aria-labelledby="em-title">
         <p class="em__eyebrow">{t.card.eyebrow}</p>
         <h2 class="em__title" id="em-title">{t.card.title}</h2>
+        <nav class="em__index" aria-label={t.card.index}>
+          {sections.filter((s) => s.name).map((s) => <a href={`#em-${s.id}`}>{s.name}</a>)}
+        </nav>
         <div class="em__sections">
           {sections.map((s) => (
-            <div class="em__sec">
-              {s.name && <h3 class="em__sec-title" id={`em-${s.id}`}>{s.name}{s.note && <span class="em__sec-note"> · {s.note}</span>}</h3>}
+            <div class="em__sec" id={`em-${s.id}`}>
+              {s.name && <h3 class="em__sec-title"><span class="em__sec-name">{s.name}</span>{s.note && <span class="em__sec-note">{s.note}</span>}</h3>}
               <dl class="em__rows">
                 {s.rows.map((r) => (
                   <div class="em__row">
                     <dt>{r.name}{r.line && <span class="em__line">{r.line}</span>}</dt>
-                    <dd>{r.price} {r.unit}</dd>
+                    <dd><span class="em__price">{r.price}</span><span class="em__unit">{r.unit}</span></dd>
                   </div>
                 ))}
               </dl>
@@ -214,27 +220,7 @@ const jsonld = [
     font-size: 17px;
   }
 
-  /* the menu card (board: oxblood, padding 22 20, radius 16, eyebrow ox-tint, italic title 28, rows 14 tabular under a
-     paper hairline, the message on a tag-coloured slip, the light button) */
-  .em { display: flex; flex-direction: column; gap: 10px; padding: 22px 20px; border-radius: var(--r-frame); background: var(--ox); color: var(--on-ox); scroll-margin-top: 72px; }
-  .em__eyebrow { margin: 0; font-size: var(--fs-eyebrow); font-weight: 600; letter-spacing: 0.16em; line-height: 1.3; text-transform: uppercase; color: var(--ox-tint); }
-  .em__title { margin: 0; font-style: italic; font-weight: 400; font-size: 28px; line-height: 1.02; letter-spacing: 0; color: var(--on-ox); }
-  /* row 15a: the owners' folder — eight sections under the hairline, each a small ox-tint heading over its rows */
-  .em__sections { display: flex; flex-direction: column; gap: 18px; margin: 6px 0 0; padding-top: 14px; border-top: 1px solid rgba(244, 237, 224, 0.3); }
-  .em__sec { display: flex; flex-direction: column; gap: 8px; }
-  .em__sec-title { margin: 0; font-family: var(--f-ui); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; line-height: 1.3; text-transform: uppercase; color: var(--ox-tint); }
-  .em__sec-note { font-weight: 400; letter-spacing: 0.02em; text-transform: none; }
-  .em__rows { display: flex; flex-direction: column; gap: 8px; margin: 0; font-size: 14px; font-variant-numeric: tabular-nums; }
-  .em__row { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; }
-  .em__row dt { min-width: 0; }
-  .em__row dd { margin: 0; flex: 0 0 auto; white-space: nowrap; }
-  .em__line { display: block; margin-top: 1px; font-size: 12px; line-height: 1.35; color: var(--ox-tint); }
-  .em__owners { margin: 4px 0 0; padding-top: 12px; border-top: 1px solid rgba(244, 237, 224, 0.3); font-size: 14px; line-height: 1.45; font-style: italic; }
-  .em__msg { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; padding: 12px 14px; border-radius: 10px; background: var(--tag); color: var(--fg); }
-  .em__msg-label { margin: 0; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
-  .em__msg-text { margin: 0; font-size: 14px; line-height: 1.45; }
-  .em__folder { align-self: flex-start; }
-  .em__deadline { margin: 0; font-size: 13px; line-height: 1.45; color: var(--ox-tint); }
+  /* the menu card: src/styles/menu-card.css (row 15b, D-35) — the whole card; only its place in the desktop grid stays here */
 
   /* „Și în română” (board: tag-coloured box, label 11 upper muted, text 14; the link under it) */
   .er { display: flex; flex-direction: column; gap: 10px; padding-top: 20px; }
@@ -287,16 +273,7 @@ const jsonld = [
     }
     .es { grid-area: steps; gap: 18px; padding: 0; }
     .es__step { font-size: var(--fs-body); }
-    .em { grid-area: menu; gap: 14px; padding: 40px 48px; border-radius: var(--r-frame-lg); scroll-margin-top: 96px; }
-    .em__title { font-size: 44px; line-height: 1; }
-    .em__sections { gap: 24px; margin-top: 8px; padding-top: 18px; }
-    .em__sec-title { font-size: 12px; }
-    .em__rows { gap: 10px; font-size: var(--fs-body); }
-    .em__line { font-size: 13px; }
-    .em__owners { font-size: var(--fs-body); }
-    .em__msg { padding: 14px 18px; }
-    .em__msg-text { font-size: var(--fs-body); }
-    .em__deadline { font-size: 14px; }
+    .em { grid-area: menu; }
     .er { grid-area: ro; padding-top: 32px; }
     .eo { grid-area: hours; margin-top: 24px; padding: 22px 24px; }
     .eo__rows { font-size: 14px; gap: 8px; }

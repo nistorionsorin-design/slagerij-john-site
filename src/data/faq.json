@@ -53,7 +53,7 @@
     }
   ],
   "pages": {
-    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4; RO (stage 9) = the four §6 „Produse” items verbatim. /bestellen = lexicon §5.11 „Bestellen” (three items, added 07.10 for stage 5; §5.20 „FAQ on the page”), NL and RO verbatim; [BETALING] / [PLATĂ] stay visible until D6. Claude Code, stage 5 revision. /traiteur = lexicon §5.11 „Traiteur” (five items, added 08.10 for stage 6; §5.21 „FAQ on the page”), NL and RO verbatim, in that order; [PRIJS] / [PREȚ] stay visible until the owners answer (owners sheet D). Claude Code, stage 6. /feestmenu-eindejaar = lexicon §5.11 „Eindejaar” (three items, added 08.10 for stage 7; §5.22 „FAQ on the page”), NL and RO verbatim, in that order; the third = the „Bestellen” item „Hoe betaal ik?” unchanged; [DATUM] / [UUR] / [BETALING] (RO [DATA] / [ORA] / [PLATĂ]) stay visible until the owners answer (B 3, B 11, D6). Claude Code, stage 7. /contact = lexicon §5.11 „Contact” (four items, added 09.10 for stage 8; §5.23 „FAQ”), NL and RO verbatim, in that order (open op zondag · leveren Tielt / Lichtervelde / Roeselare · open op feestdagen · bellen om te bestellen); [WHATSAPP-ANTWOORD] / [WHATSAPP-RĂSPUNS] stay visible until B 5. Claude Code, stage 8.",
+    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4; RO (stage 9) = the four §6 „Produse” items verbatim. /bestellen = lexicon §5.11 „Bestellen” (three items, added 07.10 for stage 5; §5.20 „FAQ on the page”), NL and RO verbatim; [BETALING] / [PLATĂ] stay visible until D6. Claude Code, stage 5 revision. /traiteur = lexicon §5.11 „Traiteur” (five items, added 08.10 for stage 6; §5.21 „FAQ on the page”), NL and RO verbatim, in that order; [PRIJS] / [PREȚ] stay visible until the owners answer (owners sheet D). Claude Code, stage 6. Row 15b (13.10): item 1 NL + RO = the §5.11 rewrite with the owners’ figures (docs/data/price-list.json), no placeholder left in it. /feestmenu-eindejaar = lexicon §5.11 „Eindejaar” (three items, added 08.10 for stage 7; §5.22 „FAQ on the page”), NL and RO verbatim, in that order; the third = the „Bestellen” item „Hoe betaal ik?” unchanged; [DATUM] / [UUR] / [BETALING] (RO [DATA] / [ORA] / [PLATĂ]) stay visible until the owners answer (B 3, B 11, D6). Claude Code, stage 7. /contact = lexicon §5.11 „Contact” (four items, added 09.10 for stage 8; §5.23 „FAQ”), NL and RO verbatim, in that order (open op zondag · leveren Tielt / Lichtervelde / Roeselare · open op feestdagen · bellen om te bestellen); [WHATSAPP-ANTWOORD] / [WHATSAPP-RĂSPUNS] stay visible until B 5. Claude Code, stage 8.",
     "producten": {
       "nl": [
         {
@@ -126,7 +126,7 @@
       "nl": [
         {
           "q": "Wat is de gemiddelde kostprijs van een traiteur?",
-          "a": "Koude schotels vanaf [PRIJS] per persoon, warm buffet vanaf [PRIJS] per persoon, hapjes vanaf [PRIJS] per stuk. Stuur ons datum en aantal, dan krijgt u een prijs op maat."
+          "a": "Hapjes vanaf €1,50 per stuk, tapasschotels vanaf €30 (4–5 personen), gourmet vanaf €10 per persoon, warme gerechten vanaf €8 per portie van 200 g. Stuur ons datum en aantal, dan krijgt u een prijs op maat."
         },
         {
           "q": "Wat kost een barbecue aan huis voor 20 personen?",
@@ -148,7 +148,7 @@
       "ro": [
         {
           "q": "Cât costă un traiteur de persoană?",
-          "a": "Platouri reci de la [PREȚ] de persoană, bufet cald de la [PREȚ] de persoană, aperitive de la [PREȚ] bucata. Trimite-ne data și numărul de persoane și primești un preț pe măsură."
+          "a": "Aperitive de la 1,50 € bucata, platouri tapas de la 30 € (4-5 persoane), gourmet de la 10 € de persoană, feluri calde de la 8 € porția de 200 g. Trimite-ne data și numărul de persoane și primești un preț pe măsură."
         },
         {
           "q": "Cât costă un grătar la domiciliu pentru 20 de persoane?",

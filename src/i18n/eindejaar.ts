@@ -7,15 +7,16 @@
 // /ro/sarbatori (stage 9) = `eindejaarRo`, lexicon §6 „Sărbători”, same keys.
 
 export const eindejaarNl = {
-  /** §5.22 meta (56 / 153); `title` = the part before „ | Slagerij John”, the page passes the whole */
+  /** §5.22 meta (56 / 151, description reworded 13.10 to the owners' brochure); `title` = the part before „ | Slagerij John”, the page passes the whole */
   title: 'Eindejaarsmenu 2026 afhalen in Zwevezele | Slagerij John',
-  description: 'Eindejaarsmenu 2026 in Zwevezele: gourmet, fondue, koude schotels, hapjes, Roemeens feestvlees. Afhalen 24 en 31 december. Bestel online of via WhatsApp.',
+  description: 'Eindejaarsmenu 2026 in Zwevezele: gourmet, fondue, tapas, hapjes, warme gerechten en dessert. Afhalen 24 en 31 december. Bestel online of via WhatsApp.',
 
   /** §5.22 head (dark, text only) */
   eyebrow: 'Eindejaar 2026',
   h1: 'Eindejaarsmenu 2026: afhalen in Zwevezele.',
   accent: 'Bestel vóór [DATUM].',
-  lead: 'Afhalen op 24 en 31 december, van [UUR] tot [UUR]. Gourmet, fondue, koude schotels, hapjes en Roemeens feestvlees.',
+  /** §5.22 lead (13.10, the brochure's range) */
+  lead: 'Afhalen op 24 en 31 december, van [UUR] tot [UUR]. Gourmet, fondue, tapas, hapjes, warme gerechten en dessert.',
   /** §5.22 buttons: primary → the bestelbon with the menu on top (D-23); secondary §5.3 → /wa with the §5.10 message.
    *  Dan's flip (§5.22): the board had WhatsApp as the primary. */
   primary: 'Bestel uit het eindejaarsmenu',
@@ -41,7 +42,10 @@ export const eindejaarNl = {
     /** the card's anchor */
     id: 'feestmenu',
     eyebrow: 'Het eindejaarsmenu',
-    title: 'Gourmet, schotels en feestvlees.',
+    /** §5.22 13.10: the brochure's eight sections, from the first to the last */
+    title: 'Van tapas tot dessert.',
+    /** row 15b (D-35): the rubric index's label (design/css/menu-card.css) */
+    index: 'Rubrieken',
     /** §5.19 */
     msgLabel: 'WhatsApp-bericht',
     /** the board's secondary, moved here; → #feestmenu until a folder file exists (§5.22) */
@@ -50,7 +54,8 @@ export const eindejaarNl = {
     deadline: 'Bestellen tot [DATUM]. Afhalen op 24 en 31 december.',
     /** §5.22 13.10: the owners' line under the eight sections — the brochure's own RO sentence, rendered in NL (u-form) */
     ownersLine: 'Ook Roemeense feestgerechten op bestelling: ciorbă, sarmale, salade de boeuf, cozonac.',
-    /** rows the page shows besides menus.json's (RO: Porc de Crăciun) */
+    /** rows the page shows besides menus.json's (RO: Porc de Crăciun), under their own rubric (`extraSection`) */
+    extraSection: null as { id: string; name: string } | null,
     extraRows: [] as { name: string; line: string; price: string; unit: string }[],
   },
 
@@ -90,12 +95,14 @@ export const eindejaarNl = {
  *  deletes it). [DATA] / [ORA] are swapped for menus.json's values once set; [PROGRAM] / [PREȚ] / [DESCRIERE] stay. */
 export const eindejaarRo = {
   title: 'Meniu de Crăciun și Revelion 2026 | Măcelăria John',
-  description: 'Meniu de Crăciun și Revelion 2026 în Zwevezele: gourmet, platouri reci, aperitive, carne de sărbători. Ridicare pe 24 și 31 decembrie. Comandă pe WhatsApp.',
+  /** §6 Sărbători meta (13.10: 50 / 151, reworded to the brochure) */
+  description: 'Meniu de Crăciun și Revelion 2026 în Zwevezele: gourmet, fondue, tapas, aperitive și feluri calde. Ridicare pe 24 și 31 decembrie. Comandă pe WhatsApp.',
 
   eyebrow: 'Sărbători 2026',
   h1: 'Meniul de Crăciun și Revelion 2026: ridicare din Zwevezele.',
   accent: 'Comandă până pe [DATA].',
-  lead: 'Ridicare pe 24 și 31 decembrie, între [ORA] și [ORA]. Gourmet, fondue, platouri reci, aperitive și carne de sărbători, ca acasă.',
+  /** §6 Sărbători lead (13.10) */
+  lead: 'Ridicare pe 24 și 31 decembrie, între [ORA] și [ORA]. Gourmet, fondue, tapas, aperitive, feluri calde și desert, ca acasă.',
   primary: 'Comandă din meniul de sărbători',
   /** §6 → /ro/comanda?menu=eindejaar, + the section's fragment as on NL (shown from the first paint, no shift) */
   primaryHref: '/ro/comanda?menu=eindejaar#cat-menu-eindejaar-2026',
@@ -116,13 +123,17 @@ export const eindejaarRo = {
     /** §6: the card's anchor `#meniu` */
     id: 'meniu',
     eyebrow: 'Meniul de sărbători',
-    title: 'Gourmet, platouri și carne de sărbători.',
+    /** §6 Sărbători 13.10 */
+    title: 'De la tapas la desert.',
+    index: 'Rubrici',
     msgLabel: 'Mesaj WhatsApp',
     folder: 'Vezi meniul de sărbători',
     folderHref: '#meniu',
     deadline: 'Comenzi până pe [DATA]. Ridicare pe 24 și 31 decembrie.',
     /** §6 Sărbători 13.10: linia proprietarilor, de pe broșura lor, verbatim */
     ownersLine: 'Preluăm și comenzi specifice românești (ciorbe, sarmale, salată de boeuf, cozonaci etc.).',
+    /** §6 Sărbători 13.10 13:00: the stand-in row's own ninth rubric, with its index pill (fills or goes with D 7) */
+    extraSection: { id: 'sarbatori-carne', name: 'Carne de sărbători' },
     /** §6: the RO-only stand-in row (display only; the bestelbon's menu rows are menus.json's) */
     extraRows: [{ name: 'Porc de Crăciun', line: '[DESCRIERE]', price: '[PREȚ]', unit: '/kg' }],
   },
