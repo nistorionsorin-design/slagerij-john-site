@@ -3,7 +3,7 @@
 // 1:1; §5.3 / §5.10 / §5.13 / §5.15 / §5.19 where §5.22 points to them. Left visible until FACTS.md has the value:
 // [DATUM], [UUR], [UREN], [PRIJS] (owners' sheet B 3, B 11, D 7). [DATUM] / [UUR] are swapped for menus.json's
 // deadline and pickup hours once they are set (src/lib/menu.ts); the holiday rows read hours.json `special`.
-// The menu rows are menus.json `eindejaar-2026` (§5.22 table) — the owners' folder replaces them wholesale (B 11).
+// The menu rows are menus.json `eindejaar-2026` — since row 15a (13.10) the owners' folder: eight sections, 51 rows.
 // /ro/sarbatori (stage 9) = `eindejaarRo`, lexicon §6 „Sărbători”, same keys.
 
 export const eindejaarNl = {
@@ -48,6 +48,8 @@ export const eindejaarNl = {
     folder: 'Bekijk de feestfolder',
     folderHref: '#feestmenu',
     deadline: 'Bestellen tot [DATUM]. Afhalen op 24 en 31 december.',
+    /** §5.22 13.10: the owners' line under the eight sections — the brochure's own RO sentence, rendered in NL (u-form) */
+    ownersLine: 'Ook Roemeense feestgerechten op bestelling: ciorbă, sarmale, salade de boeuf, cozonac.',
     /** rows the page shows besides menus.json's (RO: Porc de Crăciun) */
     extraRows: [] as { name: string; line: string; price: string; unit: string }[],
   },
@@ -119,6 +121,8 @@ export const eindejaarRo = {
     folder: 'Vezi meniul de sărbători',
     folderHref: '#meniu',
     deadline: 'Comenzi până pe [DATA]. Ridicare pe 24 și 31 decembrie.',
+    /** §6 Sărbători 13.10: linia proprietarilor, de pe broșura lor, verbatim */
+    ownersLine: 'Preluăm și comenzi specifice românești (ciorbe, sarmale, salată de boeuf, cozonaci etc.).',
     /** §6: the RO-only stand-in row (display only; the bestelbon's menu rows are menus.json's) */
     extraRows: [{ name: 'Porc de Crăciun', line: '[DESCRIERE]', price: '[PREȚ]', unit: '/kg' }],
   },

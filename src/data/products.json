@@ -1,5 +1,5 @@
 {
-  "_source": "Stage 4 (Claude Code, 07.10; revised 07.10 after lexicon §5.19 + §6 „Product names RO”): the shape for /producten, the home's „Deze week op de toog” and the bestelbon (stage 5). `categories` = the sections of the canvas board Producten + BBQ & gourmet (D-13; the home's gourmet tag lives there, its page is a later stage); NL names = lexicon §2.2 / §4 / §5.15, RO = §6 „Product names RO” categories. `items` = the board's tags; NL names from the word bank §2.2 / §2.4 (search demand — NOT the confirmed assortment: Cowork replaces them from the owners' price list, stage 15), RO names = the §6 table verbatim. Colli Varken 1's line = its contents (§5.11 NL, §6 table RO; the old site's colli, [OBSERVED], to check with John). Mici's line = the lexicon's (§2.4 gloss NL, §6 product-card example RO — §5.19: „every cooking line [KOOKLIJN] except Mici”). price null = not in FACTS.md → the tag shows [PRIJS] / [PREȚ]; the old site's €45 / €10 stay out until the owners confirm them (FACTS „Known prices”). `week` = ids into `items`. Units: kg · pers · colli · stuk · liter. Stage 5 (Claude Code, 07.10, the bestelbon): the old site's other priced lines added from docs/data/old-site-catalogue.json [OBSERVED] 06.10 — NL names as the old site printed them (a „(…)” part becomes the line; colli lines = their contents), prices null (FACTS: the old prices wait for the owners), RO names/lines = lexicon §6 table verbatim (stage 5 revision, 07.10); three categories from the catalogue (tapas · warm · dessert, its NL/RO names). `min` = smallest order (gourmet/fondue „vanaf 2 personen”, docs/order-flow.md §4); `step` (optional) overrides the unit default of src/lib/order-core.js; `orderOnly` = sold through the bestelbon, not shown on /producten (the five other colli wait for /colli-vleespakketten, stage 10). Stage 9 revision (13.10): the RO cooking-line placeholder is [GĂTIRE] (lexicon §5.19 / §6), the NL one stays [KOOKLIJN].",
+  "_source": "Stage 4 (Claude Code, 07.10; revised 07.10 after lexicon §5.19 + §6 „Product names RO”): the shape for /producten, the home's „Deze week op de toog” and the bestelbon (stage 5). `categories` = the sections of the canvas board Producten + BBQ & gourmet (D-13; the home's gourmet tag lives there, its page is a later stage); NL names = lexicon §2.2 / §4 / §5.15, RO = §6 „Product names RO” categories. `items` = the board's tags; NL names from the word bank §2.2 / §2.4 (search demand — NOT the confirmed assortment: Cowork replaces them from the owners' price list, stage 15), RO names = the §6 table verbatim. Colli Varken 1's line = its contents (§5.11 NL, §6 table RO; the old site's colli, [OBSERVED], to check with John). Mici's line = the lexicon's (§2.4 gloss NL, §6 product-card example RO — §5.19: „every cooking line [KOOKLIJN] except Mici”). price null = not in FACTS.md → the tag shows [PRIJS] / [PREȚ]; the old site's €45 / €10 stay out until the owners confirm them (FACTS „Known prices”). `week` = ids into `items`. Units: kg · pers · colli · stuk · liter. Stage 5 (Claude Code, 07.10, the bestelbon): the old site's other priced lines added from docs/data/old-site-catalogue.json [OBSERVED] 06.10 — NL names as the old site printed them (a „(…)” part becomes the line; colli lines = their contents), prices null (FACTS: the old prices wait for the owners), RO names/lines = lexicon §6 table verbatim (stage 5 revision, 07.10); three categories from the catalogue (tapas · warm · dessert, its NL/RO names). `min` = smallest order (gourmet/fondue „vanaf 2 personen”, docs/order-flow.md §4); `step` (optional) overrides the unit default of src/lib/order-core.js; `orderOnly` = sold through the bestelbon, not shown on /producten (the five other colli wait for /colli-vleespakketten, stage 10). Stage 9 revision (13.10): the RO cooking-line placeholder is [GĂTIRE] (lexicon §5.19 / §6), the NL one stays [KOOKLIJN]. Row 15a (Claude Code, 13.10): docs/data/price-list.json ([OWNER] 13.10, FACTS) poured in — prices and units of the 31 traiteur ids it shares with this file, the 20 new ids (NL / RO names as the file gives them) under tapas · warm · dessert, the traiteur rows in the brochure's order (tapas · hapjes · vleeshoofdgerechten · warme groenten · soep · broodjes · dessert); hapjes now per stuk; the seven vleeshoofdgerechten per portie (unit `portie`, the line „per portie van 200 g” / „porție de 200 g”); tapas schotels keep their persons as the line (RO with a hyphen). Still null → [PRIJS] / [PREȚ]: every per-kg row, mici, the six colli (not in the owners' list).",
   "categories": [
     { "id": "rund", "name": { "nl": "Rund", "ro": "Vită" }
     },
@@ -157,7 +157,7 @@
         "nl": "[KOOKLIJN]",
         "ro": "[GĂTIRE]"
       },
-      "price": null,
+      "price": 10,
       "unit": "pers",
       "min": 2
     },
@@ -211,7 +211,7 @@
         "nl": "10 soorten",
         "ro": "10 feluri"
       },
-      "price": null,
+      "price": 10,
       "unit": "pers",
       "priceFrom": true,
       "min": 2
@@ -221,7 +221,7 @@
         "nl": "",
         "ro": ""
       },
-      "price": null,
+      "price": 11,
       "unit": "pers",
       "min": 2
     },
@@ -230,7 +230,7 @@
         "nl": "10 soorten",
         "ro": "10 feluri"
       },
-      "price": null,
+      "price": 15,
       "unit": "pers",
       "min": 2
     },
@@ -239,7 +239,7 @@
         "nl": "",
         "ro": ""
       },
-      "price": null,
+      "price": 9,
       "unit": "pers"
     },
     { "id": "tapas-2", "category": "tapas", "name": { "nl": "Tapas 2", "ro": "Tapas 2" },
@@ -247,7 +247,7 @@
         "nl": "4–5 pers.",
         "ro": "4-5 persoane"
       },
-      "price": null,
+      "price": 30,
       "unit": "stuk"
     },
     { "id": "tapas-mix", "category": "tapas", "name": { "nl": "Tapas mix", "ro": "Tapas mix" },
@@ -255,7 +255,7 @@
         "nl": "5–6 pers.",
         "ro": "5-6 persoane"
       },
-      "price": null,
+      "price": 45,
       "unit": "stuk"
     },
     { "id": "tapas-john-1", "category": "tapas", "name": { "nl": "Tapas John 1", "ro": "Tapas John 1" },
@@ -263,7 +263,7 @@
         "nl": "5–6 pers.",
         "ro": "5-6 persoane"
       },
-      "price": null,
+      "price": 55,
       "unit": "stuk"
     },
     { "id": "tapas-john-2", "category": "tapas", "name": { "nl": "Tapas John 2", "ro": "Tapas John 2" },
@@ -271,7 +271,7 @@
         "nl": "7–9 pers.",
         "ro": "7-9 persoane"
       },
-      "price": null,
+      "price": 60,
       "unit": "stuk"
     },
     { "id": "tapas-ro", "category": "tapas", "name": { "nl": "Roemeense Tapas", "ro": "Tapas românești" },
@@ -279,7 +279,7 @@
         "nl": "5–6 pers.",
         "ro": "5-6 persoane"
       },
-      "price": null,
+      "price": 45,
       "unit": "stuk"
     },
     { "id": "hapje-scampi-2", "category": "tapas", "name": { "nl": "Scampi", "ro": "Scampi" },
@@ -287,71 +287,223 @@
         "nl": "2 st.",
         "ro": "2 bucăți"
       },
-      "price": null,
-      "unit": "pers"
+      "price": 4,
+      "unit": "stuk"
     },
     { "id": "hapje-lepeltje-scampi", "category": "tapas", "name": { "nl": "Lepeltje scampi", "ro": "Linguriță cu scampi" },
       "line": {
         "nl": "",
         "ro": ""
       },
-      "price": null,
-      "unit": "pers"
+      "price": 2,
+      "unit": "stuk"
+    },
+    { "id": "hapje-lepeltje-meloen-serrano", "category": "tapas", "name": { "nl": "Lepeltje meloen & serrano", "ro": "Linguriță cu pepene și serrano" },
+      "line": {
+        "nl": "",
+        "ro": ""
+      },
+      "price": 2,
+      "unit": "stuk"
+    },
+    { "id": "hapje-lepeltje-pate", "category": "tapas", "name": { "nl": "Lepeltje paté", "ro": "Linguriță cu pateu" },
+      "line": {
+        "nl": "",
+        "ro": ""
+      },
+      "price": 1.5,
+      "unit": "stuk"
+    },
+    { "id": "hapje-lepeltje-geitenkaas", "category": "tapas", "name": { "nl": "Lepeltje geitenkaas", "ro": "Linguriță cu brânză de capră" },
+      "line": {
+        "nl": "",
+        "ro": ""
+      },
+      "price": 2,
+      "unit": "stuk"
+    },
+    { "id": "hapje-lepeltje-zalm", "category": "tapas", "name": { "nl": "Lepeltje zalm", "ro": "Linguriță cu somon" },
+      "line": {
+        "nl": "",
+        "ro": ""
+      },
+      "price": 2.5,
+      "unit": "stuk"
     },
     { "id": "hapje-taco-gehakt", "category": "tapas", "name": { "nl": "Taco gehakt", "ro": "Taco cu carne tocată" },
       "line": {
         "nl": "",
         "ro": ""
       },
-      "price": null,
-      "unit": "pers"
+      "price": 2.5,
+      "unit": "stuk"
+    },
+    { "id": "hapje-taco-kip", "category": "tapas", "name": { "nl": "Taco kip", "ro": "Taco cu pui" },
+      "line": {
+        "nl": "",
+        "ro": ""
+      },
+      "price": 2.5,
+      "unit": "stuk"
+    },
+    { "id": "hapje-blinis-zalm", "category": "tapas", "name": { "nl": "Blinis met gerookte zalm", "ro": "Blinis cu somon afumat" },
+      "line": {
+        "nl": "",
+        "ro": ""
+      },
+      "price": 2.5,
+      "unit": "stuk"
     },
     { "id": "hapje-bruschetta", "category": "tapas", "name": { "nl": "Bruschetta geitenkaas", "ro": "Bruschetta cu brânză de capră" },
       "line": {
         "nl": "",
         "ro": ""
       },
-      "price": null,
-      "unit": "pers"
+      "price": 2.5,
+      "unit": "stuk"
+    },
+    { "id": "hapje-bruschetta-zalm", "category": "tapas", "name": { "nl": "Bruschetta zalm", "ro": "Bruschetta cu somon" },
+      "line": {
+        "nl": "",
+        "ro": ""
+      },
+      "price": 2,
+      "unit": "stuk"
+    },
+    { "id": "hapje-bruschetta-tomaat", "category": "tapas", "name": { "nl": "Bruschetta tomaat", "ro": "Bruschetta cu roșii" },
+      "line": {
+        "nl": "",
+        "ro": ""
+      },
+      "price": 1.5,
+      "unit": "stuk"
     },
     { "id": "hapje-wrap-zalm", "category": "tapas", "name": { "nl": "Wraps zalm", "ro": "Wrap cu somon" },
       "line": {
         "nl": "",
         "ro": ""
       },
-      "price": null,
-      "unit": "pers"
+      "price": 2,
+      "unit": "stuk"
+    },
+    { "id": "hapje-wrap-hesp", "category": "tapas", "name": { "nl": "Wraps hesp", "ro": "Wrap cu șuncă" },
+      "line": {
+        "nl": "",
+        "ro": ""
+      },
+      "price": 2,
+      "unit": "stuk"
+    },
+    { "id": "hapje-wrap-kip", "category": "tapas", "name": { "nl": "Wraps kip", "ro": "Wrap cu pui" },
+      "line": {
+        "nl": "",
+        "ro": ""
+      },
+      "price": 2,
+      "unit": "stuk"
+    },
+    { "id": "hapje-bulgur-feta", "category": "tapas", "name": { "nl": "Bulgur feta", "ro": "Bulgur cu feta" },
+      "line": {
+        "nl": "",
+        "ro": ""
+      },
+      "price": 3,
+      "unit": "stuk"
+    },
+    { "id": "hapje-bulgur-feta-meloen", "category": "tapas", "name": { "nl": "Bulgur feta & meloen", "ro": "Bulgur cu feta și pepene" },
+      "line": {
+        "nl": "",
+        "ro": ""
+      },
+      "price": 3,
+      "unit": "stuk"
+    },
+    { "id": "hapje-bulgur-zalm", "category": "tapas", "name": { "nl": "Bulgur zalm", "ro": "Bulgur cu somon" },
+      "line": {
+        "nl": "",
+        "ro": ""
+      },
+      "price": 3,
+      "unit": "stuk"
     },
     { "id": "hapje-bulgur-garnaal", "category": "tapas", "name": { "nl": "Bulgur garnaal", "ro": "Bulgur cu creveți" },
       "line": {
         "nl": "",
         "ro": ""
       },
-      "price": null,
-      "unit": "pers"
+      "price": 3.5,
+      "unit": "stuk"
+    },
+    { "id": "hapje-hawaii-salade", "category": "tapas", "name": { "nl": "Hawaii salade", "ro": "Salată Hawaii" },
+      "line": {
+        "nl": "",
+        "ro": ""
+      },
+      "price": 3,
+      "unit": "stuk"
     },
     { "id": "warm-ardeens", "category": "warm", "name": { "nl": "Ardeens gebraad in champignonsaus", "ro": "Friptură ardeneză în sos de ciuperci" },
       "line": {
-        "nl": "",
-        "ro": ""
+        "nl": "per portie van 200 g",
+        "ro": "porție de 200 g"
       },
-      "price": null,
-      "unit": "pers"
+      "price": 8,
+      "unit": "portie"
     },
     { "id": "warm-varkenshaasje", "category": "warm", "name": { "nl": "Varkenshaasje in sausje met spek", "ro": "Mușchiuleț de porc în sos cu bacon" },
       "line": {
-        "nl": "",
-        "ro": ""
+        "nl": "per portie van 200 g",
+        "ro": "porție de 200 g"
       },
-      "price": null,
-      "unit": "pers"
+      "price": 9,
+      "unit": "portie"
+    },
+    { "id": "warm-orloff", "category": "warm", "name": { "nl": "Orloffgebraad in kaassaus", "ro": "Friptură Orloff în sos de brânză" },
+      "line": {
+        "nl": "per portie van 200 g",
+        "ro": "porție de 200 g"
+      },
+      "price": 8.5,
+      "unit": "portie"
+    },
+    { "id": "warm-kalkoen", "category": "warm", "name": { "nl": "Kalkoen in champignonsaus", "ro": "Curcan în sos de ciuperci" },
+      "line": {
+        "nl": "per portie van 200 g",
+        "ro": "porție de 200 g"
+      },
+      "price": 10,
+      "unit": "portie"
+    },
+    { "id": "warm-hamrol", "category": "warm", "name": { "nl": "Hamrol met witloof in kaassaus", "ro": "Rulou de șuncă cu andive în sos de brânză" },
+      "line": {
+        "nl": "per portie van 200 g",
+        "ro": "porție de 200 g"
+      },
+      "price": 10,
+      "unit": "portie"
+    },
+    { "id": "warm-kipfilet-curry", "category": "warm", "name": { "nl": "Kipfilet in currysaus", "ro": "Piept de pui în sos curry" },
+      "line": {
+        "nl": "per portie van 200 g",
+        "ro": "porție de 200 g"
+      },
+      "price": 9.5,
+      "unit": "portie"
     },
     { "id": "warm-zalm", "category": "warm", "name": { "nl": "Zalm in bearnaisesaus", "ro": "Somon în sos bearnez" },
       "line": {
-        "nl": "",
-        "ro": ""
+        "nl": "per portie van 200 g",
+        "ro": "porție de 200 g"
       },
-      "price": null,
+      "price": 12,
+      "unit": "portie"
+    },
+    { "id": "warm-groenten", "category": "warm", "name": { "nl": "Warme groenten", "ro": "Legume calde" },
+      "line": {
+        "nl": "bloemkool · boontjes · wortel · witloof met spek · 200 g per persoon",
+        "ro": "conopidă · fasole verde · morcovi · andive cu bacon · 200 g de persoană"
+      },
+      "price": 6,
       "unit": "pers"
     },
     { "id": "soep-tomaat", "category": "warm", "name": { "nl": "Tomatensoep", "ro": "Supă de roșii" },
@@ -359,7 +511,15 @@
         "nl": "",
         "ro": ""
       },
-      "price": null,
+      "price": 5.2,
+      "unit": "liter"
+    },
+    { "id": "soep-tomaat-balletjes", "category": "warm", "name": { "nl": "Tomatensoep met balletjes", "ro": "Supă de roșii cu perișoare" },
+      "line": {
+        "nl": "",
+        "ro": ""
+      },
+      "price": 5.6,
       "unit": "liter"
     },
     { "id": "soep-pompoen", "category": "warm", "name": { "nl": "Pompoensoep", "ro": "Supă de dovleac" },
@@ -367,7 +527,7 @@
         "nl": "",
         "ro": ""
       },
-      "price": null,
+      "price": 6,
       "unit": "liter"
     },
     { "id": "soep-broccoli", "category": "warm", "name": { "nl": "Broccolisoep", "ro": "Supă de broccoli" },
@@ -375,15 +535,23 @@
         "nl": "",
         "ro": ""
       },
-      "price": null,
+      "price": 5.5,
       "unit": "liter"
+    },
+    { "id": "broodjes-mini", "category": "dessert", "name": { "nl": "Mini belegde broodjes", "ro": "Mini sandvișuri" },
+      "line": {
+        "nl": "kipcurry / vleessalade · hesp / salami / kaas · tonijn / préparé",
+        "ro": "pui curry / salată de carne · șuncă / salam / brânză · ton / préparé"
+      },
+      "price": 1.7,
+      "unit": "stuk"
     },
     { "id": "dessert-buffet-1", "category": "dessert", "name": { "nl": "Dessertbuffet 1", "ro": "Bufet de deserturi 1" },
       "line": {
         "nl": "3 soorten",
         "ro": "3 feluri"
       },
-      "price": null,
+      "price": 7,
       "unit": "pers"
     },
     { "id": "dessert-buffet-2", "category": "dessert", "name": { "nl": "Dessertbuffet 2", "ro": "Bufet de deserturi 2" },
@@ -391,7 +559,7 @@
         "nl": "5 soorten",
         "ro": "5 feluri"
       },
-      "price": null,
+      "price": 12,
       "unit": "pers"
     },
     { "id": "fruit-buffet", "category": "dessert", "name": { "nl": "Fruitbuffet", "ro": "Bufet de fructe" },
@@ -399,7 +567,7 @@
         "nl": "6 soorten: meloen, druiven, ananas, kiwi, mandarijn, kaki",
         "ro": "6 feluri: pepene, struguri, ananas, kiwi, mandarine, kaki"
       },
-      "price": null,
+      "price": 4,
       "unit": "pers"
     },
     { "id": "dessert-vanille", "category": "dessert", "name": { "nl": "Vanillepudding", "ro": "Budincă de vanilie" },
@@ -407,7 +575,7 @@
         "nl": "",
         "ro": ""
       },
-      "price": null,
+      "price": 2,
       "unit": "stuk"
     },
     { "id": "dessert-tiramisu", "category": "dessert", "name": { "nl": "Tiramisu", "ro": "Tiramisu" },
@@ -415,7 +583,7 @@
         "nl": "",
         "ro": ""
       },
-      "price": null,
+      "price": 2.5,
       "unit": "stuk"
     },
     { "id": "dessert-donut", "category": "dessert", "name": { "nl": "Donut", "ro": "Gogoașă (donut)" },
@@ -423,7 +591,7 @@
         "nl": "",
         "ro": ""
       },
-      "price": null,
+      "price": 2,
       "unit": "stuk"
     },
     { "id": "dessert-mini-donut", "category": "dessert", "name": { "nl": "Mini donut", "ro": "Mini donut" },
@@ -431,7 +599,7 @@
         "nl": "",
         "ro": ""
       },
-      "price": null,
+      "price": 1,
       "unit": "stuk"
     },
     { "id": "dessert-macarons", "category": "dessert", "name": { "nl": "Macarons", "ro": "Macarons" },
@@ -439,15 +607,7 @@
         "nl": "",
         "ro": ""
       },
-      "price": null,
-      "unit": "stuk"
-    },
-    { "id": "broodjes-mini", "category": "dessert", "name": { "nl": "Mini belegde broodjes", "ro": "Mini sandvișuri" },
-      "line": {
-        "nl": "kipcurry / vleessalade · hesp / salami / kaas · tonijn / préparé",
-        "ro": "pui curry / salată de carne · șuncă / salam / brânză · ton / préparé"
-      },
-      "price": null,
+      "price": 2,
       "unit": "stuk"
     }
   ],

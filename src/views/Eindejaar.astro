@@ -4,7 +4,8 @@
 // three steps · the menu card (#feestmenu, oxblood) · the „Și în română” box · the holiday hours card · FAQ · byline.
 // Desktop derived (D-30): the head and the photo side by side as two prints (ink left, photo right); below, the steps,
 // the RO box and the holiday hours left, the menu card right.
-// Strings: src/i18n/eindejaar.ts (lexicon §5.22). Menu rows, deadline, pickup hours: menus.json (src/lib/menu.ts swaps
+// Strings: src/i18n/eindejaar.ts (lexicon §5.22). Menu card (row 15a, 13.10): the owners' folder's eight sections in
+// its order, each row name · line · price + unit, then the owners' line. Menu rows, deadline, pickup hours: menus.json (src/lib/menu.ts swaps
 // a set value into [DATUM] / [UUR]); holiday rows: hours.json `special`. FAQ: the three §5.11 „Eindejaar” items
 // (faq.json pages.eindejaar). No script on this page: the deadline is text only (build plan row 7).
 // JSON-LD (§5.22): BreadcrumbList (§8.4) + WebPage (§8.2) about the shop's @id — no Event for the folder (§8.6), no
@@ -18,7 +19,7 @@ import WaIcon from '../components/WaIcon.astro';
 import Faq from '../components/Faq.astro';
 import photos from '../data/photos.json';
 import hours from '../data/hours.json';
-import type { Photo, SpecialDay, Unit } from '../data/types';
+import type { MenuItem, Photo, SpecialDay, Unit } from '../data/types';
 import { menu, fillMenu } from '../lib/menu';
 import { priceLabel } from '../lib/price';
 import { wa, type Locale } from '../i18n/ui';
@@ -45,13 +46,24 @@ const bandPic = {
   desktop: { img: bandImg, ratio: 1, max: 1330, sizes: '(min-width: 1440px) 560px, 40vw', focalX: band.focalX, focalY: band.focalY },
 };
 
-// the card's units as the §5.22 table writes them
-// (RO: the §6 Produse tag units, /pers. · /buc. · /kg)
-const unit: Partial<Record<Unit, string>> = locale === 'ro' ? { pers: '/pers.', stuk: '/buc.', kg: '/kg' } : { pers: '/pers.', stuk: '/stuk', kg: '/kg' };
-const rows = [
-  ...m.items.map((i) => ({ name: i.name[locale], price: priceLabel({ ...i, id: i.id, category: '', line: { nl: '', ro: '' } }, locale), unit: unit[i.unit] ?? '' })),
-  ...t.card.extraRows,
-];
+// the card's units as the §5.22 table writes them (/l: soep, lexicon §5.19 13.10; /portie: the vleeshoofdgerechten,
+// row 15a) — RO: the §6 Produse tag units, /pers. · /buc. · /kg · /l · /porție
+const unit: Partial<Record<Unit, string>> = locale === 'ro'
+  ? { pers: '/pers.', stuk: '/buc.', kg: '/kg', liter: '/l', portie: '/porție' }
+  : { pers: '/pers.', stuk: '/stuk', kg: '/kg', liter: '/l', portie: '/portie' };
+type Row = { name: string; line: string; price: string; unit: string };
+const row = (i: MenuItem): Row => ({
+  name: i.name[locale],
+  line: i.line?.[locale] ?? '',
+  price: priceLabel({ ...i, category: '', line: { nl: '', ro: '' } }, locale),
+  unit: unit[i.unit] ?? '',
+});
+// row 15a: the owners' folder's eight sections in its order (menus.json `sections`); the page's extra rows (RO: Porc de
+// Crăciun, D 7) close the card without a heading
+const sections = [
+  ...m.sections.map((s) => ({ id: s.id, name: s.name[locale], note: s.note?.[locale], rows: m.items.filter((i) => i.section === s.id).map(row) })),
+  ...(t.card.extraRows.length ? [{ id: 'extra', name: '', note: undefined, rows: t.card.extraRows as Row[] }] : []),
+].filter((s) => s.rows.length);
 
 // holiday hours: hours.json `special` for the four days; no entry → [UREN], `slots: []` → gesloten
 const special = (hours.special ?? []) as SpecialDay[];
@@ -113,11 +125,22 @@ const jsonld = [
       <section class="em on-ink" id={t.card.id} aria-labelledby="em-title">
         <p class="em__eyebrow">{t.card.eyebrow}</p>
         <h2 class="em__title" id="em-title">{t.card.title}</h2>
-        <dl class="em__rows">
-          {rows.map((r) => (
-            <div class="em__row"><dt>{r.name}</dt><dd>{r.price} {r.unit}</dd></div>
+        <div class="em__sections">
+          {sections.map((s) => (
+            <div class="em__sec">
+              {s.name && <h3 class="em__sec-title" id={`em-${s.id}`}>{s.name}{s.note && <span class="em__sec-note"> · {s.note}</span>}</h3>}
+              <dl class="em__rows">
+                {s.rows.map((r) => (
+                  <div class="em__row">
+                    <dt>{r.name}{r.line && <span class="em__line">{r.line}</span>}</dt>
+                    <dd>{r.price} {r.unit}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
           ))}
-        </dl>
+        </div>
+        <p class="em__owners">{t.card.ownersLine}</p>
         <div class="em__msg">
           <p class="em__msg-label">{t.card.msgLabel}</p>
           <p class="em__msg-text">{t.waMessage}</p>
@@ -196,10 +219,17 @@ const jsonld = [
   .em { display: flex; flex-direction: column; gap: 10px; padding: 22px 20px; border-radius: var(--r-frame); background: var(--ox); color: var(--on-ox); scroll-margin-top: 72px; }
   .em__eyebrow { margin: 0; font-size: var(--fs-eyebrow); font-weight: 600; letter-spacing: 0.16em; line-height: 1.3; text-transform: uppercase; color: var(--ox-tint); }
   .em__title { margin: 0; font-style: italic; font-weight: 400; font-size: 28px; line-height: 1.02; letter-spacing: 0; color: var(--on-ox); }
-  .em__rows { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 0; padding-top: 12px; border-top: 1px solid rgba(244, 237, 224, 0.3); font-size: 14px; font-variant-numeric: tabular-nums; }
+  /* row 15a: the owners' folder — eight sections under the hairline, each a small ox-tint heading over its rows */
+  .em__sections { display: flex; flex-direction: column; gap: 18px; margin: 6px 0 0; padding-top: 14px; border-top: 1px solid rgba(244, 237, 224, 0.3); }
+  .em__sec { display: flex; flex-direction: column; gap: 8px; }
+  .em__sec-title { margin: 0; font-family: var(--f-ui); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; line-height: 1.3; text-transform: uppercase; color: var(--ox-tint); }
+  .em__sec-note { font-weight: 400; letter-spacing: 0.02em; text-transform: none; }
+  .em__rows { display: flex; flex-direction: column; gap: 8px; margin: 0; font-size: 14px; font-variant-numeric: tabular-nums; }
   .em__row { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; }
   .em__row dt { min-width: 0; }
   .em__row dd { margin: 0; flex: 0 0 auto; white-space: nowrap; }
+  .em__line { display: block; margin-top: 1px; font-size: 12px; line-height: 1.35; color: var(--ox-tint); }
+  .em__owners { margin: 4px 0 0; padding-top: 12px; border-top: 1px solid rgba(244, 237, 224, 0.3); font-size: 14px; line-height: 1.45; font-style: italic; }
   .em__msg { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; padding: 12px 14px; border-radius: 10px; background: var(--tag); color: var(--fg); }
   .em__msg-label { margin: 0; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
   .em__msg-text { margin: 0; font-size: 14px; line-height: 1.45; }
@@ -259,7 +289,11 @@ const jsonld = [
     .es__step { font-size: var(--fs-body); }
     .em { grid-area: menu; gap: 14px; padding: 40px 48px; border-radius: var(--r-frame-lg); scroll-margin-top: 96px; }
     .em__title { font-size: 44px; line-height: 1; }
-    .em__rows { gap: 12px; margin-top: 8px; padding-top: 18px; font-size: var(--fs-body); }
+    .em__sections { gap: 24px; margin-top: 8px; padding-top: 18px; }
+    .em__sec-title { font-size: 12px; }
+    .em__rows { gap: 10px; font-size: var(--fs-body); }
+    .em__line { font-size: 13px; }
+    .em__owners { font-size: var(--fs-body); }
     .em__msg { padding: 14px 18px; }
     .em__msg-text { font-size: var(--fs-body); }
     .em__deadline { font-size: 14px; }

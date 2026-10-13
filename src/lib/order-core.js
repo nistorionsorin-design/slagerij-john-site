@@ -83,7 +83,7 @@ export function menuOpen(menu, at = new Date(), timeZone = 'Europe/Brussels') {
 export function menuRows(menus, at = new Date()) {
   return (menus?.menus ?? [])
     .filter((m) => menuOpen(m, at))
-    .flatMap((m) => m.items.map((i) => ({ ...i, category: `menu-${m.id}`, line: { nl: '', ro: '' }, menu: m.id })));
+    .flatMap((m) => m.items.map((i) => ({ ...i, category: `menu-${m.id}`, line: i.line ?? { nl: '', ro: '' }, menu: m.id })));
 }
 
 /** The open menu an order takes a row from (its rows' quantities > 0), or null. */
@@ -146,7 +146,7 @@ export function money(n, locale = 'nl', cents = false) {
   return locale === 'ro' ? `${v} €` : `€${v}`;
 }
 
-/** The quantity as the message writes it: „2×” (colli, stuk) · „1 kg” · „4 pers.” · „2 l”. */
+/** The quantity as the message writes it: „2×” (colli, stuk, portie) · „1 kg” · „4 pers.” · „2 l”. */
 export function qtyLabel(q, unit) {
   const n = String(q).replace('.', ',');
   if (unit === 'kg') return `${n} kg`;

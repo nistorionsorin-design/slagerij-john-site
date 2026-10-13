@@ -1,5 +1,5 @@
 {
-  "_source": "lexicon §5.11 FAQ bank as revised 07.10 (visible HTML, no FAQ schema — S-04), NL question and answer verbatim; the home shows these six (lexicon §4 home fan-out: open op zondag · levering · hoe bestellen · Roemeens?). A price in an answer is [PRIJS] and a {n} is [AANTAL] until FACTS.md has the owners' value (the old site's €45 / €10 / €11 / €15 are [OBSERVED], to confirm); the delivery figures are the §5.5 rules already on the footer (D6: owners confirm). RO (stage 9) = lexicon §6 „Acasă” FAQ, the six home items verbatim in the NL order. The rest of §5.11 = stages 4–11. Claude Code, stages 3 and 9.",
+  "_source": "lexicon §5.11 FAQ bank as revised 07.10 (visible HTML, no FAQ schema — S-04), NL question and answer verbatim; the home shows these six (lexicon §4 home fan-out: open op zondag · levering · hoe bestellen · Roemeens?). A price in an answer is [PRIJS] and a {n} is [AANTAL] until FACTS.md has the owners' value (the old site's €45 / €10 / €11 / €15 are [OBSERVED], to confirm); the delivery figures are the §5.5 rules already on the footer (D6: owners confirm). RO (stage 9) = lexicon §6 „Acasă” FAQ, the six home items verbatim in the NL order. The rest of §5.11 = stages 4–11. Claude Code, stages 3 and 9. Row 15a (Claude Code, 13.10): the gourmet answer (home, NL + RO) carries the owners’ figures — docs/data/price-list.json, [OWNER] 13.10; the colli, mici and traiteur [PRIJS] stay.",
   "nl": [
     {
       "q": "Zijn jullie open op zondag?",
@@ -23,7 +23,7 @@
     },
     {
       "q": "Wat kost een gourmetschotel per persoon?",
-      "a": "Gourmet 9 soorten [PRIJS], 10 soorten [PRIJS], luxe [PRIJS] per persoon; fondue vanaf [PRIJS]."
+      "a": "Gourmet 9 soorten €10, 10 soorten €11, luxe €15 per persoon; fondue vanaf €10."
     }
   ],
   "ro": [
@@ -49,7 +49,7 @@
     },
     {
       "q": "Cât costă un platou gourmet de persoană?",
-      "a": "Gourmet cu 9 feluri [PREȚ], cu 10 feluri [PREȚ], de lux [PREȚ] de persoană; fondue de la [PREȚ]."
+      "a": "Gourmet cu 9 feluri 10 €, cu 10 feluri 11 €, de lux 15 € de persoană; fondue de la 10 €."
     }
   ],
   "pages": {

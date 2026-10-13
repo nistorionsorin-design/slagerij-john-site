@@ -41,15 +41,29 @@ const menuGroups = menus.menus.map((m) => ({
   name: m.name,
   items: menuOpen(m) ? menuRowsAll.filter((p) => p.category === `menu-${m.id}`) : [],
   menu: { param: m.param, note: fillMenu(t.menu.note, m, locale), closed: t.menu.closed, open: menuOpen(m) },
+  sections: m.sections,
 }));
-interface Group { id: string; name: { nl: string; ro: string }; items: Product[]; menu?: { param: string; note: string; closed: string; open: boolean } }
+interface Group {
+  id: string;
+  name: { nl: string; ro: string };
+  items: Product[];
+  menu?: { param: string; note: string; closed: string; open: boolean };
+  sections?: { id: string; name: { nl: string; ro: string }; note?: { nl: string; ro: string } }[];
+}
 const groups: Group[] = [...menuGroups, ...[...packs, ...counter].map(section).filter((c) => c.items.length)];
+// row 15a: a menu's rows under its sections' headings (the owners' folder, menus.json `sections`); a category = one list
+const listsOf = (c: Group) =>
+  c.sections
+    ? c.sections
+        .map((s) => ({ id: `${c.id}-${s.id}`, sub: s.name[locale], note: s.note?.[locale], items: c.items.filter((p) => (p as Product & { section?: string }).section === s.id) }))
+        .filter((l) => l.items.length)
+    : [{ id: c.id, sub: undefined, note: undefined, items: c.items }];
 const pills = [
   ...groups.filter((c) => packs.includes(c.id)).map((c) => ({ href: `#cat-${c.id}`, label: c.name[locale] })),
   { href: `#cat-${counter[0]}`, label: t.products.kgGroup },
 ];
 
-const qtyUnit: Record<Product['unit'], string> = { kg: 'kg', pers: 'pers.', liter: 'l', colli: '', stuk: '' };
+const qtyUnit: Record<Product['unit'], string> = { kg: 'kg', pers: 'pers.', liter: 'l', colli: '', stuk: '', portie: '' };
 
 // no-script time list: every half hour a pickup or a delivery can take (the server checks the day's own times)
 const allTimes = [...new Set([...Array.from({ length: 20 }, (_, i) => fromMin(8 * 60 + i * 30)), ...delivery.times])];
@@ -103,8 +117,10 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
           <h3 class="ocat__title">{c.name[locale]}</h3>
           {c.menu && <p class="ocat__note" data-season-note hidden={!c.menu.open}>{c.menu.note}</p>}
           {c.menu && <p class="ocat__note ocat__note--closed" data-season-closed hidden={c.menu.open}>{c.menu.closed}</p>}
-          <ul class="ocat__list">
-            {c.items.map((p) => {
+          {listsOf(c).map((l) => (<>
+          {l.sub && <h4 class="ocat__sub" id={`sub-${l.id}`}>{l.sub}{l.note && <span class="ocat__sub-note"> · {l.note}</span>}</h4>}
+          <ul class="ocat__list" aria-labelledby={l.sub ? `sub-${l.id}` : undefined}>
+            {l.items.map((p) => {
               const r = qtyRule(p);
               const ph = p.price === null;
               return (
@@ -131,6 +147,7 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
               );
             })}
           </ul>
+          </>))}
         </div>
         {c.menu && c.id === menuGroups[menuGroups.length - 1].id && <script is:inline src={seasonJs}></script>}
       </>))}
@@ -340,6 +357,9 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
   .ocat--menu .ocat__title { margin-top: 0; color: var(--ox); }
   .ocat__note { margin: 0; font-size: 14px; line-height: 1.45; color: var(--muted); }
   .ocat__note--closed { color: var(--fg); font-weight: 600; }
+  /* row 15a: a menu section's heading (the owners' folder) — the eyebrow look, oxblood; its unit note in body weight */
+  .ocat__sub { margin: 8px 0 -2px; font-size: var(--fs-eyebrow); font-weight: 600; letter-spacing: 0.16em; line-height: 1.3; text-transform: uppercase; color: var(--ox); }
+  .ocat__sub-note { font-weight: 400; letter-spacing: 0.02em; text-transform: none; color: var(--muted); }
   .oi {
     position: relative;
     display: flex;

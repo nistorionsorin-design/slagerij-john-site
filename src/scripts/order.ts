@@ -7,7 +7,7 @@
 // own (menus.json `pickup`) and the WhatsApp text opens with the menu's §5.10 message.
 import { readOrder, daysFor, dayLabel, money, qtyLabel, waText, newRef, qtyRule, toMin, menuOf, menuOpen } from '../lib/order-core.js';
 
-type Unit = 'kg' | 'pers' | 'colli' | 'stuk' | 'liter';
+type Unit = 'kg' | 'pers' | 'colli' | 'stuk' | 'liter' | 'portie';
 interface Item { id: string; category: string; name: Partial<Record<'nl' | 'ro', string>>; unit: Unit; price: number | null; priceFrom?: boolean; min?: number; step?: number }
 interface Data {
   locale: 'nl' | 'ro';
@@ -52,7 +52,7 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
   if (wantedMenu && menuBox) {
     menuBox.hidden = false;
     if (!menuOpen(wantedMenu)) {
-      menuBox.querySelector('.ocat__list')?.remove();
+      for (const el of $$('.ocat__list, .ocat__sub', menuBox)) el.remove();
       $('[data-season-note]', menuBox)!.hidden = true;
       $('[data-season-closed]', menuBox)!.hidden = false;
     }

@@ -28,8 +28,9 @@ export interface Day { dayOfWeek: string; slots: Slot[] }
  *  e.g. { "date": "2026-11-01", "slots": [] } · { "date": "2026-12-24", "slots": [{ "open": "08:00", "close": "16:00" }] } */
 export interface SpecialDay { date: string; slots: Slot[] }
 
-/** products.json (stage 4). Every unit the bestelbon sells by (docs/order-flow.md §3: per kg · pers · stuk · liter · colli). */
-export type Unit = 'kg' | 'pers' | 'colli' | 'stuk' | 'liter';
+/** products.json (stage 4). Every unit the bestelbon sells by (docs/order-flow.md §3: per kg · pers · stuk · liter · colli;
+ *  row 15a: portie = the vleeshoofdgerechten, per portie van 200 g — docs/data/price-list.json). */
+export type Unit = 'kg' | 'pers' | 'colli' | 'stuk' | 'liter' | 'portie';
 
 /** products.json `categories`: one section of /producten (pill + anchor) or of a later page. */
 export interface Category {
@@ -88,7 +89,21 @@ export interface Delivery {
 /** menus.json (stage 7, lexicon §5.22): a seasonal menu the bestelbon lists on top when opened with ?menu=…
  *  `deadline` null → [DATUM] (nothing closes before FACTS.md has the date); `pickup` from/to null → [UUR] and the
  *  day's opening hours. Items have the products.json row shape (no category, no line). */
-export interface MenuItem { id: string; name: L10n; price: number | null; unit: Unit; min?: number; step?: number }
+export interface MenuItem {
+  id: string;
+  /** row 15a: the id of its `sections` entry */
+  section: string;
+  name: L10n;
+  /** persons (tapas), contents — as the products.json row */
+  line?: L10n;
+  price: number | null;
+  priceFrom?: boolean;
+  unit: Unit;
+  min?: number;
+  step?: number;
+}
+/** row 15a: one section of the menu card, in the owners' folder's order; `note` = the section's unit line */
+export interface MenuSection { id: string; name: L10n; note?: L10n }
 export interface Menu {
   id: string;
   /** /bestellen?menu=<param> opens the bestelbon with this menu on top */
@@ -102,6 +117,7 @@ export interface Menu {
   mail: L10n;
   deadline: string | null;
   pickup: { date: string; from: string | null; to: string | null }[];
+  sections: MenuSection[];
   items: MenuItem[];
 }
 export interface Menus { menus: Menu[] }
