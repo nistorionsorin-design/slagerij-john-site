@@ -1,5 +1,5 @@
 {
-  "_source": "Hero frames per docs/build-plan.md §3 (files, focal points) and the canvas boards Main/Desktop (zoom origins). Alts NL/RO and tag names NL/RO = lexicon §5.14 table (06.10) verbatim. Tag line and price stay [KOOKLIJN] / [PRIJS] (RO [PREȚ]) until FACTS.md has the owners' values. Claude Code, stage 1.",
+  "_source": "Hero frames per docs/build-plan.md §3 (files, focal points) and the canvas boards Main/Desktop (zoom origins). Alts NL/RO and tag names NL/RO = lexicon §5.14 table (06.10) verbatim. Tag line and price stay [KOOKLIJN] / [PRIJS] (RO [PREȚ]) until FACTS.md has the owners' values. Claude Code, stage 1. Stage 9 revision (13.10): the RO cooking-line placeholder is [GĂTIRE] (lexicon §5.19 / §6), the NL one stays [KOOKLIJN].",
   "hero": [
     {
       "src": "hero/mici-op-de-bbq-slagerij-john-zwevezele.jpg",
@@ -19,7 +19,7 @@
         },
         "line": {
           "nl": "[KOOKLIJN]",
-          "ro": "[KOOKLIJN]"
+          "ro": "[GĂTIRE]"
         },
         "price": {
           "nl": "[PRIJS]",
@@ -49,7 +49,7 @@
         },
         "line": {
           "nl": "[KOOKLIJN]",
-          "ro": "[KOOKLIJN]"
+          "ro": "[GĂTIRE]"
         },
         "price": {
           "nl": "[PRIJS]",
@@ -79,7 +79,7 @@
         },
         "line": {
           "nl": "[KOOKLIJN]",
-          "ro": "[KOOKLIJN]"
+          "ro": "[GĂTIRE]"
         },
         "price": {
           "nl": "[PRIJS]",
@@ -109,7 +109,7 @@
         },
         "line": {
           "nl": "[KOOKLIJN]",
-          "ro": "[KOOKLIJN]"
+          "ro": "[GĂTIRE]"
         },
         "price": {
           "nl": "[PRIJS]",
@@ -139,7 +139,7 @@
         },
         "line": {
           "nl": "[KOOKLIJN]",
-          "ro": "[KOOKLIJN]"
+          "ro": "[GĂTIRE]"
         },
         "price": {
           "nl": "[PRIJS]",

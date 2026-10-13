@@ -3,7 +3,7 @@
 // Forms: lexicon §9 „Prices: NL `€10/persoon`, `€45`, `€12,50/kg`; RO `10 €/persoană`, `45 €`, `12,50 €/kg`”;
 // „vanaf” = the old site's word (§5.11 „fondue vanaf €10”), RO „de la” (§5.5 RO „de la 50 €”).
 // Unit labels: the tag's short forms already on the hero and the home (lexicon §5.14: /kg · /colli · /pers → /pers.);
-// /stuk = §5.19 (RO /buc.), /liter = §2.2 „per liter” (RO: no lexicon form yet).
+// /stuk = §5.19 (RO /buc.), /liter = §2.2 „per liter” (RO /l, lexicon §5.19 / §6, 13.10).
 import type { Locale } from '../i18n/ui';
 import type { Products, Product, Unit } from '../data/types';
 import data from '../data/products.json';
@@ -12,7 +12,7 @@ export const products = data as Products;
 
 const units: Record<Locale, Record<Unit, string>> = {
   nl: { kg: '/kg', colli: '/colli', pers: '/pers', stuk: '/stuk', liter: '/liter' },
-  ro: { kg: '/kg', colli: '/colli', pers: '/pers.', stuk: '/buc.', liter: '[UNITATE]' },
+  ro: { kg: '/kg', colli: '/colli', pers: '/pers.', stuk: '/buc.', liter: '/l' },
 };
 const placeholder: Record<Locale, string> = { nl: '[PRIJS]', ro: '[PREȚ]' };
 

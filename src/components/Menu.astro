@@ -3,7 +3,8 @@
 // state C). Rendered before the footer as a plain dark list (`.menu--flat`): that is the no-JS menu the
 // burger link points to. header.ts moves it next to the sign, hides it and opens it as the full-screen
 // overlay. Phone only; from 960 px header.css hides it and the links sit in the sign.
-// Foot (header.css v2.2): the open chip (OpenChip.astro, stage 2) + Route · Bestel via WhatsApp · brand marks with their names.
+// Foot (header.css v2.6): the open chip (OpenChip.astro, stage 2) alone on its line · Bestel via WhatsApp · Route + the
+// brand marks with their names in one row.
 // No NL/RO here: the switch is in the sign, which stays above the overlay.
 import entity from '../data/entity.json';
 import BrandIcon from './BrandIcon.astro';
@@ -31,21 +32,18 @@ const isCurrent = (href: string) => path === href || path.startsWith(href + '/')
     ))}
   </nav>
   <div class="menu__foot on-ink">
-    <div class="menu__row">
-      {/* the chip keeps its natural width (open-chip.css v1.1); Route is pushed right (margin-left: auto), so a
-          longer state moves nothing, and the row wraps if a state and Route do not fit one line. */}
-      <OpenChip locale={locale} variant="i" />
-      <a class="menu__route" href={routeHref(entity.geo.latitude, entity.geo.longitude)} rel="noopener">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
-        {t.bar.route}
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-      </a>
-    </div>
+    {/* v2.6: the chip alone on its line, hugging its text (header.css `.menu__foot>.oc`) */}
+    <OpenChip locale={locale} variant="i" />
     <a class="btn btn--primary btn--lg btn--block" href={wa(`menu-${locale}`)}>
       <WaIcon />
       <span>{t.order}</span>
     </a>
     <div class="menu__social">
+      {/* v2.6: Route is the row's first link — pin icon + Route / Drum, the brand links' pattern, no arrow */}
+      <a class="menu__route" href={routeHref(entity.geo.latitude, entity.geo.longitude)} rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
+        <span>{t.bar.route}</span>
+      </a>
       {social.map((s) => (
         <a href={s.href} rel="noopener"><BrandIcon name={s.brand} /><span>{s.name}</span></a>
       ))}

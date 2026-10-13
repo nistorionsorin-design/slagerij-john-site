@@ -1,4 +1,4 @@
-/* Header — „het uithangbord” (the shop sign) · v2.5 (13.10.2026: the eight-item overlay (D-33) fits 390×844, 360×740 and 375×667 without scrolling — measured on this file; v2.4 06.10: wider, compact on scroll, never hides; sticky on mobile too; 44 px socials)
+/* Header — „het uithangbord” (the shop sign) · v2.6 (13.10.2026 10:25: the open chip stands alone in the menu foot and Route moves into the socials row — the chip's eight states no longer push anything to a second line; measured on all eight states, NL + RO. v2.5 13.10: the eight-item overlay (D-33) fits 390×844, 360×740 and 375×667; v2.4 06.10: wider, compact on scroll, never hides; sticky on mobile too; 44 px socials)
    Dan, 06.10 11:54: „the upper part — coolest trends, really nice, maybe on a darker background, make it special”.
    Source of truth: canvas boards „Header · mobiel 390 (3 toestanden)” and „Header · desktop 1440 (2 toestanden)”. Port 1:1.
 
@@ -99,16 +99,17 @@
 /* ---------- the overlay menu (mobile; on desktop the links sit in the sign) ----------
    <div class="menu" id="menu" hidden>
      <nav class="menu__links" aria-label="Menu"><a href="/bestellen"><span>Bestellen</span><em>online, afhalen of levering</em></a><a href="/producten"><span>Producten &amp; prijzen</span><em>per kg · colli's</em></a> … 8 links (D-33, 09.10: Bestellen first; strings §5.15) …</nav>
-     <div class="menu__foot"> open chip + Route row · <a class="btn btn--primary btn--lg btn--block">Bestel via WhatsApp</a> · <div class="menu__social"> four brand icons with their names </div> — no language switch here, it is in the sign </div>
+     <div class="menu__foot"> the open chip, alone on its line (v2.6) · <a class="btn btn--primary btn--lg btn--block">Bestel via WhatsApp</a> · <div class="menu__social"> <a class="menu__route" href="…maps dir…"> pin icon · Route </a> first (v2.6, no arrow icon), then the four brand icons with their names </div> — no language switch here, it is in the sign </div>
+   v2.6, why: in v2.5 the chip and Route shared one row that wrapped; six of the chip's eight states („Nu open · vandaag tot 13:00 · feestdag”, „Gesloten · opent donderdag 08:00”, RO „Deschis acum · închide la 18:00” …) are wider than the row leaves beside Route, so Route dropped to a second line (+44 px) and the menu scrolled 18–22 px at every gate size — Claude Code's stage-9 report, 13.10; Cowork's v2.5 check had measured the „still” state only. Now nothing in the foot depends on the chip's text: the chip hugs its text on its own line (its time ellipsizes if a state is wider than the row, open-chip.css contract), Route sits in the wrapping row of small links where it costs no height below ~430 px (that row is two lines anyway).
    </div> */
 /* The menu fits a 390×844 phone without scrolling (06.10 18:55): every label on one line at ~30 px, the sub-line under
    the label, no NL/RO in the foot (it sits in the sign above), the socials with their names in a wrapping row.
    v2.5 budget (13.10, eight rows since D-33): a row = padding + label + gap + sub-line + padding + 1 px border; the foot = the chip/Route
    row 44 · the yellow button · the socials (two rows of 44 below ~430 px wide) · two gaps. 390×844 keeps the 30 px label and gives
    up 1 px of padding per row and 2–4 px in the gaps (rows 63, 20 px spare). 360×740 and 375×667 take the two steps below.
-   Measured on this file with the site's fonts, NL and RO, overlay open at scroll 0: 390×844 20 px spare · 360×740 22 · 375×667 18;
-   412×915 and 430×932 spare ≥ 90. A phone browser's own bars (≈ 56 px Chrome, up to ≈ 115 px Safari) are not in the gate:
-   with them showing, the menu scrolls, as it did before (overflow:auto). */
+   Measured on this file (v2.6) with the site's fonts, NL and RO, overlay open at scroll 0, the worst of the eight chip states:
+   390×844 28 px spare · 360×740 30 · 375×667 26 · 360×640 6; 412×915 ≥ 85, 430×932 ≥ 100. A phone browser's own bars
+   (≈ 56 px Chrome, up to ≈ 115 px Safari) are not in the gate: with them showing, the menu scrolls, as it did before (overflow:auto). */
 .menu{position:fixed;inset:0;z-index:15;box-sizing:border-box;padding:84px 20px 16px 20px;background:var(--ink);color:var(--on-ink);overflow:auto;display:flex;flex-direction:column;gap:16px}
 .menu[hidden]{display:none}
 .menu__links{display:flex;flex-direction:column}
@@ -117,10 +118,13 @@
 .menu__links a em{font-family:var(--f-ui);font-style:normal;font-size:11px;letter-spacing:.04em;color:var(--on-ink-muted);white-space:nowrap}
 .menu__links a[aria-current="page"]{color:var(--accent)}
 .menu__foot{display:flex;flex-direction:column;gap:10px;margin-top:auto}
+.menu__foot>.oc{align-self:flex-start;max-width:100%}   /* v2.6: the chip alone on its line, hugging its text; a state wider than the row ellipsizes its time (open-chip.css) */
 .menu__social{display:flex;flex-wrap:wrap;gap:0 16px;font-family:var(--f-ui);font-size:12px;font-weight:600;color:var(--on-ink-muted)}
 .menu__social a{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 4px;margin:0 -4px;color:inherit;text-decoration:none}   /* 44 px tap targets (brief), the row still fits 390×844 */
+.menu__social .menu__route{color:var(--on-ink)}   /* v2.6: Route is the first link of the row — pin icon + „Route” / „Drum”, full paper, one notch above the muted brand names; the site's old .menu__row / .menu__route rules go */
+.menu__social .menu__route svg{width:16px;height:16px;flex:0 0 auto}
 /* short phones (≤ 780 px tall, e.g. 360×740): one step tighter so eight rows still need no scrolling — rows 52 (7 + 24,5 + 2 + 10,5 + 7 + 1),
-   the yellow button at the md height (48, buttons.css --btn-h), the foot 8 px apart. Measured: 360×740 22 px spare, 360×780 62 */
+   the yellow button at the md height (48, buttons.css --btn-h), the foot 8 px apart. Measured (v2.6, worst chip state): 360×740 30 px spare */
 @media (max-width:959px) and (max-height:780px){
   .menu{padding-top:76px;gap:14px}
   .menu__links a{padding:7px 0;gap:2px;font-size:clamp(24px,6.8vw,30px)}
@@ -129,7 +133,7 @@
   .menu__foot .btn--lg{min-height:var(--btn-h)}
 }
 /* very short phones (≤ 700 px tall, e.g. 375×667): one more step — rows 45 (5 + 22 + 2 + 10 + 5 + 1), the first row's box starts where the
-   sign ends (14 + 56 = 70). Measured: 375×667 18 px spare; 360×640 scrolls 2 px — below the three gate sizes the menu simply scrolls (overflow:auto above) */
+   sign ends (14 + 56 = 70). Measured (v2.6, worst chip state): 375×667 26 px spare · 360×640 6 — below that the menu simply scrolls (overflow:auto above) */
 @media (max-width:959px) and (max-height:700px){
   .menu{padding-top:70px;padding-bottom:12px;gap:10px}
   .menu__links a{padding:5px 0;font-size:clamp(21px,5.9vw,26px)}
@@ -142,7 +146,7 @@
 @media (prefers-reduced-motion:reduce){.menu:not([hidden]) .menu__links a{animation:none}}
 @media (min-width:960px){.menu{display:none!important}}
 
-/* ===== site additions (Claude Code, stage 0b2 / 1b; re-ported on v2.5 — narrow-laptop steps, mobile sticky and the socials row live in the file above) — below this line only; everything above is design/css/header.css 1:1 ===== */
+/* ===== site additions (Claude Code, stage 0b2 / 1b; re-ported on v2.6 — narrow-laptop steps, mobile sticky and the socials row live in the file above) — below this line only; everything above is design/css/header.css 1:1 ===== */
 
 /* focus rings in paper on the sign and in the menu (board „Header · desktop 1440”: „Focusringen in papier”);
    the .btn / .btn-icon / .lang__seg / a rules set the ring, this only recolours it */
@@ -165,10 +169,5 @@ html.menu-open .bar{visibility:hidden}
 .menu--flat{position:static;inset:auto;z-index:auto;padding:36px 20px 40px}
 .menu--flat .menu__links a{animation:none}
 
-/* menu foot, as the board „Header · mobiel 390” draws it inline: the chip + Route row (the socials row and its
-   names are in the file above since v2.2; NL/RO is in the sign) */
-.menu__row{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.menu__route{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin-left:auto;color:var(--on-ink);font-family:var(--f-ui);font-size:13px;font-weight:600;text-decoration:none}
-@media (hover:hover){.menu__social a:hover,.menu__route:hover{color:var(--on-ink);text-decoration:underline;text-underline-offset:4px}}
-/* stage 2: the open chip in the menu row keeps its natural width (open-chip.css v1.1) — if a state and Route do not fit one line, Route wraps below, right-aligned */
-.menu__row{flex-wrap:wrap;row-gap:4px}
+/* hover on the menu's socials row (Route is its first link since v2.6): the underline, in full paper */
+@media (hover:hover){.menu__social a:hover{color:var(--on-ink);text-decoration:underline;text-underline-offset:4px}}

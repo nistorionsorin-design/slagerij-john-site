@@ -207,7 +207,7 @@ if (built) {
     else warn('hero-weight', 'hero frame ≤ 90 kB mobile: check the served variant in the browser, not automated here');
   }
 
-  // 7 — placeholders (C-04). Any [UPPER-CASE] token ([PRIJS], [KOOKLIJN], [ALT RO], …),
+  // 7 — placeholders (C-04). Any [UPPER-CASE] token ([PRIJS], [KOOKLIJN], RO [GĂTIRE], [ALT RO], …),
   // the {TEL}-style braces of the lexicon, or lorem. WARN in dev/preview, FAIL with --release.
   {
     const found = new Map();
