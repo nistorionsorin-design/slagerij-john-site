@@ -53,7 +53,7 @@
     }
   ],
   "pages": {
-    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4; RO (stage 9) = the four §6 „Produse” items verbatim. /bestellen = lexicon §5.11 „Bestellen” (three items, added 07.10 for stage 5; §5.20 „FAQ on the page”), NL and RO verbatim; [BETALING] / [PLATĂ] stay visible until D6. Claude Code, stage 5 revision. /traiteur = lexicon §5.11 „Traiteur” (five items, added 08.10 for stage 6; §5.21 „FAQ on the page”), NL and RO verbatim, in that order; [PRIJS] / [PREȚ] stay visible until the owners answer (owners sheet D). Claude Code, stage 6. Row 15b (13.10): item 1 NL + RO = the §5.11 rewrite with the owners’ figures (docs/data/price-list.json), no placeholder left in it. /feestmenu-eindejaar = lexicon §5.11 „Eindejaar” (three items, added 08.10 for stage 7; §5.22 „FAQ on the page”), NL and RO verbatim, in that order; the third = the „Bestellen” item „Hoe betaal ik?” unchanged; [DATUM] / [UUR] / [BETALING] (RO [DATA] / [ORA] / [PLATĂ]) stay visible until the owners answer (B 3, B 11, D6). Claude Code, stage 7. /contact = lexicon §5.11 „Contact” (four items, added 09.10 for stage 8; §5.23 „FAQ”), NL and RO verbatim, in that order (open op zondag · leveren Tielt / Lichtervelde / Roeselare · open op feestdagen · bellen om te bestellen); [WHATSAPP-ANTWOORD] / [WHATSAPP-RĂSPUNS] stay visible until B 5. Claude Code, stage 8. /bbq-pakketten = lexicon §5.24 „FAQ on the page” (four items, added 15.10 for row 10a), NL and RO (§6 „Grătar”) verbatim, in that order: the home item gourmet per persoon · the Eindejaar item gourmetschotel bezorgen · the new item vlees per persoon (no gram figure: the owners’ number, sheet D 2) · the Traiteur item hoe lang vooraf. Claude Code, row 10a.",
+    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4; RO (stage 9) = the four §6 „Produse” items verbatim. /bestellen = lexicon §5.11 „Bestellen” (three items, added 07.10 for stage 5; §5.20 „FAQ on the page”), NL and RO verbatim; [BETALING] / [PLATĂ] stay visible until D6. Claude Code, stage 5 revision. /traiteur = lexicon §5.11 „Traiteur” (five items, added 08.10 for stage 6; §5.21 „FAQ on the page”), NL and RO verbatim, in that order; [PRIJS] / [PREȚ] stay visible until the owners answer (owners sheet D). Claude Code, stage 6. Row 15b (13.10): item 1 NL + RO = the §5.11 rewrite with the owners’ figures (docs/data/price-list.json), no placeholder left in it. /feestmenu-eindejaar = lexicon §5.11 „Eindejaar” (three items, added 08.10 for stage 7; §5.22 „FAQ on the page”), NL and RO verbatim, in that order; the third = the „Bestellen” item „Hoe betaal ik?” unchanged; [DATUM] / [UUR] / [BETALING] (RO [DATA] / [ORA] / [PLATĂ]) stay visible until the owners answer (B 3, B 11, D6). Claude Code, stage 7. /contact = lexicon §5.11 „Contact” (four items, added 09.10 for stage 8; §5.23 „FAQ”), NL and RO verbatim, in that order (open op zondag · leveren Tielt / Lichtervelde / Roeselare · open op feestdagen · bellen om te bestellen); [WHATSAPP-ANTWOORD] / [WHATSAPP-RĂSPUNS] stay visible until B 5. Claude Code, stage 8. /bbq-pakketten = lexicon §5.24 „FAQ on the page” (four items, added 15.10 for row 10a), NL and RO (§6 „Grătar”) verbatim, in that order: the home item gourmet per persoon · the Eindejaar item gourmetschotel bezorgen · the new item vlees per persoon (no gram figure: the owners’ number, sheet D 2) · the Traiteur item hoe lang vooraf. Claude Code, row 10a. /roemeense-specialiteiten = lexicon §5.25 „FAQ on the page” (four items, added 15.10 for row 10b), NL in §5.25’s order: the home item Wat zijn mici? (its [PRIJS] / [AANTAL] stay visible) · the new item Hoe bak ik mici? · the home items kleine hoeveelheden and leveren Tielt / Lichtervelde / Roeselare; RO = §6 „Mici și specialități”: the two new items Cât costă micii la kilogram? ([PREȚ] / [NUMĂR] visible) and Cum fac micii? · the §6 „Produse” items cantități mici and livrare (§6 names the delivery item „Livrați la …” with „the §6 Catering answer”; the /ro/catering delivery item answers „Amândouă …” to another question, so the §6 Produse item — question and answer as on /ro/produse — is reused verbatim). Claude Code, row 10b.",
     "producten": {
       "nl": [
         {
@@ -271,6 +271,44 @@
         {
           "q": "Cu cât timp înainte comand?",
           "a": "Scrie-ne imediat ce știi data; pentru un grătar la domiciliu și în decembrie, de preferat cu câteva săptămâni înainte. Un platou rece sau aperitive pentru mâine: sună-ne."
+        }
+      ]
+    },
+    "roemeens": {
+      "nl": [
+        {
+          "q": "Wat zijn mici?",
+          "a": "Mici zijn gekruide Roemeense gehaktrolletjes van rund en varken, voor op de BBQ of in de pan; [PRIJS] per kg, ongeveer [AANTAL] stuks per kg."
+        },
+        {
+          "q": "Hoe bak ik mici?",
+          "a": "Op een hete grill of in een pan met een beetje olie: ongeveer acht minuten, één keer draaien. Niet te lang, anders drogen ze uit."
+        },
+        {
+          "q": "Kan ik ook kleine hoeveelheden kopen?",
+          "a": "Ja. Aan de toog koopt u wat u nodig hebt; online bestelt u per kg of per pakket."
+        },
+        {
+          "q": "Leveren jullie in Tielt / Lichtervelde / Roeselare?",
+          "a": "Ja. Lichtervelde en Wingene liggen binnen 10 km (gratis vanaf €50), Tielt en Roeselare binnen 20 km (gratis vanaf €100); de afstand telt vanaf de winkel."
+        }
+      ],
+      "ro": [
+        {
+          "q": "Cât costă micii la kilogram?",
+          "a": "[PREȚ] pe kilogram, cam [NUMĂR] bucăți la kilogram. Îi iei de la tejghea sau îi comanzi pe WhatsApp."
+        },
+        {
+          "q": "Cum fac micii?",
+          "a": "Pe grătar încins sau în tigaie cu puțin ulei: cam opt minute, întorși o singură dată. Nu prea mult, ca să nu se usuce."
+        },
+        {
+          "q": "Pot cumpăra și cantități mici?",
+          "a": "Da. La tejghea iei cât ai nevoie; online comanzi la kilogram sau la pachet."
+        },
+        {
+          "q": "Livrați în Tielt, Lichtervelde sau Roeselare?",
+          "a": "Da. Lichtervelde și Wingene sunt la sub 10 km (gratuit de la 50 €), Tielt și Roeselare la sub 20 km (gratuit de la 100 €); distanța se măsoară de la magazin."
         }
       ]
     }

@@ -1,0 +1,248 @@
+---
+// /over-ons — Over ons (row 10b, 15.10). The canvas board `OverOns` is the concept; built the /traiteur way (D-30):
+// head on paper (eyebrow · H1 + accent · lead, the owners' portrait as a print with its caption) · the quotes ·
+// „Sinds wanneer” (two dated facts) · „Wat we maken” · „Waar u op kunt rekenen” · „Kom langs” (the line from
+// hours.json, Bestel via WhatsApp, the hours card with Route) · byline.
+// Desktop derived (D-30): the head is text 7fr beside the print 5fr; every block below puts its eyebrow heading left
+// (5fr) and its content right (7fr), the FAQ's grid; „Kom langs” sets the hours card in the right column.
+// Strings: src/i18n/overons.ts (lexicon §5.17 + its 15.10 build note; RO §6 „Despre noi”). Hours: hours.json via
+// Hours.astro (this page carries #openingsuren, Base `hoursCard`). Photo: src/assets/overons/ = team-portrait.webp,
+// byte-identical (the footer's print is the same bytes; Vite emits them once).
+// JSON-LD: BreadcrumbList (§8.4) + the §8.2 WebPage typed AboutPage (as /contact's ContactPage, §5.23) about the
+// shop's @id. No Product, no Offer. One view, two pages: src/pages/over-ons.astro and src/pages/ro/despre-noi.astro.
+// No script.
+import Base from '../layouts/Base.astro';
+import ArtPicture from '../components/ArtPicture.astro';
+import Hours from '../components/Hours.astro';
+import WaIcon from '../components/WaIcon.astro';
+import BrandIcon from '../components/BrandIcon.astro';
+import portrait from '../assets/overons/john-en-georgiana-slagerij-john-zwevezele.webp';
+import hours from '../data/hours.json';
+import reviews from '../data/reviews.json';
+import type { Day } from '../data/types';
+import { wa, type Locale } from '../i18n/ui';
+import { overOnsT } from '../i18n/overons';
+import '../styles/sections.css';
+
+export interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = overOnsT[locale];
+const origin = 'https://slagerij-john.be';
+const alternates = { nl: '/over-ons', ro: '/ro/despre-noi' };
+const path = alternates[locale];
+const homePath = locale === 'ro' ? '/ro' : '/';
+
+// the portrait (542 × 1108): 4:5 on the phone and in the desktop column, faces in the middle band (centre crop)
+const pic = {
+  mobile: { img: portrait, ratio: 0.8, max: 542, sizes: 'calc(100vw - 40px)', focalX: 50, focalY: 45 },
+  desktop: { img: portrait, ratio: 0.8, max: 542, sizes: '(min-width: 1440px) 460px, 32vw', focalX: 50, focalY: 45 },
+};
+
+// „Kom langs”: §5.17's sentence with Saturday's and Sunday's closing time from hours.json (build note: never typed)
+const closeOf = (day: string) => (hours.regular as Day[]).find((d) => d.dayOfWeek === day)?.slots.at(-1)?.close ?? '';
+const visitLine = t.visit.line(closeOf('Saturday'), closeOf('Sunday'));
+
+const rating = reviews.rating === null ? t.ratingPh : Number(reviews.rating).toLocaleString(locale === 'ro' ? 'ro-RO' : 'nl-BE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const count = reviews.count === null ? t.countPh : String(reviews.count);
+
+const waHref = `${wa(t.primarySrc)}&text=${encodeURIComponent(t.waMessage)}${locale === 'ro' ? '&lang=ro' : ''}`;
+
+const jsonld = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t.crumbs.home, item: `${origin}${homePath}` },
+      { '@type': 'ListItem', position: 2, name: t.crumbs.page, item: `${origin}${path}` },
+    ],
+  },
+  {
+    '@type': 'AboutPage',
+    '@id': `${origin}${path}#webpage`,
+    url: `${origin}${path}`,
+    name: t.title,
+    description: t.description,
+    inLanguage: locale === 'ro' ? 'ro-BE' : 'nl-BE',
+    isPartOf: { '@type': 'WebSite', '@id': `${origin}/#website`, url: `${origin}/`, name: 'Slagerij John' },
+    about: { '@id': `${origin}/#shop` },
+  },
+];
+
+const icons = {
+  star: '<path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/>',
+  shield: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+  paper: '<path d="M15 18h-5"/><path d="M18 14h-8"/><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2"/><rect width="8" height="4" x="10" y="6" rx="1"/>',
+};
+---
+<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} hoursCard>
+  <main id="main" class="oo">
+    <section class="container oh" aria-labelledby="oh-title">
+      <div class="oh__text">
+        <p class="eyebrow oh__eyebrow">{t.eyebrow}</p>
+        <h1 class="oh__h1" id="oh-title">{t.h1} <span class="accent oh__accent">{t.accent}</span></h1>
+        <p class="oh__lead">{t.lead}</p>
+      </div>
+      <figure class="oh__print">
+        <ArtPicture class="oh__pic" mobile={pic.mobile} desktop={pic.desktop} alt={t.alt} quality={60} priority />
+        <figcaption class="oh__caption">{t.caption}</figcaption>
+      </figure>
+    </section>
+
+    <section class="container oq" aria-label={t.quotes.map((q) => q.by).join(' · ')}>
+      {t.quotes.map((q) => (
+        <figure class="oq__item">
+          <blockquote class="oq__text"><p>{q.text}</p></blockquote>
+          <figcaption class="oq__by">{q.by}</figcaption>
+        </figure>
+      ))}
+    </section>
+
+    <section class="container ob" aria-labelledby="ot-title">
+      <h2 class="eyebrow ob__title" id="ot-title">{t.timeline.eyebrow}</h2>
+      <ol class="ot__list">
+        {t.timeline.items.map((it) => (
+          <li class="ot__item">
+            <time class="ot__when" datetime={it.date}>{it.when}</time>
+            <p class="ot__what">{it.what}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="container ob" aria-labelledby="om-title">
+      <h2 class="eyebrow ob__title" id="om-title">{t.make.eyebrow}</h2>
+      <ul class="om__list">
+        {t.make.lines.map((l) => <li>{l}</li>)}
+      </ul>
+    </section>
+
+    <section class="container ob" aria-labelledby="or-title">
+      <h2 class="eyebrow ob__title" id="or-title">{t.trust.eyebrow}</h2>
+      <ul class="or__list">
+        <li><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" set:html={icons.star} /><span>{t.trust.google(rating, count)}</span></li>
+        <li><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.shield} /><span>{t.trust.items[0]}</span></li>
+        <li><BrandIcon name="too-good-to-go" size={18} /><span>{t.trust.items[1]}</span></li>
+        <li><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.paper} /><span>{t.trust.press} {t.trust.pressNames.map((n, i) => (<>{i > 0 && ' · '}{n.href ? <a class="or__press" href={n.href} rel="noopener">{n.name}</a> : n.name}</>))}</span></li>
+      </ul>
+    </section>
+
+    <section class="container ob ov" aria-labelledby="ov-title">
+      <div class="ov__head">
+        <h2 class="eyebrow ob__title" id="ov-title">{t.visit.eyebrow}</h2>
+        <p class="ov__line">{visitLine}</p>
+        <a class="btn btn--primary btn--lg ov__wa" href={waHref} rel="nofollow"><WaIcon /><span>{t.primary}</span></a>
+      </div>
+      <div class="ov__card">
+        <Hours locale={locale} title={t.visit.hours} closed={t.visit.closed} route={t.visit.route} />
+      </div>
+    </section>
+
+    <div class="container oo-byline">
+      <p>{t.byline}</p>
+    </div>
+  </main>
+</Base>
+
+<style>
+  /* ── phone: the head on paper (eyebrow · H1 + accent · lead), the portrait as a print below it, then the blocks in
+     the 20 px gutters, each opened by its eyebrow heading ── */
+  .oh { display: flex; flex-direction: column; gap: 22px; padding-top: 28px; padding-bottom: 8px; }
+  .oh__text { display: flex; flex-direction: column; gap: 14px; }
+  .oh__eyebrow { margin: 0; }
+  .oh__h1 { margin: 0; font-size: 36px; line-height: 1.02; letter-spacing: -0.02em; }
+  .oh__accent { display: block; margin-top: 12px; font-size: var(--fs-accent); line-height: 1.05; color: var(--ox); }
+  .oh__lead { margin: 0; font-size: 15px; line-height: 1.45; max-width: 60ch; }
+  .oh__print { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .oh__print :global(picture) {
+    display: block;
+    aspect-ratio: 0.8;
+    border-radius: var(--r-frame);
+    overflow: hidden;
+    background: var(--ink);
+    box-shadow: 0 14px 30px -18px rgba(21, 17, 13, 0.45);
+  }
+  .oh__print :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .oh__caption { font-size: var(--fs-caption); line-height: 1.4; color: var(--muted); }
+
+  /* the quotes: Fraunces italic, an oxblood rule on the left, the name as a small eyebrow */
+  .oq { display: flex; flex-direction: column; gap: 22px; padding-top: 32px; padding-bottom: 4px; }
+  .oq__item { margin: 0; padding-left: 18px; border-left: 2px solid var(--ox); display: flex; flex-direction: column; gap: 10px; }
+  .oq__text { margin: 0; }
+  .oq__text p {
+    margin: 0;
+    font-family: var(--f-display);
+    font-optical-sizing: auto;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    max-width: 30ch;
+  }
+  .oq__by { font-size: var(--fs-eyebrow); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+
+  /* the blocks: eyebrow heading · content (hairline on top, as the FAQ list) */
+  .ob { display: flex; flex-direction: column; gap: 12px; padding-top: 30px; padding-bottom: 4px; }
+  .ob__title { margin: 0; font-family: var(--f-ui); font-weight: 600; letter-spacing: 0.16em; }
+
+  .ot__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .ot__item { display: flex; flex-direction: column; gap: 4px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .ot__when { font-family: var(--f-display); font-weight: 600; font-size: 20px; line-height: 1.15; color: var(--ox); font-variant-numeric: tabular-nums; }
+  .ot__what { margin: 0; font-size: 15px; line-height: 1.45; }
+
+  .om__list, .or__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .om__list li { padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; line-height: 1.45; }
+  .or__list li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; line-height: 1.4; }
+  .or__list :global(svg) { flex: 0 0 auto; color: var(--ox); }
+  .or__press { color: var(--ox); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+  .ov { gap: 18px; }
+  .ov__head { display: flex; flex-direction: column; gap: 12px; }
+  .ov__line { margin: 0; font-family: var(--f-display); font-weight: 500; font-size: 22px; line-height: 1.2; letter-spacing: -0.01em; max-width: 26ch; }
+  .ov__wa { width: 100%; }
+
+  .oo-byline { padding-top: 24px; padding-bottom: 28px; }
+  .oo-byline p { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12px; line-height: 1.5; color: var(--muted); }
+
+  /* ── desktop (derived, D-30) ── */
+  @media (min-width: 960px) {
+    .oh {
+      display: grid;
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: 56px;
+      align-items: center;
+      padding-top: 56px;
+    }
+    .oh__text { gap: 18px; }
+    .oh__h1 { font-size: clamp(48px, 4.4vw, 68px); line-height: 1; letter-spacing: -0.025em; }
+    .oh__accent { margin-top: 14px; font-size: clamp(30px, 2.6vw, 40px); }
+    .oh__lead { font-size: var(--fs-lead); line-height: 1.5; max-width: 52ch; }
+    .oh__print { max-width: 460px; justify-self: end; width: 100%; }
+    .oh__print :global(picture) { border-radius: var(--r-frame-lg); }
+
+    .oq { flex-direction: row; gap: 56px; padding-top: 80px; }
+    .oq__item { flex: 1 1 0; padding-left: 24px; gap: 14px; }
+    .oq__text p { font-size: clamp(28px, 2.4vw, 36px); line-height: 1.15; }
+
+    .ob {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 56px;
+      align-items: start;
+      padding-top: 80px;
+      padding-bottom: 0;
+    }
+    .ob__title { padding-top: 16px; }
+    .ot__item { flex-direction: row; align-items: baseline; gap: 24px; padding: 18px 0; }
+    .ot__when { flex: 0 0 220px; font-size: 24px; }
+    .ot__what, .om__list li, .or__list li { font-size: var(--fs-body); line-height: 1.5; }
+    .om__list li, .or__list li { padding: 16px 0; }
+
+    .ov { align-items: center; }
+    .ov__head { gap: 18px; }
+    .ov__head .ob__title { padding-top: 0; }
+    .ov__line { font-size: 32px; line-height: 1.1; }
+    .ov__wa { width: auto; align-self: flex-start; }
+
+    .oo-byline { padding-top: 56px; padding-bottom: 80px; }
+  }
+</style>
