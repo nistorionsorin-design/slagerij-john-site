@@ -121,7 +121,7 @@ const icons = {
         <li><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" set:html={icons.star} /><span>{t.trust.google(rating, count)}</span></li>
         <li><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.shield} /><span>{t.trust.items[0]}</span></li>
         <li><BrandIcon name="too-good-to-go" size={18} /><span>{t.trust.items[1]}</span></li>
-        <li><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.paper} /><span>{t.trust.press} {t.trust.pressNames.map((n, i) => (<>{i > 0 && ' · '}{n.href ? <a class="or__press" href={n.href} rel="noopener">{n.name}</a> : n.name}</>))}</span></li>
+        <li><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.paper} /><span>{t.trust.press.lead} {t.trust.press.items.map((n, i) => (<>{i > 0 && ', '}<a class="or__press" href={n.href} rel="noopener">{n.name}</a> {n.note}</>))}.</span></li>
       </ul>
     </section>
 

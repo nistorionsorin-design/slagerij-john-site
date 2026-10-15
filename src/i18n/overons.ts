@@ -3,7 +3,7 @@
 // 15.10 build note applied — the timeline carries the two dated facts only (the [JAAR] row and the [DATUM] · [MIJLPAAL]
 // row are out), no Herkomst block, the „Kom langs” line is written from hours.json (never typed: `visit.line` takes
 // Saturday's and Sunday's closing time), the photo is the owners' own site portrait (team-portrait.webp, §A) until the
-// shoot, the press names HLN · KW from FACTS „Opened”. §5.3 / §5.10 / §5.13 / §5.15 where §5.17 points to them.
+// shoot, the press line KW · HLN as worded by Cowork 15.10 11:55. §5.3 / §5.10 / §5.13 / §5.15 where §5.17 points to them.
 // /ro/despre-noi = `overOnsRo`, lexicon §6 „Despre noi” (shorter than the NL page, written for the reader: one quote),
 // same cuts; where §6 names a block without its heading, the §5.17 reading aid is the heading (as the footer's
 // „Vino la noi”, ui.ts).
@@ -11,11 +11,9 @@
 // reviews.json is empty (the footer's and the home's own placeholders, D-10).
 import { roReviews } from './home';
 
-/** the press names of §5.17 / §6, with the article URLs Dan gave in the chat 15.10; same in both languages */
-const PRESS: { name: string; href?: string }[] = [
-  { name: 'HLN', href: 'https://www.hln.be/wingene/slager-john-in-zwevezele-viert-eerste-verjaardag-met-feestelijke-opendeurdag-op-1-februari~ad165ed3/' },
-  { name: 'KW', href: 'https://kw.be/nieuws/economie/bedrijven/slager-john-opent-de-deuren-in-zwevezele-eigenlijk-heet-ik-ion-maar-iedereen-noemt-me-john/' },
-];
+/** the two press articles (URLs Dan gave in the chat 15.10), KW first — the order of the press line (Cowork 15.10 11:55) */
+const KW = 'https://kw.be/nieuws/economie/bedrijven/slager-john-opent-de-deuren-in-zwevezele-eigenlijk-heet-ik-ion-maar-iedereen-noemt-me-john/';
+const HLN = 'https://www.hln.be/wingene/slager-john-in-zwevezele-viert-eerste-verjaardag-met-feestelijke-opendeurdag-op-1-februari~ad165ed3/';
 
 export const overOnsNl = {
   /** §5.17 meta (55 / 145) */
@@ -57,15 +55,21 @@ export const overOnsNl = {
   },
 
   /** §5.17 „Erkenning” — the §5.6 items + the press line. The Google figure from reviews.json (placeholders while it is
-   *  empty); `google` = §5.17's „Google 5,0 · 22 beoordelingen”. Press: the names as text links, no logos. HLN = the
-   *  URL Dan gave in the chat 15.10 (the referrer parameter dropped; the article is about the first-anniversary open
-   *  day of 1 February, not the opening — wording question to Cowork); KW = the URL Dan gave 15.10 (the opening article). */
+   *  empty); `google` = §5.17's „Google 5,0 · 22 beoordelingen”. Press (Cowork 15.10 11:55): „In de krant: KW bij de
+   *  opening, HLN bij de eerste verjaardag.” — the names are the two links (no logos), each followed by its note; the
+   *  view joins them as „{lead} {name} {note}, {name} {note}.” KW = the opening article, HLN = the first-anniversary
+   *  open day of 1 February (the referrer parameter dropped). */
   trust: {
     eyebrow: 'Waar u op kunt rekenen',
     google: (rating: string, count: string) => `Google ${rating} · ${count} beoordelingen`,
     items: ['Erkend beenhouwer-spekslager', 'Too Good To Go-partner'],
-    press: 'In de krant bij de opening:',
-    pressNames: PRESS,
+    press: {
+      lead: 'In de krant:',
+      items: [
+        { name: 'KW', href: KW, note: 'bij de opening' },
+        { name: 'HLN', href: HLN, note: 'bij de eerste verjaardag' },
+      ],
+    },
   },
   ratingPh: '[SCORE]',
   countPh: '[AANTAL]',
@@ -129,8 +133,14 @@ export const overOnsRo: typeof overOnsNl = {
     eyebrow: 'Pe ce poți conta',
     google: (rating: string, count: string) => `Google ${rating} · ${roReviews(count)}`,
     items: ['Măcelar autorizat', 'Partener Too Good To Go'],
-    press: 'În presă la deschidere:',
-    pressNames: PRESS,
+    /** Cowork 15.10 11:55: „În presă: KW la deschidere, HLN la prima aniversare.” */
+    press: {
+      lead: 'În presă:',
+      items: [
+        { name: 'KW', href: KW, note: 'la deschidere' },
+        { name: 'HLN', href: HLN, note: 'la prima aniversare' },
+      ],
+    },
   },
   ratingPh: '[NOTĂ]',
   countPh: '[NUMĂR]',
