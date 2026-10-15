@@ -1,0 +1,42 @@
+---
+// Thumb — a product's own photo as a small square (row 5b, D-34; brief §3 tags: radius 10). One 112 px source, cut 1:1
+// at build at the entry's focal point (sharp's keyword gravity, as ArtPicture), AVIF + WebP, each file ≤ 6 kB. Shown at
+// 56 px on the bestelbon rows and the Eindejaar card, 64 px in the /producten tag. The <img> carries its rendered size
+// as width/height, so the box is there from the first paint: CLS 0. Lazy and async: nothing above the fold waits for it.
+// The entry comes from src/lib/thumbs.ts; an id without one renders nothing — the caller keeps its old layout.
+// Markup kept to the minimum (astro:assets getImage, not <Picture>): the WebP is the <img> itself, one AVIF <source>,
+// no scope attributes. /bestellen carries 24 of these; with <Picture>'s markup the page's gzip crossed the 2nd TCP
+// round trip Lighthouse simulates (43,8 kB) and mobile LCP went 2,4 → 2,6 s [MEASURED-OURS] local, 15.10.
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { thumbOf } from '../lib/thumbs';
+import type { Locale } from '../i18n/ui';
+
+export interface Props {
+  /** products.json id, or a menu row's id (ej26-…) */
+  id: string;
+  locale: Locale;
+  /** rendered size, px */
+  size?: 56 | 64;
+}
+const { id, locale, size = 56 } = Astro.props;
+const entry = thumbOf(id);
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/products/*.{jpg,jpeg,png,webp}', { eager: true });
+const img = entry ? files[`../assets/${entry.src}`]?.default : undefined;
+if (entry && !img) throw new Error(`product-photos.json: src/assets/${entry.src} not found`);
+
+// sharp crops by keyword, not by percentage: the focal point mapped to its third of the frame
+const gravity = (x = 50, y = 50) =>
+  [y < 40 ? 'top' : y > 60 ? 'bottom' : '', x < 40 ? 'left' : x > 60 ? 'right' : ''].filter(Boolean).join(' ') || 'center';
+const opts = img && entry ? { src: img, width: 112, height: 112, fit: 'cover' as const, position: gravity(entry.focalX, entry.focalY), quality: 50 } : null;
+const [avif, webp] = opts ? await Promise.all([getImage({ ...opts, format: 'avif' }), getImage({ ...opts, format: 'webp' })]) : [];
+---
+{entry && avif && webp && (
+  <picture class="thumb-pic"><source type="image/avif" srcset={avif.src} /><img class="thumb" src={webp.src} width={size} height={size} alt={entry.alt[locale]} loading="lazy" decoding="async" /></picture>
+)}
+
+<style is:global>
+  .thumb-pic { display: block; flex: none; }
+  .thumb { display: block; object-fit: cover; border-radius: var(--r-tag); background: var(--tag); }
+</style>

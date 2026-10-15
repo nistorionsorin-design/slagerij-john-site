@@ -22,7 +22,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
     </div>
     <ul class="toog__tags">
       {tags.map((g) => (
-        <li><CounterTag name={g.name[locale]} line={g.line[locale]} price={priceLabel(g, locale)} unit={unitLabel(g.unit, locale)} /></li>
+        <li><CounterTag name={g.name[locale]} line={g.line?.[locale]} price={priceLabel(g, locale)} unit={unitLabel(g.unit, locale)} /></li>
       ))}
     </ul>
     <a class="link-arrow toog__more" href={t.moreHref}>{t.more}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a>

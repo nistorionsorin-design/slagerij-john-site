@@ -137,7 +137,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
             </div>
             <ul class="pp-cat__tags">
               {c.items.map((p) => (
-                <li><CounterTag id={p.id} name={p.name[locale]} line={p.line[locale]} price={priceLabel(p, locale)} unit={unitLabel(p.unit, locale)} tone={p.featured ? 'ink' : 'paper'} /></li>
+                <li><CounterTag id={p.id} thumb={p.id} locale={locale} name={p.name[locale]} line={p.line?.[locale]} price={priceLabel(p, locale)} unit={unitLabel(p.unit, locale)} tone={p.featured ? 'ink' : 'paper'} /></li>
               ))}
             </ul>
             {isRo && t.roemeens.roHref && <a class="pp-cat__more" href={t.roemeens.roHref} lang="ro" hreflang="ro">{t.roemeens.roLabel}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a>}

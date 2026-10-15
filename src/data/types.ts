@@ -44,8 +44,9 @@ export interface Product {
   id: string;
   category: string;
   name: L10n;
-  /** the tag's one line: the cooking line (counter products) or the contents (colli) */
-  line: L10n;
+  /** the tag's one line: the cooking line (counter products) or the contents (colli); null = no line (row 5b:
+   *  gourmet-9 / gourmet-10, the name says „9 soorten”) */
+  line: L10n | null;
   /** € per unit, as the owners give it; null until FACTS.md has it */
   price: number | null;
   /** „vanaf €10” (fondue: the old site's „vanaf”) */

@@ -6,6 +6,11 @@
 // Tones: paper (the counter) · ink („aanbevolen pakket”: dark, price in the accent yellow). Nothing is baked in.
 // Stage 4: `id` = the product's anchor (/producten#mici, also the Product @id in its JSON-LD); the price never wraps
 // (board Producten: white-space nowrap on the price).
+// Row 5b (D-34): `thumb` = a products.json id; if that product has its own photo (src/lib/thumbs.ts) it shows at 64 px
+// left of the name (/producten only). Without one the tag is exactly the tag above: no empty box.
+import Thumb from './Thumb.astro';
+import { thumbOf } from '../lib/thumbs';
+import type { Locale } from '../i18n/ui';
 export interface Props {
   name: string;
   line?: string;
@@ -15,12 +20,17 @@ export interface Props {
   /** heading level of the name inside its section */
   as?: 'h3' | 'h4';
   id?: string;
+  /** product id whose photo opens the tag (row 5b) */
+  thumb?: string;
+  locale?: Locale;
 }
-const { name, line, price, unit, tone = 'paper', as: H = 'h3', id } = Astro.props;
+const { name, line, price, unit, tone = 'paper', as: H = 'h3', id, thumb, locale = 'nl' } = Astro.props;
+const hasThumb = !!thumbOf(thumb);
 const placeholder = !!price && price.startsWith('[');
 ---
-<article class:list={['tag', `tag--${tone}`]} id={id}>
+<article class:list={['tag', `tag--${tone}`, { 'tag--thumb': hasThumb }]} id={id}>
   <span class="tag__pin" aria-hidden="true"></span>
+  {hasThumb && thumb && <Thumb id={thumb} locale={locale} size={64} />}
   <div class="tag__text">
     <H class="tag__name">{name}</H>
     {line && <p class="tag__line">{line}</p>}
@@ -71,6 +81,8 @@ const placeholder = !!price && price.startsWith('[');
   .tag__amount { font-size: var(--fs-price); font-weight: 700; letter-spacing: -0.02em; color: var(--ox); }
   .tag__amount--ph { font-size: 20px; }
   .tag__unit { font-size: var(--fs-caption); color: var(--muted); }
+
+  .tag--thumb { grid-template-columns: auto 1fr auto; }
 
   .tag--ink { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
   .tag--ink .tag__pin { border: 0; }

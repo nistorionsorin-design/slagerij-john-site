@@ -18,6 +18,8 @@ import Base from '../layouts/Base.astro';
 import ArtPicture from '../components/ArtPicture.astro';
 import WaIcon from '../components/WaIcon.astro';
 import Faq from '../components/Faq.astro';
+import Thumb from '../components/Thumb.astro';
+import { thumbOf } from '../lib/thumbs';
 import photos from '../data/photos.json';
 import hours from '../data/hours.json';
 import type { MenuItem, Photo, SpecialDay, Unit } from '../data/types';
@@ -54,8 +56,11 @@ const bandPic = {
 const unit: Partial<Record<Unit, string>> = locale === 'ro'
   ? { pers: '/pers.', stuk: '/buc.', kg: '/kg', liter: '/l', portie: '/porție' }
   : { pers: '/pers.', stuk: '/stuk', kg: '/kg', liter: '/l', portie: '/portie' };
-type Row = { name: string; line: string; price: string; unit: string };
+// row 5b (D-34): a row whose dish has its own photo (src/lib/thumbs.ts) carries it at 56 px left of the name
+type Row = { id?: string; thumb?: boolean; name: string; line: string; price: string; unit: string };
 const row = (i: MenuItem): Row => ({
+  id: i.id,
+  thumb: !!thumbOf(i.id),
   name: i.name[locale],
   line: i.line?.[locale] ?? '',
   price: priceLabel({ ...i, category: '', line: { nl: '', ro: '' } }, locale),
@@ -137,8 +142,10 @@ const jsonld = [
               {s.name && <h3 class="em__sec-title"><span class="em__sec-name">{s.name}</span>{s.note && <span class="em__sec-note">{s.note}</span>}</h3>}
               <dl class="em__rows">
                 {s.rows.map((r) => (
-                  <div class="em__row">
-                    <dt>{r.name}{r.line && <span class="em__line">{r.line}</span>}</dt>
+                  <div class:list={['em__row', { 'em__row--thumb': r.thumb }]}>
+                    {r.thumb && r.id
+                      ? <dt><Thumb id={r.id} locale={locale} size={56} /><span class="em__dish">{r.name}{r.line && <span class="em__line">{r.line}</span>}</span></dt>
+                      : <dt>{r.name}{r.line && <span class="em__line">{r.line}</span>}</dt>}
                     <dd><span class="em__price">{r.price}</span><span class="em__unit">{r.unit}</span></dd>
                   </div>
                 ))}
@@ -183,6 +190,12 @@ const jsonld = [
 </Base>
 
 <style>
+  /* row 5b (D-34): a card row with its dish's photo — the 56 px square opens the row, the name beside it, the dotted
+     leader and the price on the photo's middle line. Rows without a photo keep menu-card.css as it is. */
+  .em__row--thumb { align-items: center; }
+  .em__row--thumb::before { top: 50%; }
+  .em__row--thumb dt { display: flex; align-items: center; gap: 10px; }
+  .em__dish { min-width: 0; }
   /* ── phone = board Eindejaar (390) ── */
   /* the head: ink, text only, full bleed (board: padding 22 20 26, gap 14, H1 Fraunces 38, accent italic 30 yellow,
      lead 14 on-ink-muted, two full-width buttons) */

@@ -153,10 +153,7 @@
       "featured": true
     },
     { "id": "gourmet-9", "category": "gourmet", "name": { "nl": "Gourmet 9 soorten", "ro": "Platou gourmet, 9 feluri" },
-      "line": {
-        "nl": "[KOOKLIJN]",
-        "ro": "[GĂTIRE]"
-      },
+      "line": null,
       "price": 10,
       "unit": "pers",
       "min": 2
@@ -217,10 +214,7 @@
       "min": 2
     },
     { "id": "gourmet-10", "category": "gourmet", "name": { "nl": "Gourmet 10 soorten", "ro": "Platou gourmet, 10 feluri" },
-      "line": {
-        "nl": "",
-        "ro": ""
-      },
+      "line": null,
       "price": 11,
       "unit": "pers",
       "min": 2

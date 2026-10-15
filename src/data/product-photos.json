@@ -1,0 +1,149 @@
+{
+  "_source": "Row 5b (Claude Code, 15.10): the site copy of docs/data/product-photos.json (Cowork owns that file; D-34). One entry per products.json id with its own photo; `src` = the file under src/assets/products/ (copied byte-identical from `from`, slugged NL names; a file that already sits elsewhere in src/assets/ under a slug gets that same name — Vite emits identical bytes once, under the first name it meets, and the photo must keep its SEO slug), focal point %, alt NL/RO as Cowork wrote them. A menu row (menus.json `ej26-<id>`) takes its product id's entry. An id not listed here renders no thumbnail (src/components/Thumb.astro). When the docs file grows (row 14), the new rows are copied here.",
+  "date": "2026-10-15",
+  "products": {
+    "tapas-2": {
+      "src": "products/tapasschotels-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 5.jpeg",
+      "focalX": 50,
+      "focalY": 55,
+      "alt": {
+        "nl": "Tapasschotels van Slagerij John op de toog",
+        "ro": "Platouri de tapas de la Măcelăria John, pe vitrină"
+      },
+      "level": "section"
+    },
+    "tapas-mix": {
+      "src": "products/tapasschotels-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 5.jpeg",
+      "focalX": 50,
+      "focalY": 55,
+      "alt": {
+        "nl": "Tapasschotels van Slagerij John op de toog",
+        "ro": "Platouri de tapas de la Măcelăria John, pe vitrină"
+      },
+      "level": "section"
+    },
+    "tapas-john-1": {
+      "src": "products/tapasschotels-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 5.jpeg",
+      "focalX": 50,
+      "focalY": 55,
+      "alt": {
+        "nl": "Tapasschotels van Slagerij John op de toog",
+        "ro": "Platouri de tapas de la Măcelăria John, pe vitrină"
+      },
+      "level": "section"
+    },
+    "tapas-john-2": {
+      "src": "products/tapasschotels-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 5.jpeg",
+      "focalX": 50,
+      "focalY": 55,
+      "alt": {
+        "nl": "Tapasschotels van Slagerij John op de toog",
+        "ro": "Platouri de tapas de la Măcelăria John, pe vitrină"
+      },
+      "level": "section"
+    },
+    "tapas-ro": {
+      "src": "products/tapasschotels-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 5.jpeg",
+      "focalX": 50,
+      "focalY": 55,
+      "alt": {
+        "nl": "Tapasschotels van Slagerij John op de toog",
+        "ro": "Platouri de tapas de la Măcelăria John, pe vitrină"
+      },
+      "level": "section"
+    },
+    "gourmet-9": {
+      "src": "products/gourmetschotel-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.13 13.jpeg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Gourmetschotel van Slagerij John",
+        "ro": "Platou gourmet de la Măcelăria John"
+      },
+      "level": "section"
+    },
+    "gourmet-10": {
+      "src": "products/gourmetschotel-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.13 13.jpeg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Gourmetschotel van Slagerij John",
+        "ro": "Platou gourmet de la Măcelăria John"
+      },
+      "level": "section"
+    },
+    "gourmet-luxe": {
+      "src": "products/gourmetschotel-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.13 13.jpeg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Gourmetschotel van Slagerij John",
+        "ro": "Platou gourmet de la Măcelăria John"
+      },
+      "level": "section"
+    },
+    "hapje-wrap-zalm": {
+      "src": "products/wraps-zalm-hesp.jpeg",
+      "from": "assets/raw/2026-10-05-whatsapp/plate1.jpeg",
+      "focalX": 50,
+      "focalY": 45,
+      "alt": {
+        "nl": "Wraps met zalm en hesp op een schotel",
+        "ro": "Wrapuri cu somon și șuncă pe un platou"
+      },
+      "level": "item"
+    },
+    "hapje-wrap-hesp": {
+      "src": "products/wraps-zalm-hesp.jpeg",
+      "from": "assets/raw/2026-10-05-whatsapp/plate1.jpeg",
+      "focalX": 50,
+      "focalY": 45,
+      "alt": {
+        "nl": "Wraps met hesp en zalm op een schotel",
+        "ro": "Wrapuri cu șuncă și somon pe un platou"
+      },
+      "level": "item"
+    },
+    "hapje-wrap-kip": {
+      "src": "products/wraps-kip.jpeg",
+      "from": "assets/raw/2026-10-05-whatsapp/sandwhich.jpeg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Wraps met kip",
+        "ro": "Wrapuri cu pui"
+      },
+      "level": "item"
+    },
+    "mici": {
+      "src": "products/verse-mici-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 7.jpeg",
+      "focalX": 50,
+      "focalY": 45,
+      "alt": {
+        "nl": "Verse mici, klaar voor de barbecue",
+        "ro": "Mici proaspeți, gata pentru grătar"
+      },
+      "level": "item"
+    },
+    "colli-bbq": {
+      "src": "products/bbq-gemarineerd.jpeg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at14.jpeg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Gemarineerd vlees voor de barbecue, verpakt",
+        "ro": "Carne marinată pentru grătar, ambalată"
+      },
+      "level": "item"
+    }
+  }
+}

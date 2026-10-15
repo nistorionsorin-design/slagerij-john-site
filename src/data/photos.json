@@ -1,5 +1,5 @@
 {
-  "_source": "Hero frames per docs/build-plan.md §3 (files, focal points) and the canvas boards Main/Desktop (zoom origins). Alts NL/RO and tag names NL/RO = lexicon §5.14 table (06.10) verbatim. Tag line and price stay [KOOKLIJN] / [PRIJS] (RO [PREȚ]) until FACTS.md has the owners' values. Claude Code, stage 1. Stage 9 revision (13.10): the RO cooking-line placeholder is [GĂTIRE] (lexicon §5.19 / §6), the NL one stays [KOOKLIJN].",
+  "_source": "Hero frames per docs/build-plan.md §3 (files, focal points) and the canvas boards Main/Desktop (zoom origins). Alts NL/RO and tag names NL/RO = lexicon §5.14 table (06.10) verbatim. Tag line and price stay [KOOKLIJN] / [PRIJS] (RO [PREȚ]) until FACTS.md has the owners' values. Claude Code, stage 1. Stage 9 revision (13.10): the RO cooking-line placeholder is [GĂTIRE] (lexicon §5.19 / §6), the NL one stays [KOOKLIJN]. Row 5b (15.10): frame 3 „Hapjes & feestschotels” price = vanaf €1,50 /stuk (RO de la 1,50 € /buc.) — the cheapest hapje of the owners' list (lepeltje paté, [OWNER] 13.10, docs/data/price-list.json); its line stays [KOOKLIJN].",
   "hero": [
     {
       "src": "hero/mici-op-de-bbq-slagerij-john-zwevezele.jpg",
@@ -82,12 +82,12 @@
           "ro": "[GĂTIRE]"
         },
         "price": {
-          "nl": "[PRIJS]",
-          "ro": "[PREȚ]"
+          "nl": "vanaf €1,50",
+          "ro": "de la 1,50 €"
         },
         "unit": {
-          "nl": "/pers",
-          "ro": "/pers."
+          "nl": "/stuk",
+          "ro": "/buc."
         }
       }
     },

@@ -14,6 +14,8 @@ import type { Product } from '../data/types';
 import delivery from '../data/delivery.json';
 import WaIcon from './WaIcon.astro';
 import OrderSlip from './OrderSlip.astro';
+import Thumb from './Thumb.astro';
+import { thumbOf } from '../lib/thumbs';
 import { products, priceLabel, unitLabel } from '../lib/price';
 import { menus, fillMenu } from '../lib/menu';
 import { qtyRule, fromMin, waText, menuRows, menuOpen } from '../lib/order-core.js';
@@ -131,12 +133,14 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
             {l.items.map((p) => {
               const r = qtyRule(p);
               const ph = p.price === null;
+              const line = p.line?.[locale];
               return (
                 <li class="oi" data-item={p.id}>
                   <span class="oi__pin" aria-hidden="true"></span>
+                  {thumbOf(p.id) && <Thumb id={p.id} locale={locale} size={56} />}
                   <div class="oi__text">
                     <p class="oi__name" id={`n-${p.id}`}>{p.name[locale]}</p>
-                    {p.line[locale] && <p class="oi__line">{p.line[locale]}</p>}
+                    {line && <p class="oi__line">{line}</p>}
                   </div>
                   <div class="oi__foot">
                     <p class="oi__price">
@@ -392,6 +396,12 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
     border: 1px solid var(--tag-pin);
   }
   .oi__text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  /* row 5b (D-34): a row with its own photo — the 56 px square left of the name, the name centred on it, the price and
+     the stepper under both; the pin hole on the photo's middle. No wrapper element (the page's gzip sits near Lighthouse's
+     2nd TCP round trip, see Thumb.astro); a row without a photo has no .thumb-pic and keeps the flex column above. */
+  .oi:has(> .thumb-pic) { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 10px 12px; align-items: center; }
+  .oi:has(> .thumb-pic) > .oi__foot { grid-column: 1 / -1; }
+  .oi:has(> .thumb-pic) > .oi__pin { top: 36px; }
   .oi__name { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 19px; line-height: 1.1; }
   .oi__line { margin: 0; font-size: 12px; line-height: 1.35; color: var(--muted); }
   .oi__foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
