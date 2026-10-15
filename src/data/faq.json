@@ -53,7 +53,7 @@
     }
   ],
   "pages": {
-    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4; RO (stage 9) = the four §6 „Produse” items verbatim. /bestellen = lexicon §5.11 „Bestellen” (three items, added 07.10 for stage 5; §5.20 „FAQ on the page”), NL and RO verbatim; [BETALING] / [PLATĂ] stay visible until D6. Claude Code, stage 5 revision. /traiteur = lexicon §5.11 „Traiteur” (five items, added 08.10 for stage 6; §5.21 „FAQ on the page”), NL and RO verbatim, in that order; [PRIJS] / [PREȚ] stay visible until the owners answer (owners sheet D). Claude Code, stage 6. Row 15b (13.10): item 1 NL + RO = the §5.11 rewrite with the owners’ figures (docs/data/price-list.json), no placeholder left in it. /feestmenu-eindejaar = lexicon §5.11 „Eindejaar” (three items, added 08.10 for stage 7; §5.22 „FAQ on the page”), NL and RO verbatim, in that order; the third = the „Bestellen” item „Hoe betaal ik?” unchanged; [DATUM] / [UUR] / [BETALING] (RO [DATA] / [ORA] / [PLATĂ]) stay visible until the owners answer (B 3, B 11, D6). Claude Code, stage 7. /contact = lexicon §5.11 „Contact” (four items, added 09.10 for stage 8; §5.23 „FAQ”), NL and RO verbatim, in that order (open op zondag · leveren Tielt / Lichtervelde / Roeselare · open op feestdagen · bellen om te bestellen); [WHATSAPP-ANTWOORD] / [WHATSAPP-RĂSPUNS] stay visible until B 5. Claude Code, stage 8.",
+    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4; RO (stage 9) = the four §6 „Produse” items verbatim. /bestellen = lexicon §5.11 „Bestellen” (three items, added 07.10 for stage 5; §5.20 „FAQ on the page”), NL and RO verbatim; [BETALING] / [PLATĂ] stay visible until D6. Claude Code, stage 5 revision. /traiteur = lexicon §5.11 „Traiteur” (five items, added 08.10 for stage 6; §5.21 „FAQ on the page”), NL and RO verbatim, in that order; [PRIJS] / [PREȚ] stay visible until the owners answer (owners sheet D). Claude Code, stage 6. Row 15b (13.10): item 1 NL + RO = the §5.11 rewrite with the owners’ figures (docs/data/price-list.json), no placeholder left in it. /feestmenu-eindejaar = lexicon §5.11 „Eindejaar” (three items, added 08.10 for stage 7; §5.22 „FAQ on the page”), NL and RO verbatim, in that order; the third = the „Bestellen” item „Hoe betaal ik?” unchanged; [DATUM] / [UUR] / [BETALING] (RO [DATA] / [ORA] / [PLATĂ]) stay visible until the owners answer (B 3, B 11, D6). Claude Code, stage 7. /contact = lexicon §5.11 „Contact” (four items, added 09.10 for stage 8; §5.23 „FAQ”), NL and RO verbatim, in that order (open op zondag · leveren Tielt / Lichtervelde / Roeselare · open op feestdagen · bellen om te bestellen); [WHATSAPP-ANTWOORD] / [WHATSAPP-RĂSPUNS] stay visible until B 5. Claude Code, stage 8. /bbq-pakketten = lexicon §5.24 „FAQ on the page” (four items, added 15.10 for row 10a), NL and RO (§6 „Grătar”) verbatim, in that order: the home item gourmet per persoon · the Eindejaar item gourmetschotel bezorgen · the new item vlees per persoon (no gram figure: the owners’ number, sheet D 2) · the Traiteur item hoe lang vooraf. Claude Code, row 10a.",
     "producten": {
       "nl": [
         {
@@ -233,6 +233,44 @@
         {
           "q": "Pot comanda și prin telefon?",
           "a": "Da, în programul magazinului, la 0466 18 64 57. Pe WhatsApp poți scrie oricând; răspundem [WHATSAPP-RĂSPUNS]."
+        }
+      ]
+    },
+    "bbq": {
+      "nl": [
+        {
+          "q": "Wat kost een gourmetschotel per persoon?",
+          "a": "Gourmet 9 soorten €10, 10 soorten €11, luxe €15 per persoon; fondue vanaf €10."
+        },
+        {
+          "q": "Kan ik een gourmetschotel thuis laten bezorgen?",
+          "a": "Ja: gratis tot 10 km vanaf €50, tot 20 km vanaf €100; de afstand telt vanaf de winkel. Voor 24 en 31 december: vraag het ons bij de bestelling."
+        },
+        {
+          "q": "Hoeveel vlees reken ik per persoon voor een barbecue?",
+          "a": "Zeg ons het aantal personen en wat u nog serveert; wij wegen af. Voor een pakket per persoon rekenen wij het voor u uit."
+        },
+        {
+          "q": "Hoe lang vooraf moet ik bestellen?",
+          "a": "Stuur uw aanvraag zodra u de datum kent; voor een barbecue aan huis en in december liefst enkele weken vooraf. Een koude schotel of hapjes voor morgen: bel ons even."
+        }
+      ],
+      "ro": [
+        {
+          "q": "Cât costă un platou gourmet de persoană?",
+          "a": "Gourmet cu 9 feluri 10 €, cu 10 feluri 11 €, de lux 15 € de persoană; fondue de la 10 €."
+        },
+        {
+          "q": "Livrați platoul acasă?",
+          "a": "Da: gratuit până la 10 km de la 50 €, până la 20 km de la 100 €; distanța se măsoară de la magazin. Pentru 24 și 31 decembrie: întreabă-ne la comandă."
+        },
+        {
+          "q": "Câtă carne socotesc de persoană la un grătar?",
+          "a": "Spune-ne câte persoane și ce mai servești; noi cântărim. La pachetul de persoană, calculăm noi pentru tine."
+        },
+        {
+          "q": "Cu cât timp înainte comand?",
+          "a": "Scrie-ne imediat ce știi data; pentru un grătar la domiciliu și în decembrie, de preferat cu câteva săptămâni înainte. Un platou rece sau aperitive pentru mâine: sună-ne."
         }
       ]
     }
