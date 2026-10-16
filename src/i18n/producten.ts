@@ -28,6 +28,18 @@ export const productenNl = {
     all: 'Alles',
   },
 
+  /** lexicon §5.19 „Product cards under the head” (16.10 21:40, D-37 v5): the group's hidden H2 (C-06) + the four
+   *  tiles, in the order of photos.json `producten_head.tiles` */
+  tiles: {
+    label: 'Van de toog',
+    items: [
+      { name: 'Salami met peper', sub: 'Roemeense specialiteiten' },
+      { name: 'Gerookt spek', sub: 'Roemeense specialiteiten' },
+      { name: 'Parizer', sub: 'Roemeense specialiteiten' },
+      { name: 'Gerolde hesp', sub: 'Charcuterie' },
+    ],
+  },
+
   /** Roemeense section: eyebrow = §4 / §5.15 page name; heading = lexicon §7 GBP description
    *  „Roemeense specialiteiten: mici, gerookte worst, pastrami.”, the list part; the RO link = the RO page name of
    *  /ro/mici-si-specialitati (§6), as on the home's grid (board: „și în română →”) */
@@ -92,6 +104,17 @@ export const productenRo = {
   filter: {
     legend: 'Produse',
     all: 'Toate',
+  },
+
+  /** lexicon §6 „Produse — the product cards under the head” (16.10 21:40, D-37 v5), same keys as the NL cards */
+  tiles: {
+    label: 'De la tejghea',
+    items: [
+      { name: 'Salam cu piper', sub: 'Specialități românești' },
+      { name: 'Slănină afumată', sub: 'Specialități românești' },
+      { name: 'Parizer', sub: 'Specialități românești' },
+      { name: 'Șuncă rulată', sub: 'Mezeluri' },
+    ],
   },
 
   /** no §6 heading for these two sections: they carry the §6 category name (the pill), no eyebrow, no NL link */

@@ -5,6 +5,9 @@
 // `is-live` — every animation of the hero starts in that same style pass, so the
 // frames and the tags are in step without any timing code.
 // Stays a still when: reduced motion, no CSS mask support, or Save-Data is on.
+// The start-up (after load · insert · decode · live) is src/scripts/frames.ts, shared with FrameLoop (row 14).
+import { afterLoad, insertFrames, reducedMotion, saveData, whenDecoded } from './frames';
+
 const hero = document.querySelector<HTMLElement>('[data-hero]');
 
 const maskOk = () =>
@@ -13,32 +16,15 @@ const maskOk = () =>
 
 function start() {
   if (!hero || hero.dataset.inserted) return;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !maskOk()) return;
-  const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
-  if (conn?.saveData) return;
+  if (reducedMotion() || !maskOk() || saveData()) return;
 
-  const frames = hero.querySelector<HTMLTemplateElement>('template[data-frames]');
   const tags = hero.querySelector<HTMLTemplateElement>('template[data-tags]');
   const scrim = hero.querySelector('.hero__scrim');
   const homeTag = hero.querySelector('.ht.home');
-  if (!frames || !scrim) return;
-
-  hero.dataset.inserted = '1';
-  scrim.before(frames.content.cloneNode(true));
+  if (!scrim || !insertFrames(hero, scrim)) return;
   if (tags && homeTag) homeTag.after(tags.content.cloneNode(true));
 
-  const next = hero.querySelector<HTMLImageElement>('.hb.vi img');
-  const live = () => hero.classList.add('is-live');
-  if (!next) return live();
-  // Go live once frame 2 has arrived; give decode() at most 1 s on top (Chrome defers
-  // decode() in hidden tabs, so it alone could keep the hero still for ever).
-  const decoded = () => Promise.race([next.decode().catch(() => {}), new Promise((r) => setTimeout(r, 1000))]).then(live);
-  if (next.complete) decoded();
-  else {
-    next.addEventListener('load', decoded, { once: true });
-    next.addEventListener('error', live, { once: true });
-  }
+  whenDecoded(hero.querySelector<HTMLImageElement>('.hb.vi img'), () => hero.classList.add('is-live'));
 }
 
-if (document.readyState === 'complete') start();
-else addEventListener('load', start, { once: true });
+afterLoad(start);

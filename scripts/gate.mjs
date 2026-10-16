@@ -195,7 +195,10 @@ if (built) {
         // a bare `alt` (Astro's rendering of alt="") is a valid empty alt
         if (attr(tag, 'alt') === undefined && !/\salt(?=[\s/>])/i.test(tag)) e.push(`${p.file}: ${src} without alt`);
         const hero = attr(tag, 'fetchpriority') === 'high';
-        if (!hero && attr(tag, 'loading') !== 'lazy') e.push(`${p.file}: ${src} not lazy`);
+        // D-37: a piece of the first screen that is not the page's one high-priority image (the /producten head's
+        // slot product 1) is eager and says so with data-first-paint (D-12)
+        const firstPaint = /\sdata-first-paint(?=[\s=/>])/i.test(tag) && attr(tag, 'loading') === 'eager';
+        if (!hero && !firstPaint && attr(tag, 'loading') !== 'lazy') e.push(`${p.file}: ${src} not lazy`);
         if (!/\.(avif|webp|svg)(\?|$)/i.test(src)) e.push(`${p.file}: ${src} is not AVIF/WebP`);
       }
       if ((p.html.match(/fetchpriority="high"/gi) || []).length > 1) e.push(`${p.file}: more than one fetchpriority=high`);
@@ -303,6 +306,20 @@ if (built) {
         if (imgs > 1 && !/data-pause/.test(sec)) e.push(`${p.file}: ${name} has ${imgs} frames but no pause control`);
         if (cls === 'hero' && imgs && !/<img[^>]*fetchpriority="high"/i.test(sec)) e.push(`${p.file}: first hero frame is not a plain fetchpriority=high <img>`);
       }
+      // row 14: a FrameLoop (the hero's engine in a photo slot) — frames 2… sit in a <template>, so count those too
+      const fl = p.html.match(/<div class="fl[\s"][\s\S]*?<\/template>[\s\S]*?<\/span>\s*<\/div>/i)?.[0];
+      if (fl) {
+        mounted++;
+        const imgs = (fl.match(/<img/gi) || []).length;
+        if (imgs > 1 && !/data-pause/.test(fl)) e.push(`${p.file}: frame loop has ${imgs} frames but no pause control`);
+        // frame 1 in the HTML as a fetchpriority=high <img> — or, the D-36 exception on /producten (data-defer-first,
+        // the D-37 head is the LCP there): frame 1 waits for `load` in <template data-first>, with a <noscript> copy so
+        // the slot is never empty without JS
+        if (/data-defer-first/.test(fl)) {
+          if (!/<template data-first[^>]*>\s*<div class="fl__f fl__f0[^>]*>[\s\S]*?<img\b/i.test(fl)) e.push(`${p.file}: deferred loop frame 1 lacks its <template data-first>`);
+          if (!/<noscript>\s*<div class="fl__f fl__f0[^>]*>[\s\S]*?<img\b/i.test(fl)) e.push(`${p.file}: deferred loop frame 1 lacks its <noscript> still`);
+        } else if (!/<img[^>]*fetchpriority="high"/i.test(fl.split('<template')[0])) e.push(`${p.file}: first loop frame is not in the HTML as a fetchpriority=high <img>`);
+      }
     }
     // page CSS is inlined into <style> (astro.config inlineStylesheets: 'always'); read both places
     const css = [
@@ -347,7 +364,8 @@ if (built) {
   }
 
   // client JS budget (D-06 one island + D-12 hero loop + D-20 open chip + the header's menu and
-  // smart-sticky, build plan stage 0b2 + the bestelbon, stage 5 + the traiteur quote form, stage 6): a script ships only
+  // smart-sticky, build plan stage 0b2 + the bestelbon, stage 5 + the traiteur quote form, stage 6 + the /producten
+  // tiles' chip links, D-37 v5): a script ships only
   // on a page that mounts its component, from /_astro/, never inline (CSP script-src 'self').
   {
     const js = walk(dist).filter((f) => /\.(js|mjs)$/.test(f));
@@ -360,6 +378,7 @@ if (built) {
       ['QaBox', /<section class="qa[\s"]/],
       ['OrderForm', /<form class="order[\s"]/],
       ['QuoteForm', /<form class="qf[\s"]/],
+      ['ProductTiles', /<section class="pt[\s"]/],
     ];
     for (const p of pages)
       for (const tag of p.html.match(/<script[^>]*\ssrc="[^"]*"[^>]*>/gi) || []) {
@@ -367,7 +386,7 @@ if (built) {
         const file = src.split('/').pop();
         const m = mounts.find(([name]) => file.startsWith(name + '.'));
         if (!src.startsWith('/_astro/')) e.push(`${p.file}: ${src} not served from /_astro/`);
-        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / Header / OpenChip / QaBox / OrderForm / QuoteForm)`);
+        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / Header / OpenChip / QaBox / OrderForm / QuoteForm / ProductTiles)`);
         else if (!m[1].test(p.html)) e.push(`${p.file}: ships ${file} without its component`);
       }
     verdict('client-js', e, `${js.length} JS files in dist; no inline script; each script ships only with its component`);

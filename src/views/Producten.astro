@@ -10,7 +10,30 @@
 // de toog” pattern); the order card in two columns; FAQ = the home's component.
 // Data: products.json (stage 4 shape; prices null → [PRIJS] until FACTS.md). Strings: src/i18n/producten.ts.
 // JSON-LD: BreadcrumbList (lexicon §8.4) + one Product per tag (§8.3; the offer's price only once FACTS.md has it).
-import { Picture } from 'astro:assets';
+// Row 14 (16.10, Dan 15:35): the page photo is a frame loop that follows the chips (FrameLoop.astro, the hero's engine
+// reused; photos.json `producten`: 8 frames + `by_chip`); it replaces the single photo (hero frame 2) and the varken
+// section photo of 15:20.
+// D-37 v3 (16.10, Dan 17:01 „b for sure”, 17:13 „the ones appearing on the right just change like the other photos,
+// with Ken Burns”, 17:23 the chop as the ground; spec design/producten-hero.md): the page head is a dark print as on
+// /traiteur — an ink band, full bleed, the bone-in chop (#46, cut out, laid horizontal, RGBA) as a wide slab across its
+// right side, the spec's gradient darkening it only under the text column (it darkens, it does not desaturate), the
+// text column over the left (strings unchanged), and over the right part of the chop one fixed slot that shows one
+// product at a time (HeadSlot.astro: 43 → 42 → 40 → 30, the hero's frame engine). The chop zooms 1 → 1,04 over 30 s
+// (alternate); one pause (the hero's control) holds the head and the frame loop below (FrameLoop `pauseFor`); reduced
+// motion = still. The chop and product 1 are in the HTML at opacity 1, eager (D-12). The loop sits under the band: the
+// phone's 190 px slot as before, a 3 : 1 print across the container from 960; its frame 1 waits for `load` on this page
+// (`deferFirst`, Dan 16.10 after the first D-37 measurement: the head alone = LCP 2,6 s, with the loop's frame 1 2,9).
+// D-37 v4 (16.10, Dan): no full-bleed band any more — the head IS /traiteur's head (src/styles/print-head.css: the
+// contained print, radius, height, padding, type, buttons, gradient) with the chop as its ground and the slot in the
+// print's right column; the chips stay inside it; the loop under it has the print's width.
+// D-37 v4 §6 (16.10 21:26, Dan „take them out, they don't look good there, arrange them nicely down”): no slot in the
+// head any more — text column + the chop ground only; the four cut-outs stand in a counter row right under the head
+// (CounterRow.astro, same width, on the cream page), the loop below that.
+// D-37 v5 §7 (16.10 21:40, Dan 21:36 „in cards like in Traiteur … take out the big one below”): the counter row and the
+// chip-driven frame loop are gone (FrameLoop, its loader, the row; photos.json `producten` stays as data); under the
+// head four tiles on /traiteur's tile (ProductTiles.astro + src/styles/tiles.css), each a link to its chip.
+import { getImage } from 'astro:assets';
+import ProductTiles from '../components/ProductTiles.astro';
 import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import OpenChip from '../components/OpenChip.astro';
@@ -18,11 +41,12 @@ import CounterTag from '../components/CounterTag.astro';
 import Faq from '../components/Faq.astro';
 import WaIcon from '../components/WaIcon.astro';
 import photos from '../data/photos.json';
-import type { Photo, Product } from '../data/types';
+import type { Product } from '../data/types';
 import { products, priceLabel, unitLabel } from '../lib/price';
-import { wa, type Locale } from '../i18n/ui';
+import { wa, hero, type Locale } from '../i18n/ui';
 import { productenT } from '../i18n/producten';
 import '../styles/sections.css';
+import '../styles/print-head.css';
 
 export interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -43,18 +67,42 @@ const cats = onPage.map((id) => {
   return { ...c, items: products.items.filter((p) => p.category === id && !p.orderOnly) }; // orderOnly: bestelbon only (stage 5)
 });
 
-// the board's photo = hero frame 2 (the counter), cropped at build to 4:3 at its focal point (the original is a
-// 720 × 960 portrait; the phone shows it 190 px tall, the desktop column 4:3)
-const files = import.meta.glob<{ default: ImageMetadata }>('../assets/hero/*.{jpg,jpeg,png,webp}', { eager: true });
-const ph = (photos.hero as Photo[])[1];
-const img = files[`../assets/${ph.src}`]?.default;
-if (!img) throw new Error(`photos.json hero[1]: src/assets/${ph.src} not found`);
-const cropW = Math.min(img.width, Math.round((img.height * 4) / 3));
-const photo = {
-  crop: { width: cropW, height: Math.round((cropW * 3) / 4), fit: 'cover' as const, position: 'center' },
-  widths: [480, 768].filter((w) => w < cropW).concat(cropW),
-  pos: `object-position:${ph.focalX ?? 50}% ${ph.focalY ?? 50}%`,
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/producten/*.{jpg,jpeg,png,webp}', { eager: true });
+
+// the head (D-37 v3): photos.json `producten_head`
+const headData = photos.producten_head as {
+  ground: { src: string; alt: Record<Locale, string> };
+  tiles: { n: number; rot: number; chip: string; src: string; alt: Record<Locale, string> }[];
 };
+const asset = (src: string) => {
+  const m = files[`../assets/${src}`];
+  if (!m) throw new Error(`photos.json producten_head: src/assets/${src} not found`);
+  return m.default;
+};
+// the chop: alpha kept (sharp carries it into AVIF and WebP). Phone: drawn 150 % of the band's width, the LCP image —
+// its own source, widths ≤ 1080 and sizes 100vw, so it is fetched at ⅔ of its drawn pixels (the slab lies under the
+// gradient; ≤ 80 kB, spec §5: the 1440 variant Lighthouse's 412 × 1,75 asked for at sizes 150vw was 95 kB, LCP 3,2 / 3,8 s
+// [MEASURED-OURS] local). From 960: a box from 35 % of the band to 6 % past its right edge, 115 % of its height, the
+// chop covering it (≥ 840 px wide).
+const chopImg = asset(headData.ground.src);
+const chopSet = async (widths: number[]) => {
+  const opts = { src: chopImg, width: chopImg.width, height: chopImg.height, widths: widths.filter((w) => w <= chopImg.width) };
+  const [avif, webp] = await Promise.all([getImage({ ...opts, format: 'avif', quality: 40 }), getImage({ ...opts, format: 'webp', quality: 60 })]);
+  return { avif: avif.srcSet.attribute, webp: webp.srcSet.attribute, src: webp.src };
+};
+const [chopM, chopD] = await Promise.all([chopSet([640, 768, 1080]), chopSet([1080, 1440, chopImg.width])]);
+const chop = { m: chopM, d: chopD, mSizes: '85vw', dSizes: 'max(71vw, 840px)', width: chopImg.width, height: chopImg.height, alt: headData.ground.alt[locale] };
+// the tiles under the head (spec §7): the four cut-outs in their order, each with its own turn (spec §3), the captions
+// of lexicon §5.19 / §6 in the same order; the link = its chip's radio, its href the section it stands for (Alles →
+// the list's first section)
+const tiles = headData.tiles.map((x, i) => ({
+  img: asset(x.src),
+  alt: x.alt[locale],
+  rot: x.rot,
+  ...t.tiles.items[i],
+  chip: `f-${x.chip}`,
+  href: `#${x.chip === 'all' ? onPage[0] : x.chip}`,
+}));
 
 // JSON-LD (lexicon §8.3 / §8.4). The shop's @id is Base.astro's.
 const shop = { '@id': `${origin}/#shop` };
@@ -98,31 +146,51 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 ---
 <Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld}>
   <main id="main" class="pp">
-    <div class="container pp-top">
-      <div class="pp-intro">
-        <p class="eyebrow">{t.eyebrow}</p>
-        <h1 class="pp-intro__h1">{t.h1} <span class="accent pp-intro__accent">{t.accent}</span></h1>
-        <p class="pp-intro__lead">{t.lead}</p>
-        <OpenChip locale={locale} variant="p" class="pp-intro__chip" />
-        <div class="pp-intro__cta">
-          <a class="btn btn--primary btn--lg" href={wa(waSrc('intro'))}><WaIcon /><span>{t.order}</span></a>
-          <a class="btn btn--secondary btn--lg" href={t.onlineHref}>{t.online}</a>
+    <div class="th-wrap">
+      <section class="th ph" aria-labelledby="pp-title">
+        <div class="th__media ph__ground">
+          <picture class="ph__chop"><source media="(min-width: 960px)" type="image/avif" srcset={chop.d.avif} sizes={chop.dSizes} /><source media="(min-width: 960px)" type="image/webp" srcset={chop.d.webp} sizes={chop.dSizes} /><source type="image/avif" srcset={chop.m.avif} sizes={chop.mSizes} /><img src={chop.m.src} srcset={chop.m.webp} sizes={chop.mSizes} width={chop.width} height={chop.height} alt={chop.alt} loading="eager" decoding="async" fetchpriority="high" /></picture>
         </div>
-        <fieldset class="pp-pills">
-          <legend class="vh">{t.filter.legend}</legend>
-          <input class="pp-pills__in" type="radio" name="pp-filter" id="f-all" checked />
-          <label class="pp-pill" for="f-all">{t.filter.all}</label>
-          {cats.map((c) => (
-            <>
-              <input class="pp-pills__in" type="radio" name="pp-filter" id={`f-${c.id}`} />
-              <label class="pp-pill" for={`f-${c.id}`}>{c.name[locale]}</label>
-            </>
-          ))}
-        </fieldset>
-      </div>
-      <div class="pp-photo">
-        <Picture class="pp-photo__img" src={img} {...photo.crop} widths={photo.widths} sizes="(min-width: 960px) 40vw, 100vw" formats={['avif', 'webp']} fallbackFormat="webp" quality={60} alt={ph.alt[locale]} loading="eager" decoding="async" fetchpriority="high" style={photo.pos} />
-      </div>
+        <div class="th__title">
+          <p class="eyebrow th__eyebrow">{t.eyebrow}</p>
+          <h1 class="th__h1" id="pp-title">{t.h1} <span class="accent th__accent">{t.accent}</span></h1>
+        </div>
+        <div class="th__body on-ink">
+          <p class="th__lead">{t.lead}</p>
+          <div class="pp-intro__row">
+            <OpenChip locale={locale} variant="i" class="pp-intro__chip" />
+            {/* the page's one pause (WCAG 2.2.2): the head and the tiles below; the hero's control, CSS :has */}
+            <span class="ph__pause">
+              <input type="checkbox" id="pp-pause" class="hp hp--page" data-pause />
+              <label for="pp-pause" class="btn-icon">
+                <span class="vh ph__say-pause">{hero[locale].pause}</span>
+                <span class="vh ph__say-play">{hero[locale].play}</span>
+                <svg class="ic-pause" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+                <svg class="ic-play" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg>
+              </label>
+            </span>
+          </div>
+          <div class="th__buttons">
+            <a class="btn btn--primary btn--lg" href={wa(waSrc('intro'))}><WaIcon /><span>{t.order}</span></a>
+            <a class="btn btn--secondary btn--lg" href={t.onlineHref}>{t.online}</a>
+          </div>
+          <fieldset class="pp-pills">
+            <legend class="vh">{t.filter.legend}</legend>
+            <input class="pp-pills__in" type="radio" name="pp-filter" id="f-all" checked />
+            <label class="pp-pill" for="f-all">{t.filter.all}</label>
+            {cats.map((c) => (
+              <>
+                <input class="pp-pills__in" type="radio" name="pp-filter" id={`f-${c.id}`} />
+                <label class="pp-pill" for={`f-${c.id}`}>{c.name[locale]}</label>
+              </>
+            ))}
+          </fieldset>
+        </div>
+      </section>
+    </div>
+
+    <div class="container pp-tiles">
+      <ProductTiles tiles={tiles} label={t.tiles.label} id="pp-tiles-title" />
     </div>
 
     {cats.map((c) => {
@@ -180,17 +248,37 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 
 <style>
   /* ── phone = board Producten (390) ── */
-  .pp-top { display: flex; flex-direction: column; }
-  .pp-intro { display: flex; flex-direction: column; gap: 14px; padding: 24px 0 8px; }
-  .pp-intro__h1 { margin: 0; font-size: 38px; line-height: 1.02; letter-spacing: -0.02em; }
-  .pp-intro__accent { display: block; margin-top: 6px; font-size: var(--fs-accent); }
-  .pp-intro__lead { margin: 0; font-size: 15px; line-height: 1.45; color: var(--fg); max-width: 56ch; }
-  .pp-intro :global(.pp-intro__chip) { align-self: flex-start; }
-  /* row 8b (D-33): WhatsApp primary + Bestel online secondary — stacked full width on the phone, side by side from 960
-     (the hero's .hero__cta pattern) */
-  .pp-intro__cta { display: flex; flex-direction: column; gap: 10px; }
-  .pp-intro__cta .btn { width: 100%; }
+  /* the head (D-37 v3; v4, Dan 16.10: „it is that head component with a different ground and the product slot”):
+     /traiteur's head — src/styles/print-head.css gives the box, the type, the buttons and, from 960, the print and its
+     gradient — with the chop as its ground (.th__media). The ground sits at z −1 under everything in the head
+     (isolation), so the text needs no z-index of its own. */
+  .ph { isolation: isolate; }
+  .ph__ground { z-index: -1; }
+  .ph__chop { position: absolute; display: block; }
+  .ph__chop img { display: block; width: 100%; }
+  /* phone: one ink band, full bleed as /traiteur's phone head (spec §2–3); the chop (alpha) as a wide slab across the
+     lower part of the band (150 % of its width, its foot just below the band's), and over it the spec's top→bottom
+     gradient, whose .90 stop sits where the text ends (the band's last 104 px are its padding), so the whole text
+     column — chips included — stands on ≥ .90 ink while the strip of chop under the chips stays bright (.35 → its
+     foot). No saturate. */
+  @media (max-width: 959.98px) {
+    .ph { position: relative; display: flex; flex-direction: column; gap: 14px; overflow: hidden; padding: 24px var(--gutter) 104px; background: var(--ink); color: var(--on-ink); }
+    .ph__ground { position: absolute; inset: 0; overflow: hidden; }
+    .ph__chop { left: -25%; right: -25%; bottom: -4%; }
+    .ph__chop img { height: auto; }
+    .ph__ground::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(21, 17, 13, 0.97) 0%, rgba(21, 17, 13, 0.9) max(45%, calc(100% - 104px)), rgba(21, 17, 13, 0.35) 100%);
+    }
+    .ph .th__lead { color: var(--on-ink-muted); }
+  }
+  /* the hero's row: the open chip, the pause at its right */
+  .pp-intro__row { display: flex; align-items: center; gap: 12px; }
 
+  /* the chips, dark variant (board B): cream hairline on ink, the chosen one cream with ink text. On the phone they stay
+     inside the band: there the ink is ≥ .90; below them it thins to .35 over the bright chop */
   .pp-pills { margin: 0; padding: 0; border: 0; min-width: 0; display: flex; flex-wrap: wrap; gap: 8px; }
   /* the radio stays in the tab order (arrow keys move the choice); the label is what you see */
   .pp-pills__in { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
@@ -200,17 +288,36 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
     min-height: var(--touch);
     padding: 0 14px;
     border-radius: var(--r-chip);
-    border: 1px solid var(--line);
-    background: var(--card);
-    color: var(--fg);
+    border: 1px solid rgba(244, 237, 224, 0.4);
+    background: rgba(21, 17, 13, 0.35);
+    color: var(--on-ink);
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     user-select: none;
   }
-  .pp-pills__in:checked + .pp-pill { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
-  .pp-pills__in:focus-visible + .pp-pill { outline: 2px solid var(--fg); outline-offset: 2px; }
-  @media (hover: hover) { .pp-pills__in:not(:checked) + .pp-pill:hover { border-color: var(--fg); } }
+  .pp-pills__in:checked + .pp-pill { background: var(--paper); border-color: var(--paper); color: var(--fg); }
+  .pp-pills__in:focus-visible + .pp-pill { outline: 2px solid var(--on-ink); outline-offset: 2px; }
+  @media (hover: hover) { .pp-pills__in:not(:checked) + .pp-pill:hover { border-color: var(--on-ink); } }
+
+  /* motion (spec §4, §6): the head's only motion is the ground, 1 → 1,04 over 30 s, from first paint at rest */
+  @keyframes ph-zoom { from { transform: scale(1); } to { transform: scale(1.04); } }
+  @media (prefers-reduced-motion: no-preference) {
+    .ph__chop img { animation: ph-zoom 30s ease-in-out infinite alternate; will-change: transform; }
+  }
+
+  /* the pause: the hero's control (CSS only); it holds the head here and the tiles below (ProductTiles) */
+  .ph__pause { position: relative; margin-left: auto; display: inline-flex; }
+  .ph .hp { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
+  .ph:has(.hp:checked) .ph__chop img { animation-play-state: paused; }
+  .ph .ic-play { display: none; }
+  .ph:has(.hp:checked) .ic-pause { display: none; }
+  .ph:has(.hp:checked) .ic-play { display: block; }
+  .ph .hp:focus-visible + label { outline: 2px solid var(--on-ink); outline-offset: 2px; }
+  .ph__say-play { display: none; }
+  .ph:has(.hp:checked) .ph__say-pause { display: none; }
+  .ph:has(.hp:checked) .ph__say-play { display: inline; }
+  @media (prefers-reduced-motion: reduce) { .ph__pause { display: none; } }
 
   /* the filter: the chosen category only (a section that is the URL's #target — „Bekijk de colli's” — shows too) */
   main:has(#f-rund:checked) .pp-cat:not(#rund):not(:target),
@@ -220,14 +327,8 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
   main:has(#f-roemeens:checked) .pp-cat:not(#roemeens):not(:target),
   main:has(#f-colli:checked) .pp-cat:not(#colli):not(:target) { display: none; }
 
-  .pp-photo { padding-top: 12px; }
-  .pp-photo :global(img) {
-    width: 100%;
-    height: 190px;
-    object-fit: cover;
-    border-radius: var(--r-tile);
-    background: var(--ink);
-  }
+  /* the tiles (spec §7): directly under the head, the head's width; the gap above = /traiteur's under its head */
+  .pp-tiles { padding-top: 20px; }
 
   .pp-cat { padding: 28px 0 8px; scroll-margin-top: 72px; }
   .pp-cat__in { display: flex; flex-direction: column; gap: 14px; }
@@ -282,22 +383,18 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 
   /* ── desktop (derived, D-30) ── */
   @media (min-width: 960px) {
-    .pp-top {
-      display: grid;
-      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-      gap: 56px;
-      align-items: center;
-      padding-top: 48px;
-    }
-    .pp-intro { padding: 0; gap: 18px; }
-    .pp-intro__h1 { font-size: clamp(48px, 4.4vw, 64px); line-height: 1; letter-spacing: -0.025em; }
-    .pp-intro__accent { margin-top: 10px; font-size: clamp(30px, 2.6vw, 40px); }
-    .pp-intro__lead { font-size: var(--fs-lead); line-height: 1.5; }
-    .pp-intro__cta { flex-direction: row; gap: 12px; align-self: flex-start; }
-    .pp-intro__cta .btn { width: auto; }
+    /* the head: the print is print-head.css (/traiteur's). The chop from 35 % of the print to 6 % past its right edge,
+       115 % of its height (its edges run out of the box), bone end right: it covers that box, anchored right */
+    .ph__chop { left: 35%; right: -6%; top: -7.5%; bottom: -7.5%; }
+    .ph__chop img { height: 100%; object-fit: cover; object-position: 100% 50%; }
     .pp-pills { margin-top: 6px; }
-    .pp-photo { padding-top: 0; }
-    .pp-photo :global(img) { height: auto; aspect-ratio: 4 / 3; border-radius: var(--r-frame-lg); }
+    /* the pause on the print as on the hero: 32 px from its right edge, 36 px above its foot (the body is no containing
+       block here, so the print is) */
+    .ph .th__body { position: static; }
+    .ph__pause { position: absolute; right: 32px; bottom: 36px; z-index: 3; margin: 0; }
+
+    /* the tiles under the head, the head's own width (.th-wrap = .container), as /traiteur's (56 px) */
+    .pp-tiles { padding-top: 56px; }
 
     .pp-cat { padding: 0; scroll-margin-top: 80px; }
     .pp-cat__in {
@@ -311,7 +408,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
       padding-bottom: 40px;
       border-top: 1px solid var(--line);
     }
-    .pp-cat:first-of-type .pp-cat__in { margin-top: 64px; }
+    .pp-cat:first-of-type .pp-cat__in { margin-top: 40px; }
     .pp-cat__head { grid-area: head; gap: 14px; }
     .pp-cat__title { font-size: 36px; line-height: 1; letter-spacing: -0.02em; }
     .pp-cat__tags { grid-area: tags; gap: 12px; }

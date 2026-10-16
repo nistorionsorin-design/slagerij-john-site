@@ -7,7 +7,10 @@
 // (5fr) and its content right (7fr), the FAQ's grid; „Kom langs” sets the hours card in the right column.
 // Strings: src/i18n/overons.ts (lexicon §5.17 + its 15.10 build note; RO §6 „Despre noi”). Hours: hours.json via
 // Hours.astro (this page carries #openingsuren, Base `hoursCard`). Photo: src/assets/overons/ = team-portrait.webp,
-// byte-identical (the footer's print is the same bytes; Vite emits them once).
+// byte-identical (the footer's print is the same bytes; Vite emits them once). Row 14 (16.10): „Wat we maken” carries the
+// two atelier photos of the phone shoot (photos.json `overons`, role atelier: #3 vleesmolen · #31 snijplank, 4:5 side by
+// side under the list); role optional (#1, the half pig) is built into src/assets/overons/ but not shown until the owners
+// say so (Sunday review).
 // JSON-LD: BreadcrumbList (§8.4) + the §8.2 WebPage typed AboutPage (as /contact's ContactPage, §5.23) about the
 // shop's @id. No Product, no Offer. One view, two pages: src/pages/over-ons.astro and src/pages/ro/despre-noi.astro.
 // No script.
@@ -16,7 +19,10 @@ import ArtPicture from '../components/ArtPicture.astro';
 import Hours from '../components/Hours.astro';
 import WaIcon from '../components/WaIcon.astro';
 import BrandIcon from '../components/BrandIcon.astro';
+import type { ImageMetadata } from 'astro';
 import portrait from '../assets/overons/john-en-georgiana-slagerij-john-zwevezele.webp';
+import photos from '../data/photos.json';
+import type { Photo } from '../data/types';
 import hours from '../data/hours.json';
 import reviews from '../data/reviews.json';
 import type { Day } from '../data/types';
@@ -37,6 +43,14 @@ const pic = {
   mobile: { img: portrait, ratio: 0.8, max: 542, sizes: 'calc(100vw - 40px)', focalX: 50, focalY: 45 },
   desktop: { img: portrait, ratio: 0.8, max: 542, sizes: '(min-width: 1440px) 460px, 32vw', focalX: 50, focalY: 45 },
 };
+
+// „Wat we maken” (row 14): the atelier photos, 4:5, two across at every width; `optional` stays out
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/overons/*.{jpg,jpeg,png,webp}', { eager: true });
+const atelier = (photos.overons as Photo[]).filter((p) => p.role === 'atelier').map((p) => {
+  const m = files[`../assets/${p.src}`];
+  if (!m) throw new Error(`photos.json overons: src/assets/${p.src} not found`);
+  return { alt: p.alt[locale], crop: { img: m.default, ratio: 0.8, max: 760, sizes: '(min-width: 1440px) 340px, (min-width: 960px) 26vw, calc(50vw - 25px)', focalX: p.focalX, focalY: p.focalY } };
+});
 
 // „Kom langs”: §5.17's sentence with Saturday's and Sunday's closing time from hours.json (build note: never typed)
 const closeOf = (day: string) => (hours.regular as Day[]).find((d) => d.dayOfWeek === day)?.slots.at(-1)?.close ?? '';
@@ -112,6 +126,9 @@ const icons = {
       <h2 class="eyebrow ob__title" id="om-title">{t.make.eyebrow}</h2>
       <ul class="om__list">
         {t.make.lines.map((l) => <li>{l}</li>)}
+      </ul>
+      <ul class="om__photos">
+        {atelier.map((p) => <li><ArtPicture mobile={p.crop} alt={p.alt} quality={50} /></li>)}
       </ul>
     </section>
 
@@ -191,6 +208,10 @@ const icons = {
 
   .om__list, .or__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
   .om__list li { padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; line-height: 1.45; }
+  /* row 14: the atelier photos under the list, two 4:5 prints */
+  .om__photos { list-style: none; margin: 6px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .om__photos :global(picture) { display: block; aspect-ratio: 4 / 5; border-radius: var(--r-tile); overflow: hidden; background: var(--ink); }
+  .om__photos :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
   .or__list li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; line-height: 1.4; }
   .or__list :global(svg) { flex: 0 0 auto; color: var(--ox); }
   .or__press { color: var(--ox); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
@@ -236,6 +257,8 @@ const icons = {
     .ot__when { flex: 0 0 220px; font-size: 24px; }
     .ot__what, .om__list li, .or__list li { font-size: var(--fs-body); line-height: 1.5; }
     .om__list li, .or__list li { padding: 16px 0; }
+    .om__photos { grid-column: 2; margin-top: -32px; gap: 14px; }
+    .om__photos :global(picture) { border-radius: var(--r-frame); }
 
     .ov { align-items: center; }
     .ov__head { gap: 18px; }

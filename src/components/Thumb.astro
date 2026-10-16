@@ -22,7 +22,7 @@ export interface Props {
 const { id, locale, size = 56 } = Astro.props;
 const entry = thumbOf(id);
 
-const files = import.meta.glob<{ default: ImageMetadata }>('../assets/products/*.{jpg,jpeg,png,webp}', { eager: true });
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/{products,roemeens,bbq}/*.{jpg,jpeg,png,webp}', { eager: true }); // row 14: a thumb may share a page photo's file
 const img = entry ? files[`../assets/${entry.src}`]?.default : undefined;
 if (entry && !img) throw new Error(`product-photos.json: src/assets/${entry.src} not found`);
 

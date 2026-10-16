@@ -10,7 +10,10 @@
 // per persoon = unitCode C62). Fondue is „vanaf €10”: its offer is an AggregateOffer (a kind of Offer) with lowPrice
 // 10 — the schema.org home of lowPrice. No Offer on a [PRIJS] row (S-03): the three BBQ rows carry none.
 // RO (/ro/gratar): lexicon §6 „Grătar” (`bbqRo`); one view, two pages: src/pages/bbq-pakketten.astro and
-// src/pages/ro/gratar.astro. No new image file, no script.
+// src/pages/ro/gratar.astro. No script. Row 14 (16.10): three tiles of the phone shoot in block 1 (photos.json `bbq`,
+// role tile: #36 ribbetjes · #15 kipreepjes · #20 schnitzels — three across under the tags, 1:1); the `head` candidate
+// (#37) was measured against hero frame 4 and the better one kept (HEAD below): mobile LCP 3,0 / 3,0 s with #37 vs
+// 2,9 / 3,0 s with frame 4 [MEASURED-OURS] local 16.10 → frame 4 stays; #37 stays in photos.json `bbq` for Dan's eye.
 import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import ArtPicture from '../components/ArtPicture.astro';
@@ -32,7 +35,7 @@ const alternates = { nl: '/bbq-pakketten', ro: '/ro/gratar' };
 const path = alternates[locale];
 const homePath = locale === 'ro' ? '/ro' : '/';
 
-const files = import.meta.glob<{ default: ImageMetadata }>('../assets/{hero,home}/*.{jpg,jpeg,png,webp}', { eager: true });
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/{hero,home,bbq}/*.{jpg,jpeg,png,webp}', { eager: true });
 const file = (src: string) => {
   const m = files[`../assets/${src}`];
   if (!m) throw new Error(`photos.json: src/assets/${src} not found`);
@@ -40,11 +43,19 @@ const file = (src: string) => {
 };
 
 // the head = hero frame 4, the BBQ tray (§5.24): square on the phone, 2:1 on desktop; AVIF quality 40 as /traiteur's head
-const head = (photos.hero as Photo[])[3];
+const shoot = photos.bbq as Photo[];
+const HEAD = 'hero' as 'hero' | 'shoot';
+const head = HEAD === 'shoot' ? shoot.find((p) => p.role === 'head')! : (photos.hero as Photo[])[3];
 const headPic = {
   mobile: { img: file(head.src), ratio: 1, max: 1080, sizes: '100vw', focalX: head.focalX, focalY: head.focalY },
   desktop: { img: file(head.src), ratio: 2, max: 2040, sizes: 'max(1280px, min(100vw, 1440px) - 112px)', focalX: head.focalX, focalY: head.focalY },
 };
+
+// block 1's tiles (row 14): three 1:1 crops, a third of the column each
+const tiles = shoot.filter((p) => p.role === 'tile').map((p) => ({
+  alt: p.alt[locale],
+  crop: { img: file(p.src), ratio: 1, max: 480, sizes: '(min-width: 1440px) 240px, (min-width: 960px) 17vw, calc((100vw - 60px) / 3)', focalX: p.focalX, focalY: p.focalY },
+}));
 
 // block 2's photo = the home grid's „BBQ & gourmet” file (q12, photos.json categories[1]) with its alt (§5.14)
 const gp = (photos.categories as Photo[])[1];
@@ -156,6 +167,9 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
           </li>
         ))}
       </ul>
+      <ul class="bb__tiles">
+        {tiles.map((p) => <li><ArtPicture mobile={p.crop} alt={p.alt} quality={50} /></li>)}
+      </ul>
       <div class="bb__more">
         <p>{t.bbq.more}</p>
         <a class="link-arrow" href={t.bbq.moreHref}>{t.bbq.moreLink}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a>
@@ -245,6 +259,10 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
   /* each BBQ tag carries its own link under it, set in from the tag's pin */
   .bb__row { display: flex; flex-direction: column; }
   .bb__row .link-arrow { align-self: flex-start; margin-left: 34px; }
+  /* row 14: three square tiles under the BBQ tags */
+  .bb__tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .bb__tiles :global(picture) { display: block; aspect-ratio: 1; border-radius: var(--r-tile); overflow: hidden; background: var(--ink); }
+  .bb__tiles :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
   .bb__more, .bg__more { display: flex; flex-direction: column; gap: 2px; }
   .bb__more p, .bg__more p { margin: 0; font-size: 14px; line-height: 1.45; }
   .bb__more .link-arrow, .bg__more .link-arrow { align-self: flex-start; }
@@ -322,7 +340,8 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
       padding-top: 80px;
       padding-bottom: 0;
     }
-    .bb { grid-template-areas: 'head rows' 'more rows'; grid-template-rows: auto 1fr; }
+    .bb { grid-template-areas: 'head rows' 'more tiles'; grid-template-rows: auto 1fr; }
+    .bb__tiles { grid-area: tiles; gap: 14px; }
     .bb__head { grid-area: head; }
     .bb__rows { grid-area: rows; gap: 12px; }
     .bb__more { grid-area: more; }

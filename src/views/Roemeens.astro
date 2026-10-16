@@ -3,7 +3,7 @@
 // (D-30) — the dark photo head on hero frame 1, the mici on the grill (eyebrow · H1 · accent over the photo; lead +
 // Bestel via WhatsApp + Bekijk de prijzen below) · „Wat wij maken” (three blocks: name · line · cooking line · price,
 // the mici block with its photo) · the Roemeense tapas (photo + its counter tag) · the towns line · FAQ · byline.
-// Desktop derived (D-30): hero frame 1 is a tall file (886 × 1920), so the head is /bbq-pakketten's dark print with the
+// Desktop derived (D-30): the head photo is a tall file (row 14: #29, 3:4; was hero frame 1, 886 × 1920), so the head is /bbq-pakketten's dark print with the
 // photo as a print in its right column (5fr) instead of behind the text — a 2:1 crop of it would be upscaled. The mici
 // block spans the row (photo beside its text), the two others sit side by side under it; the tapas block is the
 // /bbq-pakketten gourmet block (photo left, heading and tag right).
@@ -13,8 +13,10 @@
 // pages.roemeens (§5.25, four items).
 // JSON-LD (§5.25): BreadcrumbList (§8.4) + WebPage (§8.2) about the shop's @id + a Product per per-kg block WITHOUT
 // Offer (every price [PRIJS], S-03) + the tapas as Product + Offer 45 EUR (per piece: plain price, §8.3).
-// One view, two pages: src/pages/roemeense-specialiteiten.astro and src/pages/ro/mici-si-specialitati.astro. No new
-// image file, no script.
+// One view, two pages: src/pages/roemeense-specialiteiten.astro and src/pages/ro/mici-si-specialitati.astro. No script.
+// Row 14 (16.10): the head is the phone shoot's #29 (gerookte worst, photos.json `roemeens` role head) instead of hero
+// frame 1, and an 8-photo strip (role strip) follows „Wat wij maken” — 2 × 4 on the phone, 4 × 2 from 960 px, each 4:5,
+// no caption (the alt carries the name); the mici block's photo is the new `mici` thumb file (#27).
 import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import ArtPicture from '../components/ArtPicture.astro';
@@ -37,16 +39,17 @@ const alternates = { nl: '/roemeense-specialiteiten', ro: '/ro/mici-si-specialit
 const path = alternates[locale];
 const homePath = locale === 'ro' ? '/ro' : '/';
 
-const files = import.meta.glob<{ default: ImageMetadata }>('../assets/{hero,products}/*.{jpg,jpeg,png,webp}', { eager: true });
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/{hero,products,roemeens}/*.{jpg,jpeg,png,webp}', { eager: true });
 const file = (src: string) => {
   const m = files[`../assets/${src}`];
   if (!m) throw new Error(`src/assets/${src} not found`);
   return m.default;
 };
 
-// the head = hero frame 1, the mici on the grill (§5.25): square on the phone (/bbq-pakketten's head), a 0.85 print in
-// the desktop head's right column; AVIF quality 40 as the other heads
-const head = (photos.hero as Photo[])[0];
+// the head = the phone shoot's gerookte worst (row 14, `roemeens` head; was hero frame 1): square on the phone
+// (/bbq-pakketten's head), a 0.85 print in the desktop head's right column; AVIF quality 40 as the other heads
+const shoot = photos.roemeens as Photo[];
+const head = shoot.find((p) => p.role === 'head')!;
 const headPic = {
   mobile: { img: file(head.src), ratio: 1, max: 1080, sizes: '100vw', focalX: head.focalX, focalY: head.focalY },
   desktop: { img: file(head.src), ratio: 0.85, max: 1080, sizes: '(min-width: 1440px) 520px, 38vw', focalX: head.focalX, focalY: head.focalY },
@@ -68,6 +71,12 @@ const tapasPic = {
   mobile: { img: file(tp.src), ratio: 1.75, max: 1080, sizes: 'calc(100vw - 40px)', focalX: tp.focalX, focalY: tp.focalY },
   desktop: { img: file(tp.src), ratio: 0.9, max: 1080, sizes: '(min-width: 1440px) 540px, 38vw', focalX: tp.focalX, focalY: tp.focalY },
 };
+
+// the strip (row 14): eight 4:5 tiles, two columns on the phone, four from 960 px — one crop serves both
+const strip = shoot.filter((p) => p.role === 'strip').map((p) => ({
+  alt: p.alt[locale],
+  crop: { img: file(p.src), ratio: 0.8, max: 640, sizes: '(min-width: 1440px) 314px, (min-width: 960px) 22vw, calc(50vw - 25px)', focalX: p.focalX, focalY: p.focalY },
+}));
 
 const waHref = `${wa(t.primarySrc)}&text=${encodeURIComponent(t.waMessage)}${locale === 'ro' ? '&lang=ro' : ''}`;
 
@@ -182,6 +191,14 @@ const utensils = '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 
       </div>
     </section>
 
+    <div class="container rs-strip">
+      <ul class="rs-strip__list">
+        {strip.map((p) => (
+          <li class="rs-strip__item"><ArtPicture mobile={p.crop} alt={p.alt} quality={50} /></li>
+        ))}
+      </ul>
+    </div>
+
     <section class="container rt" aria-labelledby="rt-title">
       <div class="rt__photo">
         <ArtPicture mobile={tapasPic.mobile} desktop={tapasPic.desktop} alt={tp.alt[locale]} quality={50} />
@@ -294,6 +311,12 @@ const utensils = '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 
   .rp__more p { margin: 0; font-size: 14px; line-height: 1.45; }
   .rp__more .link-arrow { align-self: flex-start; }
 
+  /* the strip (row 14): 2 × 4 tiles of 4:5 in the gutters, the loop's radius */
+  .rs-strip { padding-top: 24px; }
+  .rs-strip__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .rs-strip__item :global(picture) { display: block; aspect-ratio: 4 / 5; border-radius: var(--r-tile); overflow: hidden; background: var(--ink); }
+  .rs-strip__item :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+
   /* the tapas: /bbq-pakketten's gourmet block — a 7:4 band in the gutters, heading, the tag with its link */
   .rt { display: flex; flex-direction: column; gap: 14px; padding-top: 28px; padding-bottom: 8px; }
   .rt__photo :global(picture) { display: block; height: 200px; border-radius: var(--r-tile); overflow: hidden; background: var(--ink); }
@@ -363,6 +386,11 @@ const utensils = '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 
     .rb__price { margin-top: auto; padding-top: 14px; }
     .rp__more { gap: 6px; }
     .rp__more p { font-size: var(--fs-body); line-height: 1.5; color: var(--muted); }
+
+    /* the strip: four across, two rows */
+    .rs-strip { padding-top: 40px; }
+    .rs-strip__list { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .rs-strip__item :global(picture) { border-radius: var(--r-frame); }
 
     /* the tapas: the photo as a print in the left column, the heading and the tag right of it */
     .rt {

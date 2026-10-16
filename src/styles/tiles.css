@@ -1,0 +1,32 @@
+/* The photo tile — /traiteur's tiles (stage 6, lexicon §5.21), shared by /producten since 16.10 (D-37 v5, Dan 21:36:
+   „in cards like in Traiteur”). One set of rules, so both pages have the same box, radius, ink ground and caption
+   block. What each page keeps for itself: the grid's columns and rows (Traiteur: the 2-column board grid with two wide
+   tiles, a 3-column mosaic from 960; Producten: 2 × 2, four in a row from 960) and what fills the tile.
+   Markup: ul.tt__grid > li.tt__tile > (the picture) · .tt__label (h3.tt__name · p.tt__sub). */
+
+/* ── phone = board Traiteur 390: 2 columns, gap 10, radius 14 on ink, 170 tall; label at the foot over a scrim ── */
+.tt__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.tt__tile { position: relative; height: 170px; border-radius: var(--r-tile); overflow: hidden; background: var(--ink); color: var(--on-ink); }
+.tt__tile img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.tt__label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 28px 14px 12px;
+  background: linear-gradient(180deg, rgba(21, 17, 13, 0) 0%, rgba(21, 17, 13, 0.88) 100%);
+}
+.tt__name { margin: 0; font-family: var(--f-display); font-weight: 500; font-size: 19px; line-height: 1.05; color: var(--on-ink); }
+.tt__sub { margin: 0; font-size: 12px; line-height: 1.35; color: var(--on-ink-muted); }
+
+/* ── desktop (derived, D-30): rows 300 px, gap 16, radius --r-frame, a larger caption ── */
+@media (min-width: 960px) {
+  .tt__grid { gap: 16px; }
+  .tt__tile { height: 300px; border-radius: var(--r-frame); }
+  .tt__label { padding: 48px 22px 20px; gap: 6px; }
+  .tt__name { font-size: 26px; }
+  .tt__sub { font-size: 14px; }
+}

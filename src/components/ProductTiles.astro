@@ -1,0 +1,107 @@
+---
+// ProductTiles (D-37 v5, Dan 16.10 21:36 „arrange the four products in a nice card, moving maybe, in a black background,
+// in cards like in Traiteur”; spec design/producten-hero.md §7) — four tiles under the /producten head, built on
+// /traiteur's tile (src/styles/tiles.css: box, radius, ink ground, caption block bottom-left). In each tile one cut-out
+// centred on the ink, with its own turn (`rot`) and the drop shadow; a very slow zoom 1 → 1,06 over 12 s, alternate,
+// phases offset per tile; reduced motion = still; the page's one pause (the head's checkbox, class hp--page) holds it.
+// Below the head, never the LCP: every image lazy, AVIF alpha + WebP alpha. Captions = lexicon §5.19 / §6 product
+// cards; the group's H2 is visually hidden. Each tile is a link to its category: without JS the href scrolls to that
+// section (#roemeens, or the list's first section for „Alles”); with JS (below) it also checks the chip's radio, then
+// scrolls to the first section the filter shows and moves focus to its heading.
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import '../styles/tiles.css';
+
+interface Tile {
+  img: ImageMetadata;
+  alt: string;
+  /** the product's own turn, degrees */
+  rot: number;
+  name: string;
+  sub: string;
+  /** the chip's radio id (f-roemeens, f-all …) and the section the link falls back to */
+  chip: string;
+  href: string;
+}
+export interface Props {
+  tiles: Tile[];
+  label: string;
+  id: string;
+}
+const { tiles, label, id } = Astro.props;
+
+// the cut-out's box inside a tile (CSS below: inset 6 % 12 % 34 % on the phone, 6 % 12 % 30 % from 960) at the tile
+// sizes of tiles.css — phone ≈ 170 × 170 (390 wide), desktop ≈ 316 × 300 (1440) — and each product's drawn width in it
+const box = { mobile: { w: 170 * 0.76, h: 170 * 0.6 }, desktop: { w: 316 * 0.76, h: 300 * 0.64 } };
+const drawn = (img: ImageMetadata, bx: { w: number; h: number }) => Math.round(Math.min(bx.w, (bx.h * img.width) / img.height));
+const built = await Promise.all(tiles.map(async (p, k) => {
+  const sizes = `(min-width: 960px) ${drawn(p.img, box.desktop)}px, ${drawn(p.img, box.mobile)}px`;
+  const opts = { src: p.img, width: p.img.width, height: p.img.height, widths: [120, 180, 240, 320, 400, 560].filter((x) => x < p.img.width) };
+  const [avif, webp] = await Promise.all([getImage({ ...opts, format: 'avif', quality: 45 }), getImage({ ...opts, format: 'webp', quality: 65 })]);
+  // phases offset: each tile a quarter of the 24 s zoom cycle (12 s out, 12 s back) later than the one before
+  return { ...p, sizes, avif: avif.srcSet.attribute, webp: webp.srcSet.attribute, src: webp.src, style: `--r:${p.rot}deg;--d:${(-6 * k).toFixed(1)}s` };
+}));
+---
+<section class="pt" aria-labelledby={id}>
+  <h2 class="vh" id={id}>{label}</h2>
+  <ul class="tt__grid pt__grid">
+    {built.map((p) => (
+      <li class="tt__tile">
+        <a class="pt__link" href={p.href} data-chip={p.chip}>
+          <span class="pt__cut" style={p.style}><picture><source type="image/avif" srcset={p.avif} sizes={p.sizes} /><img src={p.src} srcset={p.webp} sizes={p.sizes} width={p.img.width} height={p.img.height} alt={p.alt} loading="lazy" decoding="async" /></picture></span>
+          <div class="tt__label">
+            <h3 class="tt__name">{p.name}</h3>
+            <p class="tt__sub">{p.sub}</p>
+          </div>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<script>
+  // a tile = its chip: check the radio (the page's CSS filter follows :checked), then bring the list into view
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  for (const a of document.querySelectorAll<HTMLAnchorElement>('.pt__link[data-chip]'))
+    a.addEventListener('click', (ev) => {
+      const radio = document.getElementById(a.dataset.chip!) as HTMLInputElement | null;
+      if (!radio) return; // no chip: the href's own jump stays
+      ev.preventDefault();
+      radio.checked = true;
+      radio.dispatchEvent(new Event('change', { bubbles: true }));
+      const first = [...document.querySelectorAll<HTMLElement>('.pp-cat')].find((s) => getComputedStyle(s).display !== 'none');
+      if (!first) return;
+      first.scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth', block: 'start' });
+      const h = first.querySelector<HTMLElement>('h2');
+      if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); }
+    });
+</script>
+
+<style>
+  /* phone 2 × 2, four in a row from 960 (tiles.css gives the box, the radius, the ink and the caption) */
+  @media (min-width: 960px) { .pt__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+  /* the whole tile is the link */
+  .pt__link { display: block; height: 100%; color: inherit; text-decoration: none; }
+  .pt__link:focus-visible { outline: 2px solid var(--on-ink); outline-offset: -4px; border-radius: inherit; }
+
+  /* the cut-out: centred in the space above the caption, turned, lifted off the ink by its shadow */
+  .pt__cut { position: absolute; inset: 6% 12% 34%; display: block; }
+  .pt__cut picture { display: contents; }
+  .pt__cut img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    rotate: var(--r);
+    filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.45));
+  }
+  /* the „moving” (spec §7): 1 → 1,06 over 12 s and back, phases offset; the still is the rest size */
+  @keyframes pt-zoom { from { scale: 1; } to { scale: 1.06; } }
+  @media (prefers-reduced-motion: no-preference) {
+    .pt__cut img { animation: pt-zoom 12s ease-in-out var(--d) infinite alternate; }
+  }
+  /* the page's one pause holds the tiles too */
+  :global(main:has(.hp--page:checked)) .pt__cut img { animation-play-state: paused; }
+
+  @media (min-width: 960px) { .pt__cut { inset: 6% 12% 30%; } }
+</style>

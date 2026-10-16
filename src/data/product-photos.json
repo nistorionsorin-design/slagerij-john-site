@@ -1,6 +1,6 @@
 {
-  "_source": "Row 5b (Claude Code, 15.10): the site copy of docs/data/product-photos.json (Cowork owns that file; D-34). One entry per products.json id with its own photo; `src` = the file under src/assets/products/ (copied byte-identical from `from`, slugged NL names; a file that already sits elsewhere in src/assets/ under a slug gets that same name — Vite emits identical bytes once, under the first name it meets, and the photo must keep its SEO slug), focal point %, alt NL/RO as Cowork wrote them. A menu row (menus.json `ej26-<id>`) takes its product id's entry. An id not listed here renders no thumbnail (src/components/Thumb.astro). When the docs file grows (row 14), the new rows are copied here.",
-  "date": "2026-10-15",
+  "_source": "Row 5b (Claude Code, 15.10): the site copy of docs/data/product-photos.json (Cowork owns that file; D-34). One entry per products.json id with its own photo; `src` = the file under src/assets/products/ (copied byte-identical from `from`, slugged NL names; a file that already sits elsewhere in src/assets/ under a slug gets that same name — Vite emits identical bytes once, under the first name it meets, and the photo must keep its SEO slug), focal point %, alt NL/RO as Cowork wrote them. A menu row (menus.json `ej26-<id>`) takes its product id's entry. An id not listed here renders no thumbnail (src/components/Thumb.astro). When the docs file grows (row 14), the new rows are copied here. Row 14 (16.10): the six phone-shoot rows copied (mici replaced, gehakt · spiering · braadworst · gerookte-worst · ribbetjes new); their files are the white-balanced row-14 sources, shared with the page photos where the original is the same (gerookte-worst = roemeens/…, ribbetjes = bbq/…); pastrami (pending_confirm) not built.",
+  "date": "2026-10-16",
   "products": {
     "tapas-2": {
       "src": "products/tapasschotels-slagerij-john.jpg",
@@ -124,15 +124,16 @@
       "level": "item"
     },
     "mici": {
-      "src": "products/verse-mici-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 7.jpeg",
+      "src": "products/verse-mici-witte-schaal-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_180525.jpg",
       "focalX": 50,
-      "focalY": 45,
+      "focalY": 50,
       "alt": {
-        "nl": "Verse mici, klaar voor de barbecue",
-        "ro": "Mici proaspeți, gata pentru grătar"
+        "nl": "Verse mici in een witte schaal, acht op een rij",
+        "ro": "Mici proaspeți într-o tavă albă, opt pe un rând"
       },
-      "level": "item"
+      "level": "item",
+      "wb": "display"
     },
     "colli-bbq": {
       "src": "products/bbq-gemarineerd.jpeg",
@@ -144,6 +145,66 @@
         "ro": "Carne marinată pentru grătar, ambalată"
       },
       "level": "item"
+    },
+    "gehakt": {
+      "src": "products/vers-gehakt-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_174451.jpg",
+      "focalX": 50,
+      "focalY": 45,
+      "alt": {
+        "nl": "Vers gehakt in een zwarte schaal, klaar voor de toog",
+        "ro": "Carne tocată proaspătă într-o tavă neagră, gata pentru vitrină"
+      },
+      "level": "item",
+      "wb": "atelier"
+    },
+    "spiering": {
+      "src": "products/spiering-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_180103.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Spiering, dik gesneden, met fijne vetadering",
+        "ro": "Ceafă de porc tăiată gros, cu marmorare fină"
+      },
+      "level": "item",
+      "wb": "display"
+    },
+    "braadworst": {
+      "src": "products/verse-braadworst-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_180334.jpg",
+      "focalX": 50,
+      "focalY": 55,
+      "alt": {
+        "nl": "Verse braadworst, dik en licht van kleur, op de toog",
+        "ro": "Cârnați proaspeți, groși și deschiși la culoare, în vitrină"
+      },
+      "level": "item",
+      "wb": "display"
+    },
+    "gerookte-worst": {
+      "src": "roemeens/gerookte-worst-aan-haken-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_180623.jpg",
+      "focalX": 50,
+      "focalY": 45,
+      "alt": {
+        "nl": "Gerookte worst aan haken boven het houten rek",
+        "ro": "Cârnați afumați agățați în cârlige deasupra grătarului de lemn"
+      },
+      "level": "item",
+      "wb": "display"
+    },
+    "ribbetjes": {
+      "src": "bbq/gemarineerde-ribbetjes-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_181539.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Gemarineerde ribbetjes in een zwarte schaal",
+        "ro": "Coaste marinate într-o tavă neagră"
+      },
+      "level": "item",
+      "wb": "display"
     }
   }
 }

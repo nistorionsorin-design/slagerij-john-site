@@ -15,6 +15,10 @@ export interface Photo {
   /** transform-origin of the Ken Burns zoom, % (canvas); defaults to the focal point */
   zoomX?: number;
   zoomY?: number;
+  /** row 14: the photo's place on its page (head · strip · atelier · optional · tile …), from phone-shoot-slots.json */
+  role?: string;
+  /** row 14: the white-balance class applied before the crop (display · atelier) */
+  wb?: string;
   alt: L10n;
 }
 

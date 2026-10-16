@@ -1,5 +1,5 @@
 {
-  "_source": "Hero frames per docs/build-plan.md §3 (files, focal points) and the canvas boards Main/Desktop (zoom origins). Alts NL/RO and tag names NL/RO = lexicon §5.14 table (06.10) verbatim. Tag line and price stay [KOOKLIJN] / [PRIJS] (RO [PREȚ]) until FACTS.md has the owners' values. Claude Code, stage 1. Stage 9 revision (13.10): the RO cooking-line placeholder is [GĂTIRE] (lexicon §5.19 / §6), the NL one stays [KOOKLIJN]. Row 5b (15.10): frame 3 „Hapjes & feestschotels” price = vanaf €1,50 /stuk (RO de la 1,50 € /buc.) — the cheapest hapje of the owners' list (lepeltje paté, [OWNER] 13.10, docs/data/price-list.json); its line stays [KOOKLIJN].",
+  "_source": "Hero frames per docs/build-plan.md §3 (files, focal points) and the canvas boards Main/Desktop (zoom origins). Alts NL/RO and tag names NL/RO = lexicon §5.14 table (06.10) verbatim. Tag line and price stay [KOOKLIJN] / [PRIJS] (RO [PREȚ]) until FACTS.md has the owners' values. Claude Code, stage 1. Stage 9 revision (13.10): the RO cooking-line placeholder is [GĂTIRE] (lexicon §5.19 / §6), the NL one stays [KOOKLIJN]. Row 5b (15.10): frame 3 „Hapjes & feestschotels” price = vanaf €1,50 /stuk (RO de la 1,50 € /buc.) — the cheapest hapje of the owners' list (lepeltje paté, [OWNER] 13.10, docs/data/price-list.json); its line stays [KOOKLIJN]. Row 14 (16.10): hero frame 2 = the phone shoot's #16 (pork chops in the counter, docs/data/phone-shoot-slots.json `hero-frame-2-replacement`), white-balanced (display), replaces the old-site pork-products.webp under the same tag; focal 50/55, zoom 50/50, alt as the JSON.",
   "hero": [
     {
       "src": "hero/mici-op-de-bbq-slagerij-john-zwevezele.jpg",
@@ -32,15 +32,16 @@
       }
     },
     {
-      "src": "hero/toog-slagerij-john-bruggestraat-zwevezele.webp",
-      "from": "assets/raw/2026-10-03-site/pork-products.webp",
+      "src": "hero/varkenskoteletten-in-de-toog-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_175704.jpg",
+      "wb": "display",
       "focalX": 50,
-      "focalY": 40,
-      "zoomX": 40,
+      "focalY": 55,
+      "zoomX": 50,
       "zoomY": 50,
       "alt": {
-        "nl": "Vers varkensvlees in de toog",
-        "ro": "Carne proaspătă de porc în vitrină"
+        "nl": "Varkenskoteletten op een rij in de toog",
+        "ro": "Cotlete de porc pe un rând, în vitrină"
       },
       "tag": {
         "name": {
@@ -152,7 +153,7 @@
       }
     }
   ],
-  "_loop_source": "Photo loop „Bij ons” (D-11, stage 3 + addendum, stage 3b): six photos in five tiles — shop · people · craft · barbecue · platters = q28 · q09 · q01 · p08 · p12 (docs/build-plan.md §3b), the sixth = q25 (row 3b), never a tile's home photo; files byte-identical in src/assets/home/; alts NL/RO = lexicon §5.14 „Home photos” and the 3b row, verbatim; focal points read from the photos. Claude Code, stages 3 / 3b (07.10).",
+  "_loop_source": "Photo loop „Bij ons” (D-11, stage 3 + addendum, stage 3b): six photos in five tiles — shop · people · craft · barbecue · platters = q28 · q09 · q01 · p08 · p12 (docs/build-plan.md §3b), the sixth = q25 (row 3b), never a tile's home photo; files byte-identical in src/assets/home/; alts NL/RO = lexicon §5.14 „Home photos” and the 3b row, verbatim; focal points read from the photos. Claude Code, stages 3 / 3b (07.10). Row 14 (16.10): loop 6 → 10 — the four `home-loop-add` photos of docs/data/phone-shoot-slots.json appended (#29 gerookte worst · #21 spiering · #3 vleesmolen · #51 mici), white-balanced; the no-duplicate rule of 3b holds with five photos off-screen.",
   "loop": [
     {
       "src": "home/toog-slagerij-john-zwevezele.jpg",
@@ -212,6 +213,50 @@
       "alt": {
         "nl": "Slaatjes in kleine kommetjes voor een buffet",
         "ro": "Salate în boluri mici, pentru bufet"
+      }
+    },
+    {
+      "src": "roemeens/gerookte-worst-aan-haken-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_180623.jpg",
+      "wb": "display",
+      "focalX": 50,
+      "focalY": 45,
+      "alt": {
+        "nl": "Gerookte worst aan haken boven het houten rek",
+        "ro": "Cârnați afumați agățați în cârlige deasupra grătarului de lemn"
+      }
+    },
+    {
+      "src": "products/spiering-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_180103.jpg",
+      "wb": "display",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Spiering, dik gesneden, met fijne vetadering",
+        "ro": "Ceafă de porc tăiată gros, cu marmorare fină"
+      }
+    },
+    {
+      "src": "overons/vleesmolen-atelier-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_174044.jpg",
+      "wb": "atelier",
+      "focalX": 50,
+      "focalY": 40,
+      "alt": {
+        "nl": "De vleesmolen in het atelier, gehakt komt eruit",
+        "ro": "Mașina de tocat din atelier, carnea tocată iese"
+      }
+    },
+    {
+      "src": "roemeens/mici-in-de-toog-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_185014.jpg",
+      "wb": "display",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Mici in de toog, twee schalen vol",
+        "ro": "Mici în vitrină, două tăvi pline"
       }
     }
   ],
@@ -317,5 +362,433 @@
       }
     }
   ],
+  "_roemeens_source": "Row 14 (Claude Code, 16.10): /roemeense-specialiteiten + /ro/mici-si-specialitati — `head` (#29, replaces hero frame 1 as the page head) and the 8-photo `strip`, docs/data/phone-shoot-slots.json in its order; originals assets/raw/2026-10-13-phone/ transposed (EXIF 6), white-balanced (`wb`), metadata stripped, into src/assets/roemeens/; alts NL/RO verbatim; focal points checked on the real crop.",
+  "roemeens": [
+    {
+      "src": "roemeens/gerookte-worst-aan-haken-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_180623.jpg",
+      "role": "head",
+      "wb": "display",
+      "focalX": 50,
+      "focalY": 45,
+      "alt": {
+        "nl": "Gerookte worst aan haken boven het houten rek",
+        "ro": "Cârnați afumați agățați în cârlige deasupra grătarului de lemn"
+      }
+    },
+    {
+      "src": "roemeens/droge-worsten-aan-haken-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_180608.jpg",
+      "role": "strip",
+      "wb": "display",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Dunne droge worsten, paarsgewijs aan haken",
+        "ro": "Cârnați uscați subțiri, agățați doi câte doi"
+      }
+    },
+    {
+      "src": "roemeens/gerookt-spek-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_183258.jpg",
+      "role": "strip",
+      "wb": "display",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Gerookt spek, gesneden op een houten plank",
+        "ro": "Slănină afumată, feliată pe o planșetă de lemn"
+      }
+    },
+    {
+      "src": "roemeens/gerookt-buikspek-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_175209.jpg",
+      "role": "strip",
+      "wb": "display",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Gerookt buikspek, een hele plak aan de haak",
+        "ro": "Costiță afumată, o bucată întreagă în cârlig"
+      }
+    },
+    {
+      "src": "roemeens/salami-met-peperkorst-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_183501.jpg",
+      "role": "strip",
+      "wb": "display",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Salami met peperkorst, gesneden op een houten plank",
+        "ro": "Salam cu crustă de piper, feliat pe o planșetă de lemn"
+      }
+    },
+    {
+      "src": "roemeens/grote-salami-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_183851.jpg",
+      "role": "strip",
+      "wb": "display",
+      "focalX": 50,
+      "focalY": 45,
+      "alt": {
+        "nl": "Grote salami, aangesneden",
+        "ro": "Salam mare, început"
+      }
+    },
+    {
+      "src": "roemeens/parizer-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_182612.jpg",
+      "role": "strip",
+      "wb": "display",
+      "focalX": 50,
+      "focalY": 55,
+      "alt": {
+        "nl": "Parizer (Roemeense kookworst), gesneden op een houten plank",
+        "ro": "Parizer feliat pe o planșetă de lemn"
+      }
+    },
+    {
+      "src": "roemeens/roemeense-verse-worst-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_180239.jpg",
+      "role": "strip",
+      "wb": "display",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Roemeense verse worst met paprika, in een stapel op de toog",
+        "ro": "Cârnați proaspeți de casă cu boia, în vitrină"
+      }
+    },
+    {
+      "src": "roemeens/mici-in-de-toog-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_185014.jpg",
+      "role": "strip",
+      "wb": "display",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Mici in de toog, twee schalen vol",
+        "ro": "Mici în vitrină, două tăvi pline"
+      }
+    }
+  ],
+  "_overons_source": "Row 14 (16.10): /over-ons „Wat we maken” — two `atelier` photos (#3 · #31); `optional` (#1, the half pig) built but not shown until the owners say so (Sunday review). Files in src/assets/overons/.",
+  "overons": [
+    {
+      "src": "overons/vleesmolen-atelier-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_174044.jpg",
+      "role": "atelier",
+      "wb": "atelier",
+      "focalX": 50,
+      "focalY": 40,
+      "alt": {
+        "nl": "De vleesmolen in het atelier, gehakt komt eruit",
+        "ro": "Mașina de tocat din atelier, carnea tocată iese"
+      }
+    },
+    {
+      "src": "overons/varkensvlees-snijplank-atelier-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_181131.jpg",
+      "role": "atelier",
+      "wb": "atelier",
+      "focalX": 45,
+      "focalY": 55,
+      "alt": {
+        "nl": "Varkensvlees op de snijplank in het atelier",
+        "ro": "Carne de porc pe planșetă, în atelier"
+      }
+    },
+    {
+      "src": "overons/half-varken-koelcel-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_173712.jpg",
+      "role": "optional",
+      "wb": "atelier",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Een half varken in de koelcel",
+        "ro": "O jumătate de porc în camera frigorifică"
+      }
+    }
+  ],
+  "_bbq_source": "Row 14 (16.10): /bbq-pakketten — `head` candidate (#37; the view keeps whichever head measures better) + three `tile`s in the BBQ block (#36 · #15 · #20). Files in src/assets/bbq/.",
+  "bbq": [
+    {
+      "src": "bbq/gemarineerd-varkensvlees-barbecue-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_181634.jpg",
+      "role": "head",
+      "wb": "display",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Gemarineerd varkensvlees voor de barbecue",
+        "ro": "Carne de porc marinată pentru grătar"
+      }
+    },
+    {
+      "src": "bbq/gemarineerde-ribbetjes-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_181539.jpg",
+      "role": "tile",
+      "wb": "display",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Gemarineerde ribbetjes in een zwarte schaal",
+        "ro": "Coaste marinate într-o tavă neagră"
+      }
+    },
+    {
+      "src": "bbq/kipreepjes-met-paprika-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_175429.jpg",
+      "role": "tile",
+      "wb": "display",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Kipreepjes met paprika, gemarineerd",
+        "ro": "Fâșii de pui cu ardei, marinate"
+      }
+    },
+    {
+      "src": "bbq/gepaneerde-schnitzels-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-13-phone/20261009_180054.jpg",
+      "role": "tile",
+      "wb": "display",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Gepaneerde schnitzels op de toog",
+        "ro": "Șnițele pane în vitrină"
+      }
+    }
+  ],
+  "_producten_source": "Row 14 (16.10, Dan 15:35): /producten + /ro/produse — the page photo under the category chips is a frame loop (FrameLoop.astro, the hero engine reused): docs/data/phone-shoot-slots.json `producten` as it is — 8 frames (n = the §B5 number, wb display, focal + zoom origin, the categories they show, alts NL/RO verbatim) and `by_chip` (chip → frame numbers; rund · lam · colli = \"alles\": nothing shot yet, never a stock photo). Files shared with the other row-14 keys (one white-balanced source per original). Replaces the single #46 varken entry of 16.10 15:20.",
+  "producten": {
+    "frames": [
+      {
+        "n": 16,
+        "src": "hero/varkenskoteletten-in-de-toog-slagerij-john.jpg",
+        "from": "assets/raw/2026-10-13-phone/20261009_175704.jpg",
+        "wb": "display",
+        "focalX": 50,
+        "focalY": 55,
+        "zoomX": 50,
+        "zoomY": 55,
+        "categories": [
+          "varken"
+        ],
+        "alt": {
+          "nl": "Varkenskoteletten op een rij in de toog",
+          "ro": "Cotlete de porc pe un rând, în vitrină"
+        }
+      },
+      {
+        "n": 29,
+        "src": "roemeens/gerookte-worst-aan-haken-slagerij-john.jpg",
+        "from": "assets/raw/2026-10-13-phone/20261009_180623.jpg",
+        "wb": "display",
+        "focalX": 50,
+        "focalY": 45,
+        "zoomX": 50,
+        "zoomY": 45,
+        "categories": [
+          "roemeens"
+        ],
+        "alt": {
+          "nl": "Gerookte worst aan haken boven het houten rek",
+          "ro": "Cârnați afumați agățați în cârlige deasupra grătarului de lemn"
+        }
+      },
+      {
+        "n": 21,
+        "src": "products/spiering-slagerij-john.jpg",
+        "from": "assets/raw/2026-10-13-phone/20261009_180103.jpg",
+        "wb": "display",
+        "focalX": 50,
+        "focalY": 50,
+        "zoomX": 50,
+        "zoomY": 50,
+        "categories": [
+          "varken"
+        ],
+        "alt": {
+          "nl": "Spiering, dik gesneden, met fijne vetadering",
+          "ro": "Ceafă de porc tăiată gros, cu marmorare fină"
+        }
+      },
+      {
+        "n": 15,
+        "src": "bbq/kipreepjes-met-paprika-slagerij-john.jpg",
+        "from": "assets/raw/2026-10-13-phone/20261009_175429.jpg",
+        "wb": "display",
+        "focalX": 50,
+        "focalY": 50,
+        "zoomX": 50,
+        "zoomY": 50,
+        "categories": [
+          "kip"
+        ],
+        "alt": {
+          "nl": "Kipreepjes met paprika, gemarineerd",
+          "ro": "Fâșii de pui cu ardei, marinate"
+        }
+      },
+      {
+        "n": 51,
+        "src": "roemeens/mici-in-de-toog-slagerij-john.jpg",
+        "from": "assets/raw/2026-10-13-phone/20261009_185014.jpg",
+        "wb": "display",
+        "focalX": 50,
+        "focalY": 50,
+        "zoomX": 50,
+        "zoomY": 50,
+        "categories": [
+          "roemeens"
+        ],
+        "alt": {
+          "nl": "Mici in de toog, twee schalen vol",
+          "ro": "Mici în vitrină, două tăvi pline"
+        }
+      },
+      {
+        "n": 46,
+        "src": "producten/dikke-varkenskotelet-met-been-slagerij-john.jpg",
+        "from": "assets/raw/2026-10-13-phone/20261009_183800.jpg",
+        "wb": "display",
+        "focalX": 50,
+        "focalY": 55,
+        "zoomX": 50,
+        "zoomY": 55,
+        "categories": [
+          "varken"
+        ],
+        "alt": {
+          "nl": "Dikke varkenskotelet met been",
+          "ro": "Cotlet gros de porc cu os"
+        }
+      },
+      {
+        "n": 25,
+        "src": "products/verse-braadworst-slagerij-john.jpg",
+        "from": "assets/raw/2026-10-13-phone/20261009_180334.jpg",
+        "wb": "display",
+        "focalX": 50,
+        "focalY": 55,
+        "zoomX": 50,
+        "zoomY": 55,
+        "categories": [
+          "varken"
+        ],
+        "alt": {
+          "nl": "Verse braadworst, dik en licht van kleur, op de toog",
+          "ro": "Cârnați proaspeți, groși și deschiși la culoare, în vitrină"
+        }
+      },
+      {
+        "n": 42,
+        "src": "roemeens/gerookt-spek-slagerij-john.jpg",
+        "from": "assets/raw/2026-10-13-phone/20261009_183258.jpg",
+        "wb": "display",
+        "focalX": 50,
+        "focalY": 50,
+        "zoomX": 50,
+        "zoomY": 50,
+        "categories": [
+          "roemeens"
+        ],
+        "alt": {
+          "nl": "Gerookt spek, gesneden op een houten plank",
+          "ro": "Slănină afumată, feliată pe o planșetă de lemn"
+        }
+      }
+    ],
+    "by_chip": {
+      "alles": [
+        16,
+        29,
+        21,
+        15,
+        51,
+        46,
+        25,
+        42
+      ],
+      "varken": [
+        16,
+        21,
+        46,
+        25
+      ],
+      "roemeens": [
+        29,
+        51,
+        42
+      ],
+      "kip": [
+        15
+      ],
+      "rund": "alles",
+      "lam": "alles",
+      "colli": "alles"
+    }
+  },
+  "_producten_head_source": "D-37 v3 (Dan 16.10 17:13 + 17:23, spec design/producten-hero.md): the /producten + /ro/produse head. Ground = #46 the bone-in chop, cut out and laid horizontal (design/cutouts/cut_46, RGBA); `tiles` = the four tiles under the head (v5 §7, Dan 16.10 21:36; v4 a counter row, before that the head's slot): 43 · 42 · 40 · 30, each with the chip it links to (rembg isnet, wb applied; byte-identical copies), each with its spec §3 rotation. Alts §2 verbatim.",
+  "producten_head": {
+    "ground": {
+      "src": "producten/dikke-varkenskotelet-met-been-uitgesneden-slagerij-john.webp",
+      "from": "design/cutouts/cut_46_kotelet_horizontal.webp",
+      "alt": {
+        "nl": "Dikke varkenskotelet met been, van dichtbij",
+        "ro": "Cotlet gros de porc cu os, de aproape"
+      }
+    },
+    "tiles": [
+      {
+        "n": 43,
+        "rot": -8,
+        "chip": "roemeens",
+        "src": "producten/salami-met-peperkorst-uitgesneden-slagerij-john.webp",
+        "from": "design/cutouts/cut_43_peperworst.webp",
+        "alt": {
+          "nl": "Salami met peperkorst, aangesneden",
+          "ro": "Salam cu crustă de piper, început"
+        }
+      },
+      {
+        "n": 42,
+        "rot": 5,
+        "chip": "roemeens",
+        "src": "producten/gerookt-spek-op-plank-uitgesneden-slagerij-john.webp",
+        "from": "design/cutouts/cut_42_gerookt_spek_board.webp",
+        "alt": {
+          "nl": "Gerookt spek op een houten plank",
+          "ro": "Slănină afumată pe o planșetă de lemn"
+        }
+      },
+      {
+        "n": 40,
+        "rot": 8,
+        "chip": "roemeens",
+        "src": "producten/parizer-op-plank-uitgesneden-slagerij-john.webp",
+        "from": "design/cutouts/cut_40_parizer_board.webp",
+        "alt": {
+          "nl": "Parizer op een houten plank, aangesneden",
+          "ro": "Parizer pe o planșetă de lemn, început"
+        }
+      },
+      {
+        "n": 30,
+        "rot": -14,
+        "chip": "all",
+        "src": "producten/gerolde-hesp-op-plank-uitgesneden-slagerij-john.webp",
+        "from": "design/cutouts/cut_30_hesp_rolls_board.webp",
+        "alt": {
+          "nl": "Gerolde plakjes hesp op een houten plank",
+          "ro": "Felii de șuncă rulate pe o planșetă de lemn"
+        }
+      }
+    ]
+  },
   "gallery": []
 }
