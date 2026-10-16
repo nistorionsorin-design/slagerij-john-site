@@ -1,0 +1,177 @@
+---
+// /allergenen · /ro/alergeni (row 10c, 16.10). Lexicon §5.18 / §6 „Alergeni”; the board `Allergenen` (06.10) is the
+// concept, the page follows the /over-ons shell (D-30): head (eyebrow · H1 + accent · lead = the workshop notice · the
+// call, which is this page's primary action, not WhatsApp) · the picker (14 radio chips, zero JS: the checked chip's
+// result shows — Zit in / Kan sporen bevatten / Niet aanwezig in, empty lines left out) · the matrix (legend in words +
+// a mark per cell — full, half, ring, drawn in CSS — with its word for screen readers) · the six product-group cards (note · Bevat · Kan sporen bevatten;
+// „Vers vlees” = Bevat: geen) · Vraag het ons · Uw verantwoordelijkheid · closing line + the call again · the legal line
+// · byline. Data: src/data/allergens.json (the old site's statement; the owners confirm it, FACTS „Allergens”).
+// Strings: src/i18n/allergenen.ts. Styles: src/styles/legal.css. JSON-LD: BreadcrumbList + WebPage isPartOf #website.
+// No script.
+import Base from '../layouts/Base.astro';
+import entity from '../data/entity.json';
+import allergens from '../data/allergens.json';
+import { type Locale } from '../i18n/ui';
+import { allergenenT } from '../i18n/allergenen';
+import '../styles/legal.css';
+
+export interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = allergenenT[locale];
+const ro = locale === 'ro';
+const origin = 'https://slagerij-john.be';
+const alternates = { nl: '/allergenen', ro: '/ro/alergeni' };
+const path = alternates[locale];
+const homePath = ro ? '/ro' : '/';
+
+type Level = 'contains' | 'may' | 'none';
+const name = (x: { nl: string; ro: string }) => (ro ? x.ro : x.nl);
+const cats = allergens.categories;
+const levelOf = (cat: (typeof cats)[number], id: string): Level =>
+  (cat.contains as string[]).includes(id) ? 'contains' : (cat.may as string[]).includes(id) ? 'may' : 'none';
+const allergenName = new Map(allergens.allergens.map((a) => [a.id, name(a)]));
+const names = (ids: string[]) => ids.map((id) => allergenName.get(id) ?? id).join(', ');
+
+// the picker: per allergen, the product groups at each level (a level with no group is left out)
+const picks = allergens.allergens.map((a) => ({
+  id: a.id,
+  name: name(a),
+  lines: (['contains', 'may', 'none'] as Level[])
+    .map((lv) => ({ lv, label: t.result[lv], groups: cats.filter((c) => levelOf(c, a.id) === lv).map(name) }))
+    .filter((l) => l.groups.length),
+}));
+
+const tel = `tel:${entity.telephone}`;
+const callLabel = `${t.call} · ${entity.telephoneDisplay}`;
+const telIcon = '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>';
+const lead = ro ? allergens.workshop_notice_ro : allergens.workshop_notice_nl;
+
+const jsonld = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t.crumbs.home, item: `${origin}${homePath}` },
+      { '@type': 'ListItem', position: 2, name: t.crumbs.page, item: `${origin}${path}` },
+    ],
+  },
+  {
+    '@type': 'WebPage',
+    '@id': `${origin}${path}#webpage`,
+    url: `${origin}${path}`,
+    name: t.title,
+    description: t.description,
+    inLanguage: ro ? 'ro-BE' : 'nl-BE',
+    isPartOf: { '@type': 'WebSite', '@id': `${origin}/#website`, url: `${origin}/`, name: 'Slagerij John' },
+  },
+];
+---
+<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld}>
+  <main id="main" class="lg al">
+    <section class="container lg-head" aria-labelledby="al-title">
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h1 class="lg-head__h1" id="al-title">{t.h1} <span class="accent lg-head__accent">{t.accent}</span></h1>
+      <p class="lg-head__lead">{lead}</p>
+      <a class="btn btn--primary btn--lg lg-head__cta" href={tel}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={telIcon} />
+        <span>{callLabel}</span>
+      </a>
+    </section>
+
+    <section class="container lg-b lg-b--wide">
+      <fieldset class="ap">
+        <legend class="eyebrow lg-b__h2 ap__legend">{t.pick}</legend>
+        <div class="ap__opts">
+          {picks.map((p) => (
+            <>
+              <input class="ap__in vh" type="radio" name="allergeen" id={`ap-${p.id}`} value={p.id} aria-describedby={`apr-${p.id}`} />
+              <label class="ap__chip" for={`ap-${p.id}`}>{p.name}</label>
+              <div class="ap__res" id={`apr-${p.id}`}>
+                <p class="ap__name">{p.name}</p>
+                <dl class="ap__lines">
+                  {p.lines.map((l) => (
+                    <div class="ap__line">
+                      <dt>{l.label}</dt>
+                      <dd>{l.groups.join(', ')}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            </>
+          ))}
+        </div>
+      </fieldset>
+    </section>
+
+    <section class="container lg-b lg-b--wide" aria-label={t.h1}>
+      <ul class="am__legend">
+        {(['contains', 'may', 'none'] as Level[]).map((lv) => (
+          <li><span class={`am__mark am__mark--${lv}`} aria-hidden="true" />{t.legend[lv]}</li>
+        ))}
+      </ul>
+      <div class="am__scroll" tabindex="0" role="region" aria-label={t.h1}>
+        <table class="am__table">
+          <caption class="vh">{t.h1}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{t.eyebrow}</th>
+              {cats.map((c) => <th scope="col">{name(c)}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {allergens.allergens.map((a) => (
+              <tr>
+                <th scope="row">{name(a)}</th>
+                {cats.map((c) => {
+                  const lv = levelOf(c, a.id);
+                  return <td><span class={`am__mark am__mark--${lv}`} aria-hidden="true" /><span class="vh">{t.legend[lv]}</span></td>;
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="container lg-b lg-b--wide" aria-label={t.h1}>
+      <ul class="ac">
+        {cats.map((c) => (
+          <li class="ac__card">
+            <h2 class="ac__name">{name(c)}</h2>
+            <p class="ac__note">{ro ? c.note_ro : c.note_nl}</p>
+            <dl class="ac__lines">
+              <div class="ac__line"><dt>{t.card.contains}</dt><dd>{c.contains.length ? names(c.contains) : t.card.nothing}</dd></div>
+              {c.may.length > 0 && <div class="ac__line"><dt>{t.card.may}</dt><dd>{names(c.may)}</dd></div>}
+            </dl>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="container lg-b" aria-labelledby="al-ask">
+      <h2 class="eyebrow lg-b__h2" id="al-ask">{t.ask.eyebrow}</h2>
+      <div class="lg-b__body">
+        <ul class="lg-b__list">{t.ask.lines.map((l) => <li>{l}</li>)}</ul>
+      </div>
+    </section>
+
+    <section class="container lg-b" aria-labelledby="al-duty">
+      <h2 class="eyebrow lg-b__h2" id="al-duty">{t.duty.eyebrow}</h2>
+      <div class="lg-b__body">
+        <p class="lg-b__text">{t.duty.text}</p>
+      </div>
+    </section>
+
+    <section class="container lg-b lg-b--wide al-close" aria-label={t.closing}>
+      <p class="al-close__line">{t.closing}</p>
+      <a class="btn btn--primary btn--lg lg-head__cta" href={tel}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={telIcon} />
+        <span>{callLabel}</span>
+      </a>
+    </section>
+
+    <div class="container lg-end">
+      <p class="al-legal">{t.legal}</p>
+      <p class="lg-end__by al-by">{t.byline}</p>
+    </div>
+  </main>
+</Base>

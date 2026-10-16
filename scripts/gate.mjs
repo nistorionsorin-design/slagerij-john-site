@@ -240,7 +240,9 @@ if (built) {
       // calendar date („pe 24 și 31 decembrie”, stage 7: the day of a month takes no „de”; „și” is too short to match,
       // stage 9 adds the other pair of days „pe 24 sau 31 decembrie”; row 10b: nor a year after its month, „din
       // februarie 2025 avem”, /ro/despre-noi)
-      const m = text.match(/(?<![\d.,:/])(?<!(?:ianuarie|februarie|martie|aprilie|mai|iunie|iulie|august|septembrie|octombrie|noiembrie|decembrie)\s)\b(?:[2-9]\d|\d{3,})\s+(?!de\b|%|€|kg\b|g\b|km\b|m\b|cm\b|ml\b|l\b|min\b|h\b|\p{Lu}|sau\s+\d{1,2}\s+(?:ianuarie|februarie|martie|aprilie|mai|iunie|iulie|august|septembrie|octombrie|noiembrie|decembrie)\b|(?:ianuarie|februarie|martie|aprilie|mai|iunie|iulie|august|septembrie|octombrie|noiembrie|decembrie)\b)\p{L}{3,}/u);
+      // row 10c: nor the last group of a phone number („la 0466 18 64 57 sau la info@…”, /ro/termeni) — the number is
+      // taken out before the test
+      const m = text.replace(/\b0\d{3}(?:\s\d{2}){3}\b/g, 'TEL').match(/(?<![\d.,:/])(?<!(?:ianuarie|februarie|martie|aprilie|mai|iunie|iulie|august|septembrie|octombrie|noiembrie|decembrie)\s)\b(?:[2-9]\d|\d{3,})\s+(?!de\b|%|€|kg\b|g\b|km\b|m\b|cm\b|ml\b|l\b|min\b|h\b|\p{Lu}|sau\s+\d{1,2}\s+(?:ianuarie|februarie|martie|aprilie|mai|iunie|iulie|august|septembrie|octombrie|noiembrie|decembrie)\b|(?:ianuarie|februarie|martie|aprilie|mai|iunie|iulie|august|septembrie|octombrie|noiembrie|decembrie)\b)\p{L}{3,}/u);
       if (m) e.push(`${label}: numeral ≥ 20 without „de”: «${m[0]}»`);
     };
     const md = walk(join(root, 'src/content/ro')).filter((f) => /\.(md|mdx)$/.test(f));

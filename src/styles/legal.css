@@ -1,0 +1,149 @@
+/* Row 10c (16.10) — the footer's legal pages: /privacy · /algemene-voorwaarden (src/views/Legal.astro) and /allergenen
+   (src/views/Allergenen.astro), NL + RO. The /over-ons shell (D-30): head on paper (eyebrow · H1 + accent · lead), then
+   blocks that open with an eyebrow heading — on desktop the heading left (5fr), the text right (7fr), the FAQ's grid —
+   then the version line and the byline. Body copy at reading width (62ch). Only tokens; no new colour. */
+
+.lg-head { display: flex; flex-direction: column; gap: 14px; padding-top: 28px; padding-bottom: 8px; }
+.lg-head__h1 {
+  margin: 0;
+  font-size: clamp(28px, 8.4vw, 36px);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  max-width: 22ch;
+  overflow-wrap: break-word;
+}
+.lg-head__accent { display: block; margin-top: 12px; font-size: clamp(22px, 6.4vw, 26px); line-height: 1.1; color: var(--ox); }
+.lg-head__lead { margin: 0; font-size: 15px; line-height: 1.5; max-width: 62ch; }
+.lg-head__cta { align-self: stretch; }
+
+/* the text blocks: eyebrow heading · paragraph, a hairline on top */
+.lg-b { display: flex; flex-direction: column; gap: 10px; padding-top: 22px; }
+.lg-b__h2 { margin: 0; font-family: var(--f-ui); font-weight: 600; letter-spacing: 0.16em; }
+.lg-b__body { border-top: 1px solid var(--line); padding-top: 12px; }
+.lg-b__text { margin: 0; font-size: 15px; line-height: 1.55; max-width: 62ch; }
+.lg-b__list { list-style: none; margin: 0; padding: 0; max-width: 62ch; }
+.lg-b__list li { padding: 0 0 10px; font-size: 15px; line-height: 1.5; }
+.lg-b__list li + li { padding-top: 10px; border-top: 1px solid var(--line); }
+
+/* links inside the text: oxblood, underlined (IL-03 anchors, the shop's mail and phone) */
+.lg a:not(.btn) {
+  color: var(--ox);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+/* version line + byline (§5.13) */
+.lg-end { padding-top: 28px; padding-bottom: 28px; }
+.lg-end__version { margin: 0 0 10px; font-size: 14px; line-height: 1.5; max-width: 62ch; }
+.lg-end__by { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12px; line-height: 1.5; color: var(--muted); }
+
+/* ── allergenen ── */
+
+/* the picker: the 14 allergens as radio chips (zero JS: the checked chip's own result panel shows, below the chips —
+   the flex `order` trick keeps each panel next to its chip in the DOM, so the radio's aria-describedby reads it) */
+.ap { position: relative; margin: 0; padding: 0; border: 0; min-width: 0; }
+.ap__legend { padding: 0; margin: 0 0 12px; }
+.ap__opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.ap__chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--tag-line);
+  border-radius: var(--r-chip);
+  background: var(--tag);
+  color: var(--fg);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+.ap__chip:hover { border-color: var(--fg); }
+.ap__in:checked + .ap__chip { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+.ap__in:focus-visible + .ap__chip { outline: 2px solid var(--fg); outline-offset: 2px; }
+.ap__res {
+  display: none;
+  order: 1;
+  flex: 1 0 100%;
+  margin-top: 8px;
+  padding: 16px 18px;
+  border-radius: var(--r-tile);
+  background: var(--card);
+  border: 1px solid var(--line);
+}
+.ap__in:checked + .ap__chip + .ap__res { display: block; }
+.ap__name { margin: 0 0 8px; font-family: var(--f-display); font-weight: 600; font-size: 20px; line-height: 1.15; }
+.ap__lines { margin: 0; display: grid; gap: 8px; }
+.ap__line { display: grid; gap: 2px; }
+.ap__line dt { font-size: var(--fs-eyebrow); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ox); }
+.ap__line dd { margin: 0; font-size: 15px; line-height: 1.45; }
+
+/* the matrix: allergens down, product groups across; a mark + the word (visually hidden) in every cell, the legend
+   above in words — never colour alone. Wider than a phone: it scrolls inside its own box, never the page. */
+.am__legend { list-style: none; margin: 0 0 12px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); }
+.am__legend li { display: inline-flex; align-items: center; gap: 6px; }
+/* position: relative — the cells' visually-hidden words (.vh, absolute) stay inside the scroll box instead of widening
+   the page on a phone */
+.am__scroll { position: relative; overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r-tile); background: var(--card); }
+.am__scroll:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.am__table { border-collapse: collapse; width: 100%; min-width: 600px; font-size: 13px; line-height: 1.3; }
+.am__table th, .am__table td { padding: 9px 8px; border-bottom: 1px solid var(--line); text-align: center; vertical-align: middle; }
+.am__table thead th { font-weight: 600; font-size: 12px; color: var(--fg); vertical-align: bottom; }
+.am__table tbody th { text-align: left; font-weight: 500; white-space: nowrap; }
+.am__table tr > :first-child { position: sticky; left: 0; background: var(--card); text-align: left; padding-left: 14px; }
+.am__table tbody tr:last-child > * { border-bottom: 0; }
+/* the marks: full (bevat) · half (kan sporen bevatten) · ring (niet aanwezig) — shape carries the level, not colour */
+.am__mark { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid currentColor; vertical-align: -1px; }
+.am__mark--contains { color: var(--ox); background: currentColor; }
+.am__mark--may { color: var(--fg); background: linear-gradient(90deg, currentColor 50%, transparent 50%); }
+.am__mark--none { color: var(--muted); }
+
+/* the six product-group cards */
+.ac { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.ac__card { padding: 18px; border-radius: var(--r-tile); background: var(--card); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+.ac__name { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 21px; line-height: 1.15; letter-spacing: -0.01em; }
+.ac__note { margin: 0; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.ac__lines { margin: 0; display: grid; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
+.ac__line { display: grid; gap: 2px; }
+.ac__line dt { font-size: var(--fs-eyebrow); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ox); }
+.ac__line dd { margin: 0; font-size: 14px; line-height: 1.45; }
+
+.al-close { display: flex; flex-direction: column; gap: 14px; }
+.al-close__line { margin: 0; font-family: var(--f-display); font-weight: 500; font-size: 24px; line-height: 1.15; letter-spacing: -0.01em; max-width: 24ch; }
+.al-legal { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); max-width: 70ch; }
+
+@media (min-width: 720px) {
+  .ac { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lg-head__cta { align-self: flex-start; }
+}
+
+/* ── desktop (derived, D-30): the /over-ons grid ── */
+@media (min-width: 960px) {
+  .lg-head { gap: 18px; padding-top: 56px; padding-bottom: 16px; }
+  .lg-head__h1 { font-size: clamp(44px, 4.2vw, 64px); line-height: 1; letter-spacing: -0.025em; max-width: 20ch; }
+  .lg-head__accent { margin-top: 14px; font-size: clamp(28px, 2.4vw, 36px); }
+  .lg-head__lead { font-size: var(--fs-lead); line-height: 1.5; }
+
+  .lg-b {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 56px;
+    align-items: start;
+    padding-top: 0;
+  }
+  .lg-b__h2 { padding-top: 22px; }
+  .lg-b__body { padding: 20px 0 22px; }
+  .lg-b__text, .lg-b__list li { font-size: var(--fs-body); }
+  .lg-b--wide { grid-template-columns: minmax(0, 1fr); gap: 16px; padding-top: 48px; }
+  .lg-b--wide .lg-b__h2 { padding-top: 0; }
+  .lg-b--wide .lg-b__body { border-top: 0; padding-top: 0; }
+
+  .ac { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .am__table { font-size: 14px; }
+  .al-close__line { font-size: 32px; line-height: 1.1; }
+
+  .lg-end { padding-top: 56px; padding-bottom: 80px; }
+}
+.al-by { margin-top: 14px; }

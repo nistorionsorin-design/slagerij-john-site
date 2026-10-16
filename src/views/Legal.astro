@@ -1,0 +1,69 @@
+---
+// /privacy · /ro/confidentialitate and /algemene-voorwaarden · /ro/termeni (row 10c, 16.10). The /over-ons shell (D-30):
+// head on paper (eyebrow · H1 + accent · lead) · one block per H2, the eyebrow heading left and the text right on
+// desktop · the version line · the byline. Strings: src/i18n/legal.ts (lexicon §5.26 · §5.27 · §6 „Confidențialitate”
+// · „Condiții de comandă”, the RO pages in dumneavoastră, D4). Styles: src/styles/legal.css (shared with /allergenen).
+// JSON-LD: BreadcrumbList (§8.4, the gate's rule for every sub-page, as /over-ons) + WebPage isPartOf #website; privacy
+// also `about` the shop (§5.26). No FAQPage, no invented PrivacyPolicy type (S-03). No script.
+import Base from '../layouts/Base.astro';
+import { type Locale } from '../i18n/ui';
+import { legal, linkify } from '../i18n/legal';
+import '../styles/legal.css';
+
+export interface Props { locale: Locale; page: keyof typeof legal }
+const { locale, page } = Astro.props;
+const t = legal[page][locale];
+const alternates = legal[page].alternates;
+const origin = 'https://slagerij-john.be';
+const path = alternates[locale];
+const homePath = locale === 'ro' ? '/ro' : '/';
+const brand = locale === 'ro' ? 'Măcelăria John' : 'Slagerij John';
+
+// each page link once, on the first text that carries its anchor (lead first, then the blocks in order)
+const used = new Set<string>();
+const lead = t.lead ? linkify(t.lead, t.links, used) : null;
+const blocks = t.blocks.map((b, i) => ({ ...b, id: `lg-${i + 1}`, parts: linkify(b.text, t.links, used) }));
+
+const jsonld = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t.crumbs.home, item: `${origin}${homePath}` },
+      { '@type': 'ListItem', position: 2, name: t.crumbs.page, item: `${origin}${path}` },
+    ],
+  },
+  {
+    '@type': 'WebPage',
+    '@id': `${origin}${path}#webpage`,
+    url: `${origin}${path}`,
+    name: `${t.title} | ${brand}`,
+    description: t.description,
+    inLanguage: locale === 'ro' ? 'ro-BE' : 'nl-BE',
+    isPartOf: { '@type': 'WebSite', '@id': `${origin}/#website`, url: `${origin}/`, name: 'Slagerij John' },
+    ...(page === 'privacy' ? { about: { '@id': `${origin}/#shop` } } : {}),
+  },
+];
+---
+<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld}>
+  <main id="main" class="lg">
+    <section class="container lg-head" aria-labelledby="lg-title">
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h1 class="lg-head__h1" id="lg-title">{t.h1} <span class="accent lg-head__accent">{t.accent}</span></h1>
+      {lead && <p class="lg-head__lead">{lead.map((p) => (typeof p === 'string' ? p : <a href={p.href}>{p.text}</a>))}</p>}
+    </section>
+
+    {blocks.map((b) => (
+      <section class="container lg-b" aria-labelledby={b.id}>
+        <h2 class="eyebrow lg-b__h2" id={b.id}>{b.h2}</h2>
+        <div class="lg-b__body">
+          <p class="lg-b__text">{b.parts.map((p) => (typeof p === 'string' ? p : <a href={p.href} rel={p.href.startsWith('http') ? 'noopener' : undefined}>{p.text}</a>))}</p>
+        </div>
+      </section>
+    ))}
+
+    <div class="container lg-end">
+      <p class="lg-end__version">{t.closing}</p>
+      <p class="lg-end__by">{t.byline}</p>
+    </div>
+  </main>
+</Base>
