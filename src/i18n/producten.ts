@@ -28,16 +28,17 @@ export const productenNl = {
     all: 'Alles',
   },
 
-  /** lexicon §5.19 „Product cards under the head” (16.10 21:40, D-37 v5): the group's hidden H2 (C-06) + the four
-   *  tiles, in the order of photos.json `producten_head.tiles` */
+  /** lexicon §5.19 „Product cards under the head” (16.10 21:40, D-37 v5; tile 4 + the line under the tiles 17.10,
+   *  D-37 v6): the group's hidden H2 (C-06) + the four tiles, in the order of photos.json `producten_head.tiles` */
   tiles: {
     label: 'Van de toog',
     items: [
       { name: 'Salami met peper', sub: 'Roemeense specialiteiten' },
       { name: 'Gerookt spek', sub: 'Roemeense specialiteiten' },
       { name: 'Parizer', sub: 'Roemeense specialiteiten' },
-      { name: 'Gerolde hesp', sub: 'Charcuterie' },
+      { name: 'Gerookte worst', sub: 'Roemeense specialiteiten' },
     ],
+    line: 'Onze Roemeense specialiteiten maken we zelf: vers bereid, volgens ons eigen recept, met lokale producten.',
   },
 
   /** Roemeense section: eyebrow = §4 / §5.15 page name; heading = lexicon §7 GBP description
@@ -106,15 +107,17 @@ export const productenRo = {
     all: 'Toate',
   },
 
-  /** lexicon §6 „Produse — the product cards under the head” (16.10 21:40, D-37 v5), same keys as the NL cards */
+  /** lexicon §6 „Produse — the product cards under the head” (16.10 21:40, D-37 v5; tile 4 + the line under the cards
+   *  17.10, D-37 v6), same keys as the NL cards */
   tiles: {
     label: 'De la tejghea',
     items: [
       { name: 'Salam cu piper', sub: 'Specialități românești' },
       { name: 'Slănină afumată', sub: 'Specialități românești' },
       { name: 'Parizer', sub: 'Specialități românești' },
-      { name: 'Șuncă rulată', sub: 'Mezeluri' },
+      { name: 'Cârnați afumați', sub: 'Specialități românești' },
     ],
+    line: 'Specialitățile românești le facem noi, proaspăt preparate, după rețeta casei, din produse locale.',
   },
 
   /** no §6 heading for these two sections: they carry the §6 category name (the pill), no eyebrow, no NL link */

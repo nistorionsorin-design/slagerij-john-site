@@ -13,7 +13,7 @@ export const roemeensNl = {
   title: 'Roemeense slagerij in West-Vlaanderen: mici | Slagerij John',
   description: 'Mici, gerookte worst en pastrami uit eigen atelier, dagvers in Zwevezele bij Wingene. Roemeense specialiteiten naast de Vlaamse klassiekers, per kilo.',
 
-  /** §5.25 head (hero frame 1, photos.json hero[0], alt §5.14) */
+  /** §5.25 head (row 14: the phone shoot's #29, photos.json `roemeens` head) */
   eyebrow: 'Roemeense specialiteiten',
   h1: 'Mici, gerookte worst en pastrami, uit eigen atelier.',
   accent: 'Roemeens van smaak, Zwevezeels van adres.',

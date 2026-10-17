@@ -23,6 +23,7 @@ import Faq from '../components/Faq.astro';
 import photos from '../data/photos.json';
 import type { Photo } from '../data/types';
 import { item, priceLabel, products } from '../lib/price';
+import { heroPhoto } from '../lib/hero';
 import { wa, type Locale } from '../i18n/ui';
 import { bbqT } from '../i18n/bbq';
 import '../styles/sections.css';
@@ -42,10 +43,10 @@ const file = (src: string) => {
   return m.default;
 };
 
-// the head = hero frame 4, the BBQ tray (§5.24): square on the phone, 2:1 on desktop; AVIF quality 40 as /traiteur's head
+// the head = the hero's BBQ tray, id bbq-pakket (§5.24; picked by id, D-38): square on the phone, 2:1 on desktop; AVIF quality 40 as /traiteur's head
 const shoot = photos.bbq as Photo[];
 const HEAD = 'hero' as 'hero' | 'shoot';
-const head = HEAD === 'shoot' ? shoot.find((p) => p.role === 'head')! : (photos.hero as Photo[])[3];
+const head = HEAD === 'shoot' ? shoot.find((p) => p.role === 'head')! : heroPhoto('bbq-pakket');
 const headPic = {
   mobile: { img: file(head.src), ratio: 1, max: 1080, sizes: '100vw', focalX: head.focalX, focalY: head.focalY },
   desktop: { img: file(head.src), ratio: 2, max: 2040, sizes: 'max(1280px, min(100vw, 1440px) - 112px)', focalX: head.focalX, focalY: head.focalY },

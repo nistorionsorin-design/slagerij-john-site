@@ -333,6 +333,24 @@ if (built) {
     warn('motion-manual', 'working pause + reduced-motion stills: verify in the browser');
   }
 
+  // 11b — hero tags (D-38, 17.10): a hero tag shows only what FACTS has; a placeholder ([KOOKLIJN], [PRIJS], [GĂTIRE],
+  // [PREȚ] or any other [CAPS]) in a tag fails — in dev and preview too, not only under --release. Covers tag 1 in the
+  // HTML and tags 2–N in their <template>.
+  {
+    const e = [];
+    let tags = 0;
+    for (const p of pages) {
+      const box = p.html.match(/<div class="hero__tag[\s"][\s\S]*?<\/section>/i)?.[0];
+      if (!box) continue;
+      for (const tag of box.match(/<div class="ht[\s"][\s\S]*?<\/span>\s*<\/div>/gi) || []) {
+        tags++;
+        const text = tag.replace(/<[^>]+>/g, ' ');
+        for (const m of text.match(/\[[A-ZÀ-ÞĂÂÎȘȚ][A-ZÀ-ÞĂÂÎȘȚ0-9 \-]*\]|\{[A-Z]+\}/g) || []) e.push(`${p.file}: hero tag shows ${m}`);
+      }
+    }
+    verdict('hero-tags', e, `${tags} hero tags: no placeholder`);
+  }
+
   // 12 — accessibility (static subset)
   {
     const e = [];
@@ -365,7 +383,7 @@ if (built) {
 
   // client JS budget (D-06 one island + D-12 hero loop + D-20 open chip + the header's menu and
   // smart-sticky, build plan stage 0b2 + the bestelbon, stage 5 + the traiteur quote form, stage 6 + the /producten
-  // tiles' chip links, D-37 v5): a script ships only
+  // tiles' chip links, D-37 v5 + the /producten head's frame B, D-37 v6 row 14b): a script ships only
   // on a page that mounts its component, from /_astro/, never inline (CSP script-src 'self').
   {
     const js = walk(dist).filter((f) => /\.(js|mjs)$/.test(f));
@@ -379,6 +397,7 @@ if (built) {
       ['OrderForm', /<form class="order[\s"]/],
       ['QuoteForm', /<form class="qf[\s"]/],
       ['ProductTiles', /<section class="pt[\s"]/],
+      ['Producten', /<section class="th ph[\s"]/],
     ];
     for (const p of pages)
       for (const tag of p.html.match(/<script[^>]*\ssrc="[^"]*"[^>]*>/gi) || []) {
@@ -386,7 +405,7 @@ if (built) {
         const file = src.split('/').pop();
         const m = mounts.find(([name]) => file.startsWith(name + '.'));
         if (!src.startsWith('/_astro/')) e.push(`${p.file}: ${src} not served from /_astro/`);
-        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / Header / OpenChip / QaBox / OrderForm / QuoteForm / ProductTiles)`);
+        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / Header / OpenChip / QaBox / OrderForm / QuoteForm / ProductTiles / Producten)`);
         else if (!m[1].test(p.html)) e.push(`${p.file}: ships ${file} without its component`);
       }
     verdict('client-js', e, `${js.length} JS files in dist; no inline script; each script ships only with its component`);

@@ -15,6 +15,12 @@
 // runs, 09.10, once the font preloads made `load` fire before the first paint).
 // Frames 2–5, the loop frame and tags 2–5 sit in <template>s; src/scripts/hero.ts
 // inserts them after `load`. Without JS, mask support or motion: one still.
+// Row 14c (D-38, 17.10): ten frames, in photos.json `hero` order (frame 1 = the LCP, unchanged). Each frame keeps the
+// 9 s of hero-b.css (2 s wipe + 7 s, Ken Burns 1 → 1,08 over 11 s, tags 7 s + fade); for N frames the loop is 9N s, so
+// the keyframes hero-b.css writes for 45 s are generated here for 9N s (`timing` below; hero-b.css stays 1:1) and the
+// wipe corners cycle 135 · 315 · 45 · 225. hero.ts inserts all frames after `load` but parks their sources: frame 2 is
+// fetched at once (the loop goes live when it is decoded), frame n+1 when frame n starts. Tag rule (D-38): a tag shows
+// only what FACTS has — line null → no line, price null → no price and no unit; never a placeholder (gate: hero-tags).
 import { Picture } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import '../styles/hero-b.css';
@@ -36,14 +42,48 @@ const ink = (locale === 'ro' ? stampRo : stampNl).replace(/^\s*<!--[\s\S]*?-->\s
 
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/hero/*.{jpg,jpeg,png,webp}', { eager: true });
 
-// DOM contract of hero-b.css: wipe direction and animation delay per position.
-const WIPE = ['', 'w135', 'w315', 'w45', 'w225'];
-const FRAME_DELAY = [-47, -38, -29, -20, -11];
-const TAG_DELAY = [-45, -36, -27, -18, -9];
+// DOM contract of hero-b.css: wipe direction and animation delay per position, for N frames of 9 s (T = 9N s). Frame
+// i ≥ 1 starts its wipe at 9i − 2 s; frame 1 (and the loop copy of it) is 2 s into its cycle at t = 0, fully in; tag i
+// fades in during the second before 9i s. For N = 5 these are hero-b.css's own −47 · −38 · −29 · −20 · −11 / −45 … −9.
+const heroPhotos = photos.hero as HeroPhoto[];
+const N = heroPhotos.length;
+const T = 9 * N;
+const CORNERS = ['w135', 'w315', 'w45', 'w225'];
+const WIPE = heroPhotos.map((_, i) => (i === 0 ? '' : CORNERS[(i - 1) % 4]));
+const FRAME_DELAY = heroPhotos.map((_, i) => (i === 0 ? -(T + 2) : 9 * i - 2 - T));
+const TAG_DELAY = heroPhotos.map((_, i) => -(T - 9 * i));
 
-const frames = (photos.hero as HeroPhoto[]).slice(0, 5).map((p, i) => {
+// hero-b.css's keyframes, rewritten for T s (its percentages are of 45 s): the same seconds, the same steps
+const pc = (sec: number, plus = 0) => `${+((sec / T) * 100 + plus).toFixed(3)}%`;
+const wipe = (from: string, to: string) => `0%{mask-position:${from};-webkit-mask-position:${from}}${pc(2)},${pc(11)}{mask-position:${to};-webkit-mask-position:${to}}${pc(11, 0.01)},100%{mask-position:${from};-webkit-mask-position:${from}}`;
+const WIPES: Record<string, [string, string]> = { w135: ['100% 100%', '0% 0%'], w315: ['0% 0%', '100% 100%'], w45: ['100% 0%', '0% 100%'], w225: ['0% 100%', '100% 0%'] };
+const timing = [
+  `.hero.hw .hb{animation-duration:${T}s}`,
+  `.hero.hw .hb0{animation-name:hwn-f0}`,
+  `.hero.hw .hk{animation:hwn-z ${T}s linear infinite}`,
+  `.hero.hw .hb.vi{animation-name:hwn-fb,none}`,
+  `.hero.hw .hb.vi.hbb{animation-name:hwn-fbb,none}`,
+  ...Object.keys(WIPES).map((w) => `.hero.hw .hb.${w}{animation-name:hwn-fb,hwn-${w}}.hero.hw .hb.${w}.hbb{animation-name:hwn-fbb,hwn-${w}}`),
+  `.hero.hw .ht{animation:hwn-htf ${T}s ease-in-out infinite}`,
+  `@keyframes hwn-f0{0%,${pc(11)}{opacity:1}${pc(11, 0.01)},100%{opacity:0}}`,
+  `@keyframes hwn-z{0%{transform:scale(1)}${pc(11)}{transform:scale(1.08)}${pc(11, 0.01)},100%{transform:scale(1)}}`,
+  `@keyframes hwn-fb{0%,${pc(11)}{opacity:1}${pc(11, 0.01)},100%{opacity:0}}`,
+  `@keyframes hwn-fbb{0%,${pc(9)}{opacity:1}${pc(9, 0.01)},100%{opacity:0}}`,
+  ...Object.entries(WIPES).map(([w, [a, b]]) => `@keyframes hwn-${w}{${wipe(a, b)}}`),
+  `@keyframes hwn-htf{0%,${pc(7)}{opacity:1}${pc(7.72)},${pc(T - 1)}{opacity:0}100%{opacity:1}}`,
+].join('');
+
+// the tag rule (D-38): only what FACTS has; the unit belongs to the price
+const tagOf = (p: HeroPhoto) => ({
+  name: p.tag.name[locale],
+  line: p.tag.line?.[locale] ?? null,
+  price: p.tag.price?.[locale] ?? null,
+  unit: p.tag.price ? (p.tag.unit?.[locale] ?? null) : null,
+});
+
+const frames = heroPhotos.map((p, i) => {
   const mod = files[`../assets/${p.src}`];
-  if (!mod) throw new Error(`photos.json hero[${i}]: src/assets/${p.src} not found`);
+  if (!mod) throw new Error(`photos.json hero ${p.id}: src/assets/${p.src} not found`);
   const img = mod.default;
   const r = (img.width / img.height).toFixed(3);
   const max = Math.min(img.width, 1600);
@@ -52,14 +92,26 @@ const frames = (photos.hero as HeroPhoto[]).slice(0, 5).map((p, i) => {
   // on desktop the pinned print right of the seam (hero-seam.css: 45 % wide, 48 % from 1600 px,
   // 16 px inset top and bottom).
   // From 1600 px the photo panel is half the width (1fr 1fr).
-  const sizes = `(min-width: 1600px) max(48vw, calc((100vh - 32px) * ${r})), (min-width: 960px) max(45vw, calc((100vh - 32px) * ${r})), max(100vw, calc(100vh * ${r}))`;
+  // The phone term is 1 px short of the drawn width: a 3:4 frame on Lighthouse's phone (823 px tall, DPR 1,75) asked for
+  // 1080,2 device px and got the 1500/1600 file (199 kB for the counter photo) for 0,2 px — 1 px is invisible (row 14c).
+  const sizes = `(min-width: 1600px) max(48vw, calc((100vh - 32px) * ${r})), (min-width: 960px) max(45vw, calc((100vh - 32px) * ${r})), max(100vw, calc(100vh * ${r} - 1px))`;
   const fx = p.focalX ?? 50, fy = p.focalY ?? 50;
   const style = `object-position:${fx}% ${fy}%;transform-origin:${p.zoomX ?? fx}% ${p.zoomY ?? fy}%;animation-delay:${FRAME_DELAY[i]}s`;
-  return { p, img, widths, sizes, style, delay: FRAME_DELAY[i], wipe: WIPE[i], tagDelay: TAG_DELAY[i] };
+  // a „whole” frame (Dan 17.10, the pig on the spit: „too close up, must be further so we can see it”): the photo is
+  // drawn 100/w times the frame's width, shifted so its band x … x + w fills the width, and its focal row placed at
+  // `top` % (phone) / 50 % (desktop); the same file again, blurred and darkened, fills the frame behind it (same
+  // sizes → the same srcset pick → no second download). Ken Burns and the wipe as every frame.
+  const whole = p.whole && {
+    sizes: `(min-width: 1600px) calc(48vw * ${(100 / p.whole.w).toFixed(3)}), (min-width: 960px) calc(45vw * ${(100 / p.whole.w).toFixed(3)}), calc(100vw * ${(100 / p.whole.w).toFixed(3)})`,
+    style: `${style};--wx:${((-100 * p.whole.x) / p.whole.w).toFixed(2)}%;--ww:${(10000 / p.whole.w).toFixed(2)}%;--wt:${p.whole.top}%;--wy:${-fy}%`,
+  };
+  return { p, img, widths, sizes: whole ? whole.sizes : sizes, style: whole ? whole.style : style, whole: !!whole, delay: FRAME_DELAY[i], wipe: WIPE[i], tagDelay: TAG_DELAY[i], tag: tagOf(p) };
 });
 const [first, ...rest] = frames;
-const loop = first && { ...first, wipe: 'w135' };
+// the loop copy of frame 1 wipes in from the next corner after the last frame's
+const loop = first && { ...first, wipe: CORNERS[(N - 1) % 4] };
 ---
+{first && <style is:inline set:html={timing}></style>}
 {first && (
 <section class="hero hw" data-hero aria-labelledby="hero-title">
   <div class="hero__text on-ink-m">
@@ -105,7 +157,7 @@ const loop = first && { ...first, wipe: 'w135' };
         sizes={first.sizes}
         formats={['avif', 'webp']}
         fallbackFormat="webp"
-        quality={45}
+        quality={first.p.quality ?? 45}
         alt={first.p.alt[locale]}
         loading="eager"
         decoding="async"
@@ -117,14 +169,29 @@ const loop = first && { ...first, wipe: 'w135' };
     <template data-frames>
       {[...rest, loop].map((f, n) => (
         <div class:list={['hb', 'vi', f.wipe, { hbb: n === rest.length }]} style={`animation-delay:${f.delay}s`}>
+          {f.whole && (
+            <Picture
+              class="hk-bd"
+              src={f.img}
+              widths={f.widths}
+              sizes={f.sizes}
+              formats={['avif', 'webp']}
+              fallbackFormat="webp"
+              quality={f.p.quality ?? 45}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              fetchpriority="low"
+            />
+          )}
           <Picture
-            class="hk"
+            class:list={['hk', { 'hk--whole': f.whole }]}
             src={f.img}
             widths={f.widths}
             sizes={f.sizes}
             formats={['avif', 'webp']}
             fallbackFormat="webp"
-            quality={45}
+            quality={f.p.quality ?? 45}
             alt={f.p.alt[locale]}
             loading="lazy"
             decoding="async"
@@ -143,10 +210,10 @@ const loop = first && { ...first, wipe: 'w135' };
           <div class:list={['ht', { home: i === 0 }]} style={`animation-delay:${f.tagDelay}s`} aria-hidden={i === 0 ? undefined : 'true'}>
             <span class="ht__pin" aria-hidden="true"></span>
             <span class="ht__text">
-              <span class="ht__name">{f.p.tag.name[locale]}</span>
-              <span class="ht__line">{f.p.tag.line[locale]}</span>
+              <span class="ht__name">{f.tag.name}</span>
+              {f.tag.line && <span class="ht__line">{f.tag.line}</span>}
             </span>
-            <span class="ht__price"><span class="ht__amount">{f.p.tag.price[locale]}</span><span class="ht__unit">{f.p.tag.unit[locale]}</span></span>
+            {f.tag.price && <span class="ht__price"><span class="ht__amount">{f.tag.price}</span>{f.tag.unit && <span class="ht__unit">{f.tag.unit}</span>}</span>}
           </div>
         );
         return i === 0 ? tag : null;
@@ -156,10 +223,10 @@ const loop = first && { ...first, wipe: 'w135' };
           <div class="ht" style={`animation-delay:${f.tagDelay}s`} aria-hidden="true">
             <span class="ht__pin"></span>
             <span class="ht__text">
-              <span class="ht__name">{f.p.tag.name[locale]}</span>
-              <span class="ht__line">{f.p.tag.line[locale]}</span>
+              <span class="ht__name">{f.tag.name}</span>
+              {f.tag.line && <span class="ht__line">{f.tag.line}</span>}
             </span>
-            <span class="ht__price"><span class="ht__amount">{f.p.tag.price[locale]}</span><span class="ht__unit">{f.p.tag.unit[locale]}</span></span>
+            {f.tag.price && <span class="ht__price"><span class="ht__amount">{f.tag.price}</span>{f.tag.unit && <span class="ht__unit">{f.tag.unit}</span>}</span>}
           </div>
         ))}
       </template>
@@ -181,6 +248,9 @@ const loop = first && { ...first, wipe: 'w135' };
   .hw:not(.is-live) .hb.vi { animation: none; opacity: 0; }
   .hw:not(.is-live) .hk { animation: none; }
   .hw:not(.is-live) .ht.home { animation: none; opacity: 1; }
+  /* tags 2–N wait with the frames: inserted before the loop goes live, they would otherwise start ahead of it by
+     frame 2's decode time (row 14c) */
+  .hw:not(.is-live) .ht:not(.home) { animation: none; opacity: 0; }
   /* start the still at the zoom value frame 1 has when the loop begins (delay −47 s =
      2 s into its 11 s zoom: 1 + 0,08 × 2/11), so going live does not jump */
   @media (prefers-reduced-motion: no-preference) {
@@ -188,6 +258,13 @@ const loop = first && { ...first, wipe: 'w135' };
   }
   .hw:not(.is-live) .hp { display: none; }
   .hw:not(.is-live) .hero__pause { visibility: hidden; }
+
+  /* a „whole” frame (photos.json `whole`): the photo narrower than the frame, its band across the width, the focal row
+     at --wt (phone) / the middle (desktop); `translate` (not transform: the Ken Burns owns that) lifts it by its focal
+     row. Behind it the same file, blurred and darkened, covers the frame. */
+  .hw .hk.hk--whole { left: var(--wx); top: var(--wt); width: var(--ww); max-width: none; height: auto; translate: 0 var(--wy); object-fit: fill; }
+  .hw .hk-bd { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(22px) brightness(0.5); scale: 1.12; }
+  @media (min-width: 960px) { .hw .hk.hk--whole { top: 50%; } }
 
   /* ── layout: mobile first (canvas Main, 390 × 844) ──
      The desktop layout is design/css/hero-seam.css (D-28), global and 1:1. Scoped rules here

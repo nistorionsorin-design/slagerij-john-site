@@ -18,6 +18,7 @@ import entity from '../data/entity.json';
 import photos from '../data/photos.json';
 import type { Photo } from '../data/types';
 import { item, priceLabel } from '../lib/price';
+import { heroPhoto } from '../lib/hero';
 import { traiteurT } from '../i18n/traiteur';
 import type { Locale } from '../i18n/ui';
 import '../styles/sections.css';
@@ -39,8 +40,8 @@ const file = (src: string) => {
   return m.default;
 };
 
-// the head = hero frame 5, John at the grill (the board's photo): square on the phone, 2:1 on desktop; AVIF quality 40 (≈ 32 kB at 768 px, the mobile LCP — measured 08.10: q50 = 53 kB, LCP 3,1 s), under the scrim it holds
-const head = (photos.hero as Photo[])[4];
+// the head = the hero's John at the grill, id john-bbq (the board's photo; picked by id, D-38): square on the phone, 2:1 on desktop; AVIF quality 40 (≈ 32 kB at 768 px, the mobile LCP — measured 08.10: q50 = 53 kB, LCP 3,1 s), under the scrim it holds
+const head = heroPhoto('john-bbq');
 const headPic = {
   mobile: { img: file(head.src), ratio: 1, max: 1080, sizes: '100vw', focalX: head.focalX, focalY: head.focalY },
   // the 2:1 band keeps the top of the frame: John's face sits in its top fifth (the hero's 50 % centre would cut it)

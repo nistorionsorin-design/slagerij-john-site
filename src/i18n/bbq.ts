@@ -10,7 +10,7 @@ export const bbqNl = {
   title: 'BBQ-pakket & gourmet bestellen, Zwevezele | Slagerij John',
   description: 'BBQ-pakketten met gemarineerd vlees, worst en mici, gourmet en fondue per persoon, barbecue aan huis met kok. Afhalen in Zwevezele of geleverd.',
 
-  /** §5.24 head (hero frame 4, photos.json hero[3]) */
+  /** §5.24 head (the hero frame with id bbq-pakket, D-38) */
   eyebrow: 'BBQ & gourmet',
   h1: 'BBQ-pakketten en gourmet, klaar voor uw feest.',
   accent: 'Gemarineerd, gesneden en afgewogen.',

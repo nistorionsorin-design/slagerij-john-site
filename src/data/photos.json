@@ -1,7 +1,8 @@
 {
-  "_source": "Hero frames per docs/build-plan.md §3 (files, focal points) and the canvas boards Main/Desktop (zoom origins). Alts NL/RO and tag names NL/RO = lexicon §5.14 table (06.10) verbatim. Tag line and price stay [KOOKLIJN] / [PRIJS] (RO [PREȚ]) until FACTS.md has the owners' values. Claude Code, stage 1. Stage 9 revision (13.10): the RO cooking-line placeholder is [GĂTIRE] (lexicon §5.19 / §6), the NL one stays [KOOKLIJN]. Row 5b (15.10): frame 3 „Hapjes & feestschotels” price = vanaf €1,50 /stuk (RO de la 1,50 € /buc.) — the cheapest hapje of the owners' list (lepeltje paté, [OWNER] 13.10, docs/data/price-list.json); its line stays [KOOKLIJN]. Row 14 (16.10): hero frame 2 = the phone shoot's #16 (pork chops in the counter, docs/data/phone-shoot-slots.json `hero-frame-2-replacement`), white-balanced (display), replaces the old-site pork-products.webp under the same tag; focal 50/55, zoom 50/50, alt as the JSON.",
+  "_source": "Hero v2 (row 14c, D-38, 17.10): docs/data/hero-frames.json poured 1:1 (ids added; order = array order; frame 1 = the LCP). Tag rule: line/price/unit null = not shown; price null hides the unit too. Other pages pick a hero photo by id. Before: Hero frames per docs/build-plan.md §3 (files, focal points) and the canvas boards Main/Desktop (zoom origins). Alts NL/RO and tag names NL/RO = lexicon §5.14 table (06.10) verbatim. Tag line and price stay [KOOKLIJN] / [PRIJS] (RO [PREȚ]) until FACTS.md has the owners' values. Claude Code, stage 1. Stage 9 revision (13.10): the RO cooking-line placeholder is [GĂTIRE] (lexicon §5.19 / §6), the NL one stays [KOOKLIJN]. Row 5b (15.10): frame 3 „Hapjes & feestschotels” price = vanaf €1,50 /stuk (RO de la 1,50 € /buc.) — the cheapest hapje of the owners' list (lepeltje paté, [OWNER] 13.10, docs/data/price-list.json); its line stays [KOOKLIJN]. Row 14 (16.10): hero frame 2 = the phone shoot's #16 (pork chops in the counter, docs/data/phone-shoot-slots.json `hero-frame-2-replacement`), white-balanced (display), replaces the old-site pork-products.webp under the same tag; focal 50/55, zoom 50/50, alt as the JSON. Row 14c budget: AVIF quality 45 unless the frame names its own (quality), the highest that keeps the variant served at 412 × 823 @1,75 ≤ 90 kB (sharp, 17.10). Dan 17.10 (13:1x, chat): „take out this photo” — John & Georgiana (frame 3) out of the hero; 9 frames.",
   "hero": [
     {
+      "id": "mici",
       "src": "hero/mici-op-de-bbq-slagerij-john-zwevezele.jpg",
       "from": "assets/raw/2026-10-03-site/catering-mici-grill.webp",
       "focalX": 50,
@@ -17,14 +18,8 @@
           "nl": "Mici",
           "ro": "Mici"
         },
-        "line": {
-          "nl": "[KOOKLIJN]",
-          "ro": "[GĂTIRE]"
-        },
-        "price": {
-          "nl": "[PRIJS]",
-          "ro": "[PREȚ]"
-        },
+        "line": null,
+        "price": null,
         "unit": {
           "nl": "/kg",
           "ro": "/kg"
@@ -32,37 +27,57 @@
       }
     },
     {
-      "src": "hero/varkenskoteletten-in-de-toog-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-13-phone/20261009_175704.jpg",
+      "id": "toog",
+      "src": "hero/toog-vol-vers-vlees-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-17-hero/WhatsApp Image 2026-10-05 at 23.16.29.jpeg",
       "wb": "display",
       "focalX": 50,
-      "focalY": 55,
+      "focalY": 45,
       "zoomX": 50,
-      "zoomY": 50,
+      "zoomY": 45,
       "alt": {
-        "nl": "Varkenskoteletten op een rij in de toog",
-        "ro": "Cotlete de porc pe un rând, în vitrină"
+        "nl": "De toog van Slagerij John met vers vlees, worsten, salades en olijven",
+        "ro": "Vitrina Măcelăriei John, cu carne proaspătă, cârnați, salate și măsline"
       },
+      "quality": 38,
       "tag": {
         "name": {
-          "nl": "Colli Varken 1",
-          "ro": "Colli Porc 1"
+          "nl": "Vers aan de toog",
+          "ro": "Proaspăt, la tejghea"
         },
-        "line": {
-          "nl": "[KOOKLIJN]",
-          "ro": "[GĂTIRE]"
-        },
-        "price": {
-          "nl": "[PRIJS]",
-          "ro": "[PREȚ]"
-        },
-        "unit": {
-          "nl": "/colli",
-          "ro": "/colli"
-        }
+        "line": null,
+        "price": null,
+        "unit": null
       }
     },
     {
+      "id": "gerookte-worst",
+      "src": "hero/gerookte-worst-carnati-afumati-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-17-hero/carnati-afumati-toog.jpg",
+      "focalX": 45,
+      "focalY": 62,
+      "zoomX": 45,
+      "zoomY": 60,
+      "alt": {
+        "nl": "Gerookte Roemeense worst in de toog",
+        "ro": "Cârnați afumați în vitrină"
+      },
+      "tag": {
+        "name": {
+          "nl": "Gerookte worst",
+          "ro": "Cârnați afumați"
+        },
+        "line": null,
+        "price": null,
+        "unit": {
+          "nl": "/kg",
+          "ro": "/kg"
+        }
+      },
+      "note": "Dan's counter photo, chat 17.10 10:45 (1932×2576), copied as raw bytes, sha256 ab8e07c6…; the colour is the smoked sausage's own — no white-balance correction."
+    },
+    {
+      "id": "hapjes",
       "src": "hero/georgiana-hapjes-slagerij-john-zwevezele.jpg",
       "from": "assets/raw/2026-10-05-whatsapp/georgiabna plate .jpeg",
       "focalX": 60,
@@ -78,10 +93,7 @@
           "nl": "Hapjes & feestschotels",
           "ro": "Aperitive și platouri festive"
         },
-        "line": {
-          "nl": "[KOOKLIJN]",
-          "ro": "[GĂTIRE]"
-        },
+        "line": null,
         "price": {
           "nl": "vanaf €1,50",
           "ro": "de la 1,50 €"
@@ -93,6 +105,33 @@
       }
     },
     {
+      "id": "lam",
+      "src": "hero/lamsvlees-op-de-toonbank-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-17-hero/WhatsApp Image 2026-10-05 at 23.16.27.jpeg",
+      "focalX": 50,
+      "focalY": 55,
+      "zoomX": 50,
+      "zoomY": 55,
+      "alt": {
+        "nl": "Lamskoteletten en schijven lamsbout op de toonbank",
+        "ro": "Cotlete și felii de pulpă de miel pe tejghea"
+      },
+      "tag": {
+        "name": {
+          "nl": "Lamsbout",
+          "ro": "Pulpă de miel"
+        },
+        "line": null,
+        "price": null,
+        "unit": {
+          "nl": "/kg",
+          "ro": "/kg"
+        }
+      },
+      "note": "2000×924 wide — the phone crop is a narrow centre strip; check it at 390."
+    },
+    {
+      "id": "bbq-pakket",
       "src": "hero/bbq-pakket-slagerij-john-zwevezele.jpg",
       "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 1.jpeg",
       "focalX": 50,
@@ -103,19 +142,14 @@
         "nl": "BBQ-pakket met gemarineerd vlees",
         "ro": "Pachet BBQ cu carne marinată"
       },
+      "quality": 41,
       "tag": {
         "name": {
           "nl": "BBQ-pakket",
           "ro": "Pachet BBQ"
         },
-        "line": {
-          "nl": "[KOOKLIJN]",
-          "ro": "[GĂTIRE]"
-        },
-        "price": {
-          "nl": "[PRIJS]",
-          "ro": "[PREȚ]"
-        },
+        "line": null,
+        "price": null,
         "unit": {
           "nl": "/pers",
           "ro": "/pers."
@@ -123,6 +157,62 @@
       }
     },
     {
+      "id": "varken-spit",
+      "src": "hero/varken-aan-het-spit-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-17-hero/WhatsApp Image 2026-10-05 at 21.00.24.jpeg",
+      "focalX": 40,
+      "focalY": 46,
+      "zoomX": 54,
+      "zoomY": 46,
+      "alt": {
+        "nl": "Een varken aan het spit boven de open grill, voor de barbecuetrailer",
+        "ro": "Un porc la proțap deasupra grătarului deschis, în fața remorcii de grătar"
+      },
+      "note": "2040×942 wide, same file as p08 (home loop, /traiteur tile 4) — byte-identical; the phone crop keeps the pig (focal x 40). Dan 17.10 („too close up, must be further so we can see it”): shown whole — the band x 31–77 % (the pig + a margin) spans the frame width, the rest is the same photo blurred (whole).",
+      "quality": 43,
+      "whole": {
+        "x": 31,
+        "w": 46,
+        "top": 26
+      },
+      "tag": {
+        "name": {
+          "nl": "Varken aan het spit",
+          "ro": "Porc la proțap"
+        },
+        "line": null,
+        "price": null,
+        "unit": null
+      }
+    },
+    {
+      "id": "varkenskoteletten",
+      "src": "hero/varkenskoteletten-op-de-plank-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-03-site/pork-products.webp",
+      "focalX": 50,
+      "focalY": 50,
+      "zoomX": 50,
+      "zoomY": 50,
+      "alt": {
+        "nl": "Varkenskoteletten op een snijplank",
+        "ro": "Cotlete de porc pe un tocător"
+      },
+      "tag": {
+        "name": {
+          "nl": "Colli Varken 1",
+          "ro": "Colli Porc 1"
+        },
+        "line": null,
+        "price": null,
+        "unit": {
+          "nl": "/colli",
+          "ro": "/colli"
+        }
+      },
+      "note": "720×960 — sharp on the phone, soft on a wide desktop; owners asked for the original (Sunday). Replaces the 16.10 frame 2 (#16, 20261009_175704)."
+    },
+    {
+      "id": "john-bbq",
       "src": "hero/john-aan-de-bbq-slagerij-john-zwevezele.jpg",
       "from": "assets/raw/2026-10-05-whatsapp/john gratar.jpeg",
       "focalX": 52,
@@ -133,19 +223,14 @@
         "nl": "John aan de barbecue, worsten op de grill",
         "ro": "John la barbecue, cu cârnați pe grătar"
       },
+      "quality": 41,
       "tag": {
         "name": {
           "nl": "BBQ aan huis",
           "ro": "Grătar la domiciliu"
         },
-        "line": {
-          "nl": "[KOOKLIJN]",
-          "ro": "[GĂTIRE]"
-        },
-        "price": {
-          "nl": "[PRIJS]",
-          "ro": "[PREȚ]"
-        },
+        "line": null,
+        "price": null,
         "unit": {
           "nl": "/pers",
           "ro": "/pers."
@@ -743,10 +828,14 @@
         "ro": "Cotlet gros de porc cu os, de aproape"
       }
     },
+    "ground_b": {
+      "src": "producten/varkensvlees-bovenkant-uitgesneden-slagerij-john.webp",
+      "from": "design/cutouts/cut_pork_top_hero.webp",
+      "note": "D-37 v6 frame B: the head crossfades it with the ground; decorative (alt empty) — the ground carries the head image alt"
+    },
     "tiles": [
       {
         "n": 43,
-        "rot": -8,
         "chip": "roemeens",
         "src": "producten/salami-met-peperkorst-uitgesneden-slagerij-john.webp",
         "from": "design/cutouts/cut_43_peperworst.webp",
@@ -757,7 +846,6 @@
       },
       {
         "n": 42,
-        "rot": 5,
         "chip": "roemeens",
         "src": "producten/gerookt-spek-op-plank-uitgesneden-slagerij-john.webp",
         "from": "design/cutouts/cut_42_gerookt_spek_board.webp",
@@ -768,7 +856,6 @@
       },
       {
         "n": 40,
-        "rot": 8,
         "chip": "roemeens",
         "src": "producten/parizer-op-plank-uitgesneden-slagerij-john.webp",
         "from": "design/cutouts/cut_40_parizer_board.webp",
@@ -778,14 +865,13 @@
         }
       },
       {
-        "n": 30,
-        "rot": -14,
-        "chip": "all",
-        "src": "producten/gerolde-hesp-op-plank-uitgesneden-slagerij-john.webp",
-        "from": "design/cutouts/cut_30_hesp_rolls_board.webp",
+        "n": "carnati",
+        "chip": "roemeens",
+        "src": "producten/gerookte-worst-uitgesneden-slagerij-john.webp",
+        "from": "design/cutouts/cut_carnati_afumati.webp",
         "alt": {
-          "nl": "Gerolde plakjes hesp op een houten plank",
-          "ro": "Felii de șuncă rulate pe o planșetă de lemn"
+          "nl": "Gerookte Roemeense worst van Slagerij John",
+          "ro": "Cârnați afumați de la Slagerij John"
         }
       }
     ]

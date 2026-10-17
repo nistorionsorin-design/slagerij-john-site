@@ -22,9 +22,20 @@ export interface Photo {
   alt: L10n;
 }
 
-/** The counter tag that rides on a hero frame (desktop). Placeholders until FACTS.md. */
-export interface HeroTag { name: L10n; line: L10n; price: L10n; unit: L10n }
-export interface HeroPhoto extends Photo { tag: HeroTag }
+/** The counter tag that rides on a hero frame (desktop). Tag rule (D-38, 17.10): it shows only what FACTS has —
+ *  `line` null = no line row; `price` null = no price and no unit (the unit belongs to the price); never a placeholder. */
+export interface HeroTag { name: L10n; line: L10n | null; price: L10n | null; unit: L10n | null }
+/** a hero frame (D-38): `id` is how other pages pick it (never its index) */
+export interface HeroPhoto extends Photo {
+  id: string;
+  /** AVIF/WebP quality when not the hero's 45 (row 14c: the highest that keeps the phone variant ≤ 90 kB) */
+  quality?: number;
+  /** show the scene whole instead of a full-bleed crop (Dan 17.10, the pig on the spit): the band from `x` % of the
+   *  photo's width, `w` % wide, spans the frame's width; its focalY sits at `top` % of the frame on the phone (the
+   *  middle from 960); the rest of the frame is the same photo, blurred */
+  whole?: { x: number; w: number; top: number };
+  tag: HeroTag;
+}
 
 export interface Slot { open: string; close: string }
 export interface Day { dayOfWeek: string; slots: Slot[] }

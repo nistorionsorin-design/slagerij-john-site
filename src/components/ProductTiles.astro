@@ -1,22 +1,23 @@
 ---
-// ProductTiles (D-37 v5, Dan 16.10 21:36 „arrange the four products in a nice card, moving maybe, in a black background,
-// in cards like in Traiteur”; spec design/producten-hero.md §7) — four tiles under the /producten head, built on
-// /traiteur's tile (src/styles/tiles.css: box, radius, ink ground, caption block bottom-left). In each tile one cut-out
-// centred on the ink, with its own turn (`rot`) and the drop shadow; a very slow zoom 1 → 1,06 over 12 s, alternate,
-// phases offset per tile; reduced motion = still; the page's one pause (the head's checkbox, class hp--page) holds it.
-// Below the head, never the LCP: every image lazy, AVIF alpha + WebP alpha. Captions = lexicon §5.19 / §6 product
-// cards; the group's H2 is visually hidden. Each tile is a link to its category: without JS the href scrolls to that
-// section (#roemeens, or the list's first section for „Alles”); with JS (below) it also checks the chip's radio, then
-// scrolls to the first section the filter shows and moves focus to its heading.
+// ProductTiles (D-37 v6, Dan 17.10 10:30 „yes 3 the recommended one” = tiles B; spec design/producten-hero.md §8.2,
+// visual reference design/producten-head-v6.html) — four tiles under the /producten head: one light tint per tile, the
+// cut-out large and bottom-anchored, breaking out of the tile's top (the grid's padding-top makes the room; nothing up
+// the tree clips), standing on a contact shadow; title in the site serif + the category line at the foot. No constant
+// motion (the head is the only thing that moves): hover / focus lifts the product a little, none under reduced motion.
+// The images wait in a <template> per tile and are inserted one painted frame after `load` (src/scripts/frames.ts;
+// fetched before the head's paint they cost ≈ 0,1 s of mobile LCP, 17.10 [MEASURED-OURS] local), with a <noscript>
+// copy so a tile is never empty without JS.
+// Replaces the v5 ink tiles on /traiteur's tile (tiles.css, still /traiteur's own). Below the head, never the LCP:
+// every image lazy, AVIF alpha + WebP alpha. Captions = lexicon §5.19 / §6 product cards; the group's H2 is visually
+// hidden; the line under the tiles = lexicon §5.19 / §6 Produse (17.10). Each tile is a link to its category: without
+// JS the href scrolls to that section (#roemeens, or the list's first section for „Alles”); with JS (below) it also
+// checks the chip's radio, then scrolls to the first section the filter shows and moves focus to its heading.
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import '../styles/tiles.css';
 
 interface Tile {
   img: ImageMetadata;
   alt: string;
-  /** the product's own turn, degrees */
-  rot: number;
   name: string;
   sub: string;
   /** the chip's radio id (f-roemeens, f-all …) and the section the link falls back to */
@@ -26,40 +27,52 @@ interface Tile {
 export interface Props {
   tiles: Tile[];
   label: string;
+  line: string;
   id: string;
 }
-const { tiles, label, id } = Astro.props;
+const { tiles, label, line, id } = Astro.props;
 
-// the cut-out's box inside a tile (CSS below: inset 6 % 12 % 34 % on the phone, 6 % 12 % 30 % from 960) at the tile
-// sizes of tiles.css — phone ≈ 170 × 170 (390 wide), desktop ≈ 316 × 300 (1440) — and each product's drawn width in it
-const box = { mobile: { w: 170 * 0.76, h: 170 * 0.6 }, desktop: { w: 316 * 0.76, h: 300 * 0.64 } };
+// spec §8.2: one tint per tile, in this order
+const tints = ['#EADCD6', '#EBD9C8', '#F0E1E0', '#F1D9CF'];
+
+// the product box (CSS below: left/right 8 %, top −34 px / bottom 78 px from 960; −30 / 104 on the phone) at the tile
+// sizes — phone ≈ 165 × 290 (390 wide, 2 columns, gap 12), desktop ≈ 300 × 300 (1440, 4 columns, gap 14) — and each
+// product's drawn width in it (object-fit: contain)
+const box = { mobile: { w: 165 * 0.84, h: 290 + 30 - 104 }, desktop: { w: 300 * 0.84, h: 300 + 34 - 78 } };
 const drawn = (img: ImageMetadata, bx: { w: number; h: number }) => Math.round(Math.min(bx.w, (bx.h * img.width) / img.height));
 const built = await Promise.all(tiles.map(async (p, k) => {
   const sizes = `(min-width: 960px) ${drawn(p.img, box.desktop)}px, ${drawn(p.img, box.mobile)}px`;
-  const opts = { src: p.img, width: p.img.width, height: p.img.height, widths: [120, 180, 240, 320, 400, 560].filter((x) => x < p.img.width) };
+  const opts = { src: p.img, width: p.img.width, height: p.img.height, widths: [160, 240, 320, 400, 480, 640].filter((x) => x < p.img.width) };
   const [avif, webp] = await Promise.all([getImage({ ...opts, format: 'avif', quality: 45 }), getImage({ ...opts, format: 'webp', quality: 65 })]);
-  // phases offset: each tile a quarter of the 24 s zoom cycle (12 s out, 12 s back) later than the one before
-  return { ...p, sizes, avif: avif.srcSet.attribute, webp: webp.srcSet.attribute, src: webp.src, style: `--r:${p.rot}deg;--d:${(-6 * k).toFixed(1)}s` };
+  return { ...p, sizes, avif: avif.srcSet.attribute, webp: webp.srcSet.attribute, src: webp.src, style: `--tint:${tints[k % tints.length]}` };
 }));
 ---
 <section class="pt" aria-labelledby={id}>
   <h2 class="vh" id={id}>{label}</h2>
-  <ul class="tt__grid pt__grid">
+  <ul class="pt__grid">
     {built.map((p) => (
-      <li class="tt__tile">
+      <li class="pt__tile" style={p.style}>
         <a class="pt__link" href={p.href} data-chip={p.chip}>
-          <span class="pt__cut" style={p.style}><picture><source type="image/avif" srcset={p.avif} sizes={p.sizes} /><img src={p.src} srcset={p.webp} sizes={p.sizes} width={p.img.width} height={p.img.height} alt={p.alt} loading="lazy" decoding="async" /></picture></span>
-          <div class="tt__label">
-            <h3 class="tt__name">{p.name}</h3>
-            <p class="tt__sub">{p.sub}</p>
+          <span class="pt__cut" data-cut>
+            <template data-frames><picture><source type="image/avif" srcset={p.avif} sizes={p.sizes} /><img src={p.src} srcset={p.webp} sizes={p.sizes} width={p.img.width} height={p.img.height} alt={p.alt} loading="lazy" decoding="async" /></picture></template>
+            <noscript><picture><source type="image/avif" srcset={p.avif} sizes={p.sizes} /><img src={p.src} srcset={p.webp} sizes={p.sizes} width={p.img.width} height={p.img.height} alt={p.alt} loading="lazy" decoding="async" /></picture></noscript>
+          </span>
+          <div class="pt__txt">
+            <h3 class="pt__name">{p.name}</h3>
+            <p class="pt__sub">{p.sub}</p>
           </div>
         </a>
       </li>
     ))}
   </ul>
+  <p class="pt__line">{line}</p>
 </section>
 
 <script>
+  import { afterLoadPaint, insertFrames } from '../scripts/frames';
+  // the products: in after the head has painted
+  afterLoadPaint(() => { for (const c of document.querySelectorAll<HTMLElement>('.pt__cut[data-cut]')) insertFrames(c); });
+
   // a tile = its chip: check the radio (the page's CSS filter follows :checked), then bring the list into view
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   for (const a of document.querySelectorAll<HTMLAnchorElement>('.pt__link[data-chip]'))
@@ -78,30 +91,71 @@ const built = await Promise.all(tiles.map(async (p, k) => {
 </script>
 
 <style>
-  /* phone 2 × 2, four in a row from 960 (tiles.css gives the box, the radius, the ink and the caption) */
-  @media (min-width: 960px) { .pt__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  /* ── phone: 2 × 2, 290 px tiles. Column gap 12 (spec); the row gap leaves room for the second row's products, which
+     rise 30 px out of their tile, so they never cover the first row's names ── */
+  .pt__grid { list-style: none; margin: 0; padding: 30px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 12px; }
+  .pt__tile { position: relative; height: 290px; border-radius: 22px; background: var(--tint); }
 
   /* the whole tile is the link */
-  .pt__link { display: block; height: 100%; color: inherit; text-decoration: none; }
-  .pt__link:focus-visible { outline: 2px solid var(--on-ink); outline-offset: -4px; border-radius: inherit; }
+  .pt__link { display: block; height: 100%; color: var(--ink); text-decoration: none; border-radius: inherit; }
+  .pt__link:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
-  /* the cut-out: centred in the space above the caption, turned, lifted off the ink by its shadow */
-  .pt__cut { position: absolute; inset: 6% 12% 34%; display: block; }
+  /* the product: bottom-anchored in its box, the box's top above the tile's */
+  .pt__cut { position: absolute; left: 8%; right: 8%; top: -30px; bottom: 104px; display: flex; align-items: flex-end; justify-content: center; }
   .pt__cut picture { display: contents; }
   .pt__cut img {
-    width: 100%;
-    height: 100%;
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: auto;
+    height: auto;
+    min-width: 0;
+    min-height: 0;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
-    rotate: var(--r);
-    filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.45));
+    filter: drop-shadow(0 2px 2px #3a1e1240);
   }
-  /* the „moving” (spec §7): 1 → 1,06 over 12 s and back, phases offset; the still is the rest size */
-  @keyframes pt-zoom { from { scale: 1; } to { scale: 1.06; } }
-  @media (prefers-reduced-motion: no-preference) {
-    .pt__cut img { animation: pt-zoom 12s ease-in-out var(--d) infinite alternate; }
+  /* the contact shadow it stands on */
+  .pt__cut::after {
+    content: '';
+    position: absolute;
+    left: 18%;
+    right: 18%;
+    bottom: -6px;
+    height: 18px;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, #3a1e1270, transparent);
   }
-  /* the page's one pause holds the tiles too */
-  :global(main:has(.hp--page:checked)) .pt__cut img { animation-play-state: paused; }
 
-  @media (min-width: 960px) { .pt__cut { inset: 6% 12% 30%; } }
+  /* the text at the foot: serif title in ink, the category line in #5F534B (5,4–5,9 : 1 on all four tints) */
+  .pt__txt { position: absolute; left: 14px; right: 12px; bottom: 14px; }
+  .pt__name { margin: 0; font-family: var(--f-display); font-weight: 500; font-size: 18px; line-height: 1.15; color: var(--ink); }
+  .pt__sub { margin: 3px 0 0; font-size: 12px; line-height: 1.3; color: #5f534b; }
+
+  /* hover / focus: the product lifts, its shadow narrows; still under reduced motion */
+  @media (prefers-reduced-motion: no-preference) {
+    .pt__cut img { transition: transform 350ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+    .pt__cut::after { transition: transform 350ms cubic-bezier(0.2, 0.7, 0.2, 1), opacity 350ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+    .pt__link:focus-visible .pt__cut img { transform: translateY(-8px) scale(1.03); }
+    .pt__link:focus-visible .pt__cut::after { transform: scaleX(0.85); opacity: 0.6; }
+  }
+  @media (prefers-reduced-motion: no-preference) and (hover: hover) {
+    .pt__link:hover .pt__cut img { transform: translateY(-8px) scale(1.03); }
+    .pt__link:hover .pt__cut::after { transform: scaleX(0.85); opacity: 0.6; }
+  }
+
+  /* the line under the tiles */
+  .pt__line { margin: 20px 0 0; max-width: 60ch; font-size: 14px; line-height: 1.5; color: var(--muted); }
+
+  /* ── desktop: four in a row, 300 px tiles, gap 14; the grid's padding-top 44 px is the products' room ── */
+  @media (min-width: 960px) {
+    .pt__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; padding-top: 44px; }
+    .pt__tile { height: 300px; }
+    .pt__cut { top: -34px; bottom: 78px; }
+    .pt__txt { left: 18px; right: 18px; bottom: 16px; }
+    .pt__name { font-size: 22px; }
+    .pt__sub { margin-top: 2px; font-size: 12.5px; }
+    .pt__line { margin-top: 24px; font-size: 15px; }
+  }
 </style>
