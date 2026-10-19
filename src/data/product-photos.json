@@ -1,5 +1,5 @@
 {
-  "_source": "Row 5b (Claude Code, 15.10): the site copy of docs/data/product-photos.json (Cowork owns that file; D-34). One entry per products.json id with its own photo; `src` = the file under src/assets/products/ (copied byte-identical from `from`, slugged NL names; a file that already sits elsewhere in src/assets/ under a slug gets that same name — Vite emits identical bytes once, under the first name it meets, and the photo must keep its SEO slug), focal point %, alt NL/RO as Cowork wrote them. A menu row (menus.json `ej26-<id>`) takes its product id's entry. An id not listed here renders no thumbnail (src/components/Thumb.astro). When the docs file grows (row 14), the new rows are copied here. Row 14 (16.10): the six phone-shoot rows copied (mici replaced, gehakt · spiering · braadworst · gerookte-worst · ribbetjes new); their files are the white-balanced row-14 sources, shared with the page photos where the original is the same (gerookte-worst = roemeens/…, ribbetjes = bbq/…); pastrami (pending_confirm) not built. Row 14d (19.10): ribbetjes removed (the photo is marinated pork chops, Dan 19.10; it stays on /bbq-pakketten as bbq/gemarineerde-koteletten-…), the row renders without a thumb; pastrami has no photo (#9 is costiță afumată). Row 14d (8), 19.10: the q27 photo shows tacos → hapje-taco-gehakt + hapje-taco-kip (section), file renamed wraps-kip.jpeg → tacos-met-vulling.jpeg (same bytes); hapje-wrap-kip shares the q26 wraps platter (section). The docs file's Facebook photos (tapas, gourmet, fondue, new rows) belong to row 15d and are not poured here.",
+  "_source": "Row 5b (Claude Code, 15.10): the site copy of docs/data/product-photos.json (Cowork owns that file; D-34). One entry per products.json id with its own photo; `src` = the file under src/assets/products/ (copied byte-identical from `from`, slugged NL names; a file that already sits elsewhere in src/assets/ under a slug gets that same name — Vite emits identical bytes once, under the first name it meets, and the photo must keep its SEO slug), focal point %, alt NL/RO as Cowork wrote them. A menu row (menus.json `ej26-<id>`) takes its product id's entry. An id not listed here renders no thumbnail (src/components/Thumb.astro). When the docs file grows (row 14), the new rows are copied here. Row 14 (16.10): the six phone-shoot rows copied (mici replaced, gehakt · spiering · braadworst · gerookte-worst · ribbetjes new); their files are the white-balanced row-14 sources, shared with the page photos where the original is the same (gerookte-worst = roemeens/…, ribbetjes = bbq/…); pastrami (pending_confirm) not built. Row 14d (19.10): ribbetjes removed (the photo is marinated pork chops, Dan 19.10; it stays on /bbq-pakketten as bbq/gemarineerde-koteletten-…), the row renders without a thumb; pastrami has no photo (#9 is costiță afumată). Row 14d (8), 19.10: the q27 photo shows tacos → hapje-taco-gehakt + hapje-taco-kip (section), file renamed wraps-kip.jpeg → tacos-met-vulling.jpeg (same bytes); hapje-wrap-kip shares the q26 wraps platter (section). The docs file's Facebook photos (tapas, gourmet, fondue, new rows) belong to row 15d and are not poured here. Row 15d (19.10): the 11 Facebook item photos of the docs file (assets/raw/2025-12-05-facebook/, post of 5 Dec 2025) — tapas-kinder · tapas-mix · tapas-john-1 · tapas-john-1-scampi · tapas-john-2 · tapas-ro · gourmet-10 · gourmet-luxe · fondue · fondue-14 · koude-schotel — replace the section shots on those rows; their files are 4:3 cuts at the focal point, ≤ 1200 px wide (thumb/card use only, never a hero), slugged NL names; tapas-2 and gourmet-9 keep the section shots.",
   "date": "2026-10-19",
   "products": {
     "tapas-2": {
@@ -14,48 +14,48 @@
       "level": "section"
     },
     "tapas-mix": {
-      "src": "products/tapasschotels-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 5.jpeg",
+      "src": "products/tapas-mix-slagerij-john.jpg",
+      "from": "assets/raw/2025-12-05-facebook/fb_03_122186729516357023.jpg",
       "focalX": 50,
-      "focalY": 55,
+      "focalY": 50,
       "alt": {
-        "nl": "Tapasschotels van Slagerij John op de toog",
-        "ro": "Platouri de tapas de la Măcelăria John, pe vitrină"
+        "nl": "Tapas mix op een houten plank, met wraps en dips",
+        "ro": "Tapas mix pe un platou de lemn, cu wrapuri și sosuri"
       },
-      "level": "section"
+      "level": "item"
     },
     "tapas-john-1": {
-      "src": "products/tapasschotels-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 5.jpeg",
+      "src": "products/tapas-john-1-slagerij-john.jpg",
+      "from": "assets/raw/2025-12-05-facebook/fb_05_122186729600357023.jpg",
       "focalX": 50,
-      "focalY": 55,
+      "focalY": 50,
       "alt": {
-        "nl": "Tapasschotels van Slagerij John op de toog",
-        "ro": "Platouri de tapas de la Măcelăria John, pe vitrină"
+        "nl": "Tapas John 1 met fijne vleeswaren, fruit en dip",
+        "ro": "Tapas John 1 cu mezeluri fine, fructe și sos"
       },
-      "level": "section"
+      "level": "item"
     },
     "tapas-john-2": {
-      "src": "products/tapasschotels-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 5.jpeg",
+      "src": "products/tapas-john-2-slagerij-john.jpg",
+      "from": "assets/raw/2025-12-05-facebook/fb_07_122186729684357023.jpg",
       "focalX": 50,
-      "focalY": 55,
+      "focalY": 50,
       "alt": {
-        "nl": "Tapasschotels van Slagerij John op de toog",
-        "ro": "Platouri de tapas de la Măcelăria John, pe vitrină"
+        "nl": "Tapas John 2, grote ronde schotel met kaas en vleeswaren",
+        "ro": "Tapas John 2, platou mare rotund cu cașcaval și mezeluri"
       },
-      "level": "section"
+      "level": "item"
     },
     "tapas-ro": {
-      "src": "products/tapasschotels-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 5.jpeg",
+      "src": "products/roemeense-tapas-slagerij-john.jpg",
+      "from": "assets/raw/2025-12-05-facebook/fb_08_122186729732357023.jpg",
       "focalX": 50,
-      "focalY": 55,
+      "focalY": 50,
       "alt": {
-        "nl": "Tapasschotels van Slagerij John op de toog",
-        "ro": "Platouri de tapas de la Măcelăria John, pe vitrină"
+        "nl": "Roemeense tapas op een houten plank",
+        "ro": "Tapas românești pe un platou de lemn"
       },
-      "level": "section"
+      "level": "item"
     },
     "gourmet-9": {
       "src": "products/gourmetschotel-slagerij-john.jpg",
@@ -69,26 +69,26 @@
       "level": "section"
     },
     "gourmet-10": {
-      "src": "products/gourmetschotel-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.13 13.jpeg",
+      "src": "products/gourmet-10-soorten-slagerij-john.jpg",
+      "from": "assets/raw/2025-12-05-facebook/fb_09_122186729774357023.jpg",
       "focalX": 50,
       "focalY": 50,
       "alt": {
-        "nl": "Gourmetschotel van Slagerij John",
-        "ro": "Platou gourmet de la Măcelăria John"
+        "nl": "Gourmetschotel met 10 soorten vlees",
+        "ro": "Platou gourmet cu 10 feluri de carne"
       },
-      "level": "section"
+      "level": "item"
     },
     "gourmet-luxe": {
-      "src": "products/gourmetschotel-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.13 13.jpeg",
+      "src": "products/gourmet-luxe-slagerij-john.jpg",
+      "from": "assets/raw/2025-12-05-facebook/fb_10_122186729810357023.jpg",
       "focalX": 50,
       "focalY": 50,
       "alt": {
-        "nl": "Gourmetschotel van Slagerij John",
-        "ro": "Platou gourmet de la Măcelăria John"
+        "nl": "Luxe gourmetschotel met 10 soorten vlees",
+        "ro": "Platou gourmet de lux cu 10 feluri de carne"
       },
-      "level": "section"
+      "level": "item"
     },
     "hapje-wrap-zalm": {
       "src": "products/wraps-zalm-hesp.jpeg",
@@ -215,6 +215,61 @@
       },
       "level": "item",
       "wb": "display"
+    },
+    "tapas-kinder": {
+      "src": "products/kindertapas-slagerij-john.jpg",
+      "from": "assets/raw/2025-12-05-facebook/fb_02_122186729474357023.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Kindertapas met hesp, worstjes en kaas",
+        "ro": "Tapas pentru copii cu șuncă, crenvurști și cașcaval"
+      },
+      "level": "item"
+    },
+    "tapas-john-1-scampi": {
+      "src": "products/tapas-john-1-met-scampi-slagerij-john.jpg",
+      "from": "assets/raw/2025-12-05-facebook/fb_06_122186729642357023.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Tapas John 1 met scampi, op de toog",
+        "ro": "Tapas John 1 cu creveți, pe vitrină"
+      },
+      "level": "item"
+    },
+    "fondue": {
+      "src": "products/fondue-10-soorten-slagerij-john.jpg",
+      "from": "assets/raw/2025-12-05-facebook/fb_12_122186729906357023.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Fondueschotel met 10 soorten vlees",
+        "ro": "Platou fondue cu 10 feluri de carne"
+      },
+      "level": "item"
+    },
+    "fondue-14": {
+      "src": "products/fondue-14-soorten-slagerij-john.jpg",
+      "from": "assets/raw/2025-12-05-facebook/fb_11_122186729852357023.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Fondueschotel met 14 soorten vlees",
+        "ro": "Platou fondue cu 14 feluri de carne"
+      },
+      "level": "item"
+    },
+    "koude-schotel": {
+      "src": "products/koude-schotel-slagerij-john.jpg",
+      "from": "assets/raw/2025-12-05-facebook/fb_01_122186729426357023.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Koude schotel met hesp, salami, eieren en vleessalade",
+        "ro": "Platou rece cu șuncă, salam, ouă și salată de carne"
+      },
+      "level": "item"
     }
   }
 }

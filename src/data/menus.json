@@ -21,16 +21,19 @@
         { "id": "groenten", "name": { "nl": "Warme groenten", "ro": "Legume calde" } },
         { "id": "soep", "name": { "nl": "Soep", "ro": "Supe" } },
         { "id": "broodjes", "name": { "nl": "Mini belegde broodjes", "ro": "Mini sandvișuri" } },
-        { "id": "dessert", "name": { "nl": "Dessert & fruit", "ro": "Desert și fructe" } }
+        { "id": "dessert", "name": { "nl": "Dessert & fruit", "ro": "Desert și fructe" } },
+        { "id": "ro-feest", "name": { "nl": "Roemeense feestgerechten", "ro": "Preparate românești de sărbători" }, "lead": { "nl": "Prijs in de winkel. Bestel vooraf; wij bevestigen de prijs bij uw bestelling.", "ro": "Prețul îl afli în magazin. Comandă din timp, iar noi îți confirmăm prețul." } }
       ],
       "items": [
         { "id": "ej26-tapas-kinder", "section": "tapas", "name": { "nl": "Kinder tapas", "ro": "Tapas pentru copii" }, "line": { "nl": "", "ro": "" }, "price": 9, "unit": "pers" },
         { "id": "ej26-tapas-2", "section": "tapas", "name": { "nl": "Tapas 2", "ro": "Tapas 2" }, "line": { "nl": "4–5 pers.", "ro": "4-5 persoane" }, "price": 30, "unit": "stuk" },
         { "id": "ej26-tapas-mix", "section": "tapas", "name": { "nl": "Tapas mix", "ro": "Tapas mix" }, "line": { "nl": "5–6 pers.", "ro": "5-6 persoane" }, "price": 45, "unit": "stuk" },
-        { "id": "ej26-tapas-john-1", "section": "tapas", "name": { "nl": "Tapas John 1", "ro": "Tapas John 1" }, "line": { "nl": "5–6 pers.", "ro": "5-6 persoane" }, "price": 55, "unit": "stuk" },
+        { "id": "ej26-tapas-john-1", "section": "tapas", "name": { "nl": "Tapas John 1", "ro": "Tapas John 1" }, "line": { "nl": "5–6 pers.", "ro": "5-6 persoane" }, "price": 50, "unit": "stuk" },
+        { "id": "ej26-tapas-john-1-scampi", "section": "tapas", "name": { "nl": "Tapas John 1 met scampi", "ro": "Tapas John 1 cu creveți" }, "line": { "nl": "5–6 pers.", "ro": "5-6 persoane" }, "price": 50, "unit": "stuk" },
         { "id": "ej26-tapas-john-2", "section": "tapas", "name": { "nl": "Tapas John 2", "ro": "Tapas John 2" }, "line": { "nl": "7–9 pers.", "ro": "7-9 persoane" }, "price": 60, "unit": "stuk" },
         { "id": "ej26-tapas-ro", "section": "tapas", "name": { "nl": "Roemeense Tapas", "ro": "Tapas românești" }, "line": { "nl": "5–6 pers.", "ro": "5-6 persoane" }, "price": 45, "unit": "stuk" },
         { "id": "ej26-fondue", "section": "gourmet", "name": { "nl": "Fondue", "ro": "Fondue" }, "line": { "nl": "10 soorten", "ro": "10 feluri" }, "price": 10, "unit": "pers", "priceFrom": true, "min": 2 },
+        { "id": "ej26-fondue-14", "section": "gourmet", "name": { "nl": "Fondue 14 soorten", "ro": "Fondue, 14 feluri" }, "line": { "nl": "", "ro": "" }, "price": 13, "unit": "pers", "min": 2 },
         { "id": "ej26-gourmet-9", "section": "gourmet", "name": { "nl": "Gourmet 9 soorten", "ro": "Platou gourmet, 9 feluri" }, "line": { "nl": "", "ro": "" }, "price": 10, "unit": "pers", "min": 2 },
         { "id": "ej26-gourmet-10", "section": "gourmet", "name": { "nl": "Gourmet 10 soorten", "ro": "Platou gourmet, 10 feluri" }, "line": { "nl": "", "ro": "" }, "price": 11, "unit": "pers", "min": 2 },
         { "id": "ej26-gourmet-luxe", "section": "gourmet", "name": { "nl": "Gourmet Luxe", "ro": "Gourmet de lux" }, "line": { "nl": "10 soorten", "ro": "10 feluri" }, "price": 15, "unit": "pers", "min": 2 },
@@ -74,7 +77,15 @@
         { "id": "ej26-dessert-tiramisu", "section": "dessert", "name": { "nl": "Tiramisu", "ro": "Tiramisu" }, "line": { "nl": "", "ro": "" }, "price": 2.5, "unit": "stuk" },
         { "id": "ej26-dessert-donut", "section": "dessert", "name": { "nl": "Donut", "ro": "Gogoașă (donut)" }, "line": { "nl": "", "ro": "" }, "price": 2, "unit": "stuk" },
         { "id": "ej26-dessert-mini-donut", "section": "dessert", "name": { "nl": "Mini donut", "ro": "Mini donut" }, "line": { "nl": "", "ro": "" }, "price": 1, "unit": "stuk" },
-        { "id": "ej26-dessert-macarons", "section": "dessert", "name": { "nl": "Macarons", "ro": "Macarons" }, "line": { "nl": "", "ro": "" }, "price": 2, "unit": "stuk" }
+        { "id": "ej26-dessert-macarons", "section": "dessert", "name": { "nl": "Macarons", "ro": "Macarons" }, "line": { "nl": "", "ro": "" }, "price": 2, "unit": "stuk" },
+        { "id": "ej26-ro-ciorba-perisoare", "section": "ro-feest", "name": { "nl": "Ciorbă de perișoare", "ro": "Ciorbă de perișoare" }, "nameLang": "ro", "line": { "nl": "zure soep met gehaktballetjes", "ro": "" }, "price": null, "priceInStore": true, "unit": "liter" },
+        { "id": "ej26-ro-ciorba-vacuta", "section": "ro-feest", "name": { "nl": "Ciorbă de văcuță", "ro": "Ciorbă de văcuță" }, "nameLang": "ro", "line": { "nl": "zure soep met rundvlees en groenten", "ro": "" }, "price": null, "priceInStore": true, "unit": "liter" },
+        { "id": "ej26-ro-carne-garnita", "section": "ro-feest", "name": { "nl": "Carne la garniță", "ro": "Carne la garniță" }, "nameLang": "ro", "line": { "nl": "varkensvlees, gebakken en bewaard in reuzel", "ro": "" }, "price": null, "priceInStore": true, "unit": "kg" },
+        { "id": "ej26-ro-piftie", "section": "ro-feest", "name": { "nl": "Piftie", "ro": "Piftie" }, "nameLang": "ro", "line": { "nl": "varkensvlees in gelei, met look", "ro": "" }, "price": null, "priceInStore": true, "unit": "stuk" },
+        { "id": "ej26-ro-toba", "section": "ro-feest", "name": { "nl": "Tobă", "ro": "Tobă" }, "nameLang": "ro", "line": { "nl": "Roemeense zult", "ro": "" }, "price": null, "priceInStore": true, "unit": "kg" },
+        { "id": "ej26-ro-caltabos", "section": "ro-feest", "name": { "nl": "Caltaboș", "ro": "Caltaboș" }, "nameLang": "ro", "line": { "nl": "Roemeense leverworst", "ro": "" }, "price": null, "priceInStore": true, "unit": "kg" },
+        { "id": "ej26-ro-salata-boeuf", "section": "ro-feest", "name": { "nl": "Salată de boeuf", "ro": "Salată de boeuf" }, "nameLang": "ro", "line": { "nl": "vleessalade met groenten en mayonaise", "ro": "" }, "price": null, "priceInStore": true, "unit": "kg" },
+        { "id": "ej26-ro-sarmale", "section": "ro-feest", "name": { "nl": "Sarmale", "ro": "Sarmale" }, "nameLang": "ro", "line": { "nl": "koolrolletjes met gehakt en rijst", "ro": "" }, "price": null, "priceInStore": true, "unit": "stuk" }
       ]
     }
   ]

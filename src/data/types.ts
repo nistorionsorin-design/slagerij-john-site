@@ -66,6 +66,11 @@ export interface Product {
   price: number | null;
   /** „vanaf €10” (fondue: the old site's „vanaf”) */
   priceFrom?: boolean;
+  /** row 15d: the owners price it in the shop (lexicon §5.22 „Roemeense feestgerechten”) — `price` stays null, the cell
+   *  reads „prijs in de winkel” / „preț în magazin”, never [PRIJS]; no Offer in JSON-LD; it stays after launch */
+  priceInStore?: boolean;
+  /** row 15d: the name's language when it differs from the page's (the RO dish names on /feestmenu-eindejaar) */
+  nameLang?: 'ro';
   unit: Unit;
   /** the „aanbevolen pakket” look of board Toog: the ink tag */
   featured?: boolean;
@@ -114,12 +119,17 @@ export interface MenuItem {
   line?: L10n;
   price: number | null;
   priceFrom?: boolean;
+  /** row 15d: as Product.priceInStore */
+  priceInStore?: boolean;
+  /** row 15d: as Product.nameLang */
+  nameLang?: 'ro';
   unit: Unit;
   min?: number;
   step?: number;
 }
-/** row 15a: one section of the menu card, in the owners' folder's order; `note` = the section's unit line */
-export interface MenuSection { id: string; name: L10n; note?: L10n }
+/** row 15a: one section of the menu card, in the owners' folder's order; `note` = the section's unit line; row 15d:
+ *  `lead` = a sentence under the heading (ro-feest: the price-in-the-shop note) */
+export interface MenuSection { id: string; name: L10n; note?: L10n; lead?: L10n }
 export interface Menu {
   id: string;
   /** /bestellen?menu=<param> opens the bestelbon with this menu on top */

@@ -104,6 +104,9 @@ export const bestellenNl = {
     payDelivery: 'Betalen bij levering: [BETALING]',
     total: 'Totaal',
     priceTbc: '[PRIJS]', // stays until FACTS
+    /** row 15d (lexicon §5.22 „19.10 — ninth rubric”): a ro-feest line's cell, and the note under Totaal when one is in the slip */
+    inStore: 'prijs in de winkel',
+    inStoreNote: 'Zonder de gerechten met prijs in de winkel; wij bevestigen het bedrag.',
     /** the delivery-cost row (delivery.json + order-core deliveryQuote): free · beyond the free ring (per km, distance
      *  unknown) · under the €50 delivery minimum · outside the zones („Bel ons”, §5.3) · not known yet */
     feeLabel: 'Leveringskosten',
@@ -236,6 +239,9 @@ export const bestellenRo = {
     payDelivery: 'Plata la livrare: [PLATĂ]',
     total: 'Total',
     priceTbc: '[PREȚ]',
+    /** row 15d (lexicon §6 „Sărbători, 19.10”) */
+    inStore: 'preț în magazin',
+    inStoreNote: 'Fără preparatele cu preț în magazin; îți confirmăm suma.',
     feeLabel: 'Costul livrării',
     fee: { free: 'Gratuit', fee: '1 € pe km; confirmăm suma.', 'below-minimum': 'Minimum 50 € pentru livrare', outside: 'Sună-ne', unknown: '[PREȚ]' },
     legal: 'Carnea proaspătă nu se returnează (art. VI.53, 4° WER).',

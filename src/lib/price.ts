@@ -16,6 +16,8 @@ const units: Record<Locale, Record<Unit, string>> = {
   ro: { kg: '/kg', colli: '/colli', pers: '/pers.', stuk: '/buc.', liter: '/l', portie: '/porție' },
 };
 const placeholder: Record<Locale, string> = { nl: '[PRIJS]', ro: '[PREȚ]' };
+/** row 15d (lexicon §5.22 „19.10 — ninth rubric” + §6 „Sărbători, 19.10”): the owners' price state, not a placeholder */
+export const inStoreLabel: Record<Locale, string> = { nl: 'prijs in de winkel', ro: 'preț în magazin' };
 
 /** 45 → „45”, 12.5 → „12,50” (comma decimal in both languages) */
 const amount = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
@@ -23,6 +25,7 @@ const amount = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(2).re
 export const unitLabel = (unit: Unit, locale: Locale) => units[locale][unit];
 
 export const priceLabel = (p: Product, locale: Locale) => {
+  if (p.priceInStore) return inStoreLabel[locale];
   if (p.price === null) return placeholder[locale];
   const v = locale === 'ro' ? `${amount(p.price)} €` : `€${amount(p.price)}`;
   if (!p.priceFrom) return v;

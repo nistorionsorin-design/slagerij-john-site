@@ -146,6 +146,14 @@ export function money(n, locale = 'nl', cents = false) {
   return locale === 'ro' ? `${v} €` : `€${v}`;
 }
 
+/** The slip's total cell (the page, the mails): the amount; „[PRIJS]” while a price or a free request is unknown; an
+ *  order of in-store rows only shows the in-store words (row 15d) — never „€0,00”. `labels` = { tbc, inStore }. */
+export function totalLabel(o, labels, cents = true) {
+  if (o.total === null || o.requests.length || !o.lines.length) return labels.tbc;
+  if (o.inStore && o.lines.every((l) => l.inStore)) return labels.inStore;
+  return money(o.total, o.locale, cents);
+}
+
 /** The quantity as the message writes it: „2×” (colli, stuk, portie) · „1 kg” · „4 pers.” · „2 l”. */
 export function qtyLabel(q, unit) {
   const n = String(q).replace('.', ',');
@@ -225,7 +233,9 @@ export function readOrder(input, { products, hours, delivery, menus }, at = new 
     if (!p || p.orderable === false) continue;
     const qty = snapQty(p, q);
     if (!qty) continue;
-    lines.push({ id, name: p.name[locale], unit: p.unit, qty, price: p.price, sum: p.price === null ? null : +(p.price * qty).toFixed(2), menu: p.menu ?? null });
+    // row 15d: a row priced in the shop (priceInStore) has no sum, and it is not „unknown” either: the total leaves it out
+    const inStore = !!p.priceInStore;
+    lines.push({ id, name: p.name[locale], unit: p.unit, qty, price: p.price, sum: p.price === null || inStore ? null : +(p.price * qty).toFixed(2), inStore, menu: p.menu ?? null });
   }
   const requests = (Array.isArray(input.requests) ? input.requests : [input.requests])
     .map((r) => clean(r, 200))
@@ -257,9 +267,12 @@ export function readOrder(input, { products, hours, delivery, menus }, at = new 
     if (!address.place) errors.push('place');
   }
 
-  const known = lines.every((l) => l.sum !== null);
-  const total = known ? +lines.reduce((t, l) => t + l.sum, 0).toFixed(2) : null;
-  const quote = address ? deliveryQuote(delivery, address.postcode, address.place, requests.length ? null : total) : null;
+  // row 15d: the total is the priced lines' sum; with an in-store line in the order the slip says „Zonder de gerechten met
+  // prijs in de winkel” under it, and the delivery threshold stays unknown (the shop confirms the amount)
+  const inStore = lines.some((l) => l.inStore);
+  const known = lines.every((l) => l.sum !== null || l.inStore);
+  const total = known ? +lines.reduce((t, l) => t + (l.sum ?? 0), 0).toFixed(2) : null;
+  const quote = address ? deliveryQuote(delivery, address.postcode, address.place, requests.length || inStore ? null : total) : null;
 
   return {
     errors,
@@ -273,6 +286,7 @@ export function readOrder(input, { products, hours, delivery, menus }, at = new 
       lines,
       requests,
       total,
+      inStore,
       quote,
       name,
       phone,
@@ -286,7 +300,8 @@ export function readOrder(input, { products, hours, delivery, menus }, at = new 
 /** The address as one line: „Bruggestraat 1, 8750 Wingene”. */
 export const addressLine = (a) => (a ? `${a.street} ${a.nr}, ${a.postcode} ${a.place}` : '');
 
-/** One order line for the message: „2× Colli Varken 1 (€90)” · „1 kg Mici” (no price while it is unknown). */
+/** One order line for the message: „2× Colli Varken 1 (€90)” · „1 kg Mici” (no price while it is unknown, nor for a row
+ *  priced in the shop — row 15d: qty + unit, no price). */
 export const lineText = (l, locale) => `${qtyLabel(l.qty, l.unit)} ${l.name}${l.sum === null ? '' : ` (${money(l.sum, locale)})`}`;
 
 /** The WhatsApp text (docs/order-flow.md §5), also the body of the shop's WhatsApp notification. Delivery adds the

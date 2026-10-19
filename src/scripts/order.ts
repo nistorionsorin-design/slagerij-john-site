@@ -5,10 +5,10 @@
 // reference the WhatsApp text quotes. Every rule is src/lib/order-core.js — the same code the server runs.
 // Stage 7: ?menu=<param> shows that seasonal menu's section on top; once a row of it is chosen, the days are the menu's
 // own (menus.json `pickup`) and the WhatsApp text opens with the menu's §5.10 message.
-import { readOrder, daysFor, dayLabel, money, qtyLabel, waText, newRef, qtyRule, toMin, menuOf, menuOpen } from '../lib/order-core.js';
+import { readOrder, daysFor, dayLabel, money, qtyLabel, waText, newRef, qtyRule, toMin, menuOf, menuOpen, totalLabel } from '../lib/order-core.js';
 
 type Unit = 'kg' | 'pers' | 'colli' | 'stuk' | 'liter' | 'portie';
-interface Item { id: string; category: string; name: Partial<Record<'nl' | 'ro', string>>; unit: Unit; price: number | null; priceFrom?: boolean; min?: number; step?: number }
+interface Item { id: string; category: string; name: Partial<Record<'nl' | 'ro', string>>; unit: Unit; price: number | null; priceFrom?: boolean; priceInStore?: boolean; min?: number; step?: number }
 interface Data {
   locale: 'nl' | 'ro';
   items: Item[];
@@ -16,7 +16,7 @@ interface Data {
   menus: { menus: { id: string; param: string; deadline: string | null; [k: string]: unknown }[] };
   qtyUnit: Record<Unit, string>;
   t: {
-    slip: { pickup: string; delivery: string; pay: string; payDelivery: string; whenPending: string; total: string; priceTbc: string; empty: string; fee: Record<string, string> };
+    slip: { pickup: string; delivery: string; pay: string; payDelivery: string; whenPending: string; total: string; priceTbc: string; inStore: string; inStoreNote: string; empty: string; fee: Record<string, string> };
     when: { none: string };
     send: { sending: string; submit: string };
     done: { error: string; fix: string };
@@ -252,6 +252,7 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
   const slipFeeL = document.querySelector<HTMLElement>('[data-slip-fee-label]')!;
   const slipFee = document.querySelector<HTMLElement>('[data-slip-fee]')!;
   const slipTotal = document.querySelector('[data-slip-total]')!;
+  const slipInStore = document.querySelector<HTMLElement>('[data-slip-instore]')!;
   const slipPay = document.querySelector('[data-slip-pay]')!;
   document.querySelector('[data-slip-ref]')!.textContent = ref;
   const wa = document.querySelector<HTMLAnchorElement>('[data-wa]')!;
@@ -271,7 +272,7 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
       row.classList.toggle('is-on', q > 0);
     }
     const rows = [
-      ...order.lines.flatMap((l: { qty: number; unit: Unit; name: string; sum: number | null }) => [span(`${qtyLabel(l.qty, l.unit)} ${l.name}`), span(l.sum === null ? t.slip.priceTbc : money(l.sum, locale, true))]),
+      ...order.lines.flatMap((l: { qty: number; unit: Unit; name: string; sum: number | null; inStore: boolean }) => [span(`${qtyLabel(l.qty, l.unit)} ${l.name}`), span(l.inStore ? t.slip.inStore : l.sum === null ? t.slip.priceTbc : money(l.sum, locale, true))]),
       ...order.requests.flatMap((r: string) => [span(`„${r}”`), span(t.slip.priceTbc)]),
     ];
     if (rows.length) slipLines.replaceChildren(...rows);
@@ -283,7 +284,8 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
     slipFeeL.hidden = slipFee.hidden = !delivery;
     slipPay.textContent = delivery ? t.slip.payDelivery : t.slip.pay;
     if (delivery) slipFee.textContent = t.slip.fee[order.quote?.status ?? 'unknown'];
-    slipTotal.textContent = order.total === null || order.requests.length || !rows.length ? t.slip.priceTbc : money(order.total, locale, true);
+    slipTotal.textContent = totalLabel(order, { tbc: t.slip.priceTbc, inStore: t.slip.inStore });
+    slipInStore.hidden = !order.inStore;
 
     const text = waText({ ...order, date: state.date, time: state.time });
     waPreview.textContent = text;

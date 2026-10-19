@@ -50,16 +50,16 @@ interface Group {
   name: { nl: string; ro: string };
   items: Product[];
   menu?: { param: string; note: string; closed: string; open: boolean };
-  sections?: { id: string; name: { nl: string; ro: string }; note?: { nl: string; ro: string } }[];
+  sections?: { id: string; name: { nl: string; ro: string }; note?: { nl: string; ro: string }; lead?: { nl: string; ro: string } }[];
 }
 const groups: Group[] = [...menuGroups, ...[...packs, ...counter].map(section).filter((c) => c.items.length)];
 // row 15a: a menu's rows under its sections' headings (the owners' folder, menus.json `sections`); a category = one list
 const listsOf = (c: Group) =>
   c.sections
     ? c.sections
-        .map((s) => ({ id: `${c.id}-${s.id}`, sub: s.name[locale], note: s.note?.[locale], items: c.items.filter((p) => (p as Product & { section?: string }).section === s.id) }))
+        .map((s) => ({ id: `${c.id}-${s.id}`, sub: s.name[locale], note: s.note?.[locale], lead: s.lead?.[locale], items: c.items.filter((p) => (p as Product & { section?: string }).section === s.id) }))
         .filter((l) => l.items.length)
-    : [{ id: c.id, sub: undefined, note: undefined, items: c.items }];
+    : [{ id: c.id, sub: undefined, note: undefined, lead: undefined, items: c.items }];
 // row 15b (lexicon §5.22, 13.10): the eindejaar menu holds these groups' dishes as its own rows — under ?menu=<param>
 // they and their pills are hidden (one dish, one place); the colli and the per-kg groups follow the menu. Without ?menu=
 // nothing changes. OrderForm.season.js flags <html data-order-menu> before the pills are parsed, so nothing shifts.
@@ -81,7 +81,7 @@ const scriptData = {
   locale,
   items: [...menuRowsAll, ...products.items]
     .filter((p) => p.orderable !== false)
-    .map((p) => ({ id: p.id, category: p.category, name: { [locale]: p.name[locale] }, unit: p.unit, price: p.price, priceFrom: p.priceFrom, min: p.min, step: p.step })),
+    .map((p) => ({ id: p.id, category: p.category, name: { [locale]: p.name[locale] }, unit: p.unit, price: p.price, priceFrom: p.priceFrom, priceInStore: p.priceInStore, min: p.min, step: p.step })),
   delivery: { ...delivery, _source: undefined },
   menus: { menus: menus.menus },
   qtyUnit,
@@ -129,22 +129,25 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
           {c.menu && <p class="ocat__note ocat__note--closed" data-season-closed hidden={c.menu.open}>{c.menu.closed}</p>}
           {listsOf(c).map((l) => (<>
           {l.sub && <h4 class="ocat__sub" id={`sub-${l.id}`}>{l.sub}{l.note && <span class="ocat__sub-note"> · {l.note}</span>}</h4>}
+          {l.lead && <p class="ocat__note">{l.lead}</p>}
           <ul class="ocat__list" aria-labelledby={l.sub ? `sub-${l.id}` : undefined}>
             {l.items.map((p) => {
               const r = qtyRule(p);
-              const ph = p.price === null;
+              // row 15d: „prijs in de winkel” is the owners' price state, not a placeholder — no [PRIJS] size
+              const ph = p.price === null && !p.priceInStore;
+              const nameLang = p.nameLang && p.nameLang !== locale ? p.nameLang : undefined;
               const line = p.line?.[locale];
               return (
                 <li class="oi" data-item={p.id}>
                   <span class="oi__pin" aria-hidden="true"></span>
                   {thumbOf(p.id) && <Thumb id={p.id} locale={locale} size={56} />}
                   <div class="oi__text">
-                    <p class="oi__name" id={`n-${p.id}`}>{p.name[locale]}</p>
+                    <p class="oi__name" id={`n-${p.id}`} lang={nameLang}>{p.name[locale]}</p>
                     {line && <p class="oi__line">{line}</p>}
                   </div>
                   <div class="oi__foot">
                     <p class="oi__price">
-                      <span class:list={['oi__amount', { 'oi__amount--ph': ph }]}>{priceLabel(p, locale)}</span>
+                      <span class:list={['oi__amount', { 'oi__amount--ph': ph, 'oi__amount--store': p.priceInStore }]}>{priceLabel(p, locale)}</span>
                       <span class="oi__unit">{unitLabel(p.unit, locale)}</span>
                     </p>
                     <div class="qty">
@@ -408,6 +411,9 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
   .oi__price { margin: 0; display: flex; align-items: baseline; gap: 3px; font-variant-numeric: tabular-nums; color: var(--ox); white-space: nowrap; }
   .oi__amount { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
   .oi__amount--ph { font-size: 18px; }
+  /* row 15d: words, not a figure — set at the text size so the stepper keeps its place on a 390 px row */
+  .oi__amount--store { font-size: 14px; font-weight: 600; letter-spacing: 0; line-height: 1.2; }
+  .oi__price:has(> .oi__amount--store) { flex: 1 1 auto; min-width: 0; flex-wrap: wrap; white-space: normal; column-gap: 3px; }
   .oi__unit { font-size: 12px; color: var(--muted); }
 
   .qty {

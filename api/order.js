@@ -13,7 +13,7 @@
 //   WhatsApp — it never tells a customer an order went out when it did not.
 // Answers: JSON for the page script; for the no-script form a 303 back to the page (#bedankt or #fout).
 import { readFileSync } from 'node:fs';
-import { readOrder, waText, dayLabel, money, lineText, addressLine } from '../src/lib/order-core.js';
+import { readOrder, waText, dayLabel, money, lineText, addressLine, totalLabel } from '../src/lib/order-core.js';
 
 const json = (f) => JSON.parse(readFileSync(new URL(`../src/data/${f}`, import.meta.url), 'utf8'));
 const data = () => ({ products: json('products.json'), hours: json('hours.json'), delivery: json('delivery.json'), menus: json('menus.json') });
@@ -37,6 +37,9 @@ const T = {
     remarks: 'Opmerkingen',
     total: 'Totaal',
     unknownPrice: '[PRIJS]',
+    // row 15d (lexicon §5.22 „19.10 — ninth rubric”): a line priced in the shop, and the note under Totaal
+    inStore: 'prijs in de winkel',
+    inStoreNote: 'Zonder de gerechten met prijs in de winkel; wij bevestigen het bedrag.',
     feeLabel: 'Leveringskosten',
     fee: { free: 'Gratis', fee: '€1 per km; wij bevestigen het bedrag.', 'below-minimum': 'Minimum €50 voor levering', outside: 'Bel ons', unknown: '[PRIJS]' },
     call: 'Bel',
@@ -59,6 +62,9 @@ const T = {
     remarks: 'Observații',
     total: 'Total',
     unknownPrice: '[PREȚ]',
+    // row 15d (lexicon §6 „Sărbători, 19.10”)
+    inStore: 'preț în magazin',
+    inStoreNote: 'Fără preparatele cu preț în magazin; îți confirmăm suma.',
     feeLabel: 'Costul livrării',
     fee: { free: 'Gratuit', fee: '1 € pe km; confirmăm suma.', 'below-minimum': 'Minimum 50 € pentru livrare', outside: 'Sună-ne', unknown: '[PREȚ]' },
     call: 'Sună',
@@ -82,7 +88,7 @@ const intl = (phone) => {
  *  menu rows come first, under the menu's name (menus.json `name`, lexicon §5.22 08.10 17:50); a heading row has
  *  no second cell (null). */
 function slip(o, t) {
-  const line = (l) => [lineText({ ...l, sum: null }, o.locale), l.sum === null ? t.unknownPrice : money(l.sum, o.locale, true)];
+  const line = (l) => [lineText({ ...l, sum: null }, o.locale), l.inStore ? t.inStore : l.sum === null ? t.unknownPrice : money(l.sum, o.locale, true)];
   const menuLines = o.lines.filter((l) => l.menu);
   const otherLines = o.lines.filter((l) => !l.menu);
   const rows = [
@@ -92,9 +98,11 @@ function slip(o, t) {
     ...o.requests.map((r) => [`„${r}”`, t.unknownPrice]),
   ];
   if (o.quote) rows.push([t.feeLabel, t.fee[o.quote.status]]);
-  rows.push([t.total, o.total === null || o.requests.length ? t.unknownPrice : money(o.total, o.locale, true)]);
+  rows.push([t.total, totalLabel(o, { tbc: t.unknownPrice, inStore: t.inStore })]);
+  // row 15d: an in-store line in the order → the note under Totaal (lexicon §5.22 / §6)
+  const note = o.inStore ? t.inStoreNote : '';
   const when = `${o.method === 'delivery' ? t.delivery : t.pickup}: ${dayLabel(o.date, o.locale, 'long')}, ${o.time}${o.address ? ` · ${addressLine(o.address)}` : ''}`;
-  const text = [when, '', ...rows.map(([a, b]) => (a === null ? '' : b === null ? `${a}:` : `${a}  ${b}`))].join('\n');
+  const text = [when, '', ...rows.map(([a, b]) => (a === null ? '' : b === null ? `${a}:` : `${a}  ${b}`)), ...(note ? [note] : [])].join('\n');
   const html =
     `<p style="margin:0 0 12px;font-weight:600">${esc(when)}</p>` +
     `<table style="border-collapse:collapse;width:100%;max-width:520px;font-size:15px">` +
@@ -103,7 +111,8 @@ function slip(o, t) {
       : b === null
       ? `<tr style="border-top:1px solid #D9CDB8"><td colspan="2" style="padding:10px 0 4px;font-weight:700;color:#7B2420">${esc(a)}</td></tr>`
       : `<tr style="border-top:1px solid #D9CDB8${i === rows.length - 1 ? ';font-weight:700' : ''}"><td style="padding:8px 12px 8px 0">${esc(a)}</td><td style="padding:8px 0;text-align:right;white-space:nowrap">${esc(b)}</td></tr>`)).join('') +
-    `</table>`;
+    `</table>` +
+    (note ? `<p style="margin:8px 0 0;font-size:13px;color:#6B5E52">${esc(note)}</p>` : '');
   return { text, html };
 }
 

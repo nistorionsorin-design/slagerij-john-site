@@ -5,7 +5,7 @@
 // Desktop derived (D-30): the head and the photo side by side as two prints (ink left, photo right); below, the steps,
 // the RO box and the holiday hours left, the menu card right.
 // Strings: src/i18n/eindejaar.ts (lexicon §5.22). Menu card (row 15a, 13.10): the owners' folder's eight sections in
-// its order, each row name · line · price + unit, then the owners' line. Row 15b (D-35): the look is
+// its order + row 15d's ninth, ro-feest (prices in the shop: no Offer, ever), each row name · line · price + unit, then the owners' line. Row 15b (D-35): the look is
 // src/styles/menu-card.css (the printed menu card) — the rubric index under the title, the price and its unit apart. Menu rows, deadline, pickup hours: menus.json (src/lib/menu.ts swaps
 // a set value into [DATUM] / [UUR]); holiday rows: hours.json `special`. FAQ: the three §5.11 „Eindejaar” items
 // (faq.json pages.eindejaar). No script on this page: the deadline is text only (build plan row 7).
@@ -57,21 +57,25 @@ const unit: Partial<Record<Unit, string>> = locale === 'ro'
   ? { pers: '/pers.', stuk: '/buc.', kg: '/kg', liter: '/l', portie: '/porție' }
   : { pers: '/pers.', stuk: '/stuk', kg: '/kg', liter: '/l', portie: '/portie' };
 // row 5b (D-34): a row whose dish has its own photo (src/lib/thumbs.ts) carries it at 56 px left of the name
-type Row = { id?: string; thumb?: boolean; name: string; line: string; price: string; unit: string };
+// row 15d: `lang` = the RO dish names of ro-feest on the NL page; their price cell is „prijs in de winkel” (price.ts)
+type Row = { id?: string; thumb?: boolean; name: string; lang?: string; line: string; price: string; unit: string };
 const row = (i: MenuItem): Row => ({
   id: i.id,
   thumb: !!thumbOf(i.id),
   name: i.name[locale],
+  lang: i.nameLang && i.nameLang !== locale ? i.nameLang : undefined,
   line: i.line?.[locale] ?? '',
   price: priceLabel({ ...i, category: '', line: { nl: '', ro: '' } }, locale),
   unit: unit[i.unit] ?? '',
 });
 // row 15a: the owners' folder's eight sections in its order (menus.json `sections`); the page's extra rows (RO: Porc de
-// Crăciun, D 7) close the card as a ninth rubric with its own index pill (row 15b, §6 Sărbători 13.10 13:00)
-const sections = [
-  ...m.sections.map((s) => ({ id: s.id, name: s.name[locale], note: s.note?.[locale], rows: m.items.filter((i) => i.section === s.id).map(row) })),
-  ...(t.card.extraSection && t.card.extraRows.length ? [{ ...t.card.extraSection, note: undefined, rows: t.card.extraRows as Row[] }] : []),
-].filter((s) => s.rows.length);
+// Crăciun, D 7) get a rubric with its own index pill (row 15b, §6 Sărbători 13.10 13:00). Row 15d: menus.json's ninth
+// section ro-feest (Georgiana 19.10) stays last — the RO extra rubric sits before it; its `lead` = the price note.
+type Sec = { id: string; name: string; note?: string; lead?: string; rows: Row[] };
+const menuSecs: Sec[] = m.sections.map((s) => ({ id: s.id, name: s.name[locale], note: s.note?.[locale], lead: s.lead?.[locale], rows: m.items.filter((i) => i.section === s.id).map(row) }));
+const extra: Sec[] = t.card.extraSection && t.card.extraRows.length ? [{ ...t.card.extraSection, rows: t.card.extraRows as Row[] }] : [];
+const at = menuSecs.findIndex((s) => s.id === 'ro-feest');
+const sections = (at < 0 ? [...menuSecs, ...extra] : [...menuSecs.slice(0, at), ...extra, ...menuSecs.slice(at)]).filter((s) => s.rows.length);
 
 // holiday hours: hours.json `special` for the four days; no entry → [UREN], `slots: []` → gesloten
 const special = (hours.special ?? []) as SpecialDay[];
@@ -140,12 +144,13 @@ const jsonld = [
           {sections.map((s) => (
             <div class="em__sec" id={`em-${s.id}`}>
               {s.name && <h3 class="em__sec-title"><span class="em__sec-name">{s.name}</span>{s.note && <span class="em__sec-note">{s.note}</span>}</h3>}
+              {s.lead && <p class="em__sec-lead">{s.lead}</p>}
               <dl class="em__rows">
                 {s.rows.map((r) => (
                   <div class:list={['em__row', { 'em__row--thumb': r.thumb }]}>
                     {r.thumb && r.id
-                      ? <dt><Thumb id={r.id} locale={locale} size={56} /><span class="em__dish">{r.name}{r.line && <span class="em__line">{r.line}</span>}</span></dt>
-                      : <dt>{r.name}{r.line && <span class="em__line">{r.line}</span>}</dt>}
+                      ? <dt><Thumb id={r.id} locale={locale} size={56} /><span class="em__dish"><span lang={r.lang}>{r.name}</span>{r.line && <span class="em__line">{r.line}</span>}</span></dt>
+                      : <dt>{r.lang ? <span lang={r.lang}>{r.name}</span> : r.name}{r.line && <span class="em__line">{r.line}</span>}</dt>}
                     <dd><span class="em__price">{r.price}</span><span class="em__unit">{r.unit}</span></dd>
                   </div>
                 ))}
@@ -196,6 +201,8 @@ const jsonld = [
   .em__row--thumb::before { top: 50%; }
   .em__row--thumb dt { display: flex; align-items: center; gap: 10px; }
   .em__dish { min-width: 0; }
+  /* row 15d: the ro-feest price note under its heading — a sentence, so not the nowrap unit note of menu-card.css */
+  .em__sec-lead { margin: -4px 0 2px; font-size: 13px; line-height: 1.45; color: var(--ox-tint); }
   /* ── phone = board Eindejaar (390) ── */
   /* the head: ink, text only, full bleed (board: padding 22 20 26, gap 14, H1 Fraunces 38, accent italic 30 yellow,
      lead 14 on-ink-muted, two full-width buttons) */

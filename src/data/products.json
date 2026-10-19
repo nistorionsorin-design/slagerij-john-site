@@ -213,6 +213,12 @@
       "priceFrom": true,
       "min": 2
     },
+    { "id": "fondue-14", "category": "gourmet", "name": { "nl": "Fondue 14 soorten", "ro": "Fondue, 14 feluri" },
+      "line": null,
+      "price": 13,
+      "unit": "pers",
+      "min": 2
+    },
     { "id": "gourmet-10", "category": "gourmet", "name": { "nl": "Gourmet 10 soorten", "ro": "Platou gourmet, 10 feluri" },
       "line": null,
       "price": 11,
@@ -257,7 +263,15 @@
         "nl": "5–6 pers.",
         "ro": "5-6 persoane"
       },
-      "price": 55,
+      "price": 50,
+      "unit": "stuk"
+    },
+    { "id": "tapas-john-1-scampi", "category": "tapas", "name": { "nl": "Tapas John 1 met scampi", "ro": "Tapas John 1 cu creveți" },
+      "line": {
+        "nl": "5–6 pers.",
+        "ro": "5-6 persoane"
+      },
+      "price": 50,
       "unit": "stuk"
     },
     { "id": "tapas-john-2", "category": "tapas", "name": { "nl": "Tapas John 2", "ro": "Tapas John 2" },
@@ -275,6 +289,14 @@
       },
       "price": 45,
       "unit": "stuk"
+    },
+    { "id": "koude-schotel", "category": "tapas", "name": { "nl": "Koude schotel", "ro": "Platou rece" },
+      "line": {
+        "nl": "hesp, salami, eieren en vleessalade",
+        "ro": "șuncă, salam, ouă și salată de carne"
+      },
+      "price": 13.5,
+      "unit": "pers"
     },
     { "id": "hapje-scampi-2", "category": "tapas", "name": { "nl": "Scampi", "ro": "Scampi" },
       "line": {
