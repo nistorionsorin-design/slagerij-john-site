@@ -1,5 +1,5 @@
 {
-  "_source": "Row 5b (Claude Code, 15.10): the site copy of docs/data/product-photos.json (Cowork owns that file; D-34). One entry per products.json id with its own photo; `src` = the file under src/assets/products/ (copied byte-identical from `from`, slugged NL names; a file that already sits elsewhere in src/assets/ under a slug gets that same name — Vite emits identical bytes once, under the first name it meets, and the photo must keep its SEO slug), focal point %, alt NL/RO as Cowork wrote them. A menu row (menus.json `ej26-<id>`) takes its product id's entry. An id not listed here renders no thumbnail (src/components/Thumb.astro). When the docs file grows (row 14), the new rows are copied here. Row 14 (16.10): the six phone-shoot rows copied (mici replaced, gehakt · spiering · braadworst · gerookte-worst · ribbetjes new); their files are the white-balanced row-14 sources, shared with the page photos where the original is the same (gerookte-worst = roemeens/…, ribbetjes = bbq/…); pastrami (pending_confirm) not built. Row 14d (19.10): ribbetjes removed (the photo is marinated pork chops, Dan 19.10; it stays on /bbq-pakketten as bbq/gemarineerde-koteletten-…), the row renders without a thumb; pastrami has no photo (#9 is costiță afumată).",
+  "_source": "Row 5b (Claude Code, 15.10): the site copy of docs/data/product-photos.json (Cowork owns that file; D-34). One entry per products.json id with its own photo; `src` = the file under src/assets/products/ (copied byte-identical from `from`, slugged NL names; a file that already sits elsewhere in src/assets/ under a slug gets that same name — Vite emits identical bytes once, under the first name it meets, and the photo must keep its SEO slug), focal point %, alt NL/RO as Cowork wrote them. A menu row (menus.json `ej26-<id>`) takes its product id's entry. An id not listed here renders no thumbnail (src/components/Thumb.astro). When the docs file grows (row 14), the new rows are copied here. Row 14 (16.10): the six phone-shoot rows copied (mici replaced, gehakt · spiering · braadworst · gerookte-worst · ribbetjes new); their files are the white-balanced row-14 sources, shared with the page photos where the original is the same (gerookte-worst = roemeens/…, ribbetjes = bbq/…); pastrami (pending_confirm) not built. Row 14d (19.10): ribbetjes removed (the photo is marinated pork chops, Dan 19.10; it stays on /bbq-pakketten as bbq/gemarineerde-koteletten-…), the row renders without a thumb; pastrami has no photo (#9 is costiță afumată). Row 14d (8), 19.10: the q27 photo shows tacos → hapje-taco-gehakt + hapje-taco-kip (section), file renamed wraps-kip.jpeg → tacos-met-vulling.jpeg (same bytes); hapje-wrap-kip shares the q26 wraps platter (section). The docs file's Facebook photos (tapas, gourmet, fondue, new rows) belong to row 15d and are not poured here.",
   "date": "2026-10-19",
   "products": {
     "tapas-2": {
@@ -112,16 +112,38 @@
       },
       "level": "item"
     },
-    "hapje-wrap-kip": {
-      "src": "products/wraps-kip.jpeg",
+    "hapje-taco-gehakt": {
+      "src": "products/tacos-met-vulling.jpeg",
       "from": "assets/raw/2026-10-05-whatsapp/sandwhich.jpeg",
       "focalX": 50,
       "focalY": 50,
       "alt": {
-        "nl": "Wraps met kip",
-        "ro": "Wrapuri cu pui"
+        "nl": "Taco's met vulling op een schotel",
+        "ro": "Taco cu umplutură, pe un platou"
       },
-      "level": "item"
+      "level": "section"
+    },
+    "hapje-taco-kip": {
+      "src": "products/tacos-met-vulling.jpeg",
+      "from": "assets/raw/2026-10-05-whatsapp/sandwhich.jpeg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Taco's met vulling op een schotel",
+        "ro": "Taco cu umplutură, pe un platou"
+      },
+      "level": "section"
+    },
+    "hapje-wrap-kip": {
+      "src": "products/wraps-zalm-hesp.jpeg",
+      "from": "assets/raw/2026-10-05-whatsapp/plate1.jpeg",
+      "focalX": 50,
+      "focalY": 45,
+      "alt": {
+        "nl": "Wraps op een schotel",
+        "ro": "Wrapuri pe un platou"
+      },
+      "level": "section"
     },
     "mici": {
       "src": "products/verse-mici-witte-schaal-slagerij-john.jpg",
