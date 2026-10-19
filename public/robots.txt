@@ -1,4 +1,6 @@
 User-agent: *
 Disallow: /wa
+Disallow: /api/
+Disallow: /admin
 
 Sitemap: https://slagerij-john.be/sitemap-index.xml

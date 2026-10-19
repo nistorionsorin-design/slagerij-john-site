@@ -50,7 +50,7 @@ if (built) {
       const html = read(f);
       const file = rel(f).replace(/^dist\//, '');
       const url = 'https://' + OWN_HOST + '/' + file.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '');
-      return { file, url: url.endsWith('/') && file !== 'index.html' ? url.slice(0, -1) : url, html, is404: file === '404.html' };
+      return { file, url: url.endsWith('/') && file !== 'index.html' ? url.slice(0, -1) : url, html, is404: file === '404.html' || file === 'ro/404.html' };
     });
   const content = pages.filter((p) => !p.is404);
   const byUrl = new Map(content.map((p) => [p.url, p]));
@@ -277,20 +277,74 @@ if (built) {
   // 10 — 404, sitemap, robots
   {
     const e = [];
-    const p404 = pages.find((p) => p.is404);
-    if (!p404) e.push('dist/404.html missing');
-    else if (!/<meta name="robots" content="noindex"/i.test(p404.html)) e.push('404.html is not noindex');
+    // row 13: the NL 404 (Vercel's own) and the RO one (served by api/gone.js) — one h1 (check 2), noindex, html lang
+    for (const [file, lang] of [['404.html', 'nl-BE'], ['ro/404.html', 'ro-BE']]) {
+      const p = pages.find((x) => x.file === file);
+      if (!p) e.push(`dist/${file} missing`);
+      else {
+        if (!/<meta name="robots" content="noindex"/i.test(p.html)) e.push(`${file} is not noindex`);
+        if (p.html.match(/<html[^>]*\slang="([^"]+)"/i)?.[1] !== lang) e.push(`${file}: html lang ≠ ${lang}`);
+        if (/rel="canonical"/i.test(p.html)) e.push(`${file} carries a canonical`);
+      }
+    }
     const maps = walk(dist).filter((f) => /sitemap-\d+\.xml$/.test(f));
     if (!existsSync(join(dist, 'sitemap-index.xml')) || !maps.length) e.push('sitemap missing');
-    const locs = maps.flatMap((f) => [...read(f).matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]));
+    const entries = maps.flatMap((f) => [...read(f).matchAll(/<url>([\s\S]*?)<\/url>/g)].map((m) => m[1]));
+    const locs = entries.map((u) => u.match(/<loc>([^<]+)<\/loc>/)?.[1]);
     for (const l of locs) if (!byUrl.has(l)) e.push(`sitemap lists ${l}, which is not a built page`);
     for (const p of content) if (!locs.includes(p.url)) e.push(`${p.file} not in sitemap`);
+    // each entry: the page's own hreflang trio as xhtml:link; lastmod (when present) a real past date — git, never guessed
+    let dated = 0;
+    for (const u of entries) {
+      const loc = u.match(/<loc>([^<]+)<\/loc>/)?.[1];
+      const links = Object.fromEntries([...u.matchAll(/<xhtml:link[^>]*>/g)].map((m) => [attr(m[0], 'hreflang'), attr(m[0], 'href')]));
+      const page = byUrl.get(loc);
+      if (page) {
+        const own = Object.fromEntries((page.html.match(/<link\s+rel="alternate"[^>]*>/gi) || []).map((t) => [attr(t, 'hreflang'), attr(t, 'href')]));
+        for (const k of ['nl-BE', 'ro-BE', 'x-default']) if (links[k] !== own[k]) e.push(`sitemap ${loc}: xhtml:link ${k} = ${links[k]}, page says ${own[k]}`);
+      }
+      const lm = u.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1];
+      if (lm) {
+        dated++;
+        const t = Date.parse(lm);
+        if (Number.isNaN(t) || t > Date.now() + 60_000) e.push(`sitemap ${loc}: lastmod ${lm} is not a past date`);
+      }
+    }
+    for (const l of locs) if (/^\/(wa|api)(\/|$)|\/404$/.test(new URL(l).pathname)) e.push(`sitemap lists ${l}`);
     const robots = existsSync(join(dist, 'robots.txt')) ? read(join(dist, 'robots.txt')) : '';
     const dis = [...robots.matchAll(/^Disallow:\s*(.*)$/gim)].map((m) => m[1].trim()).filter(Boolean);
-    if (dis.length !== 1 || dis[0] !== '/wa') e.push(`robots.txt Disallow = [${dis}] (want only /wa)`);
+    if (dis.join(' ') !== '/wa /api/ /admin') e.push(`robots.txt Disallow = [${dis}] (want /wa, /api/, /admin)`);
     if (!/^Sitemap:\s*https:\/\/slagerij-john\.be\/sitemap-index\.xml/im.test(robots)) e.push('robots.txt lacks the Sitemap line');
-    verdict('404-sitemap-robots', e, `404.html built + noindex; sitemap = ${locs.length} built pages; robots blocks only /wa`);
-    warn('404-status', 'real 404 status: verify on the deployed URL (curl -I <preview>/does-not-exist)');
+    verdict('404-sitemap-robots', e, `404 NL + RO built + noindex; sitemap = ${locs.length} built pages with hreflang pairs, ${dated} with a git lastmod; robots blocks /wa /api/ /admin`);
+    if (dated < locs.length) warn('sitemap-lastmod', `${locs.length - dated} sitemap URLs without lastmod (no git history for the page) — omitted, never guessed`);
+    warn('404-status', 'real 404 / 410 / 301 statuses: `node scripts/routes.mjs` replays vercel.json locally; verify on the deployed URL too');
+  }
+
+  // 10b — vercel.json routes (row 13): every redirect lands on a built page in one hop (no destination is itself
+  // redirected or rewritten), no source shadows a built page, the gone routes and the /ro catch-all go to api/gone.js
+  {
+    const e = [];
+    const v = JSON.parse(read(join(root, 'vercel.json')));
+    const built = new Set(content.map((p) => new URL(p.url).pathname.replace(/\/$/, '') || '/'));
+    const files = new Set(walk(dist).map((f) => '/' + rel(f).replace(/^dist\//, '')));
+    const sources = new Set([...(v.redirects ?? []), ...(v.rewrites ?? [])].map((r) => r.source));
+    for (const r of v.redirects ?? []) {
+      const to = r.destination.split('?')[0];
+      if (r.statusCode !== 301 && r.permanent !== true) e.push(`redirect ${r.source}: not permanent`);
+      if (!built.has(to) && !files.has(to)) e.push(`redirect ${r.source} → ${to}: not a built page or file`);
+      if (sources.has(to)) e.push(`redirect ${r.source} → ${to}: ${to} is itself a route source (chain)`);
+      if (built.has(r.source)) e.push(`redirect ${r.source} shadows a built page`);
+    }
+    for (const r of v.rewrites ?? []) {
+      if (!r.source.includes(':') && built.has(r.source)) e.push(`rewrite ${r.source} shadows a built page`);
+      const fn = r.destination.split('?')[0].replace(/^\//, '') + '.js';
+      if (r.destination.startsWith('/api/') && !existsSync(join(root, fn))) e.push(`rewrite ${r.source} → ${fn}: no such function`);
+    }
+    if (!(v.rewrites ?? []).some((r) => r.source === '/ro/:path*' && r.destination.startsWith('/api/gone?code=404'))) e.push('no /ro/:path* → /api/gone?code=404 rewrite (the RO 404)');
+    const key = readdirSync(join(root, 'public')).filter((f) => /^[0-9a-f]{32}\.txt$/.test(f));
+    if (key.length !== 1) e.push(`IndexNow: ${key.length} public/<32-hex>.txt key files (want 1)`);
+    else if (read(join(root, 'public', key[0])).trim() !== key[0].slice(0, -4)) e.push(`IndexNow: ${key[0]} does not hold its own key`);
+    verdict('vercel-routes', e, `${(v.redirects ?? []).length} redirects one hop to built pages; ${(v.rewrites ?? []).length} rewrites to existing functions; IndexNow key file`);
   }
 
   // 11 — motion

@@ -1,0 +1,6 @@
+---
+// /ro/404 — the RO 404 (row 13). Not reached by its own URL: vercel.json rewrites unmatched /ro/* to api/gone.js,
+// which serves this page with the 404 status. The view is src/views/NotFound.astro.
+import NotFound from '../../views/NotFound.astro';
+---
+<NotFound locale="ro" />

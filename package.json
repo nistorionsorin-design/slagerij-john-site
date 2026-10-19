@@ -9,6 +9,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "gate": "node scripts/gate.mjs",
+    "routes": "node scripts/routes.mjs",
+    "indexnow": "node scripts/indexnow.mjs",
     "postinstall": "node scripts/wasi-compiler.mjs"
   },
   "dependencies": {

@@ -28,10 +28,36 @@
     }
   ],
   "redirects": [
-    { "source": "/sitemap.xml", "destination": "/sitemap-index.xml", "statusCode": 301 }
+    { "source": "/sitemap.xml", "destination": "/sitemap-index.xml", "statusCode": 301 },
+    { "source": "/order", "destination": "/bestellen", "statusCode": 301 },
+    { "source": "/products", "destination": "/producten", "statusCode": 301 },
+    { "source": "/catering", "destination": "/traiteur", "statusCode": 301 },
+    { "source": "/traiteur-catering", "destination": "/traiteur", "statusCode": 301 },
+    { "source": "/about", "destination": "/over-ons", "statusCode": 301 },
+    { "source": "/allergens", "destination": "/allergenen", "statusCode": 301 },
+    { "source": "/terms", "destination": "/algemene-voorwaarden", "statusCode": 301 },
+    { "source": "/legal-notice", "destination": "/algemene-voorwaarden", "statusCode": 301 },
+    { "source": "/accessibility", "destination": "/contact", "statusCode": 301 },
+    { "source": "/ro/order", "destination": "/ro/comanda", "statusCode": 301 },
+    { "source": "/ro/products", "destination": "/ro/produse", "statusCode": 301 },
+    { "source": "/ro/traiteur-catering", "destination": "/ro/catering", "statusCode": 301 },
+    { "source": "/ro/about", "destination": "/ro/despre-noi", "statusCode": 301 },
+    { "source": "/ro/allergens", "destination": "/ro/alergeni", "statusCode": 301 },
+    { "source": "/ro/privacy", "destination": "/ro/confidentialitate", "statusCode": 301 },
+    { "source": "/ro/terms", "destination": "/ro/termeni", "statusCode": 301 },
+    { "source": "/ro/legal-notice", "destination": "/ro/termeni", "statusCode": 301 },
+    { "source": "/ro/accessibility", "destination": "/ro/contact", "statusCode": 301 }
   ],
   "rewrites": [
-    { "source": "/wa", "destination": "/api/wa" }
+    { "source": "/wa", "destination": "/api/wa" },
+    { "source": "/login", "destination": "/api/gone?code=410&lang=nl" },
+    { "source": "/register", "destination": "/api/gone?code=410&lang=nl" },
+    { "source": "/account", "destination": "/api/gone?code=410&lang=nl" },
+    { "source": "/account/:path*", "destination": "/api/gone?code=410&lang=nl" },
+    { "source": "/ro/login", "destination": "/api/gone?code=410&lang=ro" },
+    { "source": "/ro/account", "destination": "/api/gone?code=410&lang=ro" },
+    { "source": "/ro/account/:path*", "destination": "/api/gone?code=410&lang=ro" },
+    { "source": "/ro/:path*", "destination": "/api/gone?code=404&lang=ro" }
   ],
   "functions": {
     "api/*.js": { "includeFiles": "src/data/*.json", "maxDuration": 15 }

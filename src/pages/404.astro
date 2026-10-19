@@ -1,14 +1,6 @@
 ---
-// STUB. Vercel serves dist/404.html with a real 404 status. Copy comes later (stage 13).
-import Base from '../layouts/Base.astro';
+// 404 — Vercel serves dist/404.html with a real 404 status for every unmatched path. The view is
+// src/views/NotFound.astro (shared with /ro/404, row 13).
+import NotFound from '../views/NotFound.astro';
 ---
-<Base title="404 — Slagerij John" description="404" locale="nl" path="/404" noindex>
-  <main id="main" class="container stub">
-    <h1>404</h1>
-    <p><a href="/">Slagerij John</a> · <a href="/ro" lang="ro">RO</a></p>
-  </main>
-</Base>
-
-<style>
-  .stub { padding-top: 48px; padding-bottom: 48px; min-height: 50vh; }
-</style>
+<NotFound locale="nl" />

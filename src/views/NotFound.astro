@@ -1,0 +1,47 @@
+---
+// The 404 page (row 13), NL and RO: dist/404.html is Vercel's own 404 for every unmatched path (HTTP 404);
+// dist/ro/404.html answers unmatched /ro/* through the rewrite to api/gone.js (vercel.json), which serves it with the
+// 404 status — and with 410 for the old app routes (/login, /account …, docs/data/old-urls.json `gone`).
+// One H1, the nav (Base: Header + Menu), the two CTAs (startpagina · WhatsApp); noindex, no canonical, no hreflang
+// pair (Base: the language switch goes to the home pages). Not in the sitemap (astro.config.mjs filter).
+import Base from '../layouts/Base.astro';
+import WaIcon from '../components/WaIcon.astro';
+import { wa, type Locale } from '../i18n/ui';
+import { notfound } from '../i18n/notfound';
+
+export interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = notfound[locale];
+const ro = locale === 'ro';
+const path = ro ? '/ro/404' : '/404';
+const waHref = `${wa('404-head')}${ro ? '&lang=ro' : ''}`;
+---
+<Base title={t.title} description={t.text} locale={locale} path={path} noindex fonts={['display', 'ui']}>
+  <main id="main" class="container nf">
+    <section class="nf__head" aria-labelledby="nf-title">
+      <p class="eyebrow nf__code">404</p>
+      <h1 class="nf__h1" id="nf-title">{t.h1}</h1>
+      <p class="nf__text">{t.text}</p>
+      <div class="nf__buttons">
+        <a class="btn btn--primary btn--lg" href={t.homeHref}>{t.home}</a>
+        <a class="btn btn--secondary btn--lg" href={waHref} rel="nofollow"><WaIcon size={20} /><span>{t.whatsapp}</span></a>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .nf { padding-top: 48px; padding-bottom: 64px; min-height: 50vh; }
+  .nf__head { display: flex; flex-direction: column; gap: 14px; max-width: 40rem; }
+  .nf__code { margin: 0; }
+  .nf__h1 { margin: 0; font-size: 38px; line-height: 1.02; letter-spacing: -0.02em; }
+  .nf__text { margin: 0; font-size: 17px; line-height: 1.5; }
+  .nf__buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+  .nf__buttons .btn { width: 100%; }
+  @media (min-width: 768px) {
+    .nf { padding-top: 96px; padding-bottom: 120px; }
+    .nf__h1 { font-size: 56px; }
+    .nf__buttons { flex-direction: row; }
+    .nf__buttons .btn { width: auto; }
+  }
+</style>
