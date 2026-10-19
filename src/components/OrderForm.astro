@@ -407,13 +407,16 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
   .oi:has(> .thumb-pic) > .oi__pin { top: 36px; }
   .oi__name { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 19px; line-height: 1.1; }
   .oi__line { margin: 0; font-size: 12px; line-height: 1.35; color: var(--muted); }
-  .oi__foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-  .oi__price { margin: 0; display: flex; align-items: baseline; gap: 3px; font-variant-numeric: tabular-nums; color: var(--ox); white-space: nowrap; }
+  /* a long priced label („vanaf €10” / „de la 10 €”) keeps the stepper inside the card on a 390 px row: the price takes the
+     room the stepper leaves and drops its unit under the amount; on a row narrower still, the stepper drops under the price */
+  .oi__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+  .oi__foot > .qty { margin-left: auto; }
+  .oi__price { margin: 0; flex: 1 1 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 3px; font-variant-numeric: tabular-nums; color: var(--ox); white-space: nowrap; }
   .oi__amount { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
   .oi__amount--ph { font-size: 18px; }
   /* row 15d: words, not a figure — set at the text size so the stepper keeps its place on a 390 px row */
   .oi__amount--store { font-size: 14px; font-weight: 600; letter-spacing: 0; line-height: 1.2; }
-  .oi__price:has(> .oi__amount--store) { flex: 1 1 auto; min-width: 0; flex-wrap: wrap; white-space: normal; column-gap: 3px; }
+  .oi__price:has(> .oi__amount--store) { min-width: 0; white-space: normal; column-gap: 3px; }
   .oi__unit { font-size: 12px; color: var(--muted); }
 
   .qty {
