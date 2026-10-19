@@ -15,8 +15,10 @@
 // LCP (spec §7): frame 1 is a plain <img> at opacity 1 from first paint, eager, fetchpriority high; each frame is cut at
 // build to its box (phone 1 : 2 ≤ 828 px, tablet 4 : 5, desktop 2 : 1) at its focal point, AVIF + WebP, so a phone fetches
 // ≤ 828 px; the height comes from the CSS, never from the image (CLS 0).
-// Desktop (≥ 960, spec §8, derived): the same full-bleed photo, min(100vh, 760px), the text block left with the dark
-// print's gradient (the heads' desktop gradient before this row), the pause at the photo's foot right as on home.
+// Desktop (≥ 960, spec §8, derived; Dan 19.10 19:4x „you made the heroes too wide, they weren't like this”): the dark
+// print the showcase heads had before this row (print-head.css, removed) — in the page's width between the 56 px gutters
+// (max 1440), 32 px under the sign's 96 px, min(640px, 100svh − 140px) tall, radius 18 — the photo inside it, the text
+// block left with that print's gradient, the pause 32 / 36 px from the print's right foot.
 // `leadBelow` (spec §4): when the text block would cover more than ≈ 60 % of the hero, the lead moves to a paper row
 // right under it — the same string, only its place.
 // A „whole” frame (Dan 19.10 18:5x on /recepten and /producten: too much zoom, the dish does not show): the photo is not
@@ -69,11 +71,11 @@ const gravity = (x = 50, y = 50) =>
   [y < 40 ? 'top' : y > 60 ? 'bottom' : '', x < 40 ? 'left' : x > 60 ? 'right' : ''].filter(Boolean).join(' ') || 'center';
 // the three boxes. Phone: 1 : 2 (390 × 844 is 0,46, 360 × 640 is 0,56), drawn max(100vw, ½ of the height); Lighthouse's
 // 412 × 823 at DPR 1,75 asks ≈ 720 px → the ≤ 828 file. Tablet (600–959, still the phone layout, the hero ≤ 920 px tall):
-// 4 : 5. Desktop: 2 : 1, drawn max(100vw, twice the hero's height).
+// 4 : 5. Desktop: 2 : 1, drawn max(the print's width, twice its height) — the print is the container less its gutters.
 const boxes = {
   m: { ratio: 0.5, steps: [480, 640, 828], max: 828, sizes: 'max(100vw, 50vh)' },
   t: { ratio: 0.8, steps: [828, 1080, 1280, 1600], max: 1600, sizes: 'max(100vw, min(100vh, 920px) * 0.8)' },
-  d: { ratio: 2, steps: [1280, 1600, 1920, 2400], max: 2400, sizes: 'max(100vw, min(100vh, 760px) * 2)' },
+  d: { ratio: 2, steps: [1280, 1600, 2040], max: 2040, sizes: 'max(min(100vw, 1440px) - 112px, min(640px, 100vh - 140px) * 2)' },
 };
 const cut = async (f: Frame, b: (typeof boxes)['m'], fy = f.focalY) => {
   const width = Math.min(f.img.width, Math.round(f.img.height * b.ratio), b.max);
@@ -94,7 +96,7 @@ const wholeBoxes = (f: Frame) => {
   return {
     m: { ratio, steps: [480, 640, 828], max: 828, sizes: `calc(100vw * ${w})` },
     t: { ratio, steps: [828, 1080, 1280, 1600], max: 1600, sizes: `calc(100vw * ${Math.min(w, 0.82)})` },
-    d: { ratio, steps: [1080, 1280, 1600, 1920], max: 1920, sizes: `calc(min(100vh, 760px) * ${(1.12 * ratio).toFixed(3)})` },
+    d: { ratio, steps: [1080, 1280, 1600], max: 1600, sizes: `calc(min(640px, 100vh - 140px) * ${(1.12 * ratio).toFixed(3)})` },
   };
 };
 const pics = await Promise.all(
@@ -276,16 +278,22 @@ const hasCta = Astro.slots.has('default');
     .sh .sh__pause { visibility: hidden; }
   }
 
-  /* ── desktop (≥ 960, spec §8, derived): the same photo full bleed, min(100vh, 760px), the text block left on the dark
-     print's gradient, the pause at the photo's foot right (the home's place on its print) ── */
+  /* ── desktop (≥ 960, spec §8, derived): the old heads' dark print — in the container between the gutters, under the
+     sign (Base adds no spacer for navVariant hero: 96 px + the print's 32), the text block left on its gradient, the pause
+     at its right foot ── */
   @media (min-width: 960px) {
-    .sh { min-height: min(100vh, 760px); }
+    .sh {
+      width: calc(min(100%, var(--container)) - 2 * var(--gutter));
+      min-height: min(640px, calc(100svh - 140px));
+      margin: 128px auto 0;
+      border-radius: var(--r-frame-lg);
+    }
     .sh__scrim {
       background:
         linear-gradient(90deg, rgba(21,17,13,.92) 0%, rgba(21,17,13,.78) 38%, rgba(21,17,13,.15) 70%, rgba(21,17,13,0) 100%),
         linear-gradient(180deg, rgba(21,17,13,.25) 0%, rgba(21,17,13,0) 30%, rgba(21,17,13,.45) 100%);
     }
-    .sh__text { padding: 120px var(--gutter) 56px; }
+    .sh__text { padding: 64px 56px 56px; }
     .sh__lead { gap: 22px; max-width: min(760px, 58%); }
     .sh__titles { gap: 16px; }
     .sh__h1 { font-size: clamp(48px, 4.4vw, 68px); line-height: 1; letter-spacing: -0.025em; }
@@ -295,10 +303,10 @@ const hasCta = Astro.slots.has('default');
     .sh__cta :global(.btn) { width: auto; }
     .sh__row { min-height: 0; }
     .sh__row:not(:has(.oc)) { display: contents; }
-    .sh__pause { position: absolute; right: var(--gutter); bottom: 56px; z-index: 3; margin: 0; }
+    .sh__pause { position: absolute; right: 32px; bottom: 36px; z-index: 3; margin: 0; }
     .sh-after { padding-top: 40px; }
     .sh-after__lead { font-size: var(--fs-lead); line-height: 1.5; }
-    /* a whole frame on desktop: as tall as the hero + 12 %, at its right, behind the text's gradient; an opaque one fades in
+    /* a whole frame on desktop: as tall as the print + 12 %, at its right, behind the text's gradient; an opaque one fades in
        from its left edge; no backdrop (the ink is the ground) */
     .sh__f :global(.sh__k--whole) { inset: auto; top: -6%; right: -2%; height: 112%; width: auto; max-width: none; object-fit: fill; }
     .sh__f--bd :global(.sh__k--whole) {
