@@ -58,12 +58,12 @@ const asset = (src: string) => {
   return m.default;
 };
 
-// the hero (row 14e): the entrecote crop, the alt of the entrecote recipe. Focal point in the left third: the phone's
-// 1 : 2 slice of this 1440 × 1080 file is 540 px wide — the centre slice is the steak's glossy, out-of-focus middle; the
-// left one keeps the board's edge and the sharp grill marks, so it reads as a steak on a board
+// the hero (row 14e): the entrecote crop, the alt of the entrecote recipe. Drawn whole (Dan 19.10: „too much zoom, you
+// don't see the cook” — a 1 : 2 slice of this 1440 × 1080 file was the steak's glossy middle): 125 % of the phone's width,
+// the whole steak and its board in the top half, the blurred copy behind (PageHero `whole`, the home's pig treatment)
 const entrecote = recipes.find((r) => r.id === 'entrecote');
 if (!entrecote) throw new Error('recipes.json: no entrecote (the hero photo’s alt)');
-const heroFrames = [{ img: asset('recepten/entrecote-crop.jpg'), alt: entrecote.alt[locale], focalX: 30, focalY: 55, zoomX: 40, zoomY: 60 }];
+const heroFrames = [{ img: asset('recepten/entrecote-crop.jpg'), alt: entrecote.alt[locale], focalX: 50, focalY: 50, zoomX: 50, zoomY: 55, whole: { width: 125, top: 10, backdrop: true } }];
 // spec §4: the lead goes under the hero when the text block covers more of it than the home's own (64,6 % at 390 × 844,
 // measured from the block's top to the hero's foot) — here 48,1 % NL / 44,8 % RO: it stays (row 14e [MEASURED-OURS]
 // local 19.10)

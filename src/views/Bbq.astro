@@ -12,10 +12,14 @@
 // per persoon = unitCode C62). Fondue is „vanaf €10”: its offer is an AggregateOffer (a kind of Offer) with lowPrice
 // 10 — the schema.org home of lowPrice. No Offer on a [PRIJS] row (S-03): the three BBQ rows carry none.
 // RO (/ro/gratar): lexicon §6 „Grătar” (`bbqRo`); one view, two pages: src/pages/bbq-pakketten.astro and
-// src/pages/ro/gratar.astro. No script. Row 14 (16.10): three tiles of the phone shoot in block 1 (photos.json `bbq`,
+// src/pages/ro/gratar.astro. Row 14 (16.10): three tiles of the phone shoot in block 1 (photos.json `bbq`,
 // role tile: #36 gemarineerde koteletten (14d, 19.10: not ribbetjes) · #15 kipreepjes · #20 schnitzels — three across under the tags, 1:1); the `head` candidate
-// (#37) was measured against hero frame 4 and the better one kept (HEAD below): mobile LCP 3,0 / 3,0 s with #37 vs
-// 2,9 / 3,0 s with frame 4 [MEASURED-OURS] local 16.10 → frame 4 stays; #37 stays in photos.json `bbq` for Dan's eye.
+// (#37) was measured against hero frame 4 and the better one kept: mobile LCP 3,0 / 3,0 s with #37 vs 2,9 / 3,0 s with
+// frame 4 [MEASURED-OURS] local 16.10 → frame 4 stayed; #37 stays in photos.json `bbq` for Dan's eye.
+// Row 14e follow-up (Dan 19.10: „for bbq paketen we need to find a better nice photo” → „q03 and q14 without background
+// on black background”): the hero is two cut-outs on the hero's ink, photos.json `bbq` role hero — the round BBQ platter
+// (q03) and the two BBQ trays (q14) — drawn whole (PageHero `whole`), crossfading on the home's rhythm; the loop's
+// script (src/scripts/page-hero.ts) is imported below.
 import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import ArtPicture from '../components/ArtPicture.astro';
@@ -26,7 +30,6 @@ import Faq from '../components/Faq.astro';
 import photos from '../data/photos.json';
 import type { Photo } from '../data/types';
 import { item, priceLabel, products } from '../lib/price';
-import { heroPhoto } from '../lib/hero';
 import { wa, type Locale } from '../i18n/ui';
 import { bbqT } from '../i18n/bbq';
 import '../styles/sections.css';
@@ -46,12 +49,12 @@ const file = (src: string) => {
   return m.default;
 };
 
-// the hero (row 14e, PageHero.astro) = the hero's BBQ tray, id bbq-pakket (§5.24; picked by id, D-38); AVIF quality 40
-// as /traiteur's
+// the hero (row 14e follow-up): the two cut-outs, whole — on the phone 112 % of the hero wide (the platters' rims run
+// out at the sides), their top just under the sign; AVIF quality 40 as /traiteur's
 const shoot = photos.bbq as Photo[];
-const HEAD = 'hero' as 'hero' | 'shoot';
-const head = HEAD === 'shoot' ? shoot.find((p) => p.role === 'head')! : heroPhoto('bbq-pakket');
-const heroFrames = [{ img: file(head.src), alt: head.alt[locale], focalX: head.focalX, focalY: head.focalY, zoomX: head.zoomX, zoomY: head.zoomY }];
+const heroFrames = shoot
+  .filter((p) => p.role === 'hero')
+  .map((p) => ({ img: file(p.src), alt: p.alt[locale], focalX: p.focalX, focalY: p.focalY, zoomX: p.zoomX, zoomY: p.zoomY, whole: { width: 112, top: 9 } }));
 // spec §4: the lead goes under the hero when the text block covers more of it than the home's own (64,6 % at 390 × 844,
 // measured from the block's top to the hero's foot) — here 71,1 % NL / 75,2 % RO with the lead in (row 14e
 // [MEASURED-OURS] local 19.10)
@@ -207,6 +210,11 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
     </div>
   </main>
 </Base>
+
+<script>
+  // the hero's frame 2 (row 14e follow-up): PageHero's loop driver, inserted after `load`, live once decoded
+  import '../scripts/page-hero.ts';
+</script>
 
 <style>
   /* ── phone: the hero is PageHero.astro (row 14e); then the blocks in the 20 px gutters ── */

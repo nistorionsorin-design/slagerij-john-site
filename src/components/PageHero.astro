@@ -19,9 +19,15 @@
 // print's gradient (the heads' desktop gradient before this row), the pause at the photo's foot right as on home.
 // `leadBelow` (spec §4): when the text block would cover more than ≈ 60 % of the hero, the lead moves to a paper row
 // right under it — the same string, only its place.
+// A „whole” frame (Dan 19.10 18:5x on /recepten and /producten: too much zoom, the dish does not show): the photo is not
+// cut to the hero's shape but drawn whole — on the phone `width` % of the hero wide with its top edge at `top` % of its
+// height, on desktop as tall as the hero, standing at its right behind the text's gradient. An opaque photo gets the home's
+// treatment of the pig on the spit (Hero.astro `whole`): the same file blurred and darkened behind it, its edges faded
+// into that; a cut-out (alpha) needs nothing — the hero's ink is its ground.
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import OpenChip from './OpenChip.astro';
+import HeroPic from './HeroPic.astro';
 import { hero as heroCopy, type Locale } from '../i18n/ui';
 
 export interface Frame {
@@ -34,6 +40,9 @@ export interface Frame {
   zoomY?: number;
   /** the desktop crop's focal row, where it differs (John's face in the top fifth of john-bbq) */
   desktopFocalY?: number;
+  /** draw the photo whole instead of covering the hero: phone width in % of the hero's, its top edge in % of the hero's
+      height; `backdrop`: an opaque photo — the blurred copy behind it */
+  whole?: { width: number; top: number; backdrop?: boolean };
 }
 export interface Props {
   locale: Locale;
@@ -77,21 +86,37 @@ const cut = async (f: Frame, b: (typeof boxes)['m'], fy = f.focalY) => {
 // animation delays (the home's convention: a frame's cycle starts with its fade-in): frame 1 is seen from T − 2 s to 9 s,
 // so at t = 0 it is 2 s into its zoom; frame k ≥ 2 fades in at 9 (k − 1) − 2 s
 const delay = (k: number) => (k === 0 ? -2 : 9 * k - 2 - T);
+// a whole frame keeps the photo's own shape in every box (no cut): phone drawn width % of the hero, tablet ≤ 82 % of it,
+// desktop as tall as the hero + 12 % (CSS below)
+const wholeBoxes = (f: Frame) => {
+  const ratio = f.img.width / f.img.height;
+  const w = f.whole!.width / 100;
+  return {
+    m: { ratio, steps: [480, 640, 828], max: 828, sizes: `calc(100vw * ${w})` },
+    t: { ratio, steps: [828, 1080, 1280, 1600], max: 1600, sizes: `calc(100vw * ${Math.min(w, 0.82)})` },
+    d: { ratio, steps: [1080, 1280, 1600, 1920], max: 1920, sizes: `calc(min(100vh, 760px) * ${(1.12 * ratio).toFixed(3)})` },
+  };
+};
 const pics = await Promise.all(
   frames.map(async (f, k) => {
-    const [m, t, d] = await Promise.all([cut(f, boxes.m), cut(f, boxes.t), cut(f, boxes.d, f.desktopFocalY ?? f.focalY)]);
+    const b = f.whole ? wholeBoxes(f) : boxes;
+    const [m, t, d] = await Promise.all([cut(f, b.m), cut(f, b.t), cut(f, b.d, f.desktopFocalY ?? f.focalY)]);
     const fx = f.focalX ?? 50, fy = f.focalY ?? 50;
-    const style = `object-position:${fx}% ${fy}%;transform-origin:${f.zoomX ?? fx}% ${f.zoomY ?? fy}%${N > 1 ? `;animation-delay:${delay(k)}s` : ''}`;
-    return { m, t, d, alt: f.alt, style, frameStyle: N > 1 && k > 0 ? `animation-delay:${delay(k)}s` : undefined, last: k === N - 1 };
+    const anim = N > 1 ? `;animation-delay:${delay(k)}s` : '';
+    const size = f.whole ? `;--ww:${f.whole.width}%;--wt:${f.whole.top}%` : '';
+    const style = `object-position:${fx}% ${fy}%;transform-origin:${f.zoomX ?? fx}% ${f.zoomY ?? fy}%${anim}${size}`;
+    return { m, t, d, alt: f.alt, style, whole: !!f.whole, backdrop: !!f.whole?.backdrop, frameStyle: N > 1 && k > 0 ? `animation-delay:${delay(k)}s` : undefined, last: k === N - 1 };
   }),
 );
 const [first, ...rest] = pics;
 
 // the loop's keyframes for T s (N ≥ 2), the home's hwn-z for the zoom: a middle frame is up from 2 s to 11 s of its
-// cycle and drops once the next one is fully in; the last one fades out over 2 s and shows frame 1 again under it
+// cycle and drops once the next one is fully in; the last one fades out over 2 s while frame 1 fades back in under it —
+// frame 1 runs the middle frames' keyframes too (from T − 2 s), so behind a cut-out (alpha) frame it is never seen
 const pc = (sec: number, plus = 0) => `${+((sec / T) * 100 + plus).toFixed(3)}%`;
 const timing = N > 1 && [
   `@media (prefers-reduced-motion:no-preference){`,
+  `.sh.is-live .sh__f.sh__f0{animation:sh-o${N} ${T}s linear -2s infinite}`,
   `.sh.is-live .sh__f.sh__fm{animation:sh-o${N} ${T}s linear infinite}`,
   `.sh.is-live .sh__f.sh__fl{animation:sh-l${N} ${T}s linear infinite}`,
   `.sh.is-live .sh__k{animation:sh-z${N} ${T}s linear infinite}`,
@@ -106,28 +131,16 @@ const hasCta = Astro.slots.has('default');
 {timing && <style is:inline set:html={timing}></style>}
 <section class:list={['hero', 'sh', N > 1 ? 'sh--loop' : 'sh--kb']} data-sh aria-labelledby={id}>
   <div class="sh__media">
-    <div class="sh__f sh__f0">
-      <picture>
-        <source media="(min-width: 960px)" type="image/avif" srcset={first.d.avif} sizes={first.d.sizes} width={first.d.width} height={first.d.height} />
-        <source media="(min-width: 960px)" type="image/webp" srcset={first.d.webp} sizes={first.d.sizes} width={first.d.width} height={first.d.height} />
-        <source media="(min-width: 600px)" type="image/avif" srcset={first.t.avif} sizes={first.t.sizes} width={first.t.width} height={first.t.height} />
-        <source media="(min-width: 600px)" type="image/webp" srcset={first.t.webp} sizes={first.t.sizes} width={first.t.width} height={first.t.height} />
-        <source type="image/avif" srcset={first.m.avif} sizes={first.m.sizes} />
-        <img class="sh__k" src={first.m.src} srcset={first.m.webp} sizes={first.m.sizes} width={first.m.width} height={first.m.height} alt={first.alt} loading="eager" decoding="async" fetchpriority="high" style={first.style} />
-      </picture>
+    <div class:list={['sh__f', 'sh__f0', { 'sh__f--bd': first.backdrop }]}>
+      <HeroPic class="sh__p" imgClass={first.whole ? 'sh__k sh__k--whole' : 'sh__k'} d={first.d} t={first.t} m={first.m} alt={first.alt} style={first.style} first="lcp" />
+      {first.backdrop && <HeroPic class="sh__p sh__p--bd" imgClass="sh__bd" d={first.d} t={first.t} m={first.m} alt="" first="backdrop" />}
     </div>
     {rest.length > 0 && (
       <template data-frames>
         {rest.map((f) => (
-          <div class:list={['sh__f', f.last ? 'sh__fl' : 'sh__fm']} style={f.frameStyle}>
-            <picture>
-              <source media="(min-width: 960px)" type="image/avif" srcset={f.d.avif} sizes={f.d.sizes} width={f.d.width} height={f.d.height} />
-              <source media="(min-width: 960px)" type="image/webp" srcset={f.d.webp} sizes={f.d.sizes} width={f.d.width} height={f.d.height} />
-              <source media="(min-width: 600px)" type="image/avif" srcset={f.t.avif} sizes={f.t.sizes} width={f.t.width} height={f.t.height} />
-              <source media="(min-width: 600px)" type="image/webp" srcset={f.t.webp} sizes={f.t.sizes} width={f.t.width} height={f.t.height} />
-              <source type="image/avif" srcset={f.m.avif} sizes={f.m.sizes} />
-              <img class="sh__k" src={f.m.src} srcset={f.m.webp} sizes={f.m.sizes} width={f.m.width} height={f.m.height} alt={f.alt} loading="lazy" decoding="async" fetchpriority="low" style={f.style} />
-            </picture>
+          <div class:list={['sh__f', f.last ? 'sh__fl' : 'sh__fm', { 'sh__f--bd': f.backdrop }]} style={f.frameStyle}>
+            <HeroPic class="sh__p" imgClass={f.whole ? 'sh__k sh__k--whole' : 'sh__k'} d={f.d} t={f.t} m={f.m} alt={f.alt} style={f.style} />
+            {f.backdrop && <HeroPic class="sh__p sh__p--bd" imgClass="sh__bd" d={f.d} t={f.t} m={f.m} alt="" />}
           </div>
         ))}
       </template>
@@ -180,10 +193,30 @@ const hasCta = Astro.slots.has('default');
     color: var(--on-ink);
   }
   .sh__media { position: absolute; inset: 0; z-index: 0; overflow: hidden; background: var(--ink); }
-  .sh__f { position: absolute; inset: 0; }
+  .sh__f { position: absolute; inset: 0; isolation: isolate; }
   .sh__f:not(.sh__f0) { opacity: 0; }
-  .sh__f picture { display: block; width: 100%; height: 100%; }
-  .sh__k { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+  .sh__f :global(.sh__p) { position: absolute; inset: 0; z-index: 1; display: block; }
+  .sh__f :global(.sh__p--bd) { z-index: 0; }
+  .sh__f :global(.sh__k) { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+  /* a whole frame (see the head): phone and tablet — the photo's own shape, centred, its top at --wt; the blurred copy
+     covers the hero behind an opaque one, whose edges fade into it. translate (not transform: the Ken Burns owns that) */
+  .sh__f :global(.sh__bd) { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; filter: blur(22px) brightness(0.5); scale: 1.12; }
+  @media (max-width: 959.98px) {
+    /* the photo's own top and bottom edges fade into the ink (a cut-out whose meat runs off its file, a platter cut by the
+       frame); an opaque one fades into its blurred copy */
+    .sh__f :global(.sh__k--whole) {
+      inset: auto; left: 50%; top: var(--wt); width: var(--ww); height: auto; max-width: none; translate: -50% 0; object-fit: fill;
+      mask-image: linear-gradient(180deg, transparent 0, #000 6%, #000 74%, transparent 100%);
+      -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 6%, #000 74%, transparent 100%);
+    }
+    .sh__f--bd :global(.sh__k--whole) {
+      mask-image: linear-gradient(180deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+      -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+    }
+  }
+  @media (min-width: 600px) and (max-width: 959.98px) {
+    .sh__f :global(.sh__k--whole) { width: min(var(--ww), 82%); }
+  }
   /* the home's scrim (Hero.astro .hero__scrim, phone), copied — not tuned per page (spec §3) */
   .sh__scrim {
     position: absolute;
@@ -225,7 +258,7 @@ const hasCta = Astro.slots.has('default');
   .sh__say-play { display: none; }
   .sh:has(.hp:checked) .sh__say-pause { display: none; }
   .sh:has(.hp:checked) .sh__say-play { display: inline; }
-  .sh:has(.hp:checked) :is(.sh__f, .sh__k) { animation-play-state: paused; }
+  .sh:has(.hp:checked) :is(.sh__f, :global(.sh__k)) { animation-play-state: paused; }
   /* a loop shows its pause once it is live (the home's rule); the space stays */
   .sh--loop:not(.is-live) .sh__pause { visibility: hidden; }
 
@@ -233,12 +266,12 @@ const hasCta = Astro.slots.has('default');
      (inline, for T = 9N s); until it is live frame 1 stands at the zoom it has when the loop starts (2 s into 11). ── */
   @keyframes sh-kb { from { transform: scale(1); } to { transform: scale(1.08); } }
   @media (prefers-reduced-motion: no-preference) {
-    .sh--kb .sh__k { animation: sh-kb 9s linear infinite alternate; }
-    .sh--loop:not(.is-live) .sh__f0 .sh__k { transform: scale(1.0145); }
+    .sh--kb :global(.sh__k) { animation: sh-kb 9s linear infinite alternate; }
+    .sh--loop:not(.is-live) .sh__f0 :global(.sh__k) { transform: scale(1.0145); }
   }
   /* reduced motion: frame 1, still; nothing to pause */
   @media (prefers-reduced-motion: reduce) {
-    .sh .sh__f, .sh .sh__k { animation: none !important; transform: none; }
+    .sh .sh__f, .sh :global(.sh__k) { animation: none !important; transform: none; }
     .sh .sh__f:not(.sh__f0) { display: none; }
     .sh .sh__pause { visibility: hidden; }
   }
@@ -265,5 +298,13 @@ const hasCta = Astro.slots.has('default');
     .sh__pause { position: absolute; right: var(--gutter); bottom: 56px; z-index: 3; margin: 0; }
     .sh-after { padding-top: 40px; }
     .sh-after__lead { font-size: var(--fs-lead); line-height: 1.5; }
+    /* a whole frame on desktop: as tall as the hero + 12 %, at its right, behind the text's gradient; an opaque one fades in
+       from its left edge; no backdrop (the ink is the ground) */
+    .sh__f :global(.sh__k--whole) { inset: auto; top: -6%; right: -2%; height: 112%; width: auto; max-width: none; object-fit: fill; }
+    .sh__f--bd :global(.sh__k--whole) {
+      mask-image: linear-gradient(90deg, transparent 0, #000 28%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 28%);
+    }
+    .sh__f :global(.sh__p--bd) { display: none; }
   }
 </style>

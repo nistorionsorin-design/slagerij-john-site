@@ -1,0 +1,26 @@
+---
+// HeroPic — one <picture> of PageHero.astro (row 14e): the desktop (≥ 960), tablet (≥ 600) and phone files of a frame,
+// AVIF + WebP. The frame itself and its blurred backdrop (a „whole” frame) both render through it, with the same
+// srcset and sizes, so the browser picks one file for both and fetches it once.
+export interface Set { width: number; height: number; avif: string; webp: string; src: string; sizes: string }
+export interface Props {
+  d: Set;
+  t: Set;
+  m: Set;
+  alt: string;
+  class: string;
+  imgClass: string;
+  style?: string;
+  /** frame 1: eager, fetchpriority high (the page's one) or, for its backdrop, eager + data-first-paint (D-12) */
+  first?: 'lcp' | 'backdrop';
+}
+const { d, t, m, alt, class: cls, imgClass, style, first } = Astro.props;
+---
+<picture class={cls}>
+  <source media="(min-width: 960px)" type="image/avif" srcset={d.avif} sizes={d.sizes} width={d.width} height={d.height} />
+  <source media="(min-width: 960px)" type="image/webp" srcset={d.webp} sizes={d.sizes} width={d.width} height={d.height} />
+  <source media="(min-width: 600px)" type="image/avif" srcset={t.avif} sizes={t.sizes} width={t.width} height={t.height} />
+  <source media="(min-width: 600px)" type="image/webp" srcset={t.webp} sizes={t.sizes} width={t.width} height={t.height} />
+  <source type="image/avif" srcset={m.avif} sizes={m.sizes} />
+  <img class={imgClass} src={m.src} srcset={m.webp} sizes={m.sizes} width={m.width} height={m.height} alt={alt} loading={first ? 'eager' : 'lazy'} decoding="async" fetchpriority={first === 'lcp' ? 'high' : 'low'} data-first-paint={first === 'backdrop' ? '' : undefined} style={style} />
+</picture>

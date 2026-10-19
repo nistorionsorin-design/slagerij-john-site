@@ -91,12 +91,14 @@ const asset = (src: string) => {
 };
 // the hero's two frames (row 14e): the chop (#46, cut out, RGBA — the alpha shows the hero's ink) is frame 1 and the LCP
 // image; the top of the pork pile (frame B of D-37 v6, a content frame with its own alt, row 14d) fades in over it.
-// The zoom keeps each frame's old origin (the chop's bone end, the crown of the pile). AVIF quality 30: Lighthouse's
-// simulation counts the high-priority frame 1 into the text LCP (the H1 is the LCP element here); at q40 the 723 px phone
-// file was 72 kB and LCP 2,8 / 2,8 s, at q30 47 kB, no visible difference under the scrim (row 14e [MEASURED-OURS] local).
+// The zoom keeps each frame's old origin (the chop's bone end, the crown of the pile). Both drawn whole (Dan 19.10 „vers
+// vlees, it has too much zoom”): the whole chop and the whole pile on the hero's ink, as wide as the phone, under the sign
+// (PageHero `whole`; cut-outs, so no backdrop). AVIF quality 40 as the other heads: Lighthouse's simulation counts the
+// high-priority frame 1 into the text LCP (the H1 is the LCP element here) — the cut 723 px phone file was 72 kB at q40
+// (LCP 2,8 / 2,8 s), 47 kB at q30 (2,6 / 2,6 s); the whole chop at 828 px is 36 kB at q40, LCP 2,6 / 2,6 s (row 14e [MEASURED-OURS] local).
 const heroFrames = [
-  { img: asset(headData.ground.src), alt: headData.ground.alt[locale], focalX: 50, focalY: 50, zoomX: 80, zoomY: 55 },
-  { img: asset(headData.ground_b.src), alt: headData.ground_b.alt[locale], focalX: 50, focalY: 30, zoomX: 60, zoomY: 20 },
+  { img: asset(headData.ground.src), alt: headData.ground.alt[locale], focalX: 50, focalY: 50, zoomX: 80, zoomY: 55, whole: { width: 100, top: 8 } },
+  { img: asset(headData.ground_b.src), alt: headData.ground_b.alt[locale], focalX: 50, focalY: 30, zoomX: 60, zoomY: 20, whole: { width: 96, top: 8 } },
 ];
 // spec §4: the lead goes under the hero when the text block covers more of it than the home's own (64,6 % at 390 × 844,
 // measured from the block's top to the hero's foot) — here 60,5 % NL / 65,5 % RO: it stays (row 14e [MEASURED-OURS]
@@ -163,7 +165,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 ---
 <Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero">
   <main id="main" class="pp">
-    <PageHero locale={locale} id="pp-title" eyebrow={t.eyebrow} h1={t.h1} accent={t.accent} lead={t.lead} leadBelow={LEAD_BELOW} chip frames={heroFrames} quality={30}>
+    <PageHero locale={locale} id="pp-title" eyebrow={t.eyebrow} h1={t.h1} accent={t.accent} lead={t.lead} leadBelow={LEAD_BELOW} chip frames={heroFrames} quality={40}>
       <a class="btn btn--primary btn--lg" href={wa(waSrc('intro'))}><WaIcon /><span>{t.order}</span></a>
       <a class="btn btn--secondary btn--lg" href={t.onlineHref}>{t.online}</a>
     </PageHero>

@@ -597,7 +597,7 @@
       }
     }
   ],
-  "_bbq_source": "Row 14 (16.10): /bbq-pakketten — `head` candidate (#37; the view keeps whichever head measures better) + three `tile`s in the BBQ block (#36 · #15 · #20). Files in src/assets/bbq/.",
+  "_bbq_source": "Row 14 (16.10): /bbq-pakketten — `head` candidate (#37; the view keeps whichever head measures better) + three `tile`s in the BBQ block (#36 · #15 · #20). Files in src/assets/bbq/. Row 14e follow-up (19.10, Dan: „q03 and q14 without background on black background”): two `hero` frames — q03 and q14 cut out by a feathered hand-fitted mask (design/cutouts/cut_q03_bbq_platter.webp, cut_q14_bbq_trays.webp), RGBA on the hero ink, crossfading; alts written by Claude Code from the lexicon word bank, UNVERIFIED until Cowork checks them (RO bible).",
   "bbq": [
     {
       "src": "bbq/gemarineerd-varkensvlees-barbecue-slagerij-john.jpg",
@@ -645,6 +645,32 @@
       "alt": {
         "nl": "Gepaneerde schnitzels op de toog",
         "ro": "Șnițele pane în vitrină"
+      }
+    },
+    {
+      "src": "bbq/ronde-bbq-schotel-uitgesneden-slagerij-john.webp",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 3.jpeg",
+      "role": "hero",
+      "focalX": 50,
+      "focalY": 50,
+      "zoomX": 50,
+      "zoomY": 55,
+      "alt": {
+        "nl": "Ronde BBQ-schotel met gemarineerde kip, lamskoteletjes, brochettes, burgers en worst",
+        "ro": "Platou rotund pentru grătar cu pui marinat, cotlete de miel, frigărui, burgeri și cârnați"
+      }
+    },
+    {
+      "src": "bbq/bbq-schalen-uitgesneden-slagerij-john.webp",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.13 9.jpeg",
+      "role": "hero",
+      "focalX": 50,
+      "focalY": 50,
+      "zoomX": 55,
+      "zoomY": 45,
+      "alt": {
+        "nl": "Twee BBQ-schalen met spek, worst, kipbrochettes, burgers en gepaneerd vlees",
+        "ro": "Două tăvi pentru grătar cu piept de porc, cârnați, frigărui de pui, burgeri și carne pane"
       }
     }
   ],
