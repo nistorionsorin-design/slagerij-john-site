@@ -27,7 +27,9 @@
       ]
     }
   ],
-  "redirects": [],
+  "redirects": [
+    { "source": "/sitemap.xml", "destination": "/sitemap-index.xml", "statusCode": 301 }
+  ],
   "rewrites": [
     { "source": "/wa", "destination": "/api/wa" }
   ],

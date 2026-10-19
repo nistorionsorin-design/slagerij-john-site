@@ -118,8 +118,8 @@
       },
       "tag": {
         "name": {
-          "nl": "Lamsbout",
-          "ro": "Pulpă de miel"
+          "nl": "Lamsvlees",
+          "ro": "Carne de miel"
         },
         "line": null,
         "price": null,
@@ -534,15 +534,15 @@
       }
     },
     {
-      "src": "roemeens/roemeense-verse-worst-slagerij-john.jpg",
+      "src": "roemeens/gerookte-worst-in-de-toog-slagerij-john.jpg",
       "from": "assets/raw/2026-10-13-phone/20261009_180239.jpg",
       "role": "strip",
       "wb": "display",
       "focalX": 50,
       "focalY": 50,
       "alt": {
-        "nl": "Roemeense verse worst met paprika, in een stapel op de toog",
-        "ro": "Cârnați proaspeți de casă cu boia, în vitrină"
+        "nl": "Gerookte worst, gestapeld in de toog",
+        "ro": "Cârnați afumați, așezați unul peste altul, în vitrină"
       }
     },
     {
@@ -612,15 +612,15 @@
       }
     },
     {
-      "src": "bbq/gemarineerde-ribbetjes-slagerij-john.jpg",
+      "src": "bbq/gemarineerde-koteletten-slagerij-john.jpg",
       "from": "assets/raw/2026-10-13-phone/20261009_181539.jpg",
       "role": "tile",
       "wb": "display",
       "focalX": 50,
       "focalY": 50,
       "alt": {
-        "nl": "Gemarineerde ribbetjes in een zwarte schaal",
-        "ro": "Coaste marinate într-o tavă neagră"
+        "nl": "Gemarineerde varkenskoteletten in een zwarte schaal",
+        "ro": "Cotlete de porc marinate într-o tavă neagră"
       }
     },
     {
@@ -831,7 +831,11 @@
     "ground_b": {
       "src": "producten/varkensvlees-bovenkant-uitgesneden-slagerij-john.webp",
       "from": "design/cutouts/cut_pork_top_hero.webp",
-      "note": "D-37 v6 frame B: the head crossfades it with the ground; decorative (alt empty) — the ground carries the head image alt"
+      "alt": {
+        "nl": "Vers varkensvlees van dichtbij, uitgesneden",
+        "ro": "Carne de porc proaspătă, de aproape"
+      },
+      "note": "D-37 v6 frame B: the head crossfades it with the ground; a content frame, its own alt (row 14d, 19.10)"
     },
     "tiles": [
       {

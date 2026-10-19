@@ -1,6 +1,6 @@
 {
-  "_source": "Row 5b (Claude Code, 15.10): the site copy of docs/data/product-photos.json (Cowork owns that file; D-34). One entry per products.json id with its own photo; `src` = the file under src/assets/products/ (copied byte-identical from `from`, slugged NL names; a file that already sits elsewhere in src/assets/ under a slug gets that same name — Vite emits identical bytes once, under the first name it meets, and the photo must keep its SEO slug), focal point %, alt NL/RO as Cowork wrote them. A menu row (menus.json `ej26-<id>`) takes its product id's entry. An id not listed here renders no thumbnail (src/components/Thumb.astro). When the docs file grows (row 14), the new rows are copied here. Row 14 (16.10): the six phone-shoot rows copied (mici replaced, gehakt · spiering · braadworst · gerookte-worst · ribbetjes new); their files are the white-balanced row-14 sources, shared with the page photos where the original is the same (gerookte-worst = roemeens/…, ribbetjes = bbq/…); pastrami (pending_confirm) not built.",
-  "date": "2026-10-16",
+  "_source": "Row 5b (Claude Code, 15.10): the site copy of docs/data/product-photos.json (Cowork owns that file; D-34). One entry per products.json id with its own photo; `src` = the file under src/assets/products/ (copied byte-identical from `from`, slugged NL names; a file that already sits elsewhere in src/assets/ under a slug gets that same name — Vite emits identical bytes once, under the first name it meets, and the photo must keep its SEO slug), focal point %, alt NL/RO as Cowork wrote them. A menu row (menus.json `ej26-<id>`) takes its product id's entry. An id not listed here renders no thumbnail (src/components/Thumb.astro). When the docs file grows (row 14), the new rows are copied here. Row 14 (16.10): the six phone-shoot rows copied (mici replaced, gehakt · spiering · braadworst · gerookte-worst · ribbetjes new); their files are the white-balanced row-14 sources, shared with the page photos where the original is the same (gerookte-worst = roemeens/…, ribbetjes = bbq/…); pastrami (pending_confirm) not built. Row 14d (19.10): ribbetjes removed (the photo is marinated pork chops, Dan 19.10; it stays on /bbq-pakketten as bbq/gemarineerde-koteletten-…), the row renders without a thumb; pastrami has no photo (#9 is costiță afumată).",
+  "date": "2026-10-19",
   "products": {
     "tapas-2": {
       "src": "products/tapasschotels-slagerij-john.jpg",
@@ -190,18 +190,6 @@
       "alt": {
         "nl": "Gerookte worst aan haken boven het houten rek",
         "ro": "Cârnați afumați agățați în cârlige deasupra grătarului de lemn"
-      },
-      "level": "item",
-      "wb": "display"
-    },
-    "ribbetjes": {
-      "src": "bbq/gemarineerde-ribbetjes-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-13-phone/20261009_181539.jpg",
-      "focalX": 50,
-      "focalY": 50,
-      "alt": {
-        "nl": "Gemarineerde ribbetjes in een zwarte schaal",
-        "ro": "Coaste marinate într-o tavă neagră"
       },
       "level": "item",
       "wb": "display"

@@ -77,7 +77,7 @@ const files = import.meta.glob<{ default: ImageMetadata }>('../assets/producten/
 // the head (D-37 v3): photos.json `producten_head`
 const headData = photos.producten_head as {
   ground: { src: string; alt: Record<Locale, string> };
-  ground_b: { src: string };
+  ground_b: { src: string; alt: Record<Locale, string> };
   tiles: { chip: string; src: string; alt: Record<Locale, string> }[];
 };
 const asset = (src: string) => {
@@ -98,8 +98,8 @@ const chopSet = async (widths: number[]) => {
 };
 const [chopM, chopD] = await Promise.all([chopSet([640, 768, 1080]), chopSet([1080, 1440, chopImg.width])]);
 const chop = { m: chopM, d: chopD, mSizes: '85vw', dSizes: 'max(71vw, 840px)', width: chopImg.width, height: chopImg.height, alt: headData.ground.alt[locale] };
-// frame B (spec §8.1): the top of the pork pile (RGBA, its foot and left edge fade out in the file). Decorative — the
-// chop carries the head's image alt — low priority, never the LCP: it waits in a <template> and the script below
+// frame B (spec §8.1): the top of the pork pile (RGBA, its foot and left edge fade out in the file). A content frame
+// with its own alt (row 14d, 19.10) — low priority, never the LCP: it waits in a <template> and the script below
 // inserts it one painted frame after `load` (fetched before the chop's paint it cost 0,1 s of mobile LCP, 17.10
 // [MEASURED-OURS] local); the loop goes live once it is decoded. Without JS, with reduced motion or Save-Data the head
 // is the chop, still. Phone: drawn ≈ 96 % of the band (≤ 60 kB at
@@ -111,7 +111,7 @@ const porkSet = async (widths: number[]) => {
   return { avif: avif.srcSet.attribute, webp: webp.srcSet.attribute, src: webp.src };
 };
 const [porkM, porkD] = await Promise.all([porkSet([360, 540, 720]), porkSet([720, 1080, porkImg.width])]);
-const pork = { m: porkM, d: porkD, mSizes: '96vw', dSizes: '48vw', width: porkImg.width, height: porkImg.height };
+const pork = { m: porkM, d: porkD, mSizes: '96vw', dSizes: '48vw', width: porkImg.width, height: porkImg.height, alt: headData.ground_b.alt[locale] };
 // the tiles under the head (spec §8.2): the four cut-outs in their order, the captions of lexicon §5.19 / §6 in the
 // same order; the link = its chip's radio, its href the section it stands for (Alles →
 // the list's first section)
@@ -169,7 +169,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
       <section class="th ph" aria-labelledby="pp-title">
         <div class="th__media ph__ground">
           <picture class="ph__chop"><source media="(min-width: 960px)" type="image/avif" srcset={chop.d.avif} sizes={chop.dSizes} /><source media="(min-width: 960px)" type="image/webp" srcset={chop.d.webp} sizes={chop.dSizes} /><source type="image/avif" srcset={chop.m.avif} sizes={chop.mSizes} /><img src={chop.m.src} srcset={chop.m.webp} sizes={chop.mSizes} width={chop.width} height={chop.height} alt={chop.alt} loading="eager" decoding="async" fetchpriority="high" /></picture>
-          <template data-frames><picture class="ph__pork"><source media="(min-width: 960px)" type="image/avif" srcset={pork.d.avif} sizes={pork.dSizes} /><source media="(min-width: 960px)" type="image/webp" srcset={pork.d.webp} sizes={pork.dSizes} /><source type="image/avif" srcset={pork.m.avif} sizes={pork.mSizes} /><img src={pork.m.src} srcset={pork.m.webp} sizes={pork.mSizes} width={pork.width} height={pork.height} alt="" loading="lazy" decoding="async" fetchpriority="low" /></picture></template>
+          <template data-frames><picture class="ph__pork"><source media="(min-width: 960px)" type="image/avif" srcset={pork.d.avif} sizes={pork.dSizes} /><source media="(min-width: 960px)" type="image/webp" srcset={pork.d.webp} sizes={pork.dSizes} /><source type="image/avif" srcset={pork.m.avif} sizes={pork.mSizes} /><img src={pork.m.src} srcset={pork.m.webp} sizes={pork.mSizes} width={pork.width} height={pork.height} alt={pork.alt} loading="lazy" decoding="async" fetchpriority="low" /></picture></template>
         </div>
         <div class="th__title">
           <p class="eyebrow th__eyebrow">{t.eyebrow}</p>
