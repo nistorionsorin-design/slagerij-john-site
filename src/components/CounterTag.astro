@@ -7,7 +7,8 @@
 // Stage 4: `id` = the product's anchor (/producten#mici, also the Product @id in its JSON-LD); the price never wraps
 // (board Producten: white-space nowrap on the price).
 // Row 5b (D-34): `thumb` = a products.json id; if that product has its own photo (src/lib/thumbs.ts) it shows at 64 px
-// left of the name (/producten only). Without one the tag is exactly the tag above: no empty box.
+// left of the name (/producten only). Without one the tag is exactly the tag above: no empty box. Row 15c: with a
+// photo, the cooking line and the recipe pill run full width under the photo and the name (CSS below).
 // Row 15c: the cooking line keeps a number and its unit on one row (keepUnits: „180 °C”, „45 min”, „3 u”).
 import Thumb from './Thumb.astro';
 import { thumbOf } from '../lib/thumbs';
@@ -124,7 +125,8 @@ const word = !!price && !placeholder && !/\d/.test(price) && price.trim().includ
   .tag__recipe:active { background: var(--ox); border-color: var(--ox); color: var(--on-ox); }
   .tag--ink .tag__recipe { background: rgba(242, 193, 46, 0.14); border-color: rgba(242, 193, 46, 0.45); color: var(--accent); }
   @media (prefers-reduced-motion: reduce) { .tag__recipe, .tag__recipe-arrow { transition: none; } }
-  /* a narrow text column (a thumb tag at 375–390 px is ≈ 98 px) keeps the pill inside it: the book icon goes */
+  /* a narrow text column keeps the pill inside it: the book icon goes (row 17: the thumb tags' ≈ 98 px column; since
+     row 15c their pill sits full width, so this only catches a column narrower than any tag has today) */
   .tag:has(.tag__recipe) .tag__text { container-type: inline-size; }
   @container (max-width: 116px) {
     .tag__recipe { padding: 0 10px; }
@@ -138,6 +140,17 @@ const word = !!price && !placeholder && !/\d/.test(price) && price.trim().includ
   .tag__unit { font-size: var(--fs-caption); color: var(--muted); }
 
   .tag--thumb { grid-template-columns: auto 1fr auto; }
+  /* row 15c (Dan 19.10): on a tag with a photo the cooking line runs full width under the photo and the name — beside
+     the 64 px photo the text column is ≈ 98 px at 390 px and the line took 3–4 rows. The text column dissolves into
+     the tag's grid: photo · name · price on row 1, then the line and the recipe pill across all three columns (auto
+     rows, so a tag without a pill gets no empty row). */
+  .tag--thumb { row-gap: 10px; }
+  .tag--thumb .tag__text { display: contents; container-type: normal; }
+  .tag--thumb > :global(.thumb-pic) { grid-column: 1; grid-row: 1; }
+  .tag--thumb .tag__name { grid-column: 2; grid-row: 1; }
+  .tag--thumb .tag__price { grid-column: 3; grid-row: 1; }
+  .tag--thumb .tag__line, .tag--thumb .tag__recipe { grid-column: 1 / -1; }
+  .tag--thumb .tag__recipe { justify-self: start; margin-top: 0; }
 
   .tag--ink { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
   .tag--ink .tag__pin { border: 0; }
