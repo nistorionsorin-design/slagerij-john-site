@@ -103,14 +103,14 @@ export const bestellenNl = {
     pay: 'Betalen bij afhaling: cash, Bancontact, Payconiq, Visa of Mastercard',
     payDelivery: 'Betalen bij levering: cash, Bancontact, Payconiq, Visa of Mastercard',
     total: 'Totaal',
-    priceTbc: '[PRIJS]', // stays until FACTS
+    priceTbc: 'op aanvraag', // row 15, §5.30: a request line and the total while a request is in
     /** row 15d (lexicon §5.22 „19.10 — ninth rubric”): a ro-feest line's cell, and the note under Totaal when one is in the slip */
     inStore: 'prijs in de winkel',
     inStoreNote: 'Zonder de gerechten met prijs in de winkel; wij bevestigen het bedrag.',
     /** the delivery-cost row (delivery.json + order-core deliveryQuote): free · beyond the free ring (per km, distance
      *  unknown) · under the €50 delivery minimum · outside the zones („Bel ons”, §5.3) · not known yet */
     feeLabel: 'Leveringskosten',
-    fee: { free: 'Gratis', fee: '€1 per km; wij bevestigen het bedrag.', 'below-minimum': 'Minimum €50 voor levering', outside: 'Bel ons', unknown: '[PRIJS]' },
+    fee: { free: 'Gratis', fee: '€1 per km; wij bevestigen het bedrag.', 'below-minimum': 'Minimum €50 voor levering', outside: 'Bel ons', unknown: 'na uw postcode' },
     legal: 'Vers vlees wordt niet teruggenomen (art. VI.53, 4° WER).',
   },
 
@@ -238,12 +238,12 @@ export const bestellenRo = {
     pay: 'Plata la ridicare: numerar, Bancontact, Payconiq, Visa sau Mastercard',
     payDelivery: 'Plata la livrare: numerar, Bancontact, Payconiq, Visa sau Mastercard',
     total: 'Total',
-    priceTbc: '[PREȚ]',
+    priceTbc: 'la cerere', // row 15, §5.30
     /** row 15d (lexicon §6 „Sărbători, 19.10”) */
     inStore: 'preț în magazin',
     inStoreNote: 'Fără preparatele cu preț în magazin; îți confirmăm suma.',
     feeLabel: 'Costul livrării',
-    fee: { free: 'Gratuit', fee: '1 € pe km; confirmăm suma.', 'below-minimum': 'Minimum 50 € pentru livrare', outside: 'Sună-ne', unknown: '[PREȚ]' },
+    fee: { free: 'Gratuit', fee: '1 € pe km; confirmăm suma.', 'below-minimum': 'Minimum 50 € pentru livrare', outside: 'Sună-ne', unknown: 'după codul poștal' },
     legal: 'Carnea proaspătă nu se returnează (art. VI.53, 4° WER).',
   },
 

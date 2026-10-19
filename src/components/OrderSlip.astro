@@ -19,8 +19,10 @@ export interface Props {
     inStoreNote: string;
     legal: string;
   };
+  /** row 15 (§5.30): the empty slip's total at first paint, as totalLabel writes it — €0,00 / 0,00 € */
+  emptyTotal: string;
 }
-const { t } = Astro.props;
+const { t, emptyTotal } = Astro.props;
 ---
 <section class="slip" aria-labelledby="slip-title" data-slip>
   <div class="slip__head">
@@ -39,7 +41,7 @@ const { t } = Astro.props;
   <p class="slip__pay" data-slip-pay>{t.pay}</p>
   <div class="slip__total">
     <span>{t.total}</span>
-    <strong data-slip-total>{t.priceTbc}</strong>
+    <strong data-slip-total>{emptyTotal}</strong>
   </div>
   {/* row 15d: only while a line priced in the shop is in the slip (src/scripts/order.ts) */}
   <p class="slip__note" data-slip-instore hidden>{t.inStoreNote}</p>

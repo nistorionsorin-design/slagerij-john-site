@@ -146,10 +146,12 @@ export function money(n, locale = 'nl', cents = false) {
   return locale === 'ro' ? `${v} €` : `€${v}`;
 }
 
-/** The slip's total cell (the page, the mails): the amount; „[PRIJS]” while a price or a free request is unknown; an
- *  order of in-store rows only shows the in-store words (row 15d) — never „€0,00”. `labels` = { tbc, inStore }. */
+/** The slip's total cell (the page, the mails): the amount; `tbc` („op aanvraag”, row 15 §5.30) while a free request
+ *  or an unknown price is in; an order of in-store rows only shows the in-store words (row 15d) — never „€0,00”;
+ *  an empty slip (no lines, no requests) reads €0,00 / 0,00 € (row 15, §5.30). `labels` = { tbc, inStore }. */
 export function totalLabel(o, labels, cents = true) {
-  if (o.total === null || o.requests.length || !o.lines.length) return labels.tbc;
+  if (!o.lines.length && !o.requests.length) return money(0, o.locale, cents);
+  if (o.total === null || o.requests.length) return labels.tbc;
   if (o.inStore && o.lines.every((l) => l.inStore)) return labels.inStore;
   return money(o.total, o.locale, cents);
 }

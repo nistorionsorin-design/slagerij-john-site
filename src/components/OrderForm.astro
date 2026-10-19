@@ -18,7 +18,7 @@ import Thumb from './Thumb.astro';
 import { thumbOf } from '../lib/thumbs';
 import { products, priceLabel, unitLabel } from '../lib/price';
 import { menus, fillMenu } from '../lib/menu';
-import { qtyRule, fromMin, waText, menuRows, menuOpen } from '../lib/order-core.js';
+import { qtyRule, fromMin, waText, menuRows, menuOpen, money } from '../lib/order-core.js';
 import { bestellenT } from '../i18n/bestellen';
 import type { Locale } from '../i18n/ui';
 import allergens from '../data/allergens.json';
@@ -268,7 +268,7 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
   </div>
 
   <div class="order__side">
-    <OrderSlip t={t.slip} />
+    <OrderSlip t={t.slip} emptyTotal={money(0, locale, true)} />
     <div class="send">
       <p class="send__status" role="status" aria-live="polite" data-status></p>
       <button class="btn btn--primary btn--lg btn--block" type="submit" data-submit>{t.send.submit}</button>

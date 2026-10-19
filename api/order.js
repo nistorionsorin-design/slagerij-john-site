@@ -36,12 +36,12 @@ const T = {
     email: 'E-mail',
     remarks: 'Opmerkingen',
     total: 'Totaal',
-    unknownPrice: '[PRIJS]',
+    unknownPrice: 'op aanvraag', // row 15, §5.30 (= bestellen.ts priceTbc)
     // row 15d (lexicon §5.22 „19.10 — ninth rubric”): a line priced in the shop, and the note under Totaal
     inStore: 'prijs in de winkel',
     inStoreNote: 'Zonder de gerechten met prijs in de winkel; wij bevestigen het bedrag.',
     feeLabel: 'Leveringskosten',
-    fee: { free: 'Gratis', fee: '€1 per km; wij bevestigen het bedrag.', 'below-minimum': 'Minimum €50 voor levering', outside: 'Bel ons', unknown: '[PRIJS]' },
+    fee: { free: 'Gratis', fee: '€1 per km; wij bevestigen het bedrag.', 'below-minimum': 'Minimum €50 voor levering', outside: 'Bel ons', unknown: 'na uw postcode' },
     call: 'Bel',
     whatsapp: 'WhatsApp',
     confirm: 'Wij bevestigen uw bestelling via WhatsApp of telefoon.',
@@ -61,12 +61,12 @@ const T = {
     email: 'E-mail',
     remarks: 'Observații',
     total: 'Total',
-    unknownPrice: '[PREȚ]',
+    unknownPrice: 'la cerere', // row 15, §5.30
     // row 15d (lexicon §6 „Sărbători, 19.10”)
     inStore: 'preț în magazin',
     inStoreNote: 'Fără preparatele cu preț în magazin; îți confirmăm suma.',
     feeLabel: 'Costul livrării',
-    fee: { free: 'Gratuit', fee: '1 € pe km; confirmăm suma.', 'below-minimum': 'Minimum 50 € pentru livrare', outside: 'Sună-ne', unknown: '[PREȚ]' },
+    fee: { free: 'Gratuit', fee: '1 € pe km; confirmăm suma.', 'below-minimum': 'Minimum 50 € pentru livrare', outside: 'Sună-ne', unknown: 'după codul poștal' },
     call: 'Sună',
     whatsapp: 'WhatsApp',
     confirm: 'Îți confirmăm comanda pe WhatsApp sau la telefon.',
