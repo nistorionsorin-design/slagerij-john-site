@@ -67,7 +67,8 @@ export const eindejaarNl = {
     href: '/ro/sarbatori',
   },
 
-  /** §5.22 holiday hours card: four rows from hours.json `special`; no entry → [UREN], `slots: []` → gesloten */
+  /** §5.22 holiday hours card: since row 15 follow-ups (§5.30) every hours.json `special` day, as on /contact (the view
+   *  builds the rows); `days` = the four fallback rows with [UREN] while `special` is empty; `slots: []` → gesloten */
   holiday: {
     eyebrow: 'Openingsuren eindejaar',
     days: [

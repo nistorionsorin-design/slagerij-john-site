@@ -24,6 +24,7 @@ import photos from '../data/photos.json';
 import hours from '../data/hours.json';
 import type { MenuItem, Photo, SpecialDay, Unit } from '../data/types';
 import { menu, fillMenu } from '../lib/menu';
+import { brussels } from '../lib/open-state';
 import { priceLabel } from '../lib/price';
 import { wa, type Locale } from '../i18n/ui';
 import { eindejaarT } from '../i18n/eindejaar';
@@ -77,14 +78,16 @@ const extra: Sec[] = t.card.extraSection && t.card.extraRows.length ? [{ ...t.ca
 const at = menuSecs.findIndex((s) => s.id === 'ro-feest');
 const sections = (at < 0 ? [...menuSecs, ...extra] : [...menuSecs.slice(0, at), ...extra, ...menuSecs.slice(at)]).filter((s) => s.rows.length);
 
-// holiday hours: hours.json `special` for the four days; no entry → [UREN], `slots: []` → gesloten
-const special = (hours.special ?? []) as SpecialDay[];
-const holiday = t.holiday.days.map((d) => {
-  const sp = special.find((s) => s.date === d.date);
-  const text = !sp ? t.holiday.unknown : !sp.slots.length ? t.holiday.closed : sp.slots.map((s) => `${s.open}${locale === 'ro' ? '-' : '–'}${s.close}`).join(', '); // RO: hyphen (LR-T03)
-  // row 15 (§5.30): the day's note after the hours (25.12 „alleen afhalen van bestellingen”)
-  return { ...d, text, note: sp?.note?.[locale] };
-});
+// holiday hours — row 15 follow-ups (§5.30): every hours.json `special` day from today (Brussels, at build) on, by
+// date, the same rows and order as /contact (24.12 … 3.01), so „Andere dagen: de gewone openingsuren.” stays true;
+// `slots: []` → gesloten; the day's note after the hours. No special day yet → the four §5.22 rows with [UREN].
+const today = brussels(new Date(), hours.timeZone).day.toISOString().slice(0, 10);
+const special = ((hours.special ?? []) as SpecialDay[]).filter((s) => s.date >= today).sort((x, y) => x.date.localeCompare(y.date));
+const dateFmt = new Intl.DateTimeFormat(locale === 'ro' ? 'ro-RO' : 'nl-BE', { day: 'numeric', month: 'long', timeZone: 'UTC' });
+const span = (sp: SpecialDay) => (!sp.slots.length ? t.holiday.closed : sp.slots.map((s) => `${s.open}${locale === 'ro' ? '-' : '–'}${s.close}`).join(', ')); // RO: hyphen (LR-T03)
+const holiday = special.length
+  ? special.map((sp) => ({ label: dateFmt.format(new Date(`${sp.date}T00:00:00Z`)), text: span(sp), note: sp.note?.[locale] }))
+  : t.holiday.days.map((d) => ({ label: d.label, text: t.holiday.unknown, note: undefined as string | undefined }));
 
 const waHref = `${wa(t.waSrc)}&text=${encodeURIComponent(t.waMessage)}`;
 
