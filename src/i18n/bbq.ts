@@ -1,9 +1,11 @@
 // /bbq-pakketten (row 10a, 15.10) — no board: the page follows /traiteur (head on a hero frame · blocks · FAQ · byline,
 // D-30). Strings: lexicon §5.24 (15.10, written before this row), one line per key in page order, swapped 1:1; §5.3 /
 // §5.10 / §5.13 / §5.15 where §5.24 points to them. Left visible until FACTS.md has the value: the BBQ Colli and the
-// BBQ-pakket per person [PRIJS] (owners' sheet A2 · D 2) and the byline's [DATUM]. Gourmet and fondue prices are
+// BBQ-pakket per person [PRIJS] (owners' sheet A2 · D 2); the byline's date = SITE_UPDATED (row 15c). Gourmet and fondue prices are
 // products.json's (`[OWNER]` 13.10), not strings here.
 // /ro/gratar = `bbqRo`, lexicon §6 „Grătar” (15.10), same keys.
+
+import { updatedOn } from '../lib/updated';
 
 export const bbqNl = {
   /** §5.24 meta (57 / 143); `title` = the part before „ | Slagerij John”, as §5.24 says — the page passes the whole */
@@ -92,14 +94,14 @@ export const bbqNl = {
 
   /** §5.15 FAQ heading; the four §5.24 items in faq.json pages.bbq */
   faq: 'Wat klanten ons vragen',
-  /** §5.13 with [DATUM] */
-  byline: 'Door John en Georgiana, Slagerij John · bijgewerkt op [DATUM].',
+  /** §5.13 with SITE_UPDATED (row 15c) */
+  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl')}.`,
 
   /** BreadcrumbList (§8.4): Home › BBQ & gourmet */
   crumbs: { home: 'Home', page: 'BBQ & gourmet' },
 };
 
-/** /ro/gratar — lexicon §6 „Grătar” (15.10), verbatim, keys of `bbqNl`. [PREȚ] and the byline's [DATA] stay visible
+/** /ro/gratar — lexicon §6 „Grătar” (15.10), verbatim, keys of `bbqNl`. [PREȚ] stays visible
  *  until FACTS.md (owners' sheet A2 · D 2). */
 export const bbqRo: typeof bbqNl = {
   title: 'Pachete BBQ și platou gourmet, Zwevezele | Măcelăria John',
@@ -180,8 +182,8 @@ export const bbqRo: typeof bbqNl = {
 
   /** §6 „Acasă” FAQ heading */
   faq: 'Ce ne întreabă clienții',
-  /** §5.13 RO with [DATA] */
-  byline: 'De John și Georgiana, Măcelăria John · actualizat la [DATA].',
+  /** §5.13 RO with SITE_UPDATED (row 15c) */
+  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro')}.`,
   crumbs: { home: 'Acasă', page: 'Grătar și gourmet' },
 };
 

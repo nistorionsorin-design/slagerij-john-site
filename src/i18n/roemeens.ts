@@ -5,8 +5,10 @@
 // [PRIJS] / [PREȚ] until the owners' sheet A2) and the tapas €45 (`tapas-ro`, `[OWNER]` 13.10).
 // /ro/mici-si-specialitati = `roemeensRo`, lexicon §6 „Mici și specialități” (15.10), same keys, written for the
 // Romanian reader (no explanation of what mici are).
-// Left visible until FACTS.md has the value: the three per-kg prices and the byline's [DATUM] / [DATA]; the FAQ's
+// Left visible until FACTS.md has the value: the three per-kg prices; the byline's date = SITE_UPDATED (row 15c); the FAQ's
 // [PRIJS] · [AANTAL] / [PREȚ] · [NUMĂR] live in faq.json.
+
+import { updatedOn } from '../lib/updated';
 
 export const roemeensNl = {
   /** §5.25 meta (59 / 152) */
@@ -67,8 +69,8 @@ export const roemeensNl = {
 
   /** §5.15 FAQ heading; the four §5.25 items in faq.json pages.roemeens */
   faq: 'Wat klanten ons vragen',
-  /** §5.13 with [DATUM] */
-  byline: 'Door John en Georgiana, Slagerij John · bijgewerkt op [DATUM].',
+  /** §5.13 with SITE_UPDATED (row 15c) */
+  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl')}.`,
   /** BreadcrumbList (§8.4): Home › Roemeense specialiteiten */
   crumbs: { home: 'Home', page: 'Roemeense specialiteiten' },
 };
@@ -116,8 +118,8 @@ export const roemeensRo: typeof roemeensNl = {
 
   /** §6 „Acasă” FAQ heading */
   faq: 'Ce ne întreabă clienții',
-  /** §5.13 RO with [DATA] */
-  byline: 'De John și Georgiana, Măcelăria John · actualizat la [DATA].',
+  /** §5.13 RO with SITE_UPDATED (row 15c) */
+  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro')}.`,
   crumbs: { home: 'Acasă', page: 'Specialități românești' },
 };
 

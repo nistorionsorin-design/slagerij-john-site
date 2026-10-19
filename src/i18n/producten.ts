@@ -3,6 +3,8 @@
 // (gate: WARN in dev, FAIL under --release). /ro/produse (stage 9) = `productenRo`, lexicon §6 „Produse” + the D-33 RO
 // line (13.10), same keys.
 
+import { updatedOn } from '../lib/updated';
+
 export const productenNl = {
   /** §5.19 meta (57 / 150) */
   title: 'Vers vlees en prijzen per kg in Zwevezele | Slagerij John',
@@ -78,8 +80,8 @@ export const productenNl = {
 
   /** FAQ heading = the home's (lexicon §5.15 „Home body strings”; board: eyebrow „Veelgestelde vragen”) */
   faq: 'Wat klanten ons vragen',
-  /** §5.13 byline with [DATUM] and „prijslijst” as the change (§5.19 addendum) */
-  byline: 'Door John en Georgiana, Slagerij John · bijgewerkt op [DATUM]: prijslijst.',
+  /** §5.13 byline with SITE_UPDATED (row 15c) and „prijslijst” as the change (§5.19 addendum) */
+  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl')}: prijslijst.`,
 
   /** BreadcrumbList (lexicon §8.4: „Home” + the page's name) */
   crumbs: { home: 'Home', page: 'Producten & prijzen' },
@@ -152,7 +154,7 @@ export const productenRo = {
   /** the RO FAQ heading of §6 „Acasă” / „Catering” */
   faq: 'Ce ne întreabă clienții',
   /** §5.13 RO, as /ro/contact */
-  byline: 'De John și Georgiana, Măcelăria John · actualizat la [DATA].',
+  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro')}.`,
   /** §8.4 with the §6 home crumb „Acasă” */
   crumbs: { home: 'Acasă', page: 'Produse și prețuri' },
 };

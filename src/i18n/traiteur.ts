@@ -1,10 +1,12 @@
 // /traiteur (stage 6) — canvas board Traiteur (mobile 390) as the concept (D-30), its sections in order; desktop
 // derived. Strings: lexicon §5.21 (08.10, written before this stage), one line per key in page order, swapped 1:1;
 // §5.3 / §5.10 / §5.13 / §5.15 / §5.20 where §5.21 points to them. Left visible until FACTS.md has the value:
-// [PRIJS], [OMSCHRIJVING] (owners' sheet D 1–2) and the byline's [DATUM].
+// [PRIJS], [OMSCHRIJVING] (owners' sheet D 1–2); the byline's date = SITE_UPDATED (row 15c).
 // „met kok” is the old site's own claim (§5.21; owners' sheet D 3) — if the owners say no, §5.21 lists every line
 // that changes (accent, meta, lead, tile 4, price row 5, two FAQ answers).
 // /ro/catering (stage 9) = `traiteurRo`, lexicon §6 „Catering”, same keys.
+
+import { updatedOn } from '../lib/updated';
 
 export const traiteurNl = {
   /** §5.21 meta (59 / 150); `title` = the part before „ | Slagerij John”, as §5.21 says — the page passes the whole */
@@ -113,15 +115,15 @@ export const traiteurNl = {
 
   /** §5.15 FAQ heading; the five „Traiteur” items of §5.11 in faq.json pages.traiteur */
   faq: 'Wat klanten ons vragen',
-  /** §5.13 with [DATUM] (the board's line) */
-  byline: 'Door John en Georgiana, Slagerij John · bijgewerkt op [DATUM].',
+  /** §5.13 with SITE_UPDATED (the board's line; row 15c) */
+  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl')}.`,
 
   /** BreadcrumbList (§8.4): Home › Traiteur */
   crumbs: { home: 'Home', page: 'Traiteur' },
 };
 
-/** /ro/catering (stage 9) — lexicon §6 „Catering” (08.10), verbatim, keys of `traiteurNl`. [PREȚ] / [DESCRIERE] and the
- *  byline's [DATA] stay visible until FACTS.md (owners' sheet D). */
+/** /ro/catering (stage 9) — lexicon §6 „Catering” (08.10), verbatim, keys of `traiteurNl`. [PREȚ] / [DESCRIERE] stay
+ *  visible until FACTS.md (owners' sheet D); the byline's date = SITE_UPDATED (row 15c). */
 export const traiteurRo: typeof traiteurNl = {
   title: 'Catering românesc în Flandra de Vest | Măcelăria John',
   description: 'Platouri reci și calde, aperitive, pachete BBQ, grătar la domiciliu cu bucătar, din Zwevezele: botez, nuntă, aniversare. Cere o ofertă pe WhatsApp.',
@@ -209,8 +211,8 @@ export const traiteurRo: typeof traiteurNl = {
   anchor: 'oferta',
 
   faq: 'Ce ne întreabă clienții',
-  /** §5.13 RO with [DATA] */
-  byline: 'De John și Georgiana, Măcelăria John · actualizat la [DATA].',
+  /** §5.13 RO with SITE_UPDATED (row 15c) */
+  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro')}.`,
   crumbs: { home: 'Acasă', page: 'Catering' },
 };
 

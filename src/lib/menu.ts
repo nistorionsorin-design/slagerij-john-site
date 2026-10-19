@@ -37,5 +37,5 @@ export const fillMenu = (text: string, m: Menu, locale: Locale) => {
 };
 
 /** row 15 (lexicon §5.30): the eindejaar menu's values in a string shown outside its page — the home block, the nav
- *  sub-line, faq.json's answers, the terms. Bylines' [DATUM] / [DATA] never pass through here (C-10). */
+ *  sub-line, faq.json's answers, the terms. Bylines never pass through here: they take SITE_UPDATED (lib/updated.ts, row 15c). */
 export const fillSeason = (text: string, locale: Locale) => fillMenu(text, menu('eindejaar-2026'), locale);

@@ -2,8 +2,10 @@
 // Strings: lexicon §5.23 (09.10, written before this stage), one key per line in page order, swapped 1:1; §5.3 /
 // §5.4 / §5.5 / §5.10 / §5.13 / §5.15 where §5.23 points to them. The hours come from hours.json (regular + `special`),
 // never from this file. Left visible until FACTS.md has the value: [UREN] (B 3), [BETAALWIJZEN] (B 6), [PARKING]
-// (Dan's question), [WHATSAPP-ANTWOORD] (B 5, in faq.json), [DATUM] (the byline). No contact form (§5.23).
+// (Dan's question), [WHATSAPP-ANTWOORD] (B 5, in faq.json); the byline's date = SITE_UPDATED (row 15c). No contact form (§5.23).
 // `ro` = lexicon §6 „Contact” + the D-33 RO line (13.10), same keys: the full /ro/contact since stage 9.
+
+import { updatedOn } from '../lib/updated';
 
 export const contact = {
   nl: {
@@ -70,8 +72,8 @@ export const contact = {
 
     /** §5.23 FAQ eyebrow; the four „Contact” items of §5.11 in faq.json pages.contact */
     faq: 'Veelgestelde vragen',
-    /** §5.13 with [DATUM] */
-    byline: 'Door John en Georgiana, Slagerij John · bijgewerkt op [DATUM].',
+    /** §5.13 with SITE_UPDATED (row 15c) */
+    byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl')}.`,
     /** BreadcrumbList (§8.4): Home › Contact */
     crumbs: { home: 'Home', page: 'Contact' },
   },
@@ -121,7 +123,7 @@ export const contact = {
       parking: 'Parcare: gratuită, în fața magazinului (2 locuri) și pe stradă',
     },
     faq: 'Întrebări frecvente',
-    byline: 'De John și Georgiana, Măcelăria John · actualizat la [DATA].',
+    byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro')}.`,
     crumbs: { home: 'Acasă', page: 'Contact' },
   },
 };

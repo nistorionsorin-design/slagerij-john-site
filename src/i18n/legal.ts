@@ -6,10 +6,11 @@
 // (55 · 53 · 51 · 58) are of that part — with the brand the four titles run 69–77 chars, over the gate's 60.
 // `links`: the in-page links of §5.26 / §5.27 („Links on the page”), each set on its anchor where the text carries it
 // (IL-03); `auto`: the shop's mail and phone and the two authorities' sites, linked wherever they appear.
-// Left visible until FACTS.md has the value: [DATUM] / [DATA] (version + byline = the go-live date, C-10), [BETALING] /
-// [PLATĂ] (owners' sheet B 6), the Eindejaar deadline [DATUM] / [DATA] (B 11).
+// Version line + byline: SITE_UPDATED (row 15c, src/lib/updated.ts). Left visible until FACTS.md has the value:
+// [BETALING] / [PLATĂ] (owners' sheet B 6); the Eindejaar deadline [DATUM] / [DATA] = menus.json's (Legal.astro, row 15).
 
 import entity from '../data/entity.json';
+import { updatedOn } from '../lib/updated';
 
 export type Link = readonly [anchor: string, href: string];
 export interface LegalBlock { h2: string; text: string }
@@ -35,8 +36,8 @@ export const auto: Link[] = [
   ['consumentenombudsdienst.be', 'https://consumentenombudsdienst.be/'],
 ];
 
-const bylineNl = 'Door John en Georgiana, Slagerij John · bijgewerkt op [DATUM].';
-const bylineRo = 'De John și Georgiana, Măcelăria John · actualizat la [DATA].';
+const bylineNl = `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl')}.`;
+const bylineRo = `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro')}.`;
 
 /** §5.26 Privacy */
 export const privacyNl: LegalPage = {
@@ -58,7 +59,7 @@ export const privacyNl: LegalPage = {
     { h2: 'Google en de kaart', text: 'De Google-score op de site lezen wij op onze server; uw browser stuurt niets naar Google. De kaart op de contactpagina is een afbeelding op onze eigen server.' },
     { h2: 'Uw rechten', text: 'U kunt altijd vragen welke gegevens wij van u hebben, ze laten verbeteren of wissen. Mail naar info@slagerij-john.be; wij antwoorden binnen 30 dagen. Een klacht kunt u indienen bij de Gegevensbeschermingsautoriteit, Drukpersstraat 35, 1000 Brussel, www.gegevensbeschermingsautoriteit.be.' },
   ],
-  closing: 'Versie van [DATUM]. Verandert er iets, dan schrijven wij hier wat en wanneer.',
+  closing: `Versie van ${updatedOn('nl')}. Verandert er iets, dan schrijven wij hier wat en wanneer.`,
   byline: bylineNl,
   /** §5.26: de bestelbon · de contactpagina · Allergenen — the text names no „Allergenen” (the footer links it) */
   links: [['de bestelbon', '/bestellen'], ['de contactpagina', '/contact'], ['Allergenen', '/allergenen']],
@@ -84,7 +85,7 @@ export const privacyRo: LegalPage = {
     { h2: 'Google și harta', text: 'Nota Google de pe site o citim noi, de pe serverul nostru; browserul dumneavoastră nu trimite nimic la Google. Harta de pe pagina Contact este o imagine de pe serverul nostru.' },
     { h2: 'Drepturile dumneavoastră', text: 'Puteți cere oricând ce date avem despre dumneavoastră, corectarea sau ștergerea lor. Scrieți la info@slagerij-john.be; răspundem în 30 de zile. Puteți depune o plângere la Autoritatea pentru Protecția Datelor, Drukpersstraat 35, 1000 Bruxelles, www.gegevensbeschermingsautoriteit.be.' },
   ],
-  closing: 'Versiunea din [DATA]. Dacă schimbăm ceva, scriem aici ce și când.',
+  closing: `Versiunea din ${updatedOn('ro')}. Dacă schimbăm ceva, scriem aici ce și când.`,
   byline: bylineRo,
   links: [['bonul de comandă', '/ro/comanda'], ['pagina Contact', '/ro/contact'], ['Alergeni', '/ro/alergeni']],
   crumbs: { home: 'Acasă', page: 'Confidențialitate' },
@@ -117,7 +118,7 @@ export const termsNl: LegalPage = {
     { h2: 'Aansprakelijkheid', text: 'Onze aansprakelijkheid voor een bestelling is beperkt tot het bedrag van die bestelling. Uw wettelijke rechten als consument blijven volledig gelden.' },
     { h2: 'Toepasselijk recht', text: 'Het Belgische recht is van toepassing.' },
   ],
-  closing: 'Versie van [DATUM].',
+  closing: `Versie van ${updatedOn('nl')}.`,
   byline: bylineNl,
   /** §5.27: de pagina Allergenen · bestelbon · privacybeleid · openingsuren — „bestelbon” („Uw bestelling”) and
    *  „privacybeleid” („Wie wij zijn”) added to the strings 16.10, after the 10c report */
@@ -150,7 +151,7 @@ export const termsRo: LegalPage = {
     { h2: 'Răspunderea', text: 'Răspunderea noastră pentru o comandă se limitează la valoarea acelei comenzi. Drepturile dumneavoastră legale de consumator rămân întregi.' },
     { h2: 'Legea aplicabilă', text: 'Se aplică legea belgiană.' },
   ],
-  closing: 'Versiunea din [DATA].',
+  closing: `Versiunea din ${updatedOn('ro')}.`,
   byline: bylineRo,
   links: [['pagina Alergeni', '/ro/alergeni'], ['bonul de comandă', '/ro/comanda'], ['confidențialitate', '/ro/confidentialitate'], ['programul', '/ro/contact']],
   crumbs: { home: 'Acasă', page: 'Condiții' },

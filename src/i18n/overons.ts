@@ -7,11 +7,13 @@
 // /ro/despre-noi = `overOnsRo`, lexicon §6 „Despre noi” (shorter than the NL page, written for the reader: one quote),
 // same cuts; where §6 names a block without its heading, the §5.17 reading aid is the heading (as the footer's
 // „Vino la noi”, ui.ts).
-// Left visible until FACTS.md has the value: the byline's [DATUM] / [DATA]; the Google figure's [SCORE] · [AANTAL] while
-// reviews.json is empty (the footer's and the home's own placeholders, D-10).
+// The byline's date = SITE_UPDATED (row 15c). The Google figure = reviews.json (row 15c: 5.0 · 22); [SCORE] · [AANTAL]
+// only while it is empty (the footer's and the home's own placeholders, D-10).
 import { roReviews } from './home';
 
 /** the two press articles (URLs Dan gave in the chat 15.10), KW first — the order of the press line (Cowork 15.10 11:55) */
+import { updatedOn } from '../lib/updated';
+
 const KW = 'https://kw.be/nieuws/economie/bedrijven/slager-john-opent-de-deuren-in-zwevezele-eigenlijk-heet-ik-ion-maar-iedereen-noemt-me-john/';
 const HLN = 'https://www.hln.be/wingene/slager-john-in-zwevezele-viert-eerste-verjaardag-met-feestelijke-opendeurdag-op-1-februari~ad165ed3/';
 
@@ -88,8 +90,8 @@ export const overOnsNl = {
   primarySrc: 'overons-cta',
   waMessage: 'Dag, ik wil graag bestellen bij Slagerij John:',
 
-  /** §5.13 with [DATUM] */
-  byline: 'Door John en Georgiana, Slagerij John · bijgewerkt op [DATUM].',
+  /** §5.13 with SITE_UPDATED (row 15c) */
+  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl')}.`,
   /** BreadcrumbList (§8.4): Home › Over ons */
   crumbs: { home: 'Home', page: 'Over ons' },
 };
@@ -160,8 +162,8 @@ export const overOnsRo: typeof overOnsNl = {
   /** §5.10 home RO */
   waMessage: 'Bună, aș vrea să comand la Măcelăria John:',
 
-  /** §5.13 RO with [DATA] */
-  byline: 'De John și Georgiana, Măcelăria John · actualizat la [DATA].',
+  /** §5.13 RO with SITE_UPDATED (row 15c) */
+  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro')}.`,
   crumbs: { home: 'Acasă', page: 'Despre noi' },
 };
 

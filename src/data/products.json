@@ -1,5 +1,5 @@
 {
-  "_source": "Stage 4 (Claude Code, 07.10; revised 07.10 after lexicon §5.19 + §6 „Product names RO”): the shape for /producten, the home's „Deze week op de toog” and the bestelbon (stage 5). `categories` = the sections of the canvas board Producten + BBQ & gourmet (D-13; the home's gourmet tag lives there, its page is a later stage); NL names = lexicon §2.2 / §4 / §5.15, RO = §6 „Product names RO” categories. `items` = the board's tags; NL names from the word bank §2.2 / §2.4 (search demand — NOT the confirmed assortment: Cowork replaces them from the owners' price list, stage 15), RO names = the §6 table verbatim. Colli Varken 1's line = its contents (§5.11 NL, §6 table RO; the old site's colli, [OBSERVED], to check with John). Mici's line = the lexicon's (§2.4 gloss NL, §6 product-card example RO — §5.19: „every cooking line [KOOKLIJN] except Mici”). price null = not in FACTS.md → the tag shows [PRIJS] / [PREȚ]; the old site's €45 / €10 stay out until the owners confirm them (FACTS „Known prices”). `week` = ids into `items`. Units: kg · pers · colli · stuk · liter. Stage 5 (Claude Code, 07.10, the bestelbon): the old site's other priced lines added from docs/data/old-site-catalogue.json [OBSERVED] 06.10 — NL names as the old site printed them (a „(…)” part becomes the line; colli lines = their contents), prices null (FACTS: the old prices wait for the owners), RO names/lines = lexicon §6 table verbatim (stage 5 revision, 07.10); three categories from the catalogue (tapas · warm · dessert, its NL/RO names). `min` = smallest order (gourmet/fondue „vanaf 2 personen”, docs/order-flow.md §4); `step` (optional) overrides the unit default of src/lib/order-core.js; `orderOnly` = sold through the bestelbon, not shown on /producten (the five other colli wait for /colli-vleespakketten, stage 10). Stage 9 revision (13.10): the RO cooking-line placeholder is [GĂTIRE] (lexicon §5.19 / §6), the NL one stays [KOOKLIJN]. Row 15a (Claude Code, 13.10): docs/data/price-list.json ([OWNER] 13.10, FACTS) poured in — prices and units of the 31 traiteur ids it shares with this file, the 20 new ids (NL / RO names as the file gives them) under tapas · warm · dessert, the traiteur rows in the brochure's order (tapas · hapjes · vleeshoofdgerechten · warme groenten · soep · broodjes · dessert); hapjes now per stuk; the seven vleeshoofdgerechten per portie (unit `portie`, the line „per portie van 200 g” / „porție de 200 g”); tapas schotels keep their persons as the line (RO with a hyphen). Still null → [PRIJS] / [PREȚ]: every per-kg row, mici, the six colli (not in the owners' list). Row 15 (Claude Code, 19.10, lexicon §5.30): the 15 per-kg rows keep `price` null with `priceInStore: true` (Dan 19.10 16:25: „prijs in de winkel”, no Offer); the six colli take the old site's prices, confirmed unchanged by the owners [OWNER] 19.10 (docs/data/owners-answers-2026-10-19.json `colli`).",
+  "_source": "Stage 4 (Claude Code, 07.10; revised 07.10 after lexicon §5.19 + §6 „Product names RO”): the shape for /producten, the home's „Deze week op de toog” and the bestelbon (stage 5). `categories` = the sections of the canvas board Producten + BBQ & gourmet (D-13; the home's gourmet tag lives there, its page is a later stage); NL names = lexicon §2.2 / §4 / §5.15, RO = §6 „Product names RO” categories. `items` = the board's tags; NL names from the word bank §2.2 / §2.4 (search demand — NOT the confirmed assortment: Cowork replaces them from the owners' price list, stage 15), RO names = the §6 table verbatim. Colli Varken 1's line = its contents (§5.11 NL, §6 table RO; the old site's colli, [OBSERVED], to check with John). Mici's line = the lexicon's (§2.4 gloss NL, §6 product-card example RO — §5.19: „every cooking line [KOOKLIJN] except Mici”). price null = not in FACTS.md → the tag shows [PRIJS] / [PREȚ]; the old site's €45 / €10 stay out until the owners confirm them (FACTS „Known prices”). `week` = ids into `items`. Units: kg · pers · colli · stuk · liter. Stage 5 (Claude Code, 07.10, the bestelbon): the old site's other priced lines added from docs/data/old-site-catalogue.json [OBSERVED] 06.10 — NL names as the old site printed them (a „(…)” part becomes the line; colli lines = their contents), prices null (FACTS: the old prices wait for the owners), RO names/lines = lexicon §6 table verbatim (stage 5 revision, 07.10); three categories from the catalogue (tapas · warm · dessert, its NL/RO names). `min` = smallest order (gourmet/fondue „vanaf 2 personen”, docs/order-flow.md §4); `step` (optional) overrides the unit default of src/lib/order-core.js; `orderOnly` = sold through the bestelbon, not shown on /producten (the five other colli wait for /colli-vleespakketten, stage 10). Stage 9 revision (13.10): the RO cooking-line placeholder is [GĂTIRE] (lexicon §5.19 / §6), the NL one stays [KOOKLIJN]. Row 15a (Claude Code, 13.10): docs/data/price-list.json ([OWNER] 13.10, FACTS) poured in — prices and units of the 31 traiteur ids it shares with this file, the 20 new ids (NL / RO names as the file gives them) under tapas · warm · dessert, the traiteur rows in the brochure's order (tapas · hapjes · vleeshoofdgerechten · warme groenten · soep · broodjes · dessert); hapjes now per stuk; the seven vleeshoofdgerechten per portie (unit `portie`, the line „per portie van 200 g” / „porție de 200 g”); tapas schotels keep their persons as the line (RO with a hyphen). Still null → [PRIJS] / [PREȚ]: every per-kg row, mici, the six colli (not in the owners' list). Row 15 (Claude Code, 19.10, lexicon §5.30): the 15 per-kg rows keep `price` null with `priceInStore: true` (Dan 19.10 16:25: „prijs in de winkel”, no Offer); the six colli take the old site's prices, confirmed unchanged by the owners [OWNER] 19.10 (docs/data/owners-answers-2026-10-19.json `colli`). Row 15c (Claude Code, 19.10, lexicon §5.31): the 15 per-kg `line`s = the §5.19 cooking-line table, NL and RO 1:1 (approved by Dan 19.10 17:44, standard methods [PRACTITIONER] until the owners replace them); mici: the table line replaces the NL gloss on the tag (the gloss stays in faq.json and on /roemeense-specialiteiten).",
   "categories": [
     { "id": "rund", "name": { "nl": "Rund", "ro": "Vită" }
     },
@@ -25,8 +25,8 @@
   "items": [
     { "id": "rundsgebraad", "category": "rund", "name": { "nl": "Rundsgebraad", "ro": "Friptură de vită" },
       "line": {
-        "nl": "[KOOKLIJN]",
-        "ro": "[GĂTIRE]"
+        "nl": "Rondom aanbraden, 45 min per kg op 180 °C, 10 min rusten.",
+        "ro": "Rumenit, 45 de min pe kg la 180 °C, 10 min repaus."
       },
       "price": null,
       "priceInStore": true,
@@ -34,8 +34,8 @@
     },
     { "id": "entrecote", "category": "rund", "name": { "nl": "Entrecote", "ro": "Antricot de vită" },
       "line": {
-        "nl": "[KOOKLIJN]",
-        "ro": "[GĂTIRE]"
+        "nl": "Kort en heet bakken, 3 min per kant, 3 min rusten.",
+        "ro": "Prăjit iute, 3 min pe parte, apoi 3 min repaus."
       },
       "price": null,
       "priceInStore": true,
@@ -43,8 +43,8 @@
     },
     { "id": "stoofvlees", "category": "rund", "name": { "nl": "Stoofvlees", "ro": "Carne de vită pentru tocăniță" },
       "line": {
-        "nl": "[KOOKLIJN]",
-        "ro": "[GĂTIRE]"
+        "nl": "Zachtjes stoven, 2,5 tot 3 u, met bruin bier.",
+        "ro": "Fiert înăbușit, 2,5 până la 3 ore, cu bere brună."
       },
       "price": null,
       "priceInStore": true,
@@ -52,8 +52,8 @@
     },
     { "id": "gehakt", "category": "rund", "name": { "nl": "Gehakt", "ro": "Carne tocată" },
       "line": {
-        "nl": "[KOOKLIJN]",
-        "ro": "[GĂTIRE]"
+        "nl": "Balletjes 12 min in de pan, gehaktbrood 50 min op 180 °C.",
+        "ro": "Chiftele 12 min în tigaie, ruladă 50 de min la 180 °C."
       },
       "price": null,
       "priceInStore": true,
@@ -61,8 +61,8 @@
     },
     { "id": "varkenshaasje", "category": "varken", "name": { "nl": "Varkenshaasje", "ro": "Mușchiuleț de porc" },
       "line": {
-        "nl": "[KOOKLIJN]",
-        "ro": "[GĂTIRE]"
+        "nl": "Rondom aanbraden, 15 min in de oven op 180 °C, 5 min rusten.",
+        "ro": "Rumenit, 15 min la cuptor la 180 °C, 5 min repaus."
       },
       "price": null,
       "priceInStore": true,
@@ -70,8 +70,8 @@
     },
     { "id": "spiering", "category": "varken", "name": { "nl": "Spiering", "ro": "Ceafă de porc" },
       "line": {
-        "nl": "[KOOKLIJN]",
-        "ro": "[GĂTIRE]"
+        "nl": "Op de BBQ of in de pan, 5 min per kant, matig vuur.",
+        "ro": "Pe grătar sau în tigaie, 5 min pe parte, foc mediu."
       },
       "price": null,
       "priceInStore": true,
@@ -79,8 +79,8 @@
     },
     { "id": "ribbetjes", "category": "varken", "name": { "nl": "Ribbetjes", "ro": "Coaste de porc" },
       "line": {
-        "nl": "[KOOKLIJN]",
-        "ro": "[GĂTIRE]"
+        "nl": "1 u voorgaren in de oven op 150 °C, dan 10 min op de BBQ.",
+        "ro": "O oră la cuptor la 150 °C, apoi 10 min pe grătar."
       },
       "price": null,
       "priceInStore": true,
@@ -88,8 +88,8 @@
     },
     { "id": "braadworst", "category": "varken", "name": { "nl": "Braadworst", "ro": "Cârnați proaspeți de porc" },
       "line": {
-        "nl": "[KOOKLIJN]",
-        "ro": "[GĂTIRE]"
+        "nl": "In de pan op matig vuur, 12 tot 15 min, regelmatig draaien.",
+        "ro": "În tigaie la foc mediu, 12 până la 15 min, întorși des."
       },
       "price": null,
       "priceInStore": true,
@@ -97,8 +97,8 @@
     },
     { "id": "kipfilet", "category": "kip", "name": { "nl": "Kipfilet", "ro": "Piept de pui" },
       "line": {
-        "nl": "[KOOKLIJN]",
-        "ro": "[GĂTIRE]"
+        "nl": "In de pan 6 min per kant, of 25 min in de oven op 180 °C.",
+        "ro": "În tigaie 6 min pe parte sau 25 de min la cuptor, 180 °C."
       },
       "price": null,
       "priceInStore": true,
@@ -106,8 +106,8 @@
     },
     { "id": "kippenboutjes", "category": "kip", "name": { "nl": "Kippenboutjes", "ro": "Pulpe de pui" },
       "line": {
-        "nl": "[KOOKLIJN]",
-        "ro": "[GĂTIRE]"
+        "nl": "45 min in de oven op 200 °C, krokant en gaar tot op het been.",
+        "ro": "45 de min la cuptor la 200 °C, crocante, pătrunse la os."
       },
       "price": null,
       "priceInStore": true,
@@ -115,8 +115,8 @@
     },
     { "id": "kalkoengebraad", "category": "kip", "name": { "nl": "Kalkoengebraad", "ro": "Friptură de curcan" },
       "line": {
-        "nl": "[KOOKLIJN]",
-        "ro": "[GĂTIRE]"
+        "nl": "Aanbraden, dan 1 u per kg in de oven op 160 °C, afgedekt.",
+        "ro": "Rumenit, apoi o oră pe kg la cuptor la 160 °C, acoperit."
       },
       "price": null,
       "priceInStore": true,
@@ -124,8 +124,8 @@
     },
     { "id": "lamsbout", "category": "lam", "name": { "nl": "Lamsbout", "ro": "Pulpă de miel" },
       "line": {
-        "nl": "[KOOKLIJN]",
-        "ro": "[GĂTIRE]"
+        "nl": "In de oven op 170 °C, 1 u per kg voor rosé, 15 min rusten.",
+        "ro": "La 170 °C, o oră pe kg pentru rozé, 15 min repaus."
       },
       "price": null,
       "priceInStore": true,
@@ -133,7 +133,7 @@
     },
     { "id": "mici", "category": "roemeens", "name": { "nl": "Mici", "ro": "Mici" },
       "line": {
-        "nl": "Gekruide gehaktrolletjes voor op de BBQ",
+        "nl": "8 min op een hete grill, één keer draaien.",
         "ro": "8 minute pe grătar încins, întorși o singură dată."
       },
       "price": null,
@@ -142,8 +142,8 @@
     },
     { "id": "gerookte-worst", "category": "roemeens", "name": { "nl": "Gerookte worst", "ro": "Cârnați afumați" },
       "line": {
-        "nl": "[KOOKLIJN]",
-        "ro": "[GĂTIRE]"
+        "nl": "10 min opwarmen in heet water, niet koken, of kort grillen.",
+        "ro": "10 min în apă fierbinte, fără clocot, sau scurt pe grătar."
       },
       "price": null,
       "priceInStore": true,
@@ -151,8 +151,8 @@
     },
     { "id": "pastrami", "category": "roemeens", "name": { "nl": "Pastrami", "ro": "Pastramă" },
       "line": {
-        "nl": "[KOOKLIJN]",
-        "ro": "[GĂTIRE]"
+        "nl": "Dun gesneden, koud op de boterham, of 1 min per kant bakken.",
+        "ro": "Subțire, rece, pe pâine; sau 1 min pe parte în tigaie."
       },
       "price": null,
       "priceInStore": true,

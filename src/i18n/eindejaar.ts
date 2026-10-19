@@ -6,6 +6,8 @@
 // The menu rows are menus.json `eindejaar-2026` — since row 15a (13.10) the owners' folder: eight sections, 51 rows.
 // /ro/sarbatori (stage 9) = `eindejaarRo`, lexicon §6 „Sărbători”, same keys.
 
+import { updatedOn } from '../lib/updated';
+
 export const eindejaarNl = {
   /** §5.22 meta (56 / 151, description reworded 13.10 to the owners' brochure); `title` = the part before „ | Slagerij John”, the page passes the whole */
   title: 'Eindejaarsmenu 2026 afhalen in Zwevezele | Slagerij John',
@@ -84,8 +86,8 @@ export const eindejaarNl = {
 
   /** §5.15 FAQ heading; the three „Eindejaar” items of §5.11 in faq.json pages.eindejaar */
   faq: 'Wat klanten ons vragen',
-  /** §5.13 with [DATUM] (the board's line) */
-  byline: 'Door John en Georgiana, Slagerij John · bijgewerkt op [DATUM].',
+  /** §5.13 with SITE_UPDATED (the board's line; row 15c) */
+  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl')}.`,
 
   /** BreadcrumbList (§8.4): Home › Eindejaar */
   crumbs: { home: 'Home', page: 'Eindejaar' },
@@ -156,8 +158,8 @@ export const eindejaarRo = {
   },
 
   faq: 'Ce ne întreabă clienții',
-  /** §5.13 RO with [DATA] */
-  byline: 'De John și Georgiana, Măcelăria John · actualizat la [DATA].',
+  /** §5.13 RO with SITE_UPDATED (row 15c) */
+  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro')}.`,
   crumbs: { home: 'Acasă', page: 'Sărbători' },
 };
 

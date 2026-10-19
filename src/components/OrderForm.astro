@@ -16,6 +16,7 @@ import WaIcon from './WaIcon.astro';
 import OrderSlip from './OrderSlip.astro';
 import Thumb from './Thumb.astro';
 import { thumbOf } from '../lib/thumbs';
+import { keepUnits } from '../lib/typo';
 import { products, priceLabel, unitLabel } from '../lib/price';
 import { menus, fillMenu } from '../lib/menu';
 import { qtyRule, fromMin, waText, menuRows, menuOpen, money } from '../lib/order-core.js';
@@ -136,7 +137,7 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
               // row 15d: „prijs in de winkel” is the owners' price state, not a placeholder — no [PRIJS] size
               const ph = p.price === null && !p.priceInStore;
               const nameLang = p.nameLang && p.nameLang !== locale ? p.nameLang : undefined;
-              const line = p.line?.[locale];
+              const line = p.line?.[locale] && keepUnits(p.line[locale]); // row 15c: „180 °C” stays on one row
               return (
                 <li class="oi" data-item={p.id}>
                   <span class="oi__pin" aria-hidden="true"></span>
