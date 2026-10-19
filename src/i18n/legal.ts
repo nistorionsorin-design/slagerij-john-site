@@ -108,7 +108,7 @@ export const termsNl: LegalPage = {
     /** = the §5.5 delivery rule verbatim + §5.27's sentence */
     { h2: 'Levering', text: 'Gratis levering tot 10 km vanaf €50; tot 20 km vanaf €100; daarbuiten €1 per km. Levering maandag tot zaterdag vanaf 18:00. Het bedrag voor de levering bevestigen wij samen met uw bestelling.' },
     { h2: 'Betaling', text: 'Betalen bij afhaling of levering: cash, Bancontact, Payconiq, Visa of Mastercard. U betaalt niets vooraf op de site.' },
-    { h2: 'Eindejaarsmenu', text: 'Het eindejaarsmenu haalt u af in de winkel, op 24 of 31 december. Bestel uiterlijk [DATUM].' },
+    { h2: 'Eindejaarsmenu', text: 'Het eindejaarsmenu haalt u af in de winkel, op 24 of 31 december. Bestel uiterlijk [DATUM]. Een eindejaarsbestelling geldt pas met een voorschot, te betalen in de winkel of via overschrijving.' },
     { h2: 'Wijzigen en annuleren', text: 'Wijzigen of annuleren kan telefonisch, zolang wij uw bestelling nog niet bereiden. Eindejaarsbestellingen kunnen na 20 december niet meer gewijzigd of geannuleerd worden.' },
     /** = §5.5's line + §5.27's sentence */
     { h2: 'Herroepingsrecht', text: 'Vers vlees wordt niet teruggenomen (art. VI.53, 4° WER). Verse producten en bereide gerechten bederven snel; daarom voorziet de wet er geen herroepingsrecht voor.' },
@@ -142,7 +142,7 @@ export const termsRo: LegalPage = {
     { h2: 'Comandă neridicată', text: 'Dacă nu ridicați o comandă, la următoarea vă cerem un avans de cel puțin 50%.' },
     { h2: 'Livrarea', text: 'Livrare gratuită până la 10 km de la 50 €; până la 20 km de la 100 €; peste, 1 € pe km. Livrăm de luni până sâmbătă, de la 18:00. Suma pentru livrare o confirmăm odată cu comanda.' },
     { h2: 'Plata', text: 'Plata la ridicare sau la livrare: numerar, Bancontact, Payconiq, Visa sau Mastercard. Nu plătiți nimic în avans pe site.' },
-    { h2: 'Meniul de sărbători', text: 'Meniul de sărbători se ridică din magazin, pe 24 sau 31 decembrie. Comandați până la [DATA].' },
+    { h2: 'Meniul de sărbători', text: 'Meniul de sărbători se ridică din magazin, pe 24 sau 31 decembrie. Comandați până la [DATA]. O comandă de sărbători este valabilă doar cu avans, plătit în magazin sau prin transfer bancar.' },
     { h2: 'Modificări și anulări', text: 'Puteți modifica sau anula o comandă la telefon, cât timp nu am început să o pregătim. Comenzile de sărbători nu se mai pot modifica sau anula după 20 decembrie.' },
     { h2: 'Dreptul de retragere', text: 'Carnea proaspătă nu se returnează (art. VI.53, 4° WER). Produsele proaspete și preparatele se strică repede, de aceea legea nu prevede un drept de retragere pentru ele.' },
     { h2: 'Alergeni', text: 'Lista alergenilor pe grupe de produse este pe pagina Alergeni. Anunțați o alergie gravă înainte să comandați, la telefon sau în magazin.' },

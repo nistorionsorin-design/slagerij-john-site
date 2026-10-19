@@ -51,7 +51,7 @@ export const eindejaarNl = {
     /** the board's secondary, moved here; → #feestmenu until a folder file exists (§5.22) */
     folder: 'Bekijk de feestfolder',
     folderHref: '#feestmenu',
-    deadline: 'Bestellen tot [DATUM]. Afhalen op 24 en 31 december.',
+    deadline: 'Bestellen tot [DATUM], met een voorschot in de winkel of via overschrijving. Afhalen op 24 en 31 december.', // row 15, §5.30 deposit
     /** §5.22 13.10: the owners' line under the eight sections — the brochure's own RO sentence, rendered in NL (u-form) */
     ownersLine: 'Ook Roemeense feestgerechten op bestelling: ciorbă, sarmale, salade de boeuf, cozonac.',
     /** rows the page shows besides menus.json's (RO: Porc de Crăciun), under their own rubric (`extraSection`) */
@@ -129,7 +129,7 @@ export const eindejaarRo = {
     msgLabel: 'Mesaj WhatsApp',
     folder: 'Vezi meniul de sărbători',
     folderHref: '#meniu',
-    deadline: 'Comenzi până pe [DATA]. Ridicare pe 24 și 31 decembrie.',
+    deadline: 'Comenzi până pe [DATA], cu avans plătit în magazin sau prin transfer bancar. Ridicare pe 24 și 31 decembrie.', // row 15, §5.30 deposit
     /** §6 Sărbători 13.10: linia proprietarilor, de pe broșura lor, verbatim */
     ownersLine: 'Preluăm și comenzi specifice românești (ciorbe, sarmale, salată de boeuf, cozonaci etc.).',
     /** §6 Sărbători 13.10 13:00: the stand-in row's own ninth rubric, with its index pill (fills or goes with D 7) */

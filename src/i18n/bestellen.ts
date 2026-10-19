@@ -39,7 +39,7 @@ export const bestellenNl = {
    *  The section's title = menus.json `name`. [UUR] / [DATUM] are swapped for menus.json's values once they are set;
    *  `closed` replaces the rows once the deadline (FACTS.md) has passed. */
   menu: {
-    note: 'Afhalen op 24 of 31 december, van [UUR] tot [UUR]. Bestellen tot [DATUM].',
+    note: 'Afhalen op 24 of 31 december, van [UUR] tot [UUR]. Bestellen tot [DATUM]. Met een voorschot, in de winkel of via overschrijving.', // row 15, §5.30 deposit
     closed: 'De besteltermijn voor het eindejaarsmenu is verstreken. Bel ons, dan kijken wij wat kan.',
   },
 
@@ -182,7 +182,7 @@ export const bestellenRo = {
 
   /** §6 „Sărbători”: the bestelbon's note and the line after the deadline */
   menu: {
-    note: 'Ridicare pe 24 sau 31 decembrie, între [ORA] și [ORA]. Comenzi până pe [DATA].',
+    note: 'Ridicare pe 24 sau 31 decembrie, între [ORA] și [ORA]. Comenzi până pe [DATA]. Cu avans, în magazin sau prin transfer bancar.', // row 15, §5.30 deposit
     closed: 'Termenul pentru meniul de sărbători a trecut. Sună-ne, vedem ce se poate.',
   },
 
