@@ -23,8 +23,12 @@ export interface Props {
   /** product id whose photo opens the tag (row 5b) */
   thumb?: string;
   locale?: Locale;
+  /** row 17 (lexicon §5.29): the product's recipe — a small text link under the line („Recept →” → /recepten#<id>) */
+  recipe?: { href: string; label: string };
 }
-const { name, line, price, unit, tone = 'paper', as: H = 'h3', id, thumb, locale = 'nl' } = Astro.props;
+const { name, line, price, unit, tone = 'paper', as: H = 'h3', id, thumb, locale = 'nl', recipe } = Astro.props;
+// „Recept →”: the arrow is drawn, not read
+const recipeWord = recipe?.label.replace(/\s*→\s*$/, '');
 const hasThumb = !!thumbOf(thumb);
 const placeholder = !!price && price.startsWith('[');
 // row 15 (lexicon §5.30): a price in words — „prijs in de winkel” / „op aanvraag” (RO „preț în magazin” / „la cerere”) —
@@ -38,6 +42,7 @@ const word = !!price && !placeholder && !/\d/.test(price) && price.trim().includ
   <div class="tag__text">
     <H class="tag__name">{name}</H>
     {line && <p class="tag__line">{line}</p>}
+    {recipe && <a class="tag__recipe" href={recipe.href}>{recipeWord}<span class="tag__recipe-arrow" aria-hidden="true">→</span></a>}
   </div>
   {price && (
     <p class:list={['tag__price', { 'tag__price--word': word }]}>
@@ -81,6 +86,11 @@ const word = !!price && !placeholder && !/\d/.test(price) && price.trim().includ
     letter-spacing: 0;
   }
   .tag__line { margin: 0; font-size: var(--fs-caption); line-height: 1.35; color: var(--muted); }
+  /* row 17: the recipe link — small, oxblood, a 24 px target (WCAG 2.5.8) */
+  .tag__recipe { align-self: flex-start; display: inline-flex; align-items: center; min-height: 24px; font-size: 13px; font-weight: 600; color: var(--ox); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  .tag__recipe-arrow { margin-left: 0.3em; }
+  .tag__recipe:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; border-radius: 2px; }
+  .tag--ink .tag__recipe { color: var(--accent); }
   .tag__price { margin: 0; display: flex; align-items: baseline; gap: 3px; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .tag__amount { font-size: var(--fs-price); font-weight: 700; letter-spacing: -0.02em; color: var(--ox); }
   .tag__amount--ph { font-size: 20px; }

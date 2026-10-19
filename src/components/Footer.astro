@@ -27,6 +27,7 @@ import Stamp from './Stamp.astro';
 import OpenChip from './OpenChip.astro';
 import { social } from '../lib/social';
 import { ui, menu, hero, footer, wa, routeHref, vatDisplay, type Locale } from '../i18n/ui';
+import { receptenT } from '../i18n/recepten';
 
 export interface Props {
   locale: Locale;
@@ -58,8 +59,9 @@ const rating = reviews.rating === null ? null : Number(reviews.rating).toLocaleS
 const count = reviews.count === null ? null : String(reviews.count);
 const reviewLine = f.reviews(rating ?? f.ratingPh, count ?? f.countPh);
 
-// Page links = the overlay menu (lexicon §5.15 / §6); the phone board adds Bestellen as an eighth.
-const pages = menu[locale];
+// Page links = the overlay menu (lexicon §5.15 / §6); the phone board adds Bestellen as an eighth. Row 17 (§5.29):
+// Recepten / Rețete in the footer only — the overlay stays at eight (D-27).
+const pages = [...menu[locale], { label: receptenT[locale].footer, href: locale === 'ro' ? '/ro/retete' : '/recepten' }];
 const stampText = hero[locale].stamp;
 const year = new Date().getFullYear();
 // the SVG file opens with a provenance comment (it mentions „<img>”); the page ships the <svg> only

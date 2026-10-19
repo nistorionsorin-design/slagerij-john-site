@@ -1,0 +1,761 @@
+{
+ "_source": "Poured 19.10 (row 17) from docs/data/recipes.json (Cowork owns the source; lexicon §5.29). photo = src/assets/recepten/<id>.jpg, cropped 4:3 at focalX/focalY from assets/raw/recepten/ (entrecote, ribbetjes: the *-crop.jpg). Spiering dropped 19.10: 14 recipes.",
+ "recipes": [
+  {
+   "id": "rundsgebraad",
+   "origin": "vl",
+   "photo": "recepten/rundsgebraad.jpg",
+   "focalX": 50,
+   "focalY": 50,
+   "alt": {
+    "nl": "Rosé gesneden rundvlees op een bedje sla",
+    "ro": "Carne de vită rozé, feliată, pe frunze de salată"
+   },
+   "nl": {
+    "title": "Rosbief op z'n Vlaams",
+    "time": "1 u 15",
+    "persons": 4,
+    "ingredients": [
+     "1 kg rundsgebraad van Slagerij John",
+     "2 el boter",
+     "peper, zout",
+     "1 teentje look",
+     "tijm"
+    ],
+    "steps": [
+     "Vlees een uur voor het bakken uit de koelkast halen en kruiden.",
+     "In hete boter rondom aanbraden, look en tijm erbij.",
+     "45 min per kg in de oven op 180 °C (kern 55 °C voor rosé).",
+     "10 min rusten onder folie, dun snijden."
+    ],
+    "tip": "koud de dag erna op de boterham, met mosterd."
+   },
+   "ro": {
+    "title": "Rosbif rozé, ca în Flandra",
+    "time": "1 oră 15",
+    "persons": 4,
+    "ingredients": [
+     "1 kg friptură de vită de la Slagerij John",
+     "2 linguri de unt",
+     "piper, sare",
+     "un cățel de usturoi",
+     "cimbru"
+    ],
+    "steps": [
+     "Scoți carnea din frigider cu o oră înainte și o condimentezi.",
+     "O rumenești pe toate părțile în unt încins, cu usturoiul și cimbrul.",
+     "45 de min pe kg la cuptor la 180 °C (55 °C în mijloc pentru rozé).",
+     "10 min repaus sub folie, apoi felii subțiri."
+    ],
+    "tip": "rece, a doua zi, pe pâine cu muștar."
+   },
+   "wa": {
+    "nl": "Dag, ik wil graag bestellen: 1 kg rundsgebraad.",
+    "ro": "Bună, aș vrea să comand: 1 kg friptură de vită."
+   }
+  },
+  {
+   "id": "entrecote",
+   "origin": "vl",
+   "photo": "recepten/entrecote.jpg",
+   "focalX": 50,
+   "focalY": 50,
+   "alt": {
+    "nl": "Gegrilde entrecote met grillstrepen, op een houten plank",
+    "ro": "Antricot la grătar, cu dungi de la grătar, pe o planșetă de lemn"
+   },
+   "nl": {
+    "title": "Entrecote met kruidenboter",
+    "time": "20 min",
+    "persons": 4,
+    "ingredients": [
+     "4 entrecotes van 250 g van Slagerij John",
+     "100 g boter",
+     "peterselie, bieslook",
+     "1 teentje look",
+     "peper, zout"
+    ],
+    "steps": [
+     "Boter met fijngehakte kruiden en look mengen, een rolletje maken, koelen.",
+     "Vlees droogdeppen; pas na het bakken zouten.",
+     "In een gloeiende pan 3 min per kant, dan 3 min rusten.",
+     "Een schijfje kruidenboter erop; met frieten of sla."
+    ],
+    "tip": "niet prikken, keren met een tang."
+   },
+   "ro": {
+    "title": "Antricot cu unt aromat",
+    "time": "20 de min",
+    "persons": 4,
+    "ingredients": [
+     "4 antricoate de 250 g de la Slagerij John",
+     "100 g unt",
+     "pătrunjel, arpagic",
+     "un cățel de usturoi",
+     "piper, sare"
+    ],
+    "steps": [
+     "Amesteci untul cu verdeața tocată și usturoiul, faci un rulou, îl răcești.",
+     "Tamponezi carnea; sarea o pui abia după prăjit.",
+     "În tigaie încinsă, 3 min pe parte, apoi 3 min repaus.",
+     "O felie de unt aromat deasupra; cu cartofi prăjiți sau salată."
+    ],
+    "tip": "nu înțepa carnea, întoarce-o cu cleștele."
+   },
+   "wa": {
+    "nl": "Dag, ik wil graag bestellen: 4 entrecotes van 250 g.",
+    "ro": "Bună, aș vrea să comand: 4 antricoate de 250 g."
+   }
+  },
+  {
+   "id": "stoofvlees",
+   "origin": "vl",
+   "photo": "recepten/stoofvlees.jpg",
+   "focalX": 50,
+   "focalY": 50,
+   "alt": {
+    "nl": "Stoverij van rundvlees in een oranje stoofpotje",
+    "ro": "Tocăniță de vită într-o oală portocalie"
+   },
+   "nl": {
+    "title": "Vlaamse stoverij met bruin bier",
+    "time": "3 u",
+    "persons": 4,
+    "ingredients": [
+     "800 g stoofvlees van Slagerij John",
+     "2 uien",
+     "33 cl bruin bier",
+     "1 snee peperkoek met mosterd",
+     "tijm, laurier, peper, zout"
+    ],
+    "steps": [
+     "Vlees kruiden en in boter rondom bruin bakken, in porties.",
+     "Uien glazig stoven, vlees erbij, bier erover.",
+     "Peperkoek met mosterd erop, tijm en laurier erbij, deksel erop.",
+     "2,5 tot 3 u zachtjes laten pruttelen, af en toe roeren. Met frieten."
+    ],
+    "tip": "de dag erna is ze nog beter."
+   },
+   "ro": {
+    "title": "Tocăniță flamandă cu bere brună",
+    "time": "3 ore",
+    "persons": 4,
+    "ingredients": [
+     "800 g carne de tocăniță de la Slagerij John",
+     "2 cepe",
+     "33 cl bere brună",
+     "o felie de turtă dulce cu muștar",
+     "cimbru, dafin, piper, sare"
+    ],
+    "steps": [
+     "Condimentezi carnea și o rumenești în unt, în tranșe.",
+     "Călești ceapa, pui carnea înapoi, torni berea.",
+     "Așezi deasupra turta dulce cu muștar, cimbru și dafin, pui capacul.",
+     "Lași să fiarbă încet 2,5 până la 3 ore, amesteci din când în când. Cu cartofi prăjiți."
+    ],
+    "tip": "a doua zi e și mai bună."
+   },
+   "wa": {
+    "nl": "Dag, ik wil graag bestellen: 800 g stoofvlees.",
+    "ro": "Bună, aș vrea să comand: 800 g carne de tocăniță."
+   }
+  },
+  {
+   "id": "gehakt",
+   "origin": "ro",
+   "photo": "recepten/gehakt.jpg",
+   "focalX": 50,
+   "focalY": 50,
+   "alt": {
+    "nl": "Doorgesneden gehaktschijf op een blauw bord, met puree",
+    "ro": "Chiftea tăiată în două, pe o farfurie albastră, cu piure"
+   },
+   "nl": {
+    "title": "Chiftele, zoals in Roemenië",
+    "time": "40 min",
+    "persons": 4,
+    "ingredients": [
+     "600 g gehakt van Slagerij John",
+     "1 ui",
+     "2 teentjes look",
+     "1 ei",
+     "2 el broodkruim",
+     "peterselie, peper, zout"
+    ],
+    "steps": [
+     "Ui en look fijn raspen, met gehakt, ei, broodkruim en peterselie kneden.",
+     "30 min laten rusten in de koelkast.",
+     "Balletjes vormen, platdrukken, door bloem halen.",
+     "In ruim olie 4 min per kant goudbruin bakken."
+    ],
+    "tip": "met brood en mosterd, of koud de dag erna."
+   },
+   "ro": {
+    "title": "Chiftele ca acasă",
+    "time": "40 de min",
+    "persons": 4,
+    "ingredients": [
+     "600 g carne tocată de la Slagerij John",
+     "o ceapă",
+     "2 căței de usturoi",
+     "un ou",
+     "2 linguri de pesmet",
+     "pătrunjel, piper, sare"
+    ],
+    "steps": [
+     "Dai ceapa și usturoiul pe răzătoare, frămânți cu carnea, oul, pesmetul și pătrunjelul.",
+     "Lași 30 de min la frigider.",
+     "Formezi chiftelele, le turtești, le dai prin făină.",
+     "Le prăjești în ulei din belșug, 4 min pe parte, până se rumenesc."
+    ],
+    "tip": "cu pâine și muștar, sau reci a doua zi."
+   },
+   "wa": {
+    "nl": "Dag, ik wil graag bestellen: 600 g gehakt.",
+    "ro": "Bună, aș vrea să comand: 600 g carne tocată."
+   }
+  },
+  {
+   "id": "varkenshaasje",
+   "origin": "vl",
+   "photo": "recepten/varkenshaasje.jpg",
+   "focalX": 50,
+   "focalY": 50,
+   "alt": {
+    "nl": "Rosé varkenshaasje met een romige saus en gebakken aardappeltjes",
+    "ro": "Mușchiuleț de porc rozé, cu sos de smântână și cartofi rumeniți"
+   },
+   "nl": {
+    "title": "Varkenshaasje met graanmosterdsaus",
+    "time": "35 min",
+    "persons": 4,
+    "ingredients": [
+     "2 varkenshaasjes van Slagerij John",
+     "1 sjalot",
+     "10 cl witte wijn",
+     "20 cl room",
+     "1 el graanmosterd",
+     "boter, peper, zout"
+    ],
+    "steps": [
+     "Haasjes kruiden en in boter rondom aanbraden.",
+     "15 min in de oven op 180 °C, dan 5 min rusten.",
+     "In dezelfde pan de sjalot fruiten, blussen met wijn, room en mosterd erbij.",
+     "Saus laten inkoken, haasje in schijfjes erin."
+    ],
+    "tip": "met kroketten of puree."
+   },
+   "ro": {
+    "title": "Mușchiuleț de porc cu sos de muștar",
+    "time": "35 de min",
+    "persons": 4,
+    "ingredients": [
+     "2 mușchiuleți de porc de la Slagerij John",
+     "o ceapă eșalotă",
+     "10 cl vin alb",
+     "20 cl smântână lichidă",
+     "o lingură de muștar boabe",
+     "unt, piper, sare"
+    ],
+    "steps": [
+     "Condimentezi mușchiuleții și îi rumenești în unt pe toate părțile.",
+     "15 min la cuptor la 180 °C, apoi 5 min repaus.",
+     "În aceeași tigaie călești eșalota, stingi cu vin, adaugi smântâna și muștarul.",
+     "Lași sosul să scadă, pui mușchiulețul feliat în el."
+    ],
+    "tip": "cu crochete sau piure."
+   },
+   "wa": {
+    "nl": "Dag, ik wil graag bestellen: 2 varkenshaasjes.",
+    "ro": "Bună, aș vrea să comand: 2 mușchiuleți de porc."
+   }
+  },
+  {
+   "id": "ribbetjes",
+   "origin": "vl",
+   "photo": "recepten/ribbetjes.jpg",
+   "focalX": 50,
+   "focalY": 50,
+   "alt": {
+    "nl": "Geglaceerde ribbetjes, in stukken gesneden op een snijplank",
+    "ro": "Coaste glazurate, tăiate bucăți pe o planșetă"
+   },
+   "nl": {
+    "title": "Ribbetjes van de BBQ met honing-mosterd",
+    "time": "1 u 30",
+    "persons": 4,
+    "ingredients": [
+     "1,5 kg ribbetjes van Slagerij John",
+     "3 el honing",
+     "2 el mosterd",
+     "2 el sojasaus",
+     "1 teentje look",
+     "peper"
+    ],
+    "steps": [
+     "Ribbetjes kruiden en afgedekt 1 u voorgaren in de oven op 150 °C.",
+     "Honing, mosterd, soja en geperste look mengen.",
+     "Ribbetjes insmeren, 10 min op de BBQ of onder de grill, regelmatig keren.",
+     "Nog eens insmeren en meteen opdienen."
+    ],
+    "tip": "voorgaren kan een dag vooraf."
+   },
+   "ro": {
+    "title": "Coaste la grătar cu miere și muștar",
+    "time": "1 oră 30",
+    "persons": 4,
+    "ingredients": [
+     "1,5 kg coaste de porc de la Slagerij John",
+     "3 linguri de miere",
+     "2 linguri de muștar",
+     "2 linguri de sos de soia",
+     "un cățel de usturoi",
+     "piper"
+    ],
+    "steps": [
+     "Condimentezi coastele și le coci acoperite o oră la cuptor la 150 °C.",
+     "Amesteci mierea, muștarul, soia și usturoiul zdrobit.",
+     "Ungi coastele, 10 min pe grătar sau sub grill, le întorci des.",
+     "Le mai ungi o dată și le servești imediat."
+    ],
+    "tip": "coacerea se poate face cu o zi înainte."
+   },
+   "wa": {
+    "nl": "Dag, ik wil graag bestellen: 1,5 kg ribbetjes.",
+    "ro": "Bună, aș vrea să comand: 1,5 kg coaste de porc."
+   }
+  },
+  {
+   "id": "braadworst",
+   "origin": "vl",
+   "photo": "recepten/braadworst.jpg",
+   "focalX": 50,
+   "focalY": 50,
+   "alt": {
+    "nl": "Braadworsten uit de oven, op een bakplaat",
+    "ro": "Cârnați proaspeți scoși din cuptor, pe o tavă"
+   },
+   "nl": {
+    "title": "Braadworst met stoemp",
+    "time": "40 min",
+    "persons": 4,
+    "ingredients": [
+     "4 braadworsten van Slagerij John",
+     "800 g aardappelen",
+     "400 g wortelen",
+     "1 ui",
+     "boter, nootmuskaat, peper, zout"
+    ],
+    "steps": [
+     "Aardappelen en wortelen gaar koken, afgieten, grof stampen met boter.",
+     "Ui glazig stoven, door de stoemp roeren, kruiden met nootmuskaat.",
+     "Worsten in de pan op matig vuur, 12 tot 15 min, regelmatig draaien.",
+     "Opdienen met een lepel mosterd."
+    ],
+    "tip": "nooit op hoog vuur, anders barst de worst."
+   },
+   "ro": {
+    "title": "Cârnați proaspeți cu piure flamand (stoemp)",
+    "time": "40 de min",
+    "persons": 4,
+    "ingredients": [
+     "4 cârnați proaspeți de la Slagerij John",
+     "800 g cartofi",
+     "400 g morcovi",
+     "o ceapă",
+     "unt, nucșoară, piper, sare"
+    ],
+    "steps": [
+     "Fierbi cartofii și morcovii, îi scurgi, îi zdrobești grosier cu unt.",
+     "Călești ceapa, o amesteci în piure, condimentezi cu nucșoară.",
+     "Cârnații în tigaie la foc mediu, 12 până la 15 min, îi întorci des.",
+     "Servești cu o lingură de muștar."
+    ],
+    "tip": "niciodată la foc iute, altfel plesnesc."
+   },
+   "wa": {
+    "nl": "Dag, ik wil graag bestellen: 4 braadworsten.",
+    "ro": "Bună, aș vrea să comand: 4 cârnați proaspeți."
+   }
+  },
+  {
+   "id": "kipfilet",
+   "origin": "vl",
+   "photo": "recepten/kipfilet.jpg",
+   "focalX": 50,
+   "focalY": 50,
+   "alt": {
+    "nl": "Gegrilde kipfilet in plakjes op een leisteen",
+    "ro": "Piept de pui la grătar, feliat, pe o placă de ardezie"
+   },
+   "nl": {
+    "title": "Kipfilet uit de oven met tijm en citroen",
+    "time": "35 min",
+    "persons": 4,
+    "ingredients": [
+     "4 kipfilets van Slagerij John",
+     "1 citroen",
+     "2 el olijfolie",
+     "tijm",
+     "2 teentjes look",
+     "peper, zout"
+    ],
+    "steps": [
+     "Kipfilets kruiden en mengen met olie, citroensap, tijm en look.",
+     "In een ovenschaal, de citroenschijfjes erbij.",
+     "25 min in de oven op 180 °C, halverwege keren.",
+     "5 min laten rusten voor het snijden."
+    ],
+    "tip": "niet te lang, anders wordt kip droog."
+   },
+   "ro": {
+    "title": "Piept de pui la cuptor cu cimbru și lămâie",
+    "time": "35 de min",
+    "persons": 4,
+    "ingredients": [
+     "4 piepți de pui de la Slagerij John",
+     "o lămâie",
+     "2 linguri de ulei de măsline",
+     "cimbru",
+     "2 căței de usturoi",
+     "piper, sare"
+    ],
+    "steps": [
+     "Condimentezi pieptul, îl amesteci cu ulei, zeamă de lămâie, cimbru și usturoi.",
+     "Îl pui într-o tavă, cu feliile de lămâie alături.",
+     "25 de min la cuptor la 180 °C, îl întorci la jumătate.",
+     "5 min repaus înainte de tăiat."
+    ],
+    "tip": "nu îl ține prea mult, puiul se usucă repede."
+   },
+   "wa": {
+    "nl": "Dag, ik wil graag bestellen: 4 kipfilets.",
+    "ro": "Bună, aș vrea să comand: 4 piepți de pui."
+   }
+  },
+  {
+   "id": "kippenboutjes",
+   "origin": "ro",
+   "photo": "recepten/kippenboutjes.jpg",
+   "focalX": 50,
+   "focalY": 50,
+   "alt": {
+    "nl": "Krokant gebraden kippenboutjes op een bord",
+    "ro": "Pulpe de pui rumenite și crocante, pe o farfurie"
+   },
+   "nl": {
+    "title": "Kippenboutjes uit de oven met look",
+    "time": "1 u",
+    "persons": 4,
+    "ingredients": [
+     "8 kippenboutjes van Slagerij John",
+     "6 teentjes look",
+     "2 el olie",
+     "paprikapoeder, tijm",
+     "peper, zout",
+     "10 cl water"
+    ],
+    "steps": [
+     "Boutjes inwrijven met olie, paprikapoeder, tijm, peper en zout.",
+     "In de ovenschaal met de ongepelde look en het water.",
+     "45 min in de oven op 200 °C, halverwege overgieten met het vocht.",
+     "Krokant en gaar tot op het been; met puree of polenta."
+    ],
+    "tip": "de zachte look uit de schil op brood smeren."
+   },
+   "ro": {
+    "title": "Pulpe de pui la cuptor cu usturoi",
+    "time": "o oră",
+    "persons": 4,
+    "ingredients": [
+     "8 pulpe de pui de la Slagerij John",
+     "6 căței de usturoi",
+     "2 linguri de ulei",
+     "boia, cimbru",
+     "piper, sare",
+     "10 cl apă"
+    ],
+    "steps": [
+     "Freci pulpele cu ulei, boia, cimbru, piper și sare.",
+     "Le pui în tavă cu usturoiul necurățat și apa.",
+     "45 de min la cuptor la 200 °C, le stropești cu sosul la jumătate.",
+     "Crocante și pătrunse până la os; cu piure sau mămăligă."
+    ],
+    "tip": "usturoiul copt, scos din coajă, e minunat pe pâine."
+   },
+   "wa": {
+    "nl": "Dag, ik wil graag bestellen: 8 kippenboutjes.",
+    "ro": "Bună, aș vrea să comand: 8 pulpe de pui."
+   }
+  },
+  {
+   "id": "kalkoengebraad",
+   "origin": "vl",
+   "photo": "recepten/kalkoengebraad.jpg",
+   "focalX": 50,
+   "focalY": 50,
+   "alt": {
+    "nl": "Gebraden kalkoen in een ovenschaal",
+    "ro": "Curcan copt într-o tavă"
+   },
+   "nl": {
+    "title": "Kalkoengebraad met veenbessen",
+    "time": "2 u",
+    "persons": 6,
+    "ingredients": [
+     "1,5 kg kalkoengebraad van Slagerij John",
+     "2 el boter",
+     "20 cl kippenbouillon",
+     "150 g veenbessen",
+     "2 el suiker",
+     "peper, zout"
+    ],
+    "steps": [
+     "Gebraad kruiden en in boter rondom aanbraden.",
+     "Afgedekt 1 u per kg in de oven op 160 °C, met de bouillon.",
+     "Veenbessen met suiker en een scheut water 10 min laten pruttelen.",
+     "Gebraad 10 min rusten, snijden; met de saus en kroketten."
+    ],
+    "tip": "de laatste 15 min zonder deksel voor een bruin korstje."
+   },
+   "ro": {
+    "title": "Friptură de curcan cu merișoare",
+    "time": "2 ore",
+    "persons": 6,
+    "ingredients": [
+     "1,5 kg friptură de curcan de la Slagerij John",
+     "2 linguri de unt",
+     "20 cl supă de pui",
+     "150 g merișoare",
+     "2 linguri de zahăr",
+     "piper, sare"
+    ],
+    "steps": [
+     "Condimentezi friptura, o rumenești în unt pe toate părțile.",
+     "Acoperită, o oră pe kg la cuptor la 160 °C, cu supa.",
+     "Fierbi merișoarele cu zahărul și puțină apă 10 min.",
+     "10 min repaus, feliezi; servești cu sosul și crochete."
+    ],
+    "tip": "ultimele 15 min fără capac, pentru crustă rumenă."
+   },
+   "wa": {
+    "nl": "Dag, ik wil graag bestellen: 1,5 kg kalkoengebraad.",
+    "ro": "Bună, aș vrea să comand: 1,5 kg friptură de curcan."
+   }
+  },
+  {
+   "id": "lamsbout",
+   "origin": "vl",
+   "photo": "recepten/lamsbout.jpg",
+   "focalX": 50,
+   "focalY": 50,
+   "alt": {
+    "nl": "Rosé lamsvlees aan het bot, met gegrilde groenten",
+    "ro": "Carne de miel rozé, cu os, cu legume la grătar"
+   },
+   "nl": {
+    "title": "Lamsbout met knoflook en rozemarijn",
+    "time": "2 u",
+    "persons": 6,
+    "ingredients": [
+     "1 lamsbout van 2 kg van Slagerij John",
+     "4 teentjes look",
+     "rozemarijn",
+     "3 el olijfolie",
+     "peper, zout",
+     "20 cl water"
+    ],
+    "steps": [
+     "Bout inkerven, reepjes look en rozemarijn in de kerven steken.",
+     "Inwrijven met olie, peper en zout; 1 u op kamertemperatuur.",
+     "In de oven op 170 °C, 1 u per kg voor rosé, met het water in de schaal.",
+     "15 min rusten onder folie, dan snijden."
+    ],
+    "tip": "met gratin en de jus uit de schaal."
+   },
+   "ro": {
+    "title": "Pulpă de miel cu usturoi și rozmarin",
+    "time": "2 ore",
+    "persons": 6,
+    "ingredients": [
+     "o pulpă de miel de 2 kg de la Slagerij John",
+     "4 căței de usturoi",
+     "rozmarin",
+     "3 linguri de ulei de măsline",
+     "piper, sare",
+     "20 cl apă"
+    ],
+    "steps": [
+     "Crestezi pulpa, o împănezi cu fâșii de usturoi și rozmarin.",
+     "O freci cu ulei, piper și sare; o oră la temperatura camerei.",
+     "La cuptor la 170 °C, o oră pe kg pentru rozé, cu apa în tavă.",
+     "15 min repaus sub folie, apoi feliezi."
+    ],
+    "tip": "cu cartofi gratinați și sosul din tavă."
+   },
+   "wa": {
+    "nl": "Dag, ik wil graag bestellen: 1 lamsbout van 2 kg.",
+    "ro": "Bună, aș vrea să comand: o pulpă de miel de 2 kg."
+   }
+  },
+  {
+   "id": "mici",
+   "origin": "ro",
+   "photo": "recepten/mici.jpg",
+   "focalX": 50,
+   "focalY": 50,
+   "alt": {
+    "nl": "Mici van de grill op sla, met rode ui en paprika",
+    "ro": "Mici la grătar pe salată, cu ceapă roșie și ardei"
+   },
+   "nl": {
+    "title": "Mici met mosterd en brood",
+    "time": "15 min",
+    "persons": 4,
+    "ingredients": [
+     "1 kg mici van Slagerij John (ongeveer 20 stuks)",
+     "scherpe mosterd",
+     "vers brood",
+     "erbij: tomaat, komkommer"
+    ],
+    "steps": [
+     "Mici 20 min voor het bakken uit de koelkast halen.",
+     "BBQ of grillpan goed heet; niet invetten, niet prikken.",
+     "8 min grillen, één keer draaien, tot ze bruin en veerkrachtig zijn.",
+     "Meteen opdienen met mosterd en brood."
+    ],
+    "tip": "een koud bier erbij, en nooit platdrukken."
+   },
+   "ro": {
+    "title": "Mici cu muștar și pâine",
+    "time": "15 min",
+    "persons": 4,
+    "ingredients": [
+     "1 kg mici de la Slagerij John (cam 20 de bucăți)",
+     "muștar iute",
+     "pâine proaspătă",
+     "alături: roșii, castraveți"
+    ],
+    "steps": [
+     "Scoți micii din frigider cu 20 de min înainte.",
+     "Grătarul sau tigaia grill bine încinse; nu ungi, nu înțepi.",
+     "8 min pe grătar, întorși o singură dată, până sunt rumeni și elastici.",
+     "Îi servești imediat, cu muștar și pâine."
+    ],
+    "tip": "cu o bere rece, și niciodată presați."
+   },
+   "wa": {
+    "nl": "Dag, ik wil graag bestellen: 1 kg mici (ongeveer 20 stuks).",
+    "ro": "Bună, aș vrea să comand: 1 kg mici (cam 20 de bucăți)."
+   }
+  },
+  {
+   "id": "gerookte-worst",
+   "origin": "ro",
+   "photo": "recepten/gerookte-worst.jpg",
+   "focalX": 50,
+   "focalY": 50,
+   "alt": {
+    "nl": "Gerookte worst met frietjes en koolsla",
+    "ro": "Cârnați afumați cu cartofi prăjiți și salată de varză"
+   },
+   "nl": {
+    "title": "Gerookte worst met witte bonen",
+    "time": "45 min",
+    "persons": 4,
+    "ingredients": [
+     "4 gerookte worsten van Slagerij John",
+     "800 g gekookte witte bonen (2 blikken)",
+     "2 uien",
+     "1 wortel",
+     "2 el tomatenpuree",
+     "laurier, tijm, peper"
+    ],
+    "steps": [
+     "Uien en wortel fijnsnijden, in olie stoven tot zacht.",
+     "Tomatenpuree erbij, 2 min meebakken; bonen en een glas water erbij.",
+     "Worsten in stukken erop, laurier en tijm erbij, 25 min zachtjes sudderen.",
+     "Peper erover; met brood en zure augurken."
+    ],
+    "tip": "de dag erna opwarmen, dan is ze op haar best."
+   },
+   "ro": {
+    "title": "Cârnați afumați cu fasole",
+    "time": "45 de min",
+    "persons": 4,
+    "ingredients": [
+     "4 cârnați afumați de la Slagerij John",
+     "800 g fasole albă fiartă (2 conserve)",
+     "2 cepe",
+     "un morcov",
+     "2 linguri de pastă de roșii",
+     "dafin, cimbru, piper"
+    ],
+    "steps": [
+     "Toci ceapa și morcovul, le călești în ulei până se înmoaie.",
+     "Adaugi pasta de roșii, 2 min, apoi fasolea și un pahar de apă.",
+     "Pui cârnații tăiați bucăți, dafinul și cimbrul, lași 25 de min la foc mic.",
+     "Piper deasupra; cu pâine și castraveți murați."
+    ],
+    "tip": "a doua zi, reîncălzită, e la ea acasă."
+   },
+   "wa": {
+    "nl": "Dag, ik wil graag bestellen: 4 gerookte worsten.",
+    "ro": "Bună, aș vrea să comand: 4 cârnați afumați."
+   }
+  },
+  {
+   "id": "pastrami",
+   "origin": "ro",
+   "photo": "recepten/pastrami.jpg",
+   "focalX": 50,
+   "focalY": 50,
+   "alt": {
+    "nl": "Pastrami, deels in dunne plakken gesneden, op een plank",
+    "ro": "Pastramă, parțial feliată subțire, pe o planșetă"
+   },
+   "nl": {
+    "title": "Pastrami op brood met zure augurk",
+    "time": "10 min",
+    "persons": 4,
+    "ingredients": [
+     "400 g pastrami van Slagerij John, dun gesneden",
+     "8 sneden donker brood",
+     "mosterd",
+     "zure augurken",
+     "1 rode ui"
+    ],
+    "steps": [
+     "Brood licht roosteren, dun besmeren met mosterd.",
+     "Pastrami royaal erop, in losse plooien.",
+     "Schijfjes augurk en ringen rode ui erop.",
+     "Wie het warm wil: pastrami 1 min per kant in een droge pan."
+    ],
+    "tip": "ook als hapje, op kleine toastjes."
+   },
+   "ro": {
+    "title": "Pastramă pe pâine cu castraveți murați",
+    "time": "10 min",
+    "persons": 4,
+    "ingredients": [
+     "400 g pastramă de la Slagerij John, tăiată subțire",
+     "8 felii de pâine neagră",
+     "muștar",
+     "castraveți murați",
+     "o ceapă roșie"
+    ],
+    "steps": [
+     "Prăjești ușor pâinea, o ungi subțire cu muștar.",
+     "Pui pastrama din belșug, în falduri.",
+     "Deasupra, castraveți feliați și rondele de ceapă roșie.",
+     "Cine o vrea caldă: pastrama 1 min pe parte în tigaie uscată."
+    ],
+    "tip": "merge și ca aperitiv, pe tartine mici."
+   },
+   "wa": {
+    "nl": "Dag, ik wil graag bestellen: 400 g pastrami, dun gesneden.",
+    "ro": "Bună, aș vrea să comand: 400 g pastramă, tăiată subțire."
+   }
+  }
+ ]
+}

@@ -1,0 +1,261 @@
+---
+// /recepten — Recepten (row 17, 19.10; Dan 13:37 „we will do it now until they answer”). Lexicon §5.29: the counter
+// tag's cooking line grown into one short recipe per product, 14 of them (spiering dropped 19.10: no photo).
+// The head = /traiteur's head card (src/styles/print-head.css: the box, the type, from 960 the contained print) with the
+// §5.29 eyebrow · H1 · accent · lead and no photo ground: the first card's photo is the page's one eager image.
+// Then the 14 cards in the §5.29 order, each `id="<product id>"` (the /producten tag's „Recept →” lands on it): photo
+// 4:3 at its focal point (src/assets/recepten/, AVIF + WebP) · title · origin badge · time · persons · Ingrediënten ·
+// „Zo maakt u het” (four steps) · Tip · Bestel dit vlees via WhatsApp → /wa?src=recept-<id> with the recipe's product
+// line pre-filled (recipes.json `wa`; RO pages log ro-recept-<id>, the site's ro- prefix).
+// Phone: one column; desktop (derived, D-30): two columns of cards, photo on top.
+// Data: src/data/recipes.json. Strings: src/i18n/recepten.ts. One view, two pages: src/pages/recepten.astro and
+// src/pages/ro/retete.astro.
+// JSON-LD: BreadcrumbList (§8.4) + one Recipe per card (§8 bank entry, row 17): name, image, recipeIngredient[],
+// recipeInstructions HowToStep[], totalTime ISO 8601, recipeYield, recipeCuisine, author = the shop's @id, inLanguage;
+// no aggregateRating (D-10).
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Base from '../layouts/Base.astro';
+import WaIcon from '../components/WaIcon.astro';
+import data from '../data/recipes.json';
+import { wa, type Locale } from '../i18n/ui';
+import { receptenT } from '../i18n/recepten';
+import { keepUnits } from '../lib/typo';
+import '../styles/sections.css';
+import '../styles/print-head.css';
+
+export interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = receptenT[locale];
+const ro = locale === 'ro';
+const origin = 'https://slagerij-john.be';
+const alternates = { nl: '/recepten', ro: '/ro/retete' };
+const path = alternates[locale];
+const homePath = ro ? '/ro' : '/';
+
+type Side = { title: string; time: string; persons: number; ingredients: string[]; steps: string[]; tip: string };
+type Recipe = {
+  id: string;
+  origin: 'vl' | 'ro';
+  photo: string;
+  focalX: number;
+  focalY: number;
+  alt: Record<Locale, string>;
+  nl: Side;
+  ro: Side;
+  wa: Record<Locale, string>;
+};
+const recipes = data.recipes as Recipe[];
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/recepten/*.{jpg,jpeg,png,webp}', { eager: true });
+const asset = (src: string) => {
+  const m = files[`../assets/${src}`];
+  if (!m) throw new Error(`recipes.json: src/assets/${src} not found`);
+  return m.default;
+};
+
+// sharp crops by keyword: the focal point mapped to its third of the frame (ArtPicture's rule)
+const gravity = (x = 50, y = 50) =>
+  [y < 40 ? 'top' : y > 60 ? 'bottom' : '', x < 40 ? 'left' : x > 60 ? 'right' : ''].filter(Boolean).join(' ') || 'center';
+// the card's photo: 4:3, the column's width — phone ≈ 350 px (≤ 768 px fetched at Lighthouse's 412 × 1,75), desktop two
+// columns of the container (≤ 660 px drawn)
+const sizes = '(min-width: 960px) min(660px, calc(50vw - 72px)), calc(100vw - 40px)';
+const photo = async (r: Recipe) => {
+  const img = asset(r.photo);
+  const width = Math.min(img.width, Math.round((img.height * 4) / 3), 1320);
+  const height = Math.round((width * 3) / 4);
+  const opts = { src: img, width, height, fit: 'cover' as const, position: gravity(r.focalX, r.focalY), widths: [480, 768, 1080, width].filter((w, i, a) => w <= width && a.indexOf(w) === i) };
+  const [avif, webp, ld] = await Promise.all([
+    getImage({ ...opts, format: 'avif', quality: 50 }),
+    getImage({ ...opts, format: 'webp', quality: 60 }),
+    // the JSON-LD image: one 4:3 file, ≥ 50 000 px (Google's Recipe guidance)
+    getImage({ src: img, width: Math.min(width, 1200), height: Math.round((Math.min(width, 1200) * 3) / 4), fit: 'cover' as const, position: gravity(r.focalX, r.focalY), format: 'webp', quality: 60 }),
+  ]);
+  return { width, height, avif: avif.srcSet.attribute, webp: webp.srcSet.attribute, src: webp.src, ld: `${origin}${ld.src}` };
+};
+
+// „1 u 15” · „20 min” · „3 u” (the NL times of §5.29) → ISO 8601; anything else stops the build
+const isoTime = (s: string) => {
+  const m = s.match(/^(?:(\d+) u)?\s*(?:(\d+)(?: min)?)?$/);
+  if (!m || (!m[1] && !m[2])) throw new Error(`recipes.json: time „${s}” is not „<h> u <min>” or „<min> min”`);
+  return `PT${m[1] ? `${m[1]}H` : ''}${m[2] ? `${m[2]}M` : ''}`;
+};
+
+const cards = await Promise.all(
+  recipes.map(async (r) => {
+    const s = r[locale];
+    const pic = await photo(r);
+    const src = ro ? `ro-recept-${r.id}` : `recept-${r.id}`;
+    return {
+      id: r.id,
+      origin: t.origin[r.origin],
+      title: s.title,
+      meta: `${keepUnits(s.time)} · ${s.persons} ${t.persons}`,
+      yieldText: `${s.persons} ${t.persons}`,
+      ingredients: s.ingredients.map(keepUnits),
+      steps: s.steps.map(keepUnits),
+      tip: keepUnits(s.tip),
+      alt: r.alt[locale],
+      pic,
+      href: `${wa(src)}&text=${encodeURIComponent(r.wa[locale])}${ro ? '&lang=ro' : ''}`,
+      totalTime: isoTime(r.nl.time),
+      cuisine: r.origin === 'ro' ? 'Romanian' : 'Belgian',
+      raw: s,
+    };
+  }),
+);
+
+const shop = { '@id': `${origin}/#shop` };
+const jsonld = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t.crumbs.home, item: `${origin}${homePath}` },
+      { '@type': 'ListItem', position: 2, name: t.crumbs.page, item: `${origin}${path}` },
+    ],
+  },
+  ...cards.map((c) => ({
+    '@type': 'Recipe',
+    '@id': `${origin}${path}#${c.id}`,
+    url: `${origin}${path}#${c.id}`,
+    name: c.title,
+    image: [c.pic.ld],
+    author: shop,
+    publisher: shop,
+    inLanguage: ro ? 'ro-BE' : 'nl-BE',
+    recipeCuisine: c.cuisine,
+    totalTime: c.totalTime,
+    recipeYield: c.yieldText,
+    recipeIngredient: c.raw.ingredients,
+    recipeInstructions: c.raw.steps.map((text, i) => ({ '@type': 'HowToStep', position: i + 1, text })),
+  })),
+];
+
+const clock = '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
+---
+<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld}>
+  <main id="main" class="rp">
+    <div class="th-wrap">
+      <section class="th rh" aria-labelledby="rh-title">
+        <div class="th__title">
+          <p class="eyebrow th__eyebrow">{t.eyebrow}</p>
+          <h1 class="th__h1" id="rh-title">{t.h1} <span class="accent th__accent">{t.accent}</span></h1>
+        </div>
+        <div class="th__body">
+          <p class="th__lead">{t.lead}</p>
+        </div>
+      </section>
+    </div>
+
+    <section class="container rl" aria-label={t.listLabel}>
+      <ul class="rl__grid">
+        {cards.map((c, i) => (
+          <li class="rc" id={c.id}>
+            <article class="rc__in" aria-labelledby={`${c.id}-title`}>
+              <picture class="rc__pic">
+                <source type="image/avif" srcset={c.pic.avif} sizes={sizes} />
+                <img src={c.pic.src} srcset={c.pic.webp} sizes={sizes} width={c.pic.width} height={c.pic.height} alt={c.alt} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" fetchpriority={i === 0 ? 'high' : 'low'} />
+              </picture>
+              <div class="rc__body">
+                <div class="rc__top">
+                  <p class="rc__badge">{c.origin}</p>
+                  <p class="rc__meta"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={clock} />{c.meta}</p>
+                </div>
+                <h2 class="rc__title" id={`${c.id}-title`}>{c.title}</h2>
+                <div class="rc__block">
+                  <h3 class="rc__h">{t.ingredients}</h3>
+                  <ul class="rc__ing">
+                    {c.ingredients.map((x) => <li>{x}</li>)}
+                  </ul>
+                </div>
+                <div class="rc__block">
+                  <h3 class="rc__h">{t.steps}</h3>
+                  <ol class="rc__steps">
+                    {c.steps.map((x) => <li>{x}</li>)}
+                  </ol>
+                </div>
+                <p class="rc__tip"><strong>{t.tip}:</strong> {c.tip}</p>
+                <a class="btn btn--primary btn--lg btn--block rc__btn" href={c.href}><WaIcon /><span>{t.order}</span></a>
+              </div>
+            </article>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </main>
+</Base>
+
+<style>
+  /* ── phone ── */
+  /* the head: print-head.css gives the type and, from 960, the contained print; on the phone /producten's ink band
+     (full bleed, text on ink) without a ground */
+  @media (max-width: 959.98px) {
+    .rh { display: flex; flex-direction: column; gap: 14px; padding: 28px var(--gutter) 30px; background: var(--ink); color: var(--on-ink); }
+    .rh .th__lead { color: var(--on-ink-muted); }
+  }
+
+  .rl { padding-top: 24px; padding-bottom: 48px; }
+  .rl__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  /* a /producten counter tag's „Recept →” lands here: the card clears the sticky sign */
+  .rc { scroll-margin-top: calc(var(--nav-h) + 12px); }
+  .rc__in { height: 100%; display: flex; flex-direction: column; overflow: hidden; border-radius: var(--r-frame); background: var(--card); border: 1px solid var(--line); }
+  .rc__pic { display: block; aspect-ratio: 4 / 3; background: var(--tag); }
+  .rc__pic img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .rc__body { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 18px 18px 20px; }
+  .rc__top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+  .rc__badge {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    min-height: 26px;
+    padding: 0 10px;
+    border-radius: var(--r-chip);
+    background: var(--tag);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .rc__meta { margin: 0; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .rc__meta svg { width: 16px; height: 16px; flex: 0 0 auto; }
+  .rc__title { margin: 0; font-size: 24px; line-height: 1.1; letter-spacing: -0.01em; }
+  .rc__block { display: flex; flex-direction: column; gap: 8px; }
+  .rc__h { margin: 0; font-family: var(--f-ui); font-size: var(--fs-eyebrow); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ox); }
+  .rc__ing { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; font-size: 15px; line-height: 1.4; }
+  .rc__ing li { position: relative; padding-left: 16px; }
+  .rc__ing li::before { content: ''; position: absolute; left: 2px; top: 0.6em; width: 6px; height: 6px; border-radius: 999px; background: var(--ox); }
+  /* the shop's product, the list's first line */
+  .rc__ing li:first-child { font-weight: 600; }
+  .rc__steps { margin: 0; padding: 0; list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 10px; font-size: 15px; line-height: 1.45; }
+  .rc__steps li { counter-increment: step; position: relative; padding-left: 34px; min-height: 24px; }
+  .rc__steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--on-ink);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 24px;
+    text-align: center;
+  }
+  .rc__tip { margin: 0; padding: 12px 14px; border-radius: var(--r-tag); background: var(--tag); font-size: 14px; line-height: 1.45; }
+  .rc__tip strong { color: var(--ox); }
+  .rc__btn { margin-top: auto; }
+
+  /* ── desktop (derived, D-30): the head = the contained print, text only, its own height; cards in two columns ── */
+  @media (min-width: 960px) {
+    .rh.th { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'title' 'body'; grid-template-rows: auto auto; min-height: 0; }
+    .rh .th__title { padding: 64px 56px 0; }
+    .rh .th__body { padding: 20px 56px 56px; }
+    .rl { padding-top: 48px; padding-bottom: 96px; }
+    .rl__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+    .rc__body { gap: 16px; padding: 24px 28px 28px; }
+    .rc__title { font-size: 30px; }
+    .rc__btn { align-self: flex-start; width: auto; }
+  }
+</style>
