@@ -1,0 +1,269 @@
+---
+// PageHero — the showcase hero (row 14e, 19.10; Dan 17:50 „the heroes the same, dimension, Ken Burns, nicely arranged on
+// phone”; spec design/heroes-unify.md). The home hero (Hero.astro) is the reference: on the phone full bleed,
+// clamp(640px, 100svh, 920px), the sign floating over the photo (Base navVariant "hero"), the home's scrim copied, the
+// text anchored at the bottom in the home's order and spacing — the row (status chip where the page has one · the pause)
+// · eyebrow · H1 + accent · lead · the buttons (the default slot). Used by /producten, /traiteur, /bbq-pakketten,
+// /roemeense-specialiteiten, /feestmenu-eindejaar, /recepten and their RO twins; the home keeps Hero.astro.
+// Motion = the home's Ken Burns (hwn-z: scale 1 → 1,08, linear, ≈ 9 s a frame; ph-kb is retired):
+// - one photo: the same zoom, alternate (9 s in, 9 s out), CSS only, from first paint;
+// - N photos (/producten): a crossfade on the home's rhythm — 9 s a frame, 2 s fade, each frame zooming over the 11 s it
+//   is seen; frames 2…N wait in a <template data-frames> and go in after `load` (src/scripts/page-hero.ts, imported by
+//   the view that has a loop — Producten.astro — so the one-photo pages ship no script), the loop goes live once frame 2
+//   is decoded.
+// The pause is the home's control (CSS :has, WCAG 2.2.2) on every hero that moves; reduced motion = frame 1, still.
+// LCP (spec §7): frame 1 is a plain <img> at opacity 1 from first paint, eager, fetchpriority high; each frame is cut at
+// build to its box (phone 1 : 2 ≤ 828 px, tablet 4 : 5, desktop 2 : 1) at its focal point, AVIF + WebP, so a phone fetches
+// ≤ 828 px; the height comes from the CSS, never from the image (CLS 0).
+// Desktop (≥ 960, spec §8, derived): the same full-bleed photo, min(100vh, 760px), the text block left with the dark
+// print's gradient (the heads' desktop gradient before this row), the pause at the photo's foot right as on home.
+// `leadBelow` (spec §4): when the text block would cover more than ≈ 60 % of the hero, the lead moves to a paper row
+// right under it — the same string, only its place.
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import OpenChip from './OpenChip.astro';
+import { hero as heroCopy, type Locale } from '../i18n/ui';
+
+export interface Frame {
+  img: ImageMetadata;
+  alt: string;
+  focalX?: number;
+  focalY?: number;
+  /** the zoom's origin (photos.json zoomX / zoomY), else the focal point */
+  zoomX?: number;
+  zoomY?: number;
+  /** the desktop crop's focal row, where it differs (John's face in the top fifth of john-bbq) */
+  desktopFocalY?: number;
+}
+export interface Props {
+  locale: Locale;
+  /** the H1's id (aria-labelledby of the section) */
+  id: string;
+  eyebrow: string;
+  h1: string;
+  accent?: string;
+  lead?: string;
+  leadBelow?: boolean;
+  /** the open chip in the row (the pages that had it in their head) */
+  chip?: boolean;
+  frames: Frame[];
+  quality?: number;
+}
+const { locale, id, eyebrow, h1, accent, lead, leadBelow = false, chip = false, frames, quality = 45 } = Astro.props;
+if (!frames.length) throw new Error('PageHero: no frames');
+const say = heroCopy[locale];
+const N = frames.length;
+const T = 9 * N;
+
+// sharp crops by keyword: the focal point mapped to its third of the frame (ArtPicture's rule)
+const gravity = (x = 50, y = 50) =>
+  [y < 40 ? 'top' : y > 60 ? 'bottom' : '', x < 40 ? 'left' : x > 60 ? 'right' : ''].filter(Boolean).join(' ') || 'center';
+// the three boxes. Phone: 1 : 2 (390 × 844 is 0,46, 360 × 640 is 0,56), drawn max(100vw, ½ of the height); Lighthouse's
+// 412 × 823 at DPR 1,75 asks ≈ 720 px → the ≤ 828 file. Tablet (600–959, still the phone layout, the hero ≤ 920 px tall):
+// 4 : 5. Desktop: 2 : 1, drawn max(100vw, twice the hero's height).
+const boxes = {
+  m: { ratio: 0.5, steps: [480, 640, 828], max: 828, sizes: 'max(100vw, 50vh)' },
+  t: { ratio: 0.8, steps: [828, 1080, 1280, 1600], max: 1600, sizes: 'max(100vw, min(100vh, 920px) * 0.8)' },
+  d: { ratio: 2, steps: [1280, 1600, 1920, 2400], max: 2400, sizes: 'max(100vw, min(100vh, 760px) * 2)' },
+};
+const cut = async (f: Frame, b: (typeof boxes)['m'], fy = f.focalY) => {
+  const width = Math.min(f.img.width, Math.round(f.img.height * b.ratio), b.max);
+  const height = Math.round(width / b.ratio);
+  const opts = { src: f.img, width, height, fit: 'cover' as const, position: gravity(f.focalX, fy), widths: b.steps.filter((w) => w < width).concat(width) };
+  const [avif, webp] = await Promise.all([getImage({ ...opts, format: 'avif', quality }), getImage({ ...opts, format: 'webp', quality: quality + 10 })]);
+  return { width, height, avif: avif.srcSet.attribute, webp: webp.srcSet.attribute, src: webp.src, sizes: b.sizes };
+};
+
+// animation delays (the home's convention: a frame's cycle starts with its fade-in): frame 1 is seen from T − 2 s to 9 s,
+// so at t = 0 it is 2 s into its zoom; frame k ≥ 2 fades in at 9 (k − 1) − 2 s
+const delay = (k: number) => (k === 0 ? -2 : 9 * k - 2 - T);
+const pics = await Promise.all(
+  frames.map(async (f, k) => {
+    const [m, t, d] = await Promise.all([cut(f, boxes.m), cut(f, boxes.t), cut(f, boxes.d, f.desktopFocalY ?? f.focalY)]);
+    const fx = f.focalX ?? 50, fy = f.focalY ?? 50;
+    const style = `object-position:${fx}% ${fy}%;transform-origin:${f.zoomX ?? fx}% ${f.zoomY ?? fy}%${N > 1 ? `;animation-delay:${delay(k)}s` : ''}`;
+    return { m, t, d, alt: f.alt, style, frameStyle: N > 1 && k > 0 ? `animation-delay:${delay(k)}s` : undefined, last: k === N - 1 };
+  }),
+);
+const [first, ...rest] = pics;
+
+// the loop's keyframes for T s (N ≥ 2), the home's hwn-z for the zoom: a middle frame is up from 2 s to 11 s of its
+// cycle and drops once the next one is fully in; the last one fades out over 2 s and shows frame 1 again under it
+const pc = (sec: number, plus = 0) => `${+((sec / T) * 100 + plus).toFixed(3)}%`;
+const timing = N > 1 && [
+  `@media (prefers-reduced-motion:no-preference){`,
+  `.sh.is-live .sh__f.sh__fm{animation:sh-o${N} ${T}s linear infinite}`,
+  `.sh.is-live .sh__f.sh__fl{animation:sh-l${N} ${T}s linear infinite}`,
+  `.sh.is-live .sh__k{animation:sh-z${N} ${T}s linear infinite}`,
+  `}`,
+  `@keyframes sh-o${N}{0%{opacity:0}${pc(2)},${pc(11)}{opacity:1}${pc(11, 0.01)},100%{opacity:0}}`,
+  `@keyframes sh-l${N}{0%{opacity:0}${pc(2)},${pc(9)}{opacity:1}${pc(11)},100%{opacity:0}}`,
+  `@keyframes sh-z${N}{0%{transform:scale(1)}${pc(11)}{transform:scale(1.08)}${pc(11, 0.01)},100%{transform:scale(1)}}`,
+].join('');
+const moves = true; // every showcase hero zooms (spec §5); the pause hides itself under reduced motion
+const hasCta = Astro.slots.has('default');
+---
+{timing && <style is:inline set:html={timing}></style>}
+<section class:list={['hero', 'sh', N > 1 ? 'sh--loop' : 'sh--kb']} data-sh aria-labelledby={id}>
+  <div class="sh__media">
+    <div class="sh__f sh__f0">
+      <picture>
+        <source media="(min-width: 960px)" type="image/avif" srcset={first.d.avif} sizes={first.d.sizes} width={first.d.width} height={first.d.height} />
+        <source media="(min-width: 960px)" type="image/webp" srcset={first.d.webp} sizes={first.d.sizes} width={first.d.width} height={first.d.height} />
+        <source media="(min-width: 600px)" type="image/avif" srcset={first.t.avif} sizes={first.t.sizes} width={first.t.width} height={first.t.height} />
+        <source media="(min-width: 600px)" type="image/webp" srcset={first.t.webp} sizes={first.t.sizes} width={first.t.width} height={first.t.height} />
+        <source type="image/avif" srcset={first.m.avif} sizes={first.m.sizes} />
+        <img class="sh__k" src={first.m.src} srcset={first.m.webp} sizes={first.m.sizes} width={first.m.width} height={first.m.height} alt={first.alt} loading="eager" decoding="async" fetchpriority="high" style={first.style} />
+      </picture>
+    </div>
+    {rest.length > 0 && (
+      <template data-frames>
+        {rest.map((f) => (
+          <div class:list={['sh__f', f.last ? 'sh__fl' : 'sh__fm']} style={f.frameStyle}>
+            <picture>
+              <source media="(min-width: 960px)" type="image/avif" srcset={f.d.avif} sizes={f.d.sizes} width={f.d.width} height={f.d.height} />
+              <source media="(min-width: 960px)" type="image/webp" srcset={f.d.webp} sizes={f.d.sizes} width={f.d.width} height={f.d.height} />
+              <source media="(min-width: 600px)" type="image/avif" srcset={f.t.avif} sizes={f.t.sizes} width={f.t.width} height={f.t.height} />
+              <source media="(min-width: 600px)" type="image/webp" srcset={f.t.webp} sizes={f.t.sizes} width={f.t.width} height={f.t.height} />
+              <source type="image/avif" srcset={f.m.avif} sizes={f.m.sizes} />
+              <img class="sh__k" src={f.m.src} srcset={f.m.webp} sizes={f.m.sizes} width={f.m.width} height={f.m.height} alt={f.alt} loading="lazy" decoding="async" fetchpriority="low" style={f.style} />
+            </picture>
+          </div>
+        ))}
+      </template>
+    )}
+    <div class="sh__scrim" aria-hidden="true"></div>
+  </div>
+  <div class="sh__text on-ink">
+    <div class="sh__lead">
+      <div class="sh__row">
+        {chip && <OpenChip locale={locale} variant="i" />}
+        {moves && (
+          <span class="sh__pause">
+            <input type="checkbox" id={`${id}-pause`} class="hp" data-pause />
+            <label for={`${id}-pause`} class="btn-icon">
+              <span class="vh sh__say-pause">{say.pause}</span>
+              <span class="vh sh__say-play">{say.play}</span>
+              <svg class="ic-pause" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+              <svg class="ic-play" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg>
+            </label>
+          </span>
+        )}
+      </div>
+      <div class="sh__titles">
+        <p class="eyebrow sh__eyebrow">{eyebrow}</p>
+        <h1 class="sh__h1" id={id}>{h1}{accent && <> <span class="accent sh__accent">{accent}</span></>}</h1>
+      </div>
+      {lead && !leadBelow && <p class="sh__sub">{lead}</p>}
+      {hasCta && <div class="sh__cta"><slot /></div>}
+    </div>
+  </div>
+</section>
+{lead && leadBelow && (
+  <div class="container sh-after">
+    <p class="sh-after__lead">{lead}</p>
+  </div>
+)}
+
+<style>
+  /* ── the box: the home hero's phone size (spec §2) — every showcase hero the same height ── */
+  .sh {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 640px;
+    min-height: clamp(640px, 100svh, 920px);
+    background: var(--ink);
+    color: var(--on-ink);
+  }
+  .sh__media { position: absolute; inset: 0; z-index: 0; overflow: hidden; background: var(--ink); }
+  .sh__f { position: absolute; inset: 0; }
+  .sh__f:not(.sh__f0) { opacity: 0; }
+  .sh__f picture { display: block; width: 100%; height: 100%; }
+  .sh__k { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+  /* the home's scrim (Hero.astro .hero__scrim, phone), copied — not tuned per page (spec §3) */
+  .sh__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(21,17,13,.55) 0%, rgba(21,17,13,.05) 30%, rgba(21,17,13,.35) 55%, rgba(21,17,13,.96) 100%),
+      linear-gradient(rgba(21,17,13,.24), rgba(21,17,13,.24));
+  }
+
+  /* ── the text block: the home's (Hero.astro, phone) — padding, gap 14, the row, H1, accent, sub 14/1.45, buttons ── */
+  .sh__text {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    padding: calc(var(--nav-h) + 16px) var(--gutter) calc(var(--bar) + 22px + env(safe-area-inset-bottom, 0px));
+  }
+  .sh__lead { display: flex; flex-direction: column; gap: 14px; }
+  .sh__row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: var(--touch); }
+  .sh__titles { display: flex; flex-direction: column; gap: 12px; }
+  .sh__eyebrow { color: var(--accent); }
+  .sh__h1 { margin: 0; color: var(--on-ink); }
+  .sh__accent { display: block; margin-top: 14px; color: var(--accent); }
+  .sh__sub { margin: 0; max-width: 34ch; font-size: 14px; line-height: 1.45; color: var(--on-ink-muted); }
+  .sh__cta { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+  .sh__cta :global(.btn) { width: 100%; }
+
+  /* the lead under the hero (spec §4), on paper */
+  .sh-after { padding-top: 22px; }
+  .sh-after__lead { margin: 0; max-width: 60ch; font-size: 15px; line-height: 1.45; }
+
+  /* ── the pause: the home's control (hero-b.css + Hero.astro), CSS only ── */
+  .sh__pause { position: relative; margin-left: auto; display: inline-flex; }
+  .sh .hp { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
+  .sh .hp:focus-visible + label { outline: 2px solid var(--on-ink); outline-offset: 2px; }
+  .sh .ic-play { display: none; }
+  .sh:has(.hp:checked) .ic-pause { display: none; }
+  .sh:has(.hp:checked) .ic-play { display: block; }
+  .sh__say-play { display: none; }
+  .sh:has(.hp:checked) .sh__say-pause { display: none; }
+  .sh:has(.hp:checked) .sh__say-play { display: inline; }
+  .sh:has(.hp:checked) :is(.sh__f, .sh__k) { animation-play-state: paused; }
+  /* a loop shows its pause once it is live (the home's rule); the space stays */
+  .sh--loop:not(.is-live) .sh__pause { visibility: hidden; }
+
+  /* ── motion (spec §5): the home's Ken Burns. One photo: 1 → 1,08 in 9 s, back in 9 s. A loop: the keyframes above
+     (inline, for T = 9N s); until it is live frame 1 stands at the zoom it has when the loop starts (2 s into 11). ── */
+  @keyframes sh-kb { from { transform: scale(1); } to { transform: scale(1.08); } }
+  @media (prefers-reduced-motion: no-preference) {
+    .sh--kb .sh__k { animation: sh-kb 9s linear infinite alternate; }
+    .sh--loop:not(.is-live) .sh__f0 .sh__k { transform: scale(1.0145); }
+  }
+  /* reduced motion: frame 1, still; nothing to pause */
+  @media (prefers-reduced-motion: reduce) {
+    .sh .sh__f, .sh .sh__k { animation: none !important; transform: none; }
+    .sh .sh__f:not(.sh__f0) { display: none; }
+    .sh .sh__pause { visibility: hidden; }
+  }
+
+  /* ── desktop (≥ 960, spec §8, derived): the same photo full bleed, min(100vh, 760px), the text block left on the dark
+     print's gradient, the pause at the photo's foot right (the home's place on its print) ── */
+  @media (min-width: 960px) {
+    .sh { min-height: min(100vh, 760px); }
+    .sh__scrim {
+      background:
+        linear-gradient(90deg, rgba(21,17,13,.92) 0%, rgba(21,17,13,.78) 38%, rgba(21,17,13,.15) 70%, rgba(21,17,13,0) 100%),
+        linear-gradient(180deg, rgba(21,17,13,.25) 0%, rgba(21,17,13,0) 30%, rgba(21,17,13,.45) 100%);
+    }
+    .sh__text { padding: 120px var(--gutter) 56px; }
+    .sh__lead { gap: 22px; max-width: min(760px, 58%); }
+    .sh__titles { gap: 16px; }
+    .sh__h1 { font-size: clamp(48px, 4.4vw, 68px); line-height: 1; letter-spacing: -0.025em; }
+    .sh__accent { font-size: clamp(30px, 2.6vw, 40px); }
+    .sh__sub { max-width: 560px; font-size: var(--fs-lead); line-height: 1.5; }
+    .sh__cta { flex-direction: row; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
+    .sh__cta :global(.btn) { width: auto; }
+    .sh__row { min-height: 0; }
+    .sh__row:not(:has(.oc)) { display: contents; }
+    .sh__pause { position: absolute; right: var(--gutter); bottom: 56px; z-index: 3; margin: 0; }
+    .sh-after { padding-top: 40px; }
+    .sh-after__lead { font-size: var(--fs-lead); line-height: 1.5; }
+  }
+</style>

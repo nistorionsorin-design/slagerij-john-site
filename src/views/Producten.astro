@@ -37,23 +37,25 @@
 // 1 → 1,14 with a small pan while each is up; ph-zoom 1 → 1,04 / 30 s is gone); the chop is the first frame and the LCP
 // image, at opacity 1 from first paint; reduced motion = the chop, still. The tiles become the light tinted pop-out
 // tiles B (ProductTiles.astro); tile 4 = Gerookte worst / Cârnați afumați; a line under them.
-import { getImage } from 'astro:assets';
+// Row 14e (19.10, Dan 17:50 „on phone you can't see the producten background”; design/heroes-unify.md): the head is the
+// home's hero (PageHero.astro) — the chop and the pork top full screen on the phone, the sign over them, the home's scrim,
+// the text, chip, pause and buttons at the foot; the two frames crossfade on the home's rhythm (9 s a frame, the home's
+// Ken Burns 1 → 1,08; ph-kb is retired). The category pills leave the head: the first row under the hero, on paper.
 import ProductTiles from '../components/ProductTiles.astro';
 import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
-import OpenChip from '../components/OpenChip.astro';
+import PageHero from '../components/PageHero.astro';
 import CounterTag from '../components/CounterTag.astro';
 import Faq from '../components/Faq.astro';
 import WaIcon from '../components/WaIcon.astro';
 import photos from '../data/photos.json';
 import type { Product } from '../data/types';
 import { products, priceLabel, unitLabel } from '../lib/price';
-import { wa, hero, type Locale } from '../i18n/ui';
+import { wa, type Locale } from '../i18n/ui';
 import { productenT } from '../i18n/producten';
 import { receptenT } from '../i18n/recepten';
 import recipes from '../data/recipes.json';
 import '../styles/sections.css';
-import '../styles/print-head.css';
 
 export interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -87,33 +89,19 @@ const asset = (src: string) => {
   if (!m) throw new Error(`photos.json producten_head: src/assets/${src} not found`);
   return m.default;
 };
-// the chop: alpha kept (sharp carries it into AVIF and WebP). Phone: drawn 150 % of the band's width, the LCP image —
-// its own source, widths ≤ 1080 and sizes 100vw, so it is fetched at ⅔ of its drawn pixels (the slab lies under the
-// gradient; ≤ 80 kB, spec §5: the 1440 variant Lighthouse's 412 × 1,75 asked for at sizes 150vw was 95 kB, LCP 3,2 / 3,8 s
-// [MEASURED-OURS] local). From 960: a box from 35 % of the band to 6 % past its right edge, 115 % of its height, the
-// chop covering it (≥ 840 px wide).
-const chopImg = asset(headData.ground.src);
-const chopSet = async (widths: number[]) => {
-  const opts = { src: chopImg, width: chopImg.width, height: chopImg.height, widths: widths.filter((w) => w <= chopImg.width) };
-  const [avif, webp] = await Promise.all([getImage({ ...opts, format: 'avif', quality: 40 }), getImage({ ...opts, format: 'webp', quality: 60 })]);
-  return { avif: avif.srcSet.attribute, webp: webp.srcSet.attribute, src: webp.src };
-};
-const [chopM, chopD] = await Promise.all([chopSet([640, 768, 1080]), chopSet([1080, 1440, chopImg.width])]);
-const chop = { m: chopM, d: chopD, mSizes: '85vw', dSizes: 'max(71vw, 840px)', width: chopImg.width, height: chopImg.height, alt: headData.ground.alt[locale] };
-// frame B (spec §8.1): the top of the pork pile (RGBA, its foot and left edge fade out in the file). A content frame
-// with its own alt (row 14d, 19.10) — low priority, never the LCP: it waits in a <template> and the script below
-// inserts it one painted frame after `load` (fetched before the chop's paint it cost 0,1 s of mobile LCP, 17.10
-// [MEASURED-OURS] local); the loop goes live once it is decoded. Without JS, with reduced motion or Save-Data the head
-// is the chop, still. Phone: drawn ≈ 96 % of the band (≤ 60 kB at
-// Lighthouse's 412 × 1,75); from 960: object-fit contain in the chop's box, ≈ 48 % of the viewport wide.
-const porkImg = asset(headData.ground_b.src);
-const porkSet = async (widths: number[]) => {
-  const opts = { src: porkImg, width: porkImg.width, height: porkImg.height, widths: widths.filter((w) => w <= porkImg.width) };
-  const [avif, webp] = await Promise.all([getImage({ ...opts, format: 'avif', quality: 40 }), getImage({ ...opts, format: 'webp', quality: 60 })]);
-  return { avif: avif.srcSet.attribute, webp: webp.srcSet.attribute, src: webp.src };
-};
-const [porkM, porkD] = await Promise.all([porkSet([360, 540, 720]), porkSet([720, 1080, porkImg.width])]);
-const pork = { m: porkM, d: porkD, mSizes: '96vw', dSizes: '48vw', width: porkImg.width, height: porkImg.height, alt: headData.ground_b.alt[locale] };
+// the hero's two frames (row 14e): the chop (#46, cut out, RGBA — the alpha shows the hero's ink) is frame 1 and the LCP
+// image; the top of the pork pile (frame B of D-37 v6, a content frame with its own alt, row 14d) fades in over it.
+// The zoom keeps each frame's old origin (the chop's bone end, the crown of the pile). AVIF quality 30: Lighthouse's
+// simulation counts the high-priority frame 1 into the text LCP (the H1 is the LCP element here); at q40 the 723 px phone
+// file was 72 kB and LCP 2,8 / 2,8 s, at q30 47 kB, no visible difference under the scrim (row 14e [MEASURED-OURS] local).
+const heroFrames = [
+  { img: asset(headData.ground.src), alt: headData.ground.alt[locale], focalX: 50, focalY: 50, zoomX: 80, zoomY: 55 },
+  { img: asset(headData.ground_b.src), alt: headData.ground_b.alt[locale], focalX: 50, focalY: 30, zoomX: 60, zoomY: 20 },
+];
+// spec §4: the lead goes under the hero when the text block covers more of it than the home's own (64,6 % at 390 × 844,
+// measured from the block's top to the hero's foot) — here 60,5 % NL / 65,5 % RO: it stays (row 14e [MEASURED-OURS]
+// local 19.10)
+const LEAD_BELOW = false;
 // the tiles under the head (spec §8.2): the four cut-outs in their order, the captions of lexicon §5.19 / §6 in the
 // same order; the link = its chip's radio, its href the section it stands for (Alles →
 // the list's first section)
@@ -173,50 +161,26 @@ const recipesPath = ro ? '/ro/retete' : '/recepten';
 
 const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 ---
-<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld}>
+<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero">
   <main id="main" class="pp">
-    <div class="th-wrap">
-      <section class="th ph" aria-labelledby="pp-title">
-        <div class="th__media ph__ground">
-          <picture class="ph__chop"><source media="(min-width: 960px)" type="image/avif" srcset={chop.d.avif} sizes={chop.dSizes} /><source media="(min-width: 960px)" type="image/webp" srcset={chop.d.webp} sizes={chop.dSizes} /><source type="image/avif" srcset={chop.m.avif} sizes={chop.mSizes} /><img src={chop.m.src} srcset={chop.m.webp} sizes={chop.mSizes} width={chop.width} height={chop.height} alt={chop.alt} loading="eager" decoding="async" fetchpriority="high" /></picture>
-          <template data-frames><picture class="ph__pork"><source media="(min-width: 960px)" type="image/avif" srcset={pork.d.avif} sizes={pork.dSizes} /><source media="(min-width: 960px)" type="image/webp" srcset={pork.d.webp} sizes={pork.dSizes} /><source type="image/avif" srcset={pork.m.avif} sizes={pork.mSizes} /><img src={pork.m.src} srcset={pork.m.webp} sizes={pork.mSizes} width={pork.width} height={pork.height} alt={pork.alt} loading="lazy" decoding="async" fetchpriority="low" /></picture></template>
-        </div>
-        <div class="th__title">
-          <p class="eyebrow th__eyebrow">{t.eyebrow}</p>
-          <h1 class="th__h1" id="pp-title">{t.h1} <span class="accent th__accent">{t.accent}</span></h1>
-        </div>
-        <div class="th__body on-ink">
-          <p class="th__lead">{t.lead}</p>
-          <div class="pp-intro__row">
-            <OpenChip locale={locale} variant="i" class="pp-intro__chip" />
-            {/* the page's one pause (WCAG 2.2.2): both head frames; the hero's control, CSS :has */}
-            <span class="ph__pause">
-              <input type="checkbox" id="pp-pause" class="hp hp--page" data-pause />
-              <label for="pp-pause" class="btn-icon">
-                <span class="vh ph__say-pause">{hero[locale].pause}</span>
-                <span class="vh ph__say-play">{hero[locale].play}</span>
-                <svg class="ic-pause" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
-                <svg class="ic-play" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg>
-              </label>
-            </span>
-          </div>
-          <div class="th__buttons">
-            <a class="btn btn--primary btn--lg" href={wa(waSrc('intro'))}><WaIcon /><span>{t.order}</span></a>
-            <a class="btn btn--secondary btn--lg" href={t.onlineHref}>{t.online}</a>
-          </div>
-          <fieldset class="pp-pills">
-            <legend class="vh">{t.filter.legend}</legend>
-            <input class="pp-pills__in" type="radio" name="pp-filter" id="f-all" checked />
-            <label class="pp-pill" for="f-all">{t.filter.all}</label>
-            {cats.map((c) => (
-              <>
-                <input class="pp-pills__in" type="radio" name="pp-filter" id={`f-${c.id}`} />
-                <label class="pp-pill" for={`f-${c.id}`}>{c.name[locale]}</label>
-              </>
-            ))}
-          </fieldset>
-        </div>
-      </section>
+    <PageHero locale={locale} id="pp-title" eyebrow={t.eyebrow} h1={t.h1} accent={t.accent} lead={t.lead} leadBelow={LEAD_BELOW} chip frames={heroFrames} quality={30}>
+      <a class="btn btn--primary btn--lg" href={wa(waSrc('intro'))}><WaIcon /><span>{t.order}</span></a>
+      <a class="btn btn--secondary btn--lg" href={t.onlineHref}>{t.online}</a>
+    </PageHero>
+
+    {/* the filter (row 14e): the first row under the hero, on paper */}
+    <div class="container pp-filter">
+      <fieldset class="pp-pills">
+        <legend class="vh">{t.filter.legend}</legend>
+        <input class="pp-pills__in" type="radio" name="pp-filter" id="f-all" checked />
+        <label class="pp-pill" for="f-all">{t.filter.all}</label>
+        {cats.map((c) => (
+          <>
+            <input class="pp-pills__in" type="radio" name="pp-filter" id={`f-${c.id}`} />
+            <label class="pp-pill" for={`f-${c.id}`}>{c.name[locale]}</label>
+          </>
+        ))}
+      </fieldset>
     </div>
 
     <div class="container pp-tiles">
@@ -277,56 +241,16 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 </Base>
 
 <script>
-  // the head's frame B (spec §8.1): inserted one painted frame after `load`, the loop live once it is decoded
-  import { afterLoadPaint, insertFrames, reducedMotion, saveData, whenDecoded } from '../scripts/frames';
-  const head = document.querySelector<HTMLElement>('.ph');
-  const ground = head?.querySelector<HTMLElement>('.ph__ground');
-  afterLoadPaint(() => {
-    if (!head || !ground || reducedMotion() || saveData() || !insertFrames(ground)) return;
-    whenDecoded(ground.querySelector<HTMLImageElement>('.ph__pork img'), () => head.classList.add('is-live'));
-  });
+  // the hero's frame 2 (row 14e): PageHero's loop driver, inserted after `load`, live once decoded
+  import '../scripts/page-hero.ts';
 </script>
 
 <style>
-  /* ── phone = board Producten (390) ── */
-  /* the head (D-37 v3; v4, Dan 16.10: „it is that head component with a different ground and the product slot”):
-     /traiteur's head — src/styles/print-head.css gives the box, the type, the buttons and, from 960, the print and its
-     gradient — with the chop as its ground (.th__media). The ground sits at z −1 under everything in the head
-     (isolation), so the text needs no z-index of its own. */
-  .ph { isolation: isolate; }
-  .ph__ground { z-index: -1; }
-  .ph__chop, .ph__pork { position: absolute; display: block; }
-  .ph__chop img, .ph__pork img { display: block; width: 100%; }
-  .ph__chop img { transform-origin: 80% 55%; }
-  .ph__pork img { transform-origin: 60% 20%; }
-  /* frame B waits, unseen, until the loop brings it in; reduced motion never shows it (the chop, still) */
-  .ph__pork { opacity: 0; }
-  @media (prefers-reduced-motion: reduce) { .ph__pork { display: none; } }
-  /* phone: one ink band, full bleed as /traiteur's phone head (spec §2–3); the chop (alpha) as a wide slab across the
-     lower part of the band (150 % of its width, its foot just below the band's), and over it the spec's top→bottom
-     gradient, whose .90 stop sits where the text ends (the band's last 104 px are its padding), so the whole text
-     column — chips included — stands on ≥ .90 ink while the strip of chop under the chips stays bright (.35 → its
-     foot). No saturate. */
-  @media (max-width: 959.98px) {
-    .ph { position: relative; display: flex; flex-direction: column; gap: 14px; overflow: hidden; padding: 24px var(--gutter) 104px; background: var(--ink); color: var(--on-ink); }
-    .ph__ground { position: absolute; inset: 0; overflow: hidden; }
-    .ph__chop { left: -25%; right: -25%; bottom: -4%; }
-    .ph__chop img, .ph__pork img { height: auto; }
-    /* the pork: the right of the band, its faded foot running out of the bottom, so the meat fills the bright strip */
-    .ph__pork { right: -18%; width: 96%; bottom: -80px; }
-    .ph__ground::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(21, 17, 13, 0.97) 0%, rgba(21, 17, 13, 0.9) max(45%, calc(100% - 104px)), rgba(21, 17, 13, 0.35) 100%);
-    }
-    .ph .th__lead { color: var(--on-ink-muted); }
-  }
-  /* the hero's row: the open chip, the pause at its right */
-  .pp-intro__row { display: flex; align-items: center; gap: 12px; }
+  /* ── phone = board Producten (390); the hero: PageHero.astro (row 14e) ── */
 
-  /* the chips, dark variant (board B): cream hairline on ink, the chosen one cream with ink text. On the phone they stay
-     inside the band: there the ink is ≥ .90; below them it thins to .35 over the bright chop */
+  /* the chips (row 14e: under the hero, on paper): a hairline chip on the card colour, the chosen one ink with cream
+     text — the NL/RO switch's current segment */
+  .pp-filter { padding-top: 20px; }
   .pp-pills { margin: 0; padding: 0; border: 0; min-width: 0; display: flex; flex-wrap: wrap; gap: 8px; }
   /* the radio stays in the tab order (arrow keys move the choice); the label is what you see */
   .pp-pills__in { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
@@ -336,48 +260,17 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
     min-height: var(--touch);
     padding: 0 14px;
     border-radius: var(--r-chip);
-    border: 1px solid rgba(244, 237, 224, 0.4);
-    background: rgba(21, 17, 13, 0.35);
-    color: var(--on-ink);
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--fg);
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     user-select: none;
   }
-  .pp-pills__in:checked + .pp-pill { background: var(--paper); border-color: var(--paper); color: var(--fg); }
-  .pp-pills__in:focus-visible + .pp-pill { outline: 2px solid var(--on-ink); outline-offset: 2px; }
-  @media (hover: hover) { .pp-pills__in:not(:checked) + .pp-pill:hover { border-color: var(--on-ink); } }
-
-  /* motion (spec §8.1): a 24 s loop, linear opacity — each frame up 12 s with a 1,4 s crossfade — and on the visible
-     part a Ken Burns 1 → 1,14 with a small pan, held to the end of the cycle so the reset happens while the frame is
-     unseen. The chop runs 1,44 s (6 %) ahead, so the loop starts from it fully up — the still it shows from first paint
-     (D-12); the pork runs the same keyframes half a cycle later. The loop runs once .is-live is set (frame B inserted
-     and decoded, script below). */
-  @keyframes ph-fade { 0% { opacity: 0; } 6% { opacity: 1; } 50% { opacity: 1; } 56% { opacity: 0; } 100% { opacity: 0; } }
-  @keyframes ph-kb {
-    0% { transform: scale(1) translate(0, 0); }
-    56%, 100% { transform: scale(1.14) translate(-2.5%, 1.5%); }
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    /* each delay inside its own shorthand: Astro's scoping changes the selectors' weight, a separate delay rule lost */
-    .ph.is-live .ph__chop { animation: ph-fade 24s linear -1.44s infinite; }
-    .ph.is-live .ph__pork { animation: ph-fade 24s linear -13.44s infinite; }
-    .ph.is-live .ph__chop img { animation: ph-kb 24s ease-in-out -1.44s infinite; will-change: transform; }
-    .ph.is-live .ph__pork img { animation: ph-kb 24s ease-in-out -13.44s infinite; will-change: transform; }
-  }
-
-  /* the pause: the hero's control (CSS only); it holds both head frames (the tiles no longer move, spec §8.2) */
-  .ph__pause { position: relative; margin-left: auto; display: inline-flex; }
-  .ph .hp { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
-  .ph:has(.hp:checked) :is(.ph__chop, .ph__pork, .ph__chop img, .ph__pork img) { animation-play-state: paused; }
-  .ph .ic-play { display: none; }
-  .ph:has(.hp:checked) .ic-pause { display: none; }
-  .ph:has(.hp:checked) .ic-play { display: block; }
-  .ph .hp:focus-visible + label { outline: 2px solid var(--on-ink); outline-offset: 2px; }
-  .ph__say-play { display: none; }
-  .ph:has(.hp:checked) .ph__say-pause { display: none; }
-  .ph:has(.hp:checked) .ph__say-play { display: inline; }
-  @media (prefers-reduced-motion: reduce) { .ph__pause { display: none; } }
+  .pp-pills__in:checked + .pp-pill { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+  .pp-pills__in:focus-visible + .pp-pill { outline: 2px solid var(--fg); outline-offset: 2px; }
+  @media (hover: hover) { .pp-pills__in:not(:checked) + .pp-pill:hover { border-color: var(--fg); } }
 
   /* the filter: the chosen category only (a section that is the URL's #target — „Bekijk de colli's” — shows too) */
   main:has(#f-rund:checked) .pp-cat:not(#rund):not(:target),
@@ -387,7 +280,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
   main:has(#f-roemeens:checked) .pp-cat:not(#roemeens):not(:target),
   main:has(#f-colli:checked) .pp-cat:not(#colli):not(:target) { display: none; }
 
-  /* the tiles (spec §7): directly under the head, the head's width; the gap above = /traiteur's under its head */
+  /* the tiles (spec §7): under the pills */
   .pp-tiles { padding-top: 20px; }
 
   .pp-cat { padding: 28px 0 8px; scroll-margin-top: 72px; }
@@ -443,22 +336,10 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 
   /* ── desktop (derived, D-30) ── */
   @media (min-width: 960px) {
-    /* the head: the print is print-head.css (/traiteur's). The chop from 35 % of the print to 6 % past its right edge,
-       115 % of its height (its edges run out of the box), bone end right: it covers that box, anchored right */
-    .ph__chop { left: 35%; right: -6%; top: -7.5%; bottom: -7.5%; }
-    .ph__chop img { height: 100%; object-fit: cover; object-position: 100% 50%; }
-    /* the pork (spec §8.1): the chop's box, its top 6 % down and its foot 16 % past the print's, contained and anchored
-       right / top, so the crown of the pile sits in the print and its fade runs out of the bottom */
-    .ph__pork { left: 35%; right: -6%; top: 6%; bottom: -16%; width: auto; }
-    .ph__pork img { height: 100%; object-fit: contain; object-position: 100% 0; }
-    .pp-pills { margin-top: 6px; }
-    /* the pause on the print as on the hero: 32 px from its right edge, 36 px above its foot (the body is no containing
-       block here, so the print is) */
-    .ph .th__body { position: static; }
-    .ph__pause { position: absolute; right: 32px; bottom: 36px; z-index: 3; margin: 0; }
+    .pp-filter { padding-top: 40px; }
 
-    /* the tiles under the head, the head's own width (.th-wrap = .container), as /traiteur's (56 px) */
-    .pp-tiles { padding-top: 56px; }
+    /* the tiles under the pills */
+    .pp-tiles { padding-top: 40px; }
 
     .pp-cat { padding: 0; scroll-margin-top: 80px; }
     .pp-cat__in {

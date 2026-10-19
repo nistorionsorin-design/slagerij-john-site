@@ -3,8 +3,9 @@
 // (D-30) — the dark photo head on hero frame 1, the mici on the grill (eyebrow · H1 · accent over the photo; lead +
 // Bestel via WhatsApp + Bekijk de prijzen below) · „Wat wij maken” (three blocks: name · line · cooking line · price,
 // the mici block with its photo) · the Roemeense tapas (photo + its counter tag) · the towns line · FAQ · byline.
-// Desktop derived (D-30): the head photo is a tall file (row 14: #29, 3:4; was hero frame 1, 886 × 1920), so the head is /bbq-pakketten's dark print with the
-// photo as a print in its right column (5fr) instead of behind the text — a 2:1 crop of it would be upscaled. The mici
+// Row 14e (19.10, design/heroes-unify.md): the head is the home's hero (PageHero.astro) — the photo full screen on the
+// phone, the sign over it, the text and both buttons at its foot; on desktop the same hero full bleed, text left (the
+// tall #29, 1600 × 2133, gives a 1600 × 800 desktop crop). The mici
 // block spans the row (photo beside its text), the two others sit side by side under it; the tapas block is the
 // /bbq-pakketten gourmet block (photo left, heading and tag right).
 // Strings: src/i18n/roemeens.ts (lexicon §5.25; RO §6 „Mici și specialități”). Names and prices: products.json
@@ -20,6 +21,7 @@
 import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import ArtPicture from '../components/ArtPicture.astro';
+import PageHero from '../components/PageHero.astro';
 import CounterTag from '../components/CounterTag.astro';
 import WaIcon from '../components/WaIcon.astro';
 import Faq from '../components/Faq.astro';
@@ -46,14 +48,15 @@ const file = (src: string) => {
   return m.default;
 };
 
-// the head = the phone shoot's gerookte worst (row 14, `roemeens` head; was hero frame 1): square on the phone
-// (/bbq-pakketten's head), a 0.85 print in the desktop head's right column; AVIF quality 40 as the other heads
+// the hero (row 14e, PageHero.astro) = the phone shoot's gerookte worst (row 14, `roemeens` head; was hero frame 1);
+// AVIF quality 40 as the other heads
 const shoot = photos.roemeens as Photo[];
 const head = shoot.find((p) => p.role === 'head')!;
-const headPic = {
-  mobile: { img: file(head.src), ratio: 1, max: 1080, sizes: '100vw', focalX: head.focalX, focalY: head.focalY },
-  desktop: { img: file(head.src), ratio: 0.85, max: 1080, sizes: '(min-width: 1440px) 520px, 38vw', focalX: head.focalX, focalY: head.focalY },
-};
+const heroFrames = [{ img: file(head.src), alt: head.alt[locale], focalX: head.focalX, focalY: head.focalY, zoomX: head.zoomX, zoomY: head.zoomY }];
+// spec §4: the lead goes under the hero when the text block covers more of it than the home's own (64,6 % at 390 × 844,
+// measured from the block's top to the hero's foot) — here 75,9 % NL / 75,9 % RO with the lead in (row 14e
+// [MEASURED-OURS] local 19.10)
+const LEAD_BELOW = true;
 
 // the block photos (row 5b's files, product-photos.json): the mici at block size, the tapas as the gourmet print
 const photoOf = (id: string) => {
@@ -139,26 +142,12 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 // Lucide „utensils” before the cooking line
 const utensils = '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>';
 ---
-<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld}>
+<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero">
   <main id="main" class="rs">
-    <div class="rs-headwrap">
-      <section class="rh" aria-labelledby="rh-title">
-        <div class="rh__media">
-          <ArtPicture class="rh__pic" mobile={headPic.mobile} desktop={headPic.desktop} alt={head.alt[locale]} quality={40} priority />
-        </div>
-        <div class="rh__title">
-          <p class="eyebrow rh__eyebrow">{t.eyebrow}</p>
-          <h1 class="rh__h1" id="rh-title">{t.h1} <span class="accent rh__accent">{t.accent}</span></h1>
-        </div>
-        <div class="rh__body">
-          <p class="rh__lead">{t.lead}</p>
-          <div class="rh__buttons">
-            <a class="btn btn--primary btn--lg" href={waHref} rel="nofollow"><WaIcon /><span>{t.primary}</span></a>
-            <a class="btn btn--secondary btn--lg" href={t.secondaryHref}>{t.secondary}</a>
-          </div>
-        </div>
-      </section>
-    </div>
+    <PageHero locale={locale} id="rh-title" eyebrow={t.eyebrow} h1={t.h1} accent={t.accent} lead={t.lead} leadBelow={LEAD_BELOW} frames={heroFrames} quality={40}>
+      <a class="btn btn--primary btn--lg" href={waHref} rel="nofollow"><WaIcon /><span>{t.primary}</span></a>
+      <a class="btn btn--secondary btn--lg" href={t.secondaryHref}>{t.secondary}</a>
+    </PageHero>
 
     <section class="container rp" aria-labelledby="rp-title">
       <h2 class="eyebrow rp__label" id="rp-title">{t.products.label}</h2>
@@ -230,38 +219,7 @@ const utensils = '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 
 </Base>
 
 <style>
-  /* ── phone: /bbq-pakketten's head (a 400 px dark photo, full bleed, title at its foot over the scrims; lead and the
-     two buttons below it on paper), then the blocks in the 20 px gutters ── */
-  .rh { display: grid; grid-template-areas: 'media' 'body'; background: var(--paper); }
-  .rh__media, .rh__title { grid-area: media; }
-  .rh__media { position: relative; height: 400px; background: var(--ink); overflow: hidden; }
-  .rh__media :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
-  .rh__media::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(180deg, rgba(21, 17, 13, 0.35) 0%, rgba(21, 17, 13, 0.05) 30%, rgba(21, 17, 13, 0.35) 55%, rgba(21, 17, 13, 0.96) 100%),
-      rgba(21, 17, 13, 0.24);
-  }
-  .rh__title {
-    position: relative;
-    z-index: 1;
-    align-self: end;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 0 var(--gutter) 22px;
-    color: var(--on-ink);
-  }
-  .rh__eyebrow { margin: 0; color: var(--accent); }
-  .rh__h1 { margin: 0; font-size: 36px; line-height: 1.02; letter-spacing: -0.02em; color: var(--on-ink); }
-  .rh__accent { display: block; margin-top: 12px; font-size: var(--fs-accent); line-height: 1.05; color: var(--accent); }
-  .rh__body { grid-area: body; display: flex; flex-direction: column; gap: 12px; padding: 22px var(--gutter) 8px; }
-  .rh__lead { margin: 0; font-size: 15px; line-height: 1.45; max-width: 60ch; }
-  .rh__buttons { display: flex; flex-direction: column; gap: 10px; }
-  .rh__buttons .btn { width: 100%; }
-
+  /* ── phone: the hero is PageHero.astro (row 14e); then the blocks in the 20 px gutters ── */
   /* „Wat wij maken”: three counter blocks — the counter tag's paper, hairline, radius and pin hole (CounterTag), grown
      to hold a line, the cooking line and the price; the mici block opens with its photo */
   .rp { display: flex; flex-direction: column; gap: 14px; padding-top: 28px; padding-bottom: 8px; }
@@ -338,35 +296,6 @@ const utensils = '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 
   .rs-byline p { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12px; line-height: 1.5; color: var(--muted); }
 
   /* ── desktop (derived, D-30) ── */
-  @media (min-width: 960px) {
-    /* the head: /bbq-pakketten's dark print in the container; text left (7fr), the tall frame as a print right (5fr) */
-    .rs-headwrap { max-width: var(--container); margin: 0 auto; padding: 32px var(--gutter) 0; }
-    .rh {
-      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-      grid-template-areas: 'title media' 'body media';
-      grid-template-rows: 1fr auto;
-      min-height: min(640px, calc(100svh - 140px));
-      border-radius: var(--r-frame-lg);
-      overflow: hidden;
-      background: var(--ink);
-    }
-    .rh__media { grid-area: media; height: auto; }
-    .rh__media :global(picture) { display: block; position: absolute; inset: 0; }
-    .rh__media::after { background: linear-gradient(90deg, rgba(21, 17, 13, 0.55) 0%, rgba(21, 17, 13, 0) 22%); }
-    .rh__title { grid-area: title; gap: 16px; padding: 64px 48px 0 56px; }
-    .rh__h1 { font-size: clamp(48px, 4.4vw, 68px); line-height: 1; letter-spacing: -0.025em; }
-    .rh__accent { margin-top: 14px; font-size: clamp(30px, 2.6vw, 40px); }
-    .rh__body { position: relative; z-index: 1; gap: 22px; padding: 24px 48px 56px 56px; color: var(--on-ink); }
-    .rh__lead { font-size: var(--fs-lead); line-height: 1.5; color: var(--on-ink-muted); }
-    .rh__buttons { flex-direction: row; flex-wrap: wrap; gap: 12px; }
-    .rh__buttons .btn { width: auto; }
-    /* on the dark print the outline button takes the on-ink skin (buttons.css .on-ink, scoped to desktop here) */
-    .rh__buttons .btn--secondary { color: var(--on-ink); border-color: rgba(244, 237, 224, 0.55); }
-    .rh__buttons .btn--secondary:focus-visible { outline-color: var(--on-ink); }
-  }
-  @media (min-width: 960px) and (hover: hover) {
-    .rh__buttons .btn--secondary:hover { background: rgba(244, 237, 224, 0.1); border-color: var(--on-ink); box-shadow: none; }
-  }
   @media (min-width: 960px) {
     /* the blocks: the mici across the row (photo left, text right), the two others side by side */
     .rp { gap: 20px; padding-top: 80px; padding-bottom: 0; }

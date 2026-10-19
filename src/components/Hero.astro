@@ -284,7 +284,10 @@ const loop = first && { ...first, wipe: CORNERS[(N - 1) % 4] };
       linear-gradient(rgba(21,17,13,.24), rgba(21,17,13,.24));
   }
   @media (max-width: 959.98px) {
+    /* row 14e (design/heroes-unify.md §2): every showcase hero is this one's size — 100svh, min 640, max 920 (PageHero) */
     .hero {
+      min-height: 640px;
+      min-height: clamp(640px, 100svh, 920px);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;

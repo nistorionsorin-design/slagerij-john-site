@@ -2,8 +2,10 @@
 // /feestmenu-eindejaar — Eindejaarsmenu 2026 (stage 7). Canvas board Eindejaar (mobile 390) is the concept (D-30), its
 // sections in order: the dark head, text only (eyebrow · H1 · accent · lead · two buttons) · the photo band (q19) ·
 // three steps · the menu card (#feestmenu, oxblood) · the „Și în română” box · the holiday hours card · FAQ · byline.
-// Desktop derived (D-30): the head and the photo side by side as two prints (ink left, photo right); below, the steps,
-// the RO box and the holiday hours left, the menu card right.
+// Row 14e (19.10, design/heroes-unify.md): q19 becomes the hero photo (PageHero.astro, the home's hero) and the band
+// under the head goes — the photo full screen on the phone, the sign over it, the text and both buttons at its foot.
+// Desktop derived (D-30): the hero full bleed, text left; below, the steps, the RO box and the holiday hours left, the
+// menu card right.
 // Strings: src/i18n/eindejaar.ts (lexicon §5.22). Menu card (row 15a, 13.10): the owners' folder's eight sections in
 // its order + row 15d's ninth, ro-feest (prices in the shop: no Offer, ever), each row name · line · price + unit, then the owners' line. Row 15b (D-35): the look is
 // src/styles/menu-card.css (the printed menu card) — the rubric index under the title, the price and its unit apart. Menu rows, deadline, pickup hours: menus.json (src/lib/menu.ts swaps
@@ -15,7 +17,7 @@
 // Crăciun; one view, two pages: src/pages/feestmenu-eindejaar.astro and src/pages/ro/sarbatori.astro.
 import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
-import ArtPicture from '../components/ArtPicture.astro';
+import PageHero from '../components/PageHero.astro';
 import WaIcon from '../components/WaIcon.astro';
 import Faq from '../components/Faq.astro';
 import Thumb from '../components/Thumb.astro';
@@ -43,14 +45,15 @@ const m = menu('eindejaar-2026');
 const fill = (s: string) => fillMenu(s, m, locale);
 
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/eindejaar/*.{jpg,jpeg,png,webp}', { eager: true });
+// the hero (row 14e, PageHero.astro) = q19, the festive platter (2048 × 1330) — the band under the head before it
 const band = (photos.eindejaar as Photo[])[0];
 const bandImg = files[`../assets/${band.src}`]?.default;
 if (!bandImg) throw new Error(`photos.json: src/assets/${band.src} not found`);
-// phone: the board's 200 px band in the 20 px gutters (≈ 7:4); desktop: the right-hand print, near square
-const bandPic = {
-  mobile: { img: bandImg, ratio: 1.75, max: 1080, sizes: 'calc(100vw - 40px)', focalX: band.focalX, focalY: band.focalY },
-  desktop: { img: bandImg, ratio: 1, max: 1330, sizes: '(min-width: 1440px) 560px, 40vw', focalX: band.focalX, focalY: band.focalY },
-};
+const heroFrames = [{ img: bandImg, alt: band.alt[locale], focalX: band.focalX, focalY: band.focalY, zoomX: band.zoomX, zoomY: band.zoomY }];
+// spec §4: the lead goes under the hero when the text block covers more of it than the home's own (64,6 % at 390 × 844,
+// measured from the block's top to the hero's foot) — 65,5 % NL (stays), 70,4 % RO (moves) with the lead in (row 14e
+// [MEASURED-OURS] local 19.10)
+const LEAD_BELOW = locale === 'ro';
 
 // the card's units as the §5.22 table writes them (/l: soep, lexicon §5.19 13.10; /portie: the vleeshoofdgerechten,
 // row 15a) — RO: the §6 Produse tag units, /pers. · /buc. · /kg · /l · /porție
@@ -111,22 +114,12 @@ const jsonld = [
   },
 ];
 ---
-<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld}>
+<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero">
   <main id="main" class="ej">
-    <div class="ej-top">
-      <section class="eh on-ink" aria-labelledby="eh-title">
-        <p class="eyebrow eh__eyebrow">{t.eyebrow}</p>
-        <h1 class="eh__h1" id="eh-title">{t.h1} <span class="accent eh__accent">{fill(t.accent)}</span></h1>
-        <p class="eh__lead">{fill(t.lead)}</p>
-        <div class="eh__buttons">
-          <a class="btn btn--primary btn--lg" href={t.primaryHref}>{t.primary}</a>
-          <a class="btn btn--secondary btn--lg" href={waHref} rel="nofollow"><WaIcon /><span>{t.whatsapp}</span></a>
-        </div>
-      </section>
-      <div class="ep">
-        <ArtPicture class="ep__pic" mobile={bandPic.mobile} desktop={bandPic.desktop} alt={band.alt[locale]} quality={50} priority />
-      </div>
-    </div>
+    <PageHero locale={locale} id="eh-title" eyebrow={t.eyebrow} h1={t.h1} accent={fill(t.accent)} lead={fill(t.lead)} leadBelow={LEAD_BELOW} frames={heroFrames}>
+      <a class="btn btn--primary btn--lg" href={t.primaryHref}>{t.primary}</a>
+      <a class="btn btn--secondary btn--lg" href={waHref} rel="nofollow"><WaIcon /><span>{t.whatsapp}</span></a>
+    </PageHero>
 
     <div class="container ej-body">
       <section class="es" aria-labelledby="es-title">
@@ -207,21 +200,7 @@ const jsonld = [
   .em__dish { min-width: 0; }
   /* row 15d: the ro-feest price note under its heading — a sentence, so not the nowrap unit note of menu-card.css */
   .em__sec-lead { margin: -4px 0 2px; font-size: 13px; line-height: 1.45; color: var(--ox-tint); }
-  /* ── phone = board Eindejaar (390) ── */
-  /* the head: ink, text only, full bleed (board: padding 22 20 26, gap 14, H1 Fraunces 38, accent italic 30 yellow,
-     lead 14 on-ink-muted, two full-width buttons) */
-  .eh { display: flex; flex-direction: column; gap: 14px; padding: 22px var(--gutter) 26px; background: var(--ink); color: var(--on-ink); }
-  .eh__eyebrow { margin: 0; color: var(--accent); }
-  .eh__h1 { margin: 0; font-size: 38px; line-height: 1.02; letter-spacing: -0.02em; color: var(--on-ink); }
-  .eh__accent { display: block; margin-top: 14px; font-size: 30px; line-height: 1.02; color: var(--accent); }
-  .eh__lead { margin: 0; font-size: 14px; line-height: 1.45; color: var(--on-ink-muted); max-width: 60ch; }
-  .eh__buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
-  .eh__buttons .btn { width: 100%; }
-
-  /* the photo band (board: 20 px gutters, 200 px, radius 14) */
-  .ep { padding: 20px var(--gutter) 0; }
-  .ep :global(picture) { display: block; height: 200px; border-radius: var(--r-tile); overflow: hidden; background: var(--ink); }
-  .ep :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+  /* ── phone = board Eindejaar (390); the hero: PageHero.astro (row 14e) ── */
 
   .ej-body { display: flex; flex-direction: column; }
 
@@ -268,24 +247,6 @@ const jsonld = [
 
   /* ── desktop (derived, D-30) ── */
   @media (min-width: 960px) {
-    /* two prints side by side: the ink head left (text column), the photo right, same height */
-    .ej-top {
-      display: grid;
-      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-      gap: 16px;
-      max-width: var(--container);
-      margin: 0 auto;
-      padding: 32px var(--gutter) 0;
-    }
-    .eh { justify-content: center; gap: 20px; min-height: min(600px, calc(100svh - 140px)); padding: 56px; border-radius: var(--r-frame-lg); }
-    .eh__h1 { font-size: clamp(48px, 4.4vw, 68px); line-height: 1; letter-spacing: -0.025em; }
-    .eh__accent { margin-top: 16px; font-size: clamp(30px, 2.6vw, 40px); }
-    .eh__lead { font-size: var(--fs-lead); line-height: 1.5; }
-    .eh__buttons { flex-direction: row; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
-    .eh__buttons .btn { width: auto; }
-    .ep { padding: 0; }
-    .ep :global(picture) { height: 100%; border-radius: var(--r-frame-lg); }
-
     /* steps, RO box, holiday hours left; the menu card right */
     .ej-body {
       display: grid;

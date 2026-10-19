@@ -1,8 +1,9 @@
 ---
 // /recepten — Recepten (row 17, 19.10; Dan 13:37 „we will do it now until they answer”). Lexicon §5.29: the counter
 // tag's cooking line grown into one short recipe per product, 14 of them (spiering dropped 19.10: no photo).
-// The head = /traiteur's head card (src/styles/print-head.css: the box, the type, from 960 the contained print) with the
-// §5.29 eyebrow · H1 · accent · lead and no photo ground: the first card's photo is the page's one eager image.
+// The head = the home's hero (row 14e, PageHero.astro, design/heroes-unify.md) with the §5.29 eyebrow · H1 · accent · lead
+// over the grilled entrecote (assets/raw/recepten/entrecote-crop.jpg, 1440 × 1080, brand-free; alt = recipes.json
+// entrecote's): the page's one eager image. No buttons in the head (§5.29 has none).
 // Then the 14 cards in the §5.29 order, each `id="<product id>"` (the /producten tag's „Recept →” lands on it): photo
 // 4:3 at its focal point (src/assets/recepten/, AVIF + WebP) · title · origin badge · time · persons · Ingrediënten ·
 // „Zo maakt u het” (four steps) · Tip · Bestel dit vlees via WhatsApp → /wa?src=recept-<id> with the recipe's product
@@ -17,13 +18,13 @@
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
 import WaIcon from '../components/WaIcon.astro';
 import data from '../data/recipes.json';
 import { wa, type Locale } from '../i18n/ui';
 import { receptenT } from '../i18n/recepten';
 import { keepUnits } from '../lib/typo';
 import '../styles/sections.css';
-import '../styles/print-head.css';
 
 export interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -56,6 +57,17 @@ const asset = (src: string) => {
   if (!m) throw new Error(`recipes.json: src/assets/${src} not found`);
   return m.default;
 };
+
+// the hero (row 14e): the entrecote crop, the alt of the entrecote recipe. Focal point in the left third: the phone's
+// 1 : 2 slice of this 1440 × 1080 file is 540 px wide — the centre slice is the steak's glossy, out-of-focus middle; the
+// left one keeps the board's edge and the sharp grill marks, so it reads as a steak on a board
+const entrecote = recipes.find((r) => r.id === 'entrecote');
+if (!entrecote) throw new Error('recipes.json: no entrecote (the hero photo’s alt)');
+const heroFrames = [{ img: asset('recepten/entrecote-crop.jpg'), alt: entrecote.alt[locale], focalX: 30, focalY: 55, zoomX: 40, zoomY: 60 }];
+// spec §4: the lead goes under the hero when the text block covers more of it than the home's own (64,6 % at 390 × 844,
+// measured from the block's top to the hero's foot) — here 48,1 % NL / 44,8 % RO: it stays (row 14e [MEASURED-OURS]
+// local 19.10)
+const LEAD_BELOW = false;
 
 // sharp crops by keyword: the focal point mapped to its third of the frame (ArtPicture's rule)
 const gravity = (x = 50, y = 50) =>
@@ -143,28 +155,18 @@ const jsonld = [
 
 const clock = '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
 ---
-<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld}>
+<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero">
   <main id="main" class="rp">
-    <div class="th-wrap">
-      <section class="th rh" aria-labelledby="rh-title">
-        <div class="th__title">
-          <p class="eyebrow th__eyebrow">{t.eyebrow}</p>
-          <h1 class="th__h1" id="rh-title">{t.h1} <span class="accent th__accent">{t.accent}</span></h1>
-        </div>
-        <div class="th__body">
-          <p class="th__lead">{t.lead}</p>
-        </div>
-      </section>
-    </div>
+    <PageHero locale={locale} id="rh-title" eyebrow={t.eyebrow} h1={t.h1} accent={t.accent} lead={t.lead} leadBelow={LEAD_BELOW} frames={heroFrames} />
 
     <section class="container rl" aria-label={t.listLabel}>
       <ul class="rl__grid">
-        {cards.map((c, i) => (
+        {cards.map((c) => (
           <li class="rc" id={c.id}>
             <article class="rc__in" aria-labelledby={`${c.id}-title`}>
               <picture class="rc__pic">
                 <source type="image/avif" srcset={c.pic.avif} sizes={sizes} />
-                <img src={c.pic.src} srcset={c.pic.webp} sizes={sizes} width={c.pic.width} height={c.pic.height} alt={c.alt} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" fetchpriority={i === 0 ? 'high' : 'low'} />
+                <img src={c.pic.src} srcset={c.pic.webp} sizes={sizes} width={c.pic.width} height={c.pic.height} alt={c.alt} loading="lazy" decoding="async" fetchpriority="low" />
               </picture>
               <div class="rc__body">
                 <div class="rc__top">
@@ -199,13 +201,7 @@ const clock = '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
 </Base>
 
 <style>
-  /* ── phone ── */
-  /* the head: print-head.css gives the type and, from 960, the contained print; on the phone /producten's ink band
-     (full bleed, text on ink) without a ground */
-  @media (max-width: 959.98px) {
-    .rh { display: flex; flex-direction: column; gap: 14px; padding: 28px var(--gutter) 30px; background: var(--ink); color: var(--on-ink); }
-    .rh .th__lead { color: var(--on-ink-muted); }
-  }
+  /* ── phone; the hero: PageHero.astro (row 14e) ── */
 
   .rl { padding-top: 24px; padding-bottom: 48px; }
   .rl__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
@@ -263,11 +259,8 @@ const clock = '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
   .rc__tip strong { color: var(--ox); }
   .rc__btn { margin-top: auto; }
 
-  /* ── desktop (derived, D-30): the head = the contained print, text only, its own height; cards in two columns ── */
+  /* ── desktop (derived, D-30): cards in two columns ── */
   @media (min-width: 960px) {
-    .rh.th { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'title' 'body'; grid-template-rows: auto auto; min-height: 0; }
-    .rh .th__title { padding: 64px 56px 0; }
-    .rh .th__body { padding: 20px 56px 56px; }
     .rl { padding-top: 48px; padding-bottom: 96px; }
     .rl__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
     .rc__body { gap: 16px; padding: 24px 28px 28px; }

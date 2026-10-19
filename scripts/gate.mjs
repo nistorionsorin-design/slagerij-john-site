@@ -444,21 +444,21 @@ if (built) {
 
   // client JS budget (D-06 one island + D-12 hero loop + D-20 open chip + the header's menu and
   // smart-sticky, build plan stage 0b2 + the bestelbon, stage 5 + the traiteur quote form, stage 6 + the /producten
-  // tiles' chip links, D-37 v5 + the /producten head's frame B, D-37 v6 row 14b): a script ships only
+  // tiles' chip links, D-37 v5 + the /producten hero's frame 2, PageHero's loop, row 14e): a script ships only
   // on a page that mounts its component, from /_astro/, never inline (CSP script-src 'self').
   {
     const js = walk(dist).filter((f) => /\.(js|mjs)$/.test(f));
     const inline = pages.filter((p) => /<script(?![^>]*application\/(ld\+)?json)[^>]*>[\s\S]*?\S[\s\S]*?<\/script>/i.test(p.html.replace(/<script[^>]*src=[^>]*><\/script>/gi, '')));
     const e = inline.map((p) => `${p.file}: inline script (blocked by the CSP in vercel.json)`);
     const mounts = [
-      ['Hero', /<section class="hero[\s"]/],
+      ['Hero', /<section class="hero hw[\s"]/],
       ['Header', /<header class="sign[\s"]/],
       ['OpenChip', /class="oc[\s"]/],
       ['QaBox', /<section class="qa[\s"]/],
       ['OrderForm', /<form class="order[\s"]/],
       ['QuoteForm', /<form class="qf[\s"]/],
       ['ProductTiles', /<section class="pt[\s"]/],
-      ['Producten', /<section class="th ph[\s"]/],
+      ['Producten', /<section class="hero sh sh--loop[\s"]/],
     ];
     for (const p of pages)
       for (const tag of p.html.match(/<script[^>]*\ssrc="[^"]*"[^>]*>/gi) || []) {
