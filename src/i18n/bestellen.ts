@@ -100,8 +100,8 @@ export const bestellenNl = {
     pickup: 'Afhalen',
     delivery: 'Levering',
     whenPending: 'Kies een dag en een uur.',
-    pay: 'Betalen bij afhaling: [BETALING]',
-    payDelivery: 'Betalen bij levering: [BETALING]',
+    pay: 'Betalen bij afhaling: cash, Bancontact, Payconiq, Visa of Mastercard',
+    payDelivery: 'Betalen bij levering: cash, Bancontact, Payconiq, Visa of Mastercard',
     total: 'Totaal',
     priceTbc: '[PRIJS]', // stays until FACTS
     /** row 15d (lexicon §5.22 „19.10 — ninth rubric”): a ro-feest line's cell, and the note under Totaal when one is in the slip */
@@ -235,8 +235,8 @@ export const bestellenRo = {
     pickup: 'Ridicare',
     delivery: 'Livrare',
     whenPending: 'Alege ziua și ora.',
-    pay: 'Plata la ridicare: [PLATĂ]',
-    payDelivery: 'Plata la livrare: [PLATĂ]',
+    pay: 'Plata la ridicare: numerar, Bancontact, Payconiq, Visa sau Mastercard',
+    payDelivery: 'Plata la livrare: numerar, Bancontact, Payconiq, Visa sau Mastercard',
     total: 'Total',
     priceTbc: '[PREȚ]',
     /** row 15d (lexicon §6 „Sărbători, 19.10”) */

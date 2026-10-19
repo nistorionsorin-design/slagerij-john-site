@@ -4,6 +4,7 @@
 // (truth order), so: oxblood, eyebrow in --ox-tint, Fraunces italic title, the light button (buttons.css .on-ink
 // .btn--light). Phone: board Main's box (margin 0 20, padding 22 20, radius 16). Desktop: one band, button right.
 import { homeT } from '../i18n/home';
+import { fillSeason } from '../lib/menu';
 import type { Locale } from '../i18n/ui';
 export interface Props { locale?: Locale }
 const { locale = 'nl' } = Astro.props;
@@ -14,8 +15,8 @@ const t = homeT[locale].season;
     <div class="season on-ink">
       <div class="season__text">
         <p class="season__eyebrow">{t.eyebrow}</p>
-        <h2 class="season__title" id="season-title">{t.title}</h2>
-        <p class="season__line">{t.line}</p>
+        <h2 class="season__title" id="season-title">{fillSeason(t.title, locale)}</h2>
+        <p class="season__line">{fillSeason(t.line, locale)}</p>
       </div>
       <a class="btn btn--light season__cta" href={t.href}>{t.cta}</a>
     </div>

@@ -82,7 +82,8 @@ const special = (hours.special ?? []) as SpecialDay[];
 const holiday = t.holiday.days.map((d) => {
   const sp = special.find((s) => s.date === d.date);
   const text = !sp ? t.holiday.unknown : !sp.slots.length ? t.holiday.closed : sp.slots.map((s) => `${s.open}${locale === 'ro' ? '-' : '–'}${s.close}`).join(', '); // RO: hyphen (LR-T03)
-  return { ...d, text };
+  // row 15 (§5.30): the day's note after the hours (25.12 „alleen afhalen van bestellingen”)
+  return { ...d, text, note: sp?.note?.[locale] };
 });
 
 const waHref = `${wa(t.waSrc)}&text=${encodeURIComponent(t.waMessage)}`;
@@ -179,7 +180,7 @@ const jsonld = [
         <h2 class="eo__title" id="eo-title">{t.holiday.eyebrow}</h2>
         <dl class="eo__rows">
           {holiday.map((d) => (
-            <div class="eo__row"><dt>{d.label}</dt><dd>{d.text}</dd></div>
+            <div class="eo__row"><dt>{d.label}</dt><dd>{d.text}{d.note && <span class="eo__note">{d.note}</span>}</dd></div>
           ))}
         </dl>
         <p class="eo__other">{t.holiday.other}</p>
@@ -255,7 +256,8 @@ const jsonld = [
   .eo__rows { display: flex; flex-direction: column; gap: 6px; margin: 0; font-size: 13px; font-variant-numeric: tabular-nums; }
   .eo__row { display: flex; justify-content: space-between; gap: 16px; }
   .eo__row dt { color: var(--muted); }
-  .eo__row dd { margin: 0; }
+  .eo__row dd { margin: 0; text-align: right; }
+  .eo__note { display: block; font-size: 12px; color: var(--muted); }
   .eo__other { margin: 0; font-size: 13px; line-height: 1.45; color: var(--muted); }
 
   .ej-byline { padding-top: 20px; padding-bottom: 28px; }

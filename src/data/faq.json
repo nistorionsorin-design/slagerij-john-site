@@ -15,11 +15,11 @@
     },
     {
       "q": "Wat zijn mici?",
-      "a": "Mici zijn gekruide Roemeense gehaktrolletjes van rund en varken, voor op de BBQ of in de pan; [PRIJS] per kg, ongeveer [AANTAL] stuks per kg."
+      "a": "Mici zijn gekruide Roemeense gehaktrolletjes van rund en varken, voor op de BBQ of in de pan; de prijs per kg ziet u aan de toog."
     },
     {
       "q": "Hoeveel is 1 colli?",
-      "a": "Een colli is een vast pakket van 5–10 kg; Colli Varken 1 bevat 1 kg spiering, 1 kg filet kotelet, 1 kg spek, 1 kg worst, 1 kg gehakt voor [PRIJS]."
+      "a": "Een colli is een vast pakket van 5–10 kg; Colli Varken 1 bevat 1 kg spiering, 1 kg filet kotelet, 1 kg spek, 1 kg worst, 1 kg gehakt voor €45."
     },
     {
       "q": "Wat kost een gourmetschotel per persoon?",
@@ -41,11 +41,11 @@
     },
     {
       "q": "Ce sunt micii?",
-      "a": "Mici de casă din vită și porc, pentru grătar sau tigaie: [PREȚ]/kg, cam [NUMĂR] bucăți la kilogram."
+      "a": "Mici de casă din vită și porc, pentru grătar sau tigaie; prețul pe kilogram îl vezi la tejghea."
     },
     {
       "q": "Cât înseamnă un colli?",
-      "a": "Un colli e un pachet fix de 5-10 kg; Colli Porc 1 are 1 kg ceafă, 1 kg cotlet, 1 kg piept de porc, 1 kg cârnați și 1 kg carne tocată, la [PREȚ]."
+      "a": "Un colli e un pachet fix de 5-10 kg; Colli Porc 1 are 1 kg ceafă, 1 kg cotlet, 1 kg piept de porc, 1 kg cârnați și 1 kg carne tocată, la 45 €."
     },
     {
       "q": "Cât costă un platou gourmet de persoană?",
@@ -62,7 +62,7 @@
         },
         {
           "q": "Wat zijn mici?",
-          "a": "Mici zijn gekruide Roemeense gehaktrolletjes van rund en varken, voor op de BBQ of in de pan; [PRIJS] per kg, ongeveer [AANTAL] stuks per kg."
+          "a": "Mici zijn gekruide Roemeense gehaktrolletjes van rund en varken, voor op de BBQ of in de pan; de prijs per kg ziet u aan de toog."
         },
         {
           "q": "Zijn jullie open op zondag?",
@@ -80,7 +80,7 @@
         },
         {
           "q": "Ce sunt micii?",
-          "a": "Mici de casă din vită și porc, pentru grătar sau tigaie: [PREȚ]/kg, cam [NUMĂR] bucăți la kilogram."
+          "a": "Mici de casă din vită și porc, pentru grătar sau tigaie; prețul pe kilogram îl vezi la tejghea."
         },
         {
           "q": "Sunteți deschiși duminica?",
@@ -104,7 +104,7 @@
         },
         {
           "q": "Hoe betaal ik?",
-          "a": "Bij afhaling in de winkel of bij levering aan de deur: [BETALING]. Online betalen is niet nodig."
+          "a": "Bij afhaling in de winkel of bij levering aan de deur: cash, Bancontact, Payconiq, Visa of Mastercard. Online betalen is niet nodig."
         }
       ],
       "ro": [
@@ -118,7 +118,7 @@
         },
         {
           "q": "Cum plătesc?",
-          "a": "La ridicare, în magazin, sau la livrare, la ușă: [PLATĂ]. Nu plătești online."
+          "a": "La ridicare, în magazin, sau la livrare, la ușă: numerar, Bancontact, Payconiq, Visa sau Mastercard. Nu plătești online."
         }
       ]
     },
@@ -130,7 +130,7 @@
         },
         {
           "q": "Wat kost een barbecue aan huis voor 20 personen?",
-          "a": "[PRIJS] per persoon. Wat inbegrepen is — kok, grill, materiaal — leest u in uw offerte; stuur ons datum, plaats en aantal."
+          "a": "Op offerte, die u binnen 24 uur krijgt. Wat inbegrepen is — kok, grill, materiaal — leest u erin; stuur ons datum, plaats en aantal personen (vanaf 10, tot 200 km van Zwevezele)."
         },
         {
           "q": "Hoe lang vooraf moet ik bestellen?",
@@ -152,7 +152,7 @@
         },
         {
           "q": "Cât costă un grătar la domiciliu pentru 20 de persoane?",
-          "a": "[PREȚ] de persoană. Ce e inclus (bucătar, grătar, materiale) scrie în ofertă; trimite-ne data, localitatea și numărul de persoane."
+          "a": "La cerere: primești oferta în 24 de ore. Ce e inclus (bucătar, grătar, materiale) scrie în ofertă; trimite-ne data, localitatea și numărul de persoane (de la 10, până la 200 de km de Zwevezele)."
         },
         {
           "q": "Cu cât timp înainte comand?",
@@ -180,7 +180,7 @@
         },
         {
           "q": "Hoe betaal ik?",
-          "a": "Bij afhaling in de winkel of bij levering aan de deur: [BETALING]. Online betalen is niet nodig."
+          "a": "Bij afhaling in de winkel of bij levering aan de deur: cash, Bancontact, Payconiq, Visa of Mastercard. Online betalen is niet nodig."
         }
       ],
       "ro": [
@@ -194,7 +194,7 @@
         },
         {
           "q": "Cum plătesc?",
-          "a": "La ridicare, în magazin, sau la livrare, la ușă: [PLATĂ]. Nu plătești online."
+          "a": "La ridicare, în magazin, sau la livrare, la ușă: numerar, Bancontact, Payconiq, Visa sau Mastercard. Nu plătești online."
         }
       ]
     },
@@ -214,7 +214,7 @@
         },
         {
           "q": "Kan ik ook bellen om te bestellen?",
-          "a": "Ja, tijdens de openingsuren op 0466 18 64 57. Via WhatsApp kan het altijd; wij antwoorden [WHATSAPP-ANTWOORD]."
+          "a": "Ja, tijdens de openingsuren op 0466 18 64 57. Via WhatsApp kan het altijd; Georgiana antwoordt van 8 tot 20 uur."
         }
       ],
       "ro": [
@@ -278,7 +278,7 @@
       "nl": [
         {
           "q": "Wat zijn mici?",
-          "a": "Mici zijn gekruide Roemeense gehaktrolletjes van rund en varken, voor op de BBQ of in de pan; [PRIJS] per kg, ongeveer [AANTAL] stuks per kg."
+          "a": "Mici zijn gekruide Roemeense gehaktrolletjes van rund en varken, voor op de BBQ of in de pan; de prijs per kg ziet u aan de toog."
         },
         {
           "q": "Hoe bak ik mici?",
@@ -296,7 +296,7 @@
       "ro": [
         {
           "q": "Cât costă micii la kilogram?",
-          "a": "[PREȚ] pe kilogram, cam [NUMĂR] bucăți la kilogram. Îi iei de la tejghea sau îi comanzi pe WhatsApp."
+          "a": "Prețul pe kilogram îl vezi la tejghea. Îi iei de acolo sau îi comanzi pe WhatsApp."
         },
         {
           "q": "Cum fac micii?",

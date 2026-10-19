@@ -1,6 +1,7 @@
 // Seasonal menus (stage 7, menus.json, lexicon §5.22): the values the page and the bestelbon write into their strings.
 // A value still null in menus.json leaves the string's placeholder standing ([DATUM] / [UUR], RO [DATA] / [ORA]) —
-// FACTS.md fills menus.json at stage 15 (C-04).
+// FACTS.md fills menus.json at stage 15 (C-04). Row 15 (19.10, lexicon §5.30): menus.json carries the deadline and
+// the pickup hours; `fillSeason` swaps them on the strings outside the page (home block, nav sub, faq.json, legal).
 import type { Locale } from '../i18n/ui';
 import type { Menu, Menus } from '../data/types';
 import data from '../data/menus.json';
@@ -34,3 +35,7 @@ export const fillMenu = (text: string, m: Menu, locale: Locale) => {
     .split(dateKey).join(m.deadline ? dateLabel(m.deadline, locale) : dateKey)
     .split(hourKey).map((part, k, all) => (k < all.length - 1 ? part + (hours[i++] ?? hourKey) : part)).join('');
 };
+
+/** row 15 (lexicon §5.30): the eindejaar menu's values in a string shown outside its page — the home block, the nav
+ *  sub-line, faq.json's answers, the terms. Bylines' [DATUM] / [DATA] never pass through here (C-10). */
+export const fillSeason = (text: string, locale: Locale) => fillMenu(text, menu('eindejaar-2026'), locale);

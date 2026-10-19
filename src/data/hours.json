@@ -1,14 +1,149 @@
 {
-  "_source": "docs/lexicon.md §1 / FACTS.md opening hours [OBSERVED] current site + GBP 03.10 — re-verify with the owners before go-live (lexicon D6). Filled by Claude Code at stage 0 (06.10) because the ButcherShop JSON-LD needs openingHoursSpecification once entity.json is filled; Cowork owns this file from here. Special days stay empty until the owners answer ([UREN]).",
+  "_source": "docs/lexicon.md §1 / FACTS.md opening hours [OBSERVED] current site + GBP 03.10 — re-verify with the owners before go-live (lexicon D6). Filled by Claude Code at stage 0 (06.10) because the ButcherShop JSON-LD needs openingHoursSpecification once entity.json is filled; Cowork owns this file from here. Special days stay empty until the owners answer ([UREN]). · 19.10 (Cowork): regular hours confirmed by the owners [OWNER] (form 19.10); `special` filled from their answer: 24.12 8–18 · 25.12 8–9 pickup of orders only (`note`; confirmed by Georgiana on WhatsApp 19.10 16:33) · 26–27.12 closed · 28–31.12 8–18 · 1–3.01 closed · 4.01 normal. 1 + 11.11 open, normal hours.",
   "timeZone": "Europe/Brussels",
   "regular": [
-    { "dayOfWeek": "Monday", "slots": [{ "open": "13:00", "close": "18:00" }] },
-    { "dayOfWeek": "Tuesday", "slots": [{ "open": "08:00", "close": "18:00" }] },
-    { "dayOfWeek": "Wednesday", "slots": [{ "open": "08:00", "close": "13:00" }] },
-    { "dayOfWeek": "Thursday", "slots": [{ "open": "08:00", "close": "18:00" }] },
-    { "dayOfWeek": "Friday", "slots": [{ "open": "08:00", "close": "18:00" }] },
-    { "dayOfWeek": "Saturday", "slots": [{ "open": "08:00", "close": "18:00" }] },
-    { "dayOfWeek": "Sunday", "slots": [{ "open": "08:00", "close": "13:00" }] }
+    {
+      "dayOfWeek": "Monday",
+      "slots": [
+        {
+          "open": "13:00",
+          "close": "18:00"
+        }
+      ]
+    },
+    {
+      "dayOfWeek": "Tuesday",
+      "slots": [
+        {
+          "open": "08:00",
+          "close": "18:00"
+        }
+      ]
+    },
+    {
+      "dayOfWeek": "Wednesday",
+      "slots": [
+        {
+          "open": "08:00",
+          "close": "13:00"
+        }
+      ]
+    },
+    {
+      "dayOfWeek": "Thursday",
+      "slots": [
+        {
+          "open": "08:00",
+          "close": "18:00"
+        }
+      ]
+    },
+    {
+      "dayOfWeek": "Friday",
+      "slots": [
+        {
+          "open": "08:00",
+          "close": "18:00"
+        }
+      ]
+    },
+    {
+      "dayOfWeek": "Saturday",
+      "slots": [
+        {
+          "open": "08:00",
+          "close": "18:00"
+        }
+      ]
+    },
+    {
+      "dayOfWeek": "Sunday",
+      "slots": [
+        {
+          "open": "08:00",
+          "close": "13:00"
+        }
+      ]
+    }
   ],
-  "special": []
+  "special": [
+    {
+      "date": "2026-12-24",
+      "slots": [
+        {
+          "open": "08:00",
+          "close": "18:00"
+        }
+      ]
+    },
+    {
+      "date": "2026-12-25",
+      "slots": [
+        {
+          "open": "08:00",
+          "close": "09:00"
+        }
+      ],
+      "note": {
+        "nl": "alleen afhalen van bestellingen",
+        "ro": "doar ridicarea comenzilor"
+      }
+    },
+    {
+      "date": "2026-12-26",
+      "slots": []
+    },
+    {
+      "date": "2026-12-27",
+      "slots": []
+    },
+    {
+      "date": "2026-12-28",
+      "slots": [
+        {
+          "open": "08:00",
+          "close": "18:00"
+        }
+      ]
+    },
+    {
+      "date": "2026-12-29",
+      "slots": [
+        {
+          "open": "08:00",
+          "close": "18:00"
+        }
+      ]
+    },
+    {
+      "date": "2026-12-30",
+      "slots": [
+        {
+          "open": "08:00",
+          "close": "18:00"
+        }
+      ]
+    },
+    {
+      "date": "2026-12-31",
+      "slots": [
+        {
+          "open": "08:00",
+          "close": "18:00"
+        }
+      ]
+    },
+    {
+      "date": "2027-01-01",
+      "slots": []
+    },
+    {
+      "date": "2027-01-02",
+      "slots": []
+    },
+    {
+      "date": "2027-01-03",
+      "slots": []
+    }
+  ]
 }

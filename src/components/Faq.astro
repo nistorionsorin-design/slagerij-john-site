@@ -6,6 +6,7 @@ import faq from '../data/faq.json';
 import type { FaqItem } from '../data/types';
 import type { Locale } from '../i18n/ui';
 import { keepUnits } from '../lib/typo';
+import { fillSeason } from '../lib/menu';
 
 export interface Props {
   locale: Locale;
@@ -28,7 +29,7 @@ const plus = '<path d="M12 5v14M5 12h14"/>';
             <h3 class="faq__q">{it.q}</h3>
             <svg class="faq__icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" set:html={plus} />
           </summary>
-          <p class="faq__a">{keepUnits(it.a)}</p>
+          <p class="faq__a">{keepUnits(fillSeason(it.a, locale))}</p>
         </details>
       ))}
     </div>

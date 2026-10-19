@@ -40,7 +40,7 @@ export const nav: Record<Locale, NavItem[]> = {
 
 // Overlay menu (stage 0b2, design/css/header.css + board „Header · mobiel 390”): seven links,
 // each with its sub-line — lexicon §5.15 (NL) and §6 (RO), 06.10 18:45, verbatim.
-// „bestel vóór [DATUM]” / „comandă până pe [DATA]” stay placeholders until FACTS has the deadline.
+// „bestel uiterlijk [DATUM]” / „comandă până pe [DATA]”: Menu.astro swaps menus.json's deadline in (row 15, §5.30).
 // Row 8b (D-33, 09.10): eight links — the first is Bestellen / Comandă with its sub-line, lexicon §5.15 verbatim.
 export interface MenuItem { label: string; sub: string; href: string }
 export const menu: Record<Locale, MenuItem[]> = {
@@ -49,7 +49,7 @@ export const menu: Record<Locale, MenuItem[]> = {
     { label: 'Producten & prijzen', sub: "per kg · colli's", href: '/producten' },
     { label: 'BBQ & gourmet', sub: 'pakketten · steengrill', href: '/bbq-pakketten' },
     { label: 'Traiteur', sub: 'feesten · BBQ aan huis', href: '/traiteur' },
-    { label: 'Eindejaar', sub: 'bestel vóór [DATUM]', href: '/feestmenu-eindejaar' },
+    { label: 'Eindejaar', sub: 'bestel uiterlijk [DATUM]', href: '/feestmenu-eindejaar' },
     { label: 'Roemeense specialiteiten', sub: 'mici · gerookte worst', href: '/roemeense-specialiteiten' },
     { label: 'Over ons', sub: 'John & Georgiana', href: '/over-ons' },
     { label: 'Contact', sub: 'uren · route', href: '/contact' },

@@ -44,11 +44,11 @@ export const homeNl = {
   },
 
   /** Eindejaar block: eyebrow = §5.15 nav „Eindejaar”; title = the §5.15 menu sub-line „bestel vóór [DATUM]” as a
-   *  sentence (the Toog board's „Bestel vóór [DATUM].”); line = the second half of the §5.11 answer „Tot wanneer
+   *  sentence (the Toog board's „Bestel vóór [DATUM].”; row 15, §5.30: „uiterlijk”, the deadline is inclusive); line = the second half of the §5.11 answer „Tot wanneer
    *  kan ik bestellen voor Kerstmis?”; button = §5.3 „Bekijk de feestfolder” (board: „Bekijk het menu”). */
   season: {
     eyebrow: 'Eindejaar',
-    title: 'Bestel vóór [DATUM].',
+    title: 'Bestel uiterlijk [DATUM].',
     line: 'Afhalen 24 en 31 december van [UUR] tot [UUR].',
     cta: 'Bekijk de feestfolder',
     href: '/feestmenu-eindejaar',
@@ -82,7 +82,7 @@ export const homeNl = {
   owners: {
     eyebrow: 'Over ons',
     name: 'John & Georgiana',
-    text: 'Sinds 7 februari 2025 staan John en Georgiana achter de toog in de Bruggestraat 146A, in de vroegere bakkerij.',
+    text: 'Sinds 1 februari 2025 staan John en Georgiana achter de toog in de Bruggestraat 146A, in de vroegere bakkerij.',
     alt: 'John en Georgiana · Bruggestraat 146A', // §5.17 photo caption (the footer's print alt)
     /** lexicon §5.15 „Home body strings” (07.10) */
     more: 'Meer over ons',
@@ -162,7 +162,7 @@ export const homeRo = {
   owners: {
     eyebrow: 'Despre noi',
     name: 'John și Georgiana',
-    text: 'Din 7 februarie 2025, John și Georgiana stau la tejghea în Bruggestraat 146A, în fosta brutărie.',
+    text: 'Din 1 februarie 2025, John și Georgiana stau la tejghea în Bruggestraat 146A, în fosta brutărie.',
     alt: 'John și Georgiana · Bruggestraat 146A',
     more: 'Mai multe despre noi',
     href: '/ro/despre-noi',

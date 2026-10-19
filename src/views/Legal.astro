@@ -8,6 +8,7 @@
 import Base from '../layouts/Base.astro';
 import { type Locale } from '../i18n/ui';
 import { legal, linkify } from '../i18n/legal';
+import { fillSeason } from '../lib/menu';
 import '../styles/legal.css';
 
 export interface Props { locale: Locale; page: keyof typeof legal }
@@ -22,7 +23,8 @@ const brand = locale === 'ro' ? 'Măcelăria John' : 'Slagerij John';
 // each page link once, on the first text that carries its anchor (lead first, then the blocks in order)
 const used = new Set<string>();
 const lead = t.lead ? linkify(t.lead, t.links, used) : null;
-const blocks = t.blocks.map((b, i) => ({ ...b, id: `lg-${i + 1}`, parts: linkify(b.text, t.links, used) }));
+// row 15 (§5.30): the Eindejaarsmenu block's [DATUM] / [DATA] = menus.json's deadline (the closing line's stays, C-10)
+const blocks = t.blocks.map((b, i) => ({ ...b, id: `lg-${i + 1}`, parts: linkify(fillSeason(b.text, locale), t.links, used) }));
 
 const jsonld = [
   {

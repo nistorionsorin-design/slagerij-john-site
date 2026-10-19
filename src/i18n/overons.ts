@@ -24,7 +24,7 @@ export const overOnsNl = {
   eyebrow: 'Over ons',
   h1: 'De slagerij van John en Georgiana.',
   accent: 'In de Bruggestraat, sinds februari 2025.',
-  lead: 'Slagerij John is een familieslagerij in Zwevezele (Wingene). Sinds 7 februari 2025 staan John en Georgiana achter de toog in de Bruggestraat 146A, in de vroegere bakkerij. Vlaamse klassiekers en Roemeense specialiteiten, dagvers en in eigen atelier bereid.',
+  lead: 'Slagerij John is een familieslagerij in Zwevezele (Wingene). Sinds 1 februari 2025 staan John en Georgiana achter de toog in de Bruggestraat 146A, in de vroegere bakkerij. Vlaamse klassiekers en Roemeense specialiteiten, dagvers en in eigen atelier bereid.',
   /** §5.17 photo caption; the alt is the caption, as the footer's pinned print (ui.ts footer.printAlt) */
   caption: 'John en Georgiana · Bruggestraat 146A',
   alt: 'John en Georgiana · Bruggestraat 146A',
@@ -40,7 +40,7 @@ export const overOnsNl = {
     eyebrow: 'Sinds wanneer',
     items: [
       { date: '2024-08-20', when: '20 augustus 2024', what: 'Slager John SComm wordt opgericht' },
-      { date: '2025-02-07', when: '7 februari 2025', what: 'De winkel opent in de vroegere bakkerij, Bruggestraat 146A' },
+      { date: '2025-02-01', when: '1 februari 2025', what: 'De winkel opent in de vroegere bakkerij, Bruggestraat 146A' },
     ],
   },
 
@@ -104,7 +104,7 @@ export const overOnsRo: typeof overOnsNl = {
   h1: 'Măcelăria lui John și a Georgianei.',
   accent: 'În Bruggestraat, din februarie 2025.',
   /** §6: „the §6 lead above” (Suntem John și Georgiana …) + its own closing sentence */
-  lead: 'Suntem John și Georgiana. Din februarie 2025 avem măcelăria în Bruggestraat 146A, în fosta brutărie din Zwevezele. Clasice flamande și specialități românești, proaspete zilnic, din atelierul nostru.',
+  lead: 'Suntem John și Georgiana. Din 1 februarie 2025 avem măcelăria în Bruggestraat 146A, în fosta brutărie din Zwevezele. Clasice flamande și specialități românești, proaspete zilnic, din atelierul nostru.',
   /** §5.17 caption, RO aid (= ui.ts footer.printAlt RO) */
   caption: 'John și Georgiana · Bruggestraat 146A',
   alt: 'John și Georgiana · Bruggestraat 146A',
@@ -116,7 +116,7 @@ export const overOnsRo: typeof overOnsNl = {
     eyebrow: 'De când',
     items: [
       { date: '2024-08-20', when: '20 august 2024', what: 'înființăm Slager John SComm' },
-      { date: '2025-02-07', when: '7 februarie 2025', what: 'deschidem magazinul în fosta brutărie, Bruggestraat 146A' },
+      { date: '2025-02-01', when: '1 februarie 2025', what: 'deschidem magazinul în fosta brutărie, Bruggestraat 146A' },
     ],
   },
 

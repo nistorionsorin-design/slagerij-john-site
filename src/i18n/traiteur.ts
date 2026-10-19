@@ -43,8 +43,8 @@ export const traiteurNl = {
     rows: [
       { name: 'Gourmet, 9 soorten', line: 'ook fondue, 10 soorten en luxe', product: 'gourmet-9' },
       { name: 'Koude schotel', line: 'hesp, salami, eieren en vleessalade', product: 'koude-schotel' }, // row 15d, lexicon §5.22 „19.10 15:30”
-      { name: 'Warm buffet', line: '[OMSCHRIJVING]', price: '[PRIJS]' },
-      { name: 'BBQ-pakket', line: 'gemarineerd, kant-en-klaar voor de grill', price: '[PRIJS]' },
+      { name: 'Warm buffet', line: '', price: 'op aanvraag', unit: '' }, // row 15, lexicon §5.30 (Dan 19.10 16:25): text, no Offer
+      { name: 'BBQ-pakket', line: 'gemarineerd, kant-en-klaar voor de grill, vanaf 10 personen', price: 'op aanvraag', unit: '' }, // row 15
       { name: 'Barbecue aan huis', line: 'met kok, regio Wingene', price: 'offerte', unit: 'op aanvraag', ink: true },
     ] as { name: string; line: string; product?: string; price?: string; unit?: string; ink?: boolean }[],
     more: 'Tapas, hapjes, warme gerechten, soepen en desserts: per stuk of per persoon, in de bestelbon.',
@@ -152,8 +152,8 @@ export const traiteurRo: typeof traiteurNl = {
     rows: [
       { name: 'Platou gourmet, 9 feluri', line: 'și fondue, 10 feluri sau de lux', product: 'gourmet-9' },
       { name: 'Platou rece', line: 'șuncă, salam, ouă și salată de carne', product: 'koude-schotel' }, // row 15d
-      { name: 'Bufet cald', line: '[DESCRIERE]', price: '[PREȚ]' },
-      { name: 'Pachet BBQ', line: 'marinat, gata pentru grătar', price: '[PREȚ]' },
+      { name: 'Bufet cald', line: '', price: 'la cerere', unit: '' }, // row 15, §5.30
+      { name: 'Pachet BBQ', line: 'marinat, gata pentru grătar, de la 10 persoane', price: 'la cerere', unit: '' }, // row 15
       { name: 'Grătar la domiciliu', line: 'cu bucătar, zona Wingene', price: 'ofertă', unit: 'la cerere', ink: true },
     ],
     more: 'Tapas, aperitive, preparate calde, supe și deserturi: la bucată sau de persoană, în bonul de comandă.',

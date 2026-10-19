@@ -41,7 +41,13 @@ export interface Slot { open: string; close: string }
 export interface Day { dayOfWeek: string; slots: Slot[] }
 /** hours.json `special`: one calendar day (Brussels) that replaces the regular week; `slots: []` = closed.
  *  e.g. { "date": "2026-11-01", "slots": [] } · { "date": "2026-12-24", "slots": [{ "open": "08:00", "close": "16:00" }] } */
-export interface SpecialDay { date: string; slots: Slot[] }
+export interface SpecialDay {
+  date: string;
+  slots: Slot[];
+  /** row 15 (lexicon §5.30): a line after the hours on the Contact and Eindejaar cards — 25.12 „alleen afhalen van
+   *  bestellingen” / „doar ridicarea comenzilor” */
+  note?: L10n;
+}
 
 /** products.json (stage 4). Every unit the bestelbon sells by (docs/order-flow.md §3: per kg · pers · stuk · liter · colli;
  *  row 15a: portie = the vleeshoofdgerechten, per portie van 200 g — docs/data/price-list.json). */

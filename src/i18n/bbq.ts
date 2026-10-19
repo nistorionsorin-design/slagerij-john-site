@@ -39,10 +39,11 @@ export const bbqNl = {
         href: '/bestellen#cat-colli',
       },
       {
-        name: 'BBQ-pakket per persoon',
-        sub: 'op uw aantal samengesteld: vlees, worst en brochettes',
-        price: '[PRIJS]',
-        unit: '/pers.',
+        // row 15 (lexicon §5.30, Dan 19.10 16:25): the /traiteur BBQ-pakket row — „op aanvraag” is text, no Offer
+        name: 'BBQ-pakket',
+        sub: 'gemarineerd, kant-en-klaar voor de grill, vanaf 10 personen',
+        price: 'op aanvraag',
+        unit: '',
         link: 'Vraag het via WhatsApp',
         waSrc: 'bbq-pakket',
       },
@@ -129,10 +130,11 @@ export const bbqRo: typeof bbqNl = {
         href: '/ro/comanda#cat-colli',
       },
       {
-        name: 'Pachet BBQ de persoană',
-        sub: 'pe numărul tău: carne, cârnați și frigărui',
-        price: '[PREȚ]',
-        unit: '/pers.',
+        // row 15 (§5.30): the /ro/catering Pachet BBQ row — „la cerere” is text, no Offer
+        name: 'Pachet BBQ',
+        sub: 'marinat, gata pentru grătar, de la 10 persoane',
+        price: 'la cerere',
+        unit: '',
         link: 'Întreabă pe WhatsApp',
         waSrc: 'ro-gratar-pachet',
       },

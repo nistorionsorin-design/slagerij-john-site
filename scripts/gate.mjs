@@ -144,9 +144,16 @@ if (built) {
     } else {
       const prods = nodes.filter((x) => types(x.n).includes('Product'));
       if (!prods.length) e.push('products.json has items but no Product node is emitted');
-      const perKg = products.items.filter((i) => i.unit === 'kg').length;
+      // row 15 (lexicon §5.30): a per-kg row „prijs in de winkel” (priceInStore, price null) has no Offer, so only a
+      // priced per-kg row asks for the KGM unit price; and no Product of an in-store row may carry an offer
+      const perKg = products.items.filter((i) => i.unit === 'kg' && i.price !== null).length;
       const kgm = prods.filter((x) => JSON.stringify(x.n).includes('"unitCode":"KGM"')).length;
-      if (perKg && !kgm) e.push('per-kg products exist but no UnitPriceSpecification with unitCode KGM');
+      if (perKg && !kgm) e.push('priced per-kg products exist but no UnitPriceSpecification with unitCode KGM');
+      const inStore = new Set(products.items.filter((i) => i.priceInStore).map((i) => i.id));
+      for (const x of prods) {
+        const id = String(x.n['@id'] ?? '').split('#')[1];
+        if (inStore.has(id) && x.n.offers) e.push(`${x.p.file}: Product #${id} is „prijs in de winkel” but carries an offer`);
+      }
     }
     const sub = content.filter((p) => !/^(index|ro)\.html$/.test(p.file));
     for (const p of sub)

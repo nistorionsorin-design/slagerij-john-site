@@ -131,23 +131,26 @@ const unitSpec = (p: Product) =>
     : p.unit === 'pers'
       ? { unitCode: 'C62', unitText: ro ? 'de persoană' : 'per persoon' }
       : { unitText: p.unit };
+// row 15 (lexicon §5.30): a row without a price — „prijs in de winkel” (priceInStore) — carries no Offer (S-03)
 const productLd = (p: Product, category: string) => {
-  const price = p.price === null ? {} : { price: p.price.toFixed(2) };
+  const price = p.price === null ? null : { price: p.price.toFixed(2) };
   return {
     '@type': 'Product',
     '@id': `${origin}${path}#${p.id}`,
     name: p.name[locale],
     category,
     brand: { '@type': 'Brand', name: 'Slagerij John' },
-    offers: {
-      '@type': 'Offer',
-      url: `${origin}${path}#${p.id}`,
-      priceCurrency: 'EUR',
-      ...price,
-      priceSpecification: { '@type': 'UnitPriceSpecification', priceCurrency: 'EUR', ...price, ...unitSpec(p) },
-      availableAtOrFrom: shop,
-      seller: shop,
-    },
+    ...(price && {
+      offers: {
+        '@type': 'Offer',
+        url: `${origin}${path}#${p.id}`,
+        priceCurrency: 'EUR',
+        ...price,
+        priceSpecification: { '@type': 'UnitPriceSpecification', priceCurrency: 'EUR', ...price, ...unitSpec(p) },
+        availableAtOrFrom: shop,
+        seller: shop,
+      },
+    }),
   };
 };
 const jsonld = [

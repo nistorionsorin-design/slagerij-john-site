@@ -46,8 +46,8 @@ const T = {
     whatsapp: 'WhatsApp',
     confirm: 'Wij bevestigen uw bestelling via WhatsApp of telefoon.',
     legal: 'Vers vlees wordt niet teruggenomen (art. VI.53, 4° WER).',
-    pay: 'Betalen bij afhaling: [BETALING]',
-    payDelivery: 'Betalen bij levering: [BETALING]',
+    pay: 'Betalen bij afhaling: cash, Bancontact, Payconiq, Visa of Mastercard',
+    payDelivery: 'Betalen bij levering: cash, Bancontact, Payconiq, Visa of Mastercard',
     hours: 'Openingsuren',
   },
   ro: {
@@ -71,8 +71,8 @@ const T = {
     whatsapp: 'WhatsApp',
     confirm: 'Îți confirmăm comanda pe WhatsApp sau la telefon.',
     legal: 'Carnea proaspătă nu se returnează (art. VI.53, 4° WER).',
-    pay: 'Plata la ridicare: [PLATĂ]',
-    payDelivery: 'Plata la livrare: [PLATĂ]',
+    pay: 'Plata la ridicare: numerar, Bancontact, Payconiq, Visa sau Mastercard',
+    payDelivery: 'Plata la livrare: numerar, Bancontact, Payconiq, Visa sau Mastercard',
     hours: 'Program',
   },
 };

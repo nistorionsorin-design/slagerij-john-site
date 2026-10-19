@@ -64,8 +64,8 @@ export const contact = {
         'Afhalen in de winkel, op het uur dat u kiest.',
         'Gratis levering tot 10 km vanaf €50; tot 20 km vanaf €100; daarbuiten €1 per km. Levering maandag tot zaterdag vanaf 18:00.',
       ],
-      pay: 'Betalen bij afhaling of bij levering: [BETAALWIJZEN]',
-      parking: 'Parking: [PARKING]',
+      pay: 'Betalen bij afhaling of bij levering: cash, Bancontact, Payconiq, Visa of Mastercard',
+      parking: 'Parking: gratis, voor de winkel (2 plaatsen) en in de straat',
     },
 
     /** §5.23 FAQ eyebrow; the four „Contact” items of §5.11 in faq.json pages.contact */
@@ -117,8 +117,8 @@ export const contact = {
         'Ridicare din magazin, la ora pe care o alegi.',
         'Livrare gratuită până la 10 km de la 50 €; până la 20 km de la 100 €; peste, 1 € pe km. Livrăm de luni până sâmbătă, de la 18:00.',
       ],
-      pay: 'Plata la ridicare sau la livrare: [PLATĂ]',
-      parking: 'Parcare: [PARCARE]',
+      pay: 'Plata la ridicare sau la livrare: numerar, Bancontact, Payconiq, Visa sau Mastercard',
+      parking: 'Parcare: gratuită, în fața magazinului (2 locuri) și pe stradă',
     },
     faq: 'Întrebări frecvente',
     byline: 'De John și Georgiana, Măcelăria John · actualizat la [DATA].',

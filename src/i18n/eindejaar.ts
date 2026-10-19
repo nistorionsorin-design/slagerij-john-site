@@ -14,7 +14,7 @@ export const eindejaarNl = {
   /** §5.22 head (dark, text only) */
   eyebrow: 'Eindejaar 2026',
   h1: 'Eindejaarsmenu 2026: afhalen in Zwevezele.',
-  accent: 'Bestel vóór [DATUM].',
+  accent: 'Bestel uiterlijk [DATUM].',
   /** §5.22 lead (13.10, the brochure's range) */
   lead: 'Afhalen op 24 en 31 december, van [UUR] tot [UUR]. Gourmet, fondue, tapas, hapjes, warme gerechten en dessert.',
   /** §5.22 buttons: primary → the bestelbon with the menu on top (D-23); secondary §5.3 → /wa with the §5.10 message.
@@ -32,7 +32,7 @@ export const eindejaarNl = {
     eyebrow: 'Bestellen in drie stappen',
     items: [
       'Kies uit het eindejaarsmenu.',
-      'Bestel vóór [DATUM], online of via WhatsApp.',
+      'Bestel uiterlijk [DATUM], online of via WhatsApp.',
       'Haal af op 24 of 31 december, van [UUR] tot [UUR].',
     ],
   },
@@ -134,8 +134,9 @@ export const eindejaarRo = {
     ownersLine: 'Preluăm și comenzi specifice românești (ciorbe, sarmale, salată de boeuf, cozonaci etc.).',
     /** §6 Sărbători 13.10 13:00: the stand-in row's own ninth rubric, with its index pill (fills or goes with D 7) */
     extraSection: { id: 'sarbatori-carne', name: 'Carne de sărbători' },
-    /** §6: the RO-only stand-in row (display only; the bestelbon's menu rows are menus.json's) */
-    extraRows: [{ name: 'Porc de Crăciun', line: '[DESCRIERE]', price: '[PREȚ]', unit: '/kg' }],
+    /** §6: the RO-only row (display only; the bestelbon's menu rows are menus.json's) — row 15 (§5.30): line and price
+     *  from the owners [OWNER] 19.10, unit dropped; „la cerere” is text, no Offer */
+    extraRows: [{ name: 'Porc de Crăciun', line: 'întreg sau jumătate, la comandă până pe 18 decembrie', price: 'la cerere', unit: '' }],
   },
 
   ro: null,

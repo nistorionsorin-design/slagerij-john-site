@@ -12,6 +12,7 @@ import WaIcon from './WaIcon.astro';
 import OpenChip from './OpenChip.astro';
 import { social } from '../lib/social';
 import { menu, ui, wa, routeHref, type Locale } from '../i18n/ui';
+import { fillSeason } from '../lib/menu';
 
 export interface Props {
   locale: Locale;
@@ -27,7 +28,7 @@ const isCurrent = (href: string) => path === href || path.startsWith(href + '/')
     {menu[locale].map((it) => (
       <a href={it.href} aria-current={isCurrent(it.href) ? 'page' : undefined}>
         <span>{it.label}</span>
-        <em>{it.sub}</em>
+        <em>{fillSeason(it.sub, locale)}</em>
       </a>
     ))}
   </nav>

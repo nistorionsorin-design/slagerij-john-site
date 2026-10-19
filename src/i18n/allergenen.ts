@@ -3,7 +3,8 @@
 // The data — 14 allergens, six categories, notes, the workshop notice (= the lead) — is src/data/allergens.json
 // (= docs/data/allergens.json, the old site's statement, the owners confirm before launch, FACTS „Allergens”).
 // One view: src/views/Allergenen.astro. The §5.18 Q&A-box sample belongs to the assistant (docs/assistant.md §4.3),
-// not to this page. Left visible: the legal line's [DATUM] / [DATA] (the owners' confirmation date) and the byline's.
+// not to this page. Left visible: the byline's [DATUM] / [DATA]; the legal line's date = the owners' confirmation,
+// 19.10.2026 [OWNER] (row 15, lexicon §5.30).
 
 export const allergenenNl = {
   /** §5.18 meta (43 / 149) */
@@ -34,7 +35,7 @@ export const allergenenNl = {
   closing: 'Twijfelt u? Neem geen risico. Bel ons.',
   /** „Bel ons vooraf · 0466 18 64 57” — the number from entity.json; on this page the call is the primary action */
   call: 'Bel ons vooraf',
-  legal: 'Allergeneninformatie volgens Verordening (EU) nr. 1169/2011 en het KB van 17 juli 2014 (niet-voorverpakte levensmiddelen). Lijst bevestigd door John en Georgiana op [DATUM].',
+  legal: 'Allergeneninformatie volgens Verordening (EU) nr. 1169/2011 en het KB van 17 juli 2014 (niet-voorverpakte levensmiddelen). Lijst bevestigd door John en Georgiana op 19 oktober 2026.',
   /** §5.13 with [DATUM], as on /over-ons */
   byline: 'Door John en Georgiana, Slagerij John · bijgewerkt op [DATUM].',
   crumbs: { home: 'Home', page: 'Allergenen' },
@@ -65,7 +66,7 @@ export const allergenenRo: typeof allergenenNl = {
   },
   closing: 'Ai îndoieli? Nu risca. Sună-ne.',
   call: 'Sună-ne înainte',
-  legal: 'Informații despre alergeni conform Regulamentului (UE) nr. 1169/2011 și KB din 17 iulie 2014 (alimente neambalate). Listă confirmată de John și Georgiana la [DATA].',
+  legal: 'Informații despre alergeni conform Regulamentului (UE) nr. 1169/2011 și KB din 17 iulie 2014 (alimente neambalate). Listă confirmată de John și Georgiana la 19 octombrie 2026.',
   byline: 'De John și Georgiana, Măcelăria John · actualizat la [DATA].',
   crumbs: { home: 'Acasă', page: 'Alergeni' },
 };

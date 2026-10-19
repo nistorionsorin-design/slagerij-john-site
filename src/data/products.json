@@ -1,5 +1,5 @@
 {
-  "_source": "Stage 4 (Claude Code, 07.10; revised 07.10 after lexicon §5.19 + §6 „Product names RO”): the shape for /producten, the home's „Deze week op de toog” and the bestelbon (stage 5). `categories` = the sections of the canvas board Producten + BBQ & gourmet (D-13; the home's gourmet tag lives there, its page is a later stage); NL names = lexicon §2.2 / §4 / §5.15, RO = §6 „Product names RO” categories. `items` = the board's tags; NL names from the word bank §2.2 / §2.4 (search demand — NOT the confirmed assortment: Cowork replaces them from the owners' price list, stage 15), RO names = the §6 table verbatim. Colli Varken 1's line = its contents (§5.11 NL, §6 table RO; the old site's colli, [OBSERVED], to check with John). Mici's line = the lexicon's (§2.4 gloss NL, §6 product-card example RO — §5.19: „every cooking line [KOOKLIJN] except Mici”). price null = not in FACTS.md → the tag shows [PRIJS] / [PREȚ]; the old site's €45 / €10 stay out until the owners confirm them (FACTS „Known prices”). `week` = ids into `items`. Units: kg · pers · colli · stuk · liter. Stage 5 (Claude Code, 07.10, the bestelbon): the old site's other priced lines added from docs/data/old-site-catalogue.json [OBSERVED] 06.10 — NL names as the old site printed them (a „(…)” part becomes the line; colli lines = their contents), prices null (FACTS: the old prices wait for the owners), RO names/lines = lexicon §6 table verbatim (stage 5 revision, 07.10); three categories from the catalogue (tapas · warm · dessert, its NL/RO names). `min` = smallest order (gourmet/fondue „vanaf 2 personen”, docs/order-flow.md §4); `step` (optional) overrides the unit default of src/lib/order-core.js; `orderOnly` = sold through the bestelbon, not shown on /producten (the five other colli wait for /colli-vleespakketten, stage 10). Stage 9 revision (13.10): the RO cooking-line placeholder is [GĂTIRE] (lexicon §5.19 / §6), the NL one stays [KOOKLIJN]. Row 15a (Claude Code, 13.10): docs/data/price-list.json ([OWNER] 13.10, FACTS) poured in — prices and units of the 31 traiteur ids it shares with this file, the 20 new ids (NL / RO names as the file gives them) under tapas · warm · dessert, the traiteur rows in the brochure's order (tapas · hapjes · vleeshoofdgerechten · warme groenten · soep · broodjes · dessert); hapjes now per stuk; the seven vleeshoofdgerechten per portie (unit `portie`, the line „per portie van 200 g” / „porție de 200 g”); tapas schotels keep their persons as the line (RO with a hyphen). Still null → [PRIJS] / [PREȚ]: every per-kg row, mici, the six colli (not in the owners' list).",
+  "_source": "Stage 4 (Claude Code, 07.10; revised 07.10 after lexicon §5.19 + §6 „Product names RO”): the shape for /producten, the home's „Deze week op de toog” and the bestelbon (stage 5). `categories` = the sections of the canvas board Producten + BBQ & gourmet (D-13; the home's gourmet tag lives there, its page is a later stage); NL names = lexicon §2.2 / §4 / §5.15, RO = §6 „Product names RO” categories. `items` = the board's tags; NL names from the word bank §2.2 / §2.4 (search demand — NOT the confirmed assortment: Cowork replaces them from the owners' price list, stage 15), RO names = the §6 table verbatim. Colli Varken 1's line = its contents (§5.11 NL, §6 table RO; the old site's colli, [OBSERVED], to check with John). Mici's line = the lexicon's (§2.4 gloss NL, §6 product-card example RO — §5.19: „every cooking line [KOOKLIJN] except Mici”). price null = not in FACTS.md → the tag shows [PRIJS] / [PREȚ]; the old site's €45 / €10 stay out until the owners confirm them (FACTS „Known prices”). `week` = ids into `items`. Units: kg · pers · colli · stuk · liter. Stage 5 (Claude Code, 07.10, the bestelbon): the old site's other priced lines added from docs/data/old-site-catalogue.json [OBSERVED] 06.10 — NL names as the old site printed them (a „(…)” part becomes the line; colli lines = their contents), prices null (FACTS: the old prices wait for the owners), RO names/lines = lexicon §6 table verbatim (stage 5 revision, 07.10); three categories from the catalogue (tapas · warm · dessert, its NL/RO names). `min` = smallest order (gourmet/fondue „vanaf 2 personen”, docs/order-flow.md §4); `step` (optional) overrides the unit default of src/lib/order-core.js; `orderOnly` = sold through the bestelbon, not shown on /producten (the five other colli wait for /colli-vleespakketten, stage 10). Stage 9 revision (13.10): the RO cooking-line placeholder is [GĂTIRE] (lexicon §5.19 / §6), the NL one stays [KOOKLIJN]. Row 15a (Claude Code, 13.10): docs/data/price-list.json ([OWNER] 13.10, FACTS) poured in — prices and units of the 31 traiteur ids it shares with this file, the 20 new ids (NL / RO names as the file gives them) under tapas · warm · dessert, the traiteur rows in the brochure's order (tapas · hapjes · vleeshoofdgerechten · warme groenten · soep · broodjes · dessert); hapjes now per stuk; the seven vleeshoofdgerechten per portie (unit `portie`, the line „per portie van 200 g” / „porție de 200 g”); tapas schotels keep their persons as the line (RO with a hyphen). Still null → [PRIJS] / [PREȚ]: every per-kg row, mici, the six colli (not in the owners' list). Row 15 (Claude Code, 19.10, lexicon §5.30): the 15 per-kg rows keep `price` null with `priceInStore: true` (Dan 19.10 16:25: „prijs in de winkel”, no Offer); the six colli take the old site's prices, confirmed unchanged by the owners [OWNER] 19.10 (docs/data/owners-answers-2026-10-19.json `colli`).",
   "categories": [
     { "id": "rund", "name": { "nl": "Rund", "ro": "Vită" }
     },
@@ -29,6 +29,7 @@
         "ro": "[GĂTIRE]"
       },
       "price": null,
+      "priceInStore": true,
       "unit": "kg"
     },
     { "id": "entrecote", "category": "rund", "name": { "nl": "Entrecote", "ro": "Antricot de vită" },
@@ -37,6 +38,7 @@
         "ro": "[GĂTIRE]"
       },
       "price": null,
+      "priceInStore": true,
       "unit": "kg"
     },
     { "id": "stoofvlees", "category": "rund", "name": { "nl": "Stoofvlees", "ro": "Carne de vită pentru tocăniță" },
@@ -45,6 +47,7 @@
         "ro": "[GĂTIRE]"
       },
       "price": null,
+      "priceInStore": true,
       "unit": "kg"
     },
     { "id": "gehakt", "category": "rund", "name": { "nl": "Gehakt", "ro": "Carne tocată" },
@@ -53,6 +56,7 @@
         "ro": "[GĂTIRE]"
       },
       "price": null,
+      "priceInStore": true,
       "unit": "kg"
     },
     { "id": "varkenshaasje", "category": "varken", "name": { "nl": "Varkenshaasje", "ro": "Mușchiuleț de porc" },
@@ -61,6 +65,7 @@
         "ro": "[GĂTIRE]"
       },
       "price": null,
+      "priceInStore": true,
       "unit": "kg"
     },
     { "id": "spiering", "category": "varken", "name": { "nl": "Spiering", "ro": "Ceafă de porc" },
@@ -69,6 +74,7 @@
         "ro": "[GĂTIRE]"
       },
       "price": null,
+      "priceInStore": true,
       "unit": "kg"
     },
     { "id": "ribbetjes", "category": "varken", "name": { "nl": "Ribbetjes", "ro": "Coaste de porc" },
@@ -77,6 +83,7 @@
         "ro": "[GĂTIRE]"
       },
       "price": null,
+      "priceInStore": true,
       "unit": "kg"
     },
     { "id": "braadworst", "category": "varken", "name": { "nl": "Braadworst", "ro": "Cârnați proaspeți de porc" },
@@ -85,6 +92,7 @@
         "ro": "[GĂTIRE]"
       },
       "price": null,
+      "priceInStore": true,
       "unit": "kg"
     },
     { "id": "kipfilet", "category": "kip", "name": { "nl": "Kipfilet", "ro": "Piept de pui" },
@@ -93,6 +101,7 @@
         "ro": "[GĂTIRE]"
       },
       "price": null,
+      "priceInStore": true,
       "unit": "kg"
     },
     { "id": "kippenboutjes", "category": "kip", "name": { "nl": "Kippenboutjes", "ro": "Pulpe de pui" },
@@ -101,6 +110,7 @@
         "ro": "[GĂTIRE]"
       },
       "price": null,
+      "priceInStore": true,
       "unit": "kg"
     },
     { "id": "kalkoengebraad", "category": "kip", "name": { "nl": "Kalkoengebraad", "ro": "Friptură de curcan" },
@@ -109,6 +119,7 @@
         "ro": "[GĂTIRE]"
       },
       "price": null,
+      "priceInStore": true,
       "unit": "kg"
     },
     { "id": "lamsbout", "category": "lam", "name": { "nl": "Lamsbout", "ro": "Pulpă de miel" },
@@ -117,6 +128,7 @@
         "ro": "[GĂTIRE]"
       },
       "price": null,
+      "priceInStore": true,
       "unit": "kg"
     },
     { "id": "mici", "category": "roemeens", "name": { "nl": "Mici", "ro": "Mici" },
@@ -125,6 +137,7 @@
         "ro": "8 minute pe grătar încins, întorși o singură dată."
       },
       "price": null,
+      "priceInStore": true,
       "unit": "kg"
     },
     { "id": "gerookte-worst", "category": "roemeens", "name": { "nl": "Gerookte worst", "ro": "Cârnați afumați" },
@@ -133,6 +146,7 @@
         "ro": "[GĂTIRE]"
       },
       "price": null,
+      "priceInStore": true,
       "unit": "kg"
     },
     { "id": "pastrami", "category": "roemeens", "name": { "nl": "Pastrami", "ro": "Pastramă" },
@@ -141,6 +155,7 @@
         "ro": "[GĂTIRE]"
       },
       "price": null,
+      "priceInStore": true,
       "unit": "kg"
     },
     { "id": "colli-varken-1", "category": "colli", "name": { "nl": "Colli Varken 1", "ro": "Colli Porc 1" },
@@ -148,7 +163,7 @@
         "nl": "5 kg: spiering, filet kotelet, spek, worst, gehakt",
         "ro": "5 kg: ceafă, cotlet, piept de porc, cârnați, carne tocată"
       },
-      "price": null,
+      "price": 45,
       "unit": "colli",
       "featured": true
     },
@@ -163,7 +178,7 @@
         "nl": "6 kg: spiering, filet kotelet, spek, worst, burger, gehakt",
         "ro": "6 kg: ceafă, cotlet, piept de porc, cârnați, burgeri, carne tocată"
       },
-      "price": null,
+      "price": 55,
       "unit": "colli",
       "orderOnly": true
     },
@@ -172,7 +187,7 @@
         "nl": "5 kg: kipfilet, kip schnitzel, kip gyros, kip brochette, kippenboutjes",
         "ro": "5 kg: piept de pui, șnițel de pui, gyros de pui, frigărui de pui, pulpe de pui"
       },
-      "price": null,
+      "price": 50,
       "unit": "colli",
       "orderOnly": true
     },
@@ -181,7 +196,7 @@
         "nl": "6 kg: kipfilet, kip schnitzel, varkensgehakt, filet kotelet, spiering, spek",
         "ro": "6 kg: piept de pui, șnițel de pui, carne tocată de porc, cotlet, ceafă, piept de porc"
       },
-      "price": null,
+      "price": 60,
       "unit": "colli",
       "orderOnly": true
     },
@@ -190,7 +205,7 @@
         "nl": "5 kg: kip brochette, braadworst, mici, gemarineerd spek, gemarineerde ribbetjes",
         "ro": "5 kg: frigărui de pui, cârnați proaspeți, mici, piept de porc marinat, coaste marinate"
       },
-      "price": null,
+      "price": 55,
       "unit": "colli",
       "orderOnly": true
     },
@@ -199,7 +214,7 @@
         "nl": "10 kg: braadworst, varkensgehakt, burger, boomstammetjes, filet kotelet, kip gyros, kip brochette, kippenboutjes, kip schnitzel, kipfilet",
         "ro": "10 kg: cârnați proaspeți, carne tocată de porc, burgeri, rulouri de carne tocată (boomstammetjes), cotlet, gyros de pui, frigărui de pui, pulpe de pui, șnițel de pui, piept de pui"
       },
-      "price": null,
+      "price": 100,
       "unit": "colli",
       "orderOnly": true
     },

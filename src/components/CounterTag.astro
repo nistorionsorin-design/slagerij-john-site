@@ -27,6 +27,10 @@ export interface Props {
 const { name, line, price, unit, tone = 'paper', as: H = 'h3', id, thumb, locale = 'nl' } = Astro.props;
 const hasThumb = !!thumbOf(thumb);
 const placeholder = !!price && price.startsWith('[');
+// row 15 (lexicon §5.30): a price in words — „prijs in de winkel” / „op aanvraag” (RO „preț în magazin” / „la cerere”) —
+// is the owners' answer, not a figure: a smaller size that may wrap, so the name and the line keep their column at 390 px.
+// One-word prices (the board's ink „offerte”) keep the price size.
+const word = !!price && !placeholder && !/\d/.test(price) && price.trim().includes(' ');
 ---
 <article class:list={['tag', `tag--${tone}`, { 'tag--thumb': hasThumb }]} id={id}>
   <span class="tag__pin" aria-hidden="true"></span>
@@ -36,8 +40,8 @@ const placeholder = !!price && price.startsWith('[');
     {line && <p class="tag__line">{line}</p>}
   </div>
   {price && (
-    <p class="tag__price">
-      <span class:list={['tag__amount', { 'tag__amount--ph': placeholder }]}>{price}</span>
+    <p class:list={['tag__price', { 'tag__price--word': word }]}>
+      <span class:list={['tag__amount', { 'tag__amount--ph': placeholder, 'tag__amount--word': word }]}>{price}</span>
       {unit && <span class="tag__unit">{unit}</span>}
     </p>
   )}
@@ -80,6 +84,8 @@ const placeholder = !!price && price.startsWith('[');
   .tag__price { margin: 0; display: flex; align-items: baseline; gap: 3px; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .tag__amount { font-size: var(--fs-price); font-weight: 700; letter-spacing: -0.02em; color: var(--ox); }
   .tag__amount--ph { font-size: 20px; }
+  .tag__price--word { flex-wrap: wrap; justify-content: flex-end; max-width: 7.5em; white-space: normal; text-align: right; }
+  .tag__amount--word { font-size: 18px; line-height: 1.15; letter-spacing: -0.01em; }
   .tag__unit { font-size: var(--fs-caption); color: var(--muted); }
 
   .tag--thumb { grid-template-columns: auto 1fr auto; }

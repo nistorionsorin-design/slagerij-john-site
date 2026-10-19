@@ -38,7 +38,7 @@ export const productenNl = {
       { name: 'Parizer', sub: 'Roemeense specialiteiten' },
       { name: 'Gerookte worst', sub: 'Roemeense specialiteiten' },
     ],
-    line: 'Onze Roemeense specialiteiten maken we zelf: vers bereid, volgens ons eigen recept, met lokale producten.',
+    line: 'Onze Roemeense specialiteiten maken we zelf: vers bereid, volgens ons eigen recept, met Belgisch vlees.',
   },
 
   /** Roemeense section: eyebrow = §4 / §5.15 page name; heading = lexicon §7 GBP description
@@ -58,7 +58,7 @@ export const productenNl = {
   },
 
   /** §5.19 note under the grid; the date = the owners' price-list date (FACTS) */
-  note: 'Prijzen zoals aan de toog, bijgewerkt op [DATUM].',
+  note: 'De prijs per kilogram ziet u aan de toog; colli en schotels staan hier met hun prijs.', // row 15, lexicon §5.30
 
   /** order block: title + the two buttons = §5.19 (the secondary targets #colli, §5.19 addendum); the pickup,
    *  minimum, delivery and payment lines = §5.5 verbatim (payment = D6 → [BETALING]); label above the message =
@@ -68,7 +68,7 @@ export const productenNl = {
     pickup: 'Afhalen in de winkel, op het uur dat u kiest.',
     minimum: 'Geen minimumbestelling bij afhaling.',
     delivery: 'Gratis levering tot 10 km vanaf €50; tot 20 km vanaf €100; daarbuiten €1 per km. Levering maandag tot zaterdag vanaf 18:00.',
-    pay: 'Betalen bij afhaling: [BETALING]',
+    pay: 'Betalen bij afhaling: cash, Bancontact, Payconiq, Visa of Mastercard',
     msgLabel: 'WhatsApp-bericht',
     msg: 'Dag, ik wil graag bestellen bij Slagerij John:',
     cta: 'Bestel via WhatsApp',
@@ -117,7 +117,7 @@ export const productenRo = {
       { name: 'Parizer', sub: 'Specialități românești' },
       { name: 'Cârnați afumați', sub: 'Specialități românești' },
     ],
-    line: 'Specialitățile românești le facem noi, proaspăt preparate, după rețeta casei, din produse locale.',
+    line: 'Specialitățile românești le facem noi, proaspăt preparate, după rețeta casei, din carne belgiană.',
   },
 
   /** no §6 heading for these two sections: they carry the §6 category name (the pill), no eyebrow, no NL link */
@@ -131,7 +131,7 @@ export const productenRo = {
     title: 'Colli',
   },
 
-  note: 'Prețuri ca la tejghea, actualizate la [DATA].',
+  note: 'Prețul pe kilogram îl vezi la tejghea; pachetele și platourile au prețul aici.', // row 15, §5.30
 
   /** order block: title + primary = §6 Produse; secondary = the D-33 RO line („Comandă online” replaces „Vezi pachetele
    *  colli” → /ro/colli until that page exists); pickup / minimum / payment = §6 „Comandă”; delivery = §6 „Delivery”;
@@ -141,7 +141,7 @@ export const productenRo = {
     pickup: 'Ridicare din magazin, la ora pe care o alegi.',
     minimum: 'Fără comandă minimă la ridicare.',
     delivery: 'Livrăm gratuit până la 10 km la comenzi de la 50 € și până la 20 km de la 100 €. Peste 20 km, 1 € pe km. Luni-sâmbătă, de la 18:00.',
-    pay: 'Plata la ridicare: [PLATĂ]',
+    pay: 'Plata la ridicare: numerar, Bancontact, Payconiq, Visa sau Mastercard',
     msgLabel: 'Mesaj WhatsApp',
     msg: 'Bună, aș vrea să comand la Măcelăria John:',
     cta: 'Comandă pe WhatsApp',
