@@ -11,7 +11,8 @@
 // Data: src/data/recipes.json. Strings: src/i18n/recepten.ts. One view, two pages: src/pages/recepten.astro and
 // src/pages/ro/retete.astro.
 // JSON-LD: BreadcrumbList (§8.4) + one Recipe per card (§8 bank entry, row 17): name, image, recipeIngredient[],
-// recipeInstructions HowToStep[], totalTime ISO 8601, recipeYield, recipeCuisine, author = the shop's @id, inLanguage;
+// recipeInstructions HowToStep[], totalTime ISO 8601, recipeYield, recipeCuisine, inLanguage; 19.10 17:3x: description,
+// recipeCategory, author = a plain Organization (the shop's @id stays the publisher);
 // no aggregateRating (D-10).
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
@@ -41,6 +42,8 @@ type Recipe = {
   focalX: number;
   focalY: number;
   alt: Record<Locale, string>;
+  description: Record<Locale, string>;
+  category: Record<Locale, string>;
   nl: Side;
   ro: Side;
   wa: Record<Locale, string>;
@@ -90,6 +93,8 @@ const cards = await Promise.all(
       id: r.id,
       origin: t.origin[r.origin],
       title: s.title,
+      description: r.description[locale],
+      category: r.category[locale],
       meta: `${keepUnits(s.time)} · ${s.persons} ${t.persons}`,
       yieldText: `${s.persons} ${t.persons}`,
       ingredients: s.ingredients.map(keepUnits),
@@ -105,7 +110,10 @@ const cards = await Promise.all(
   }),
 );
 
+// author (lexicon §5.29 „Recipe JSON-LD”, 19.10 17:3x): a plain Organization — the Rich Results Test rejects the
+// ButcherShop type for a Recipe's author; the shop's @id stays the publisher
 const shop = { '@id': `${origin}/#shop` };
+const author = { '@type': 'Organization', name: 'Slagerij John', url: `${origin}/` };
 const jsonld = [
   {
     '@type': 'BreadcrumbList',
@@ -119,10 +127,12 @@ const jsonld = [
     '@id': `${origin}${path}#${c.id}`,
     url: `${origin}${path}#${c.id}`,
     name: c.title,
+    description: c.description,
     image: [c.pic.ld],
-    author: shop,
+    author,
     publisher: shop,
     inLanguage: ro ? 'ro-BE' : 'nl-BE',
+    recipeCategory: c.category,
     recipeCuisine: c.cuisine,
     totalTime: c.totalTime,
     recipeYield: c.yieldText,
@@ -161,7 +171,10 @@ const clock = '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
                   <p class="rc__badge">{c.origin}</p>
                   <p class="rc__meta"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={clock} />{c.meta}</p>
                 </div>
-                <h2 class="rc__title" id={`${c.id}-title`}>{c.title}</h2>
+                <div class="rc__head">
+                  <h2 class="rc__title" id={`${c.id}-title`}>{c.title}</h2>
+                  <p class="rc__desc">{c.description}</p>
+                </div>
                 <div class="rc__block">
                   <h3 class="rc__h">{t.ingredients}</h3>
                   <ul class="rc__ing">
@@ -218,7 +231,10 @@ const clock = '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
   }
   .rc__meta { margin: 0; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
   .rc__meta svg { width: 16px; height: 16px; flex: 0 0 auto; }
+  .rc__head { display: flex; flex-direction: column; gap: 6px; }
   .rc__title { margin: 0; font-size: 24px; line-height: 1.1; letter-spacing: -0.01em; }
+  /* §5.29 17:3x: the recipe's one-line description, small under the title (one sentence; it wraps on the phone) */
+  .rc__desc { margin: 0; font-size: 14px; line-height: 1.4; color: var(--muted); max-width: 52ch; }
   .rc__block { display: flex; flex-direction: column; gap: 8px; }
   .rc__h { margin: 0; font-family: var(--f-ui); font-size: var(--fs-eyebrow); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ox); }
   .rc__ing { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; font-size: 15px; line-height: 1.4; }

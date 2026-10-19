@@ -1,5 +1,5 @@
 {
- "_source": "Poured 19.10 (row 17) from docs/data/recipes.json (Cowork owns the source; lexicon §5.29). photo = src/assets/recepten/<id>.jpg, cropped 4:3 at focalX/focalY from assets/raw/recepten/ (entrecote, ribbetjes: the *-crop.jpg). Spiering dropped 19.10: 14 recipes.",
+ "_source": "Poured 19.10 (row 17) from docs/data/recipes.json (Cowork owns the source; lexicon §5.29). photo = src/assets/recepten/<id>.jpg, cropped 4:3 at focalX/focalY from assets/raw/recepten/ (entrecote, ribbetjes: the *-crop.jpg). description + category added 19.10 17:3x (lexicon §5.29 „Recipe JSON-LD”). Spiering dropped 19.10: 14 recipes.",
  "recipes": [
   {
    "id": "rundsgebraad",
@@ -10,6 +10,14 @@
    "alt": {
     "nl": "Rosé gesneden rundvlees op een bedje sla",
     "ro": "Carne de vită rozé, feliată, pe frunze de salată"
+   },
+   "description": {
+    "nl": "Rundsgebraad uit de oven, rosé gesneden: het zondagse gebraad zoals in Vlaanderen.",
+    "ro": "Friptură de vită la cuptor, feliată rozé: friptura de duminică, ca în Flandra."
+   },
+   "category": {
+    "nl": "Hoofdgerecht",
+    "ro": "Fel principal"
    },
    "nl": {
     "title": "Rosbief op z'n Vlaams",
@@ -64,6 +72,14 @@
     "nl": "Gegrilde entrecote met grillstrepen, op een houten plank",
     "ro": "Antricot la grătar, cu dungi de la grătar, pe o planșetă de lemn"
    },
+   "description": {
+    "nl": "Entrecote in de pan gebakken, met zelfgemaakte kruidenboter, klaar in 20 minuten.",
+    "ro": "Antricot la tigaie, cu unt aromat făcut în casă, gata în 20 de minute."
+   },
+   "category": {
+    "nl": "Hoofdgerecht",
+    "ro": "Fel principal"
+   },
    "nl": {
     "title": "Entrecote met kruidenboter",
     "time": "20 min",
@@ -117,6 +133,14 @@
     "nl": "Stoverij van rundvlees in een oranje stoofpotje",
     "ro": "Tocăniță de vită într-o oală portocalie"
    },
+   "description": {
+    "nl": "Vlaamse stoverij: rundvlees drie uur zacht gestoofd in bruin bier.",
+    "ro": "Tocăniță flamandă: carne de vită gătită încet trei ore în bere brună."
+   },
+   "category": {
+    "nl": "Hoofdgerecht",
+    "ro": "Fel principal"
+   },
    "nl": {
     "title": "Vlaamse stoverij met bruin bier",
     "time": "3 u",
@@ -169,6 +193,14 @@
    "alt": {
     "nl": "Doorgesneden gehaktschijf op een blauw bord, met puree",
     "ro": "Chiftea tăiată în două, pe o farfurie albastră, cu piure"
+   },
+   "description": {
+    "nl": "Roemeense chiftele: gehaktballetjes met look en peterselie, goudbruin gebakken.",
+    "ro": "Chiftele ca acasă, din carne tocată cu usturoi și pătrunjel, rumenite în tigaie."
+   },
+   "category": {
+    "nl": "Hoofdgerecht",
+    "ro": "Fel principal"
    },
    "nl": {
     "title": "Chiftele, zoals in Roemenië",
@@ -225,6 +257,14 @@
     "nl": "Rosé varkenshaasje met een romige saus en gebakken aardappeltjes",
     "ro": "Mușchiuleț de porc rozé, cu sos de smântână și cartofi rumeniți"
    },
+   "description": {
+    "nl": "Varkenshaasje rondom aangebraden, met een saus van graanmosterd.",
+    "ro": "Mușchiuleț de porc rumenit în tigaie, cu sos de muștar boabe."
+   },
+   "category": {
+    "nl": "Hoofdgerecht",
+    "ro": "Fel principal"
+   },
    "nl": {
     "title": "Varkenshaasje met graanmosterdsaus",
     "time": "35 min",
@@ -279,6 +319,14 @@
    "alt": {
     "nl": "Geglaceerde ribbetjes, in stukken gesneden op een snijplank",
     "ro": "Coaste glazurate, tăiate bucăți pe o planșetă"
+   },
+   "description": {
+    "nl": "Ribbetjes eerst zacht voorgegaard in de oven, dan op de BBQ gelakt met honing en mosterd.",
+    "ro": "Coaste gătite încet la cuptor, apoi glazurate pe grătar cu miere și muștar."
+   },
+   "category": {
+    "nl": "Hoofdgerecht",
+    "ro": "Fel principal"
    },
    "nl": {
     "title": "Ribbetjes van de BBQ met honing-mosterd",
@@ -335,6 +383,14 @@
     "nl": "Braadworsten uit de oven, op een bakplaat",
     "ro": "Cârnați proaspeți scoși din cuptor, pe o tavă"
    },
+   "description": {
+    "nl": "Braadworst met stoemp van aardappel en wortel: Vlaamse kost voor elke dag.",
+    "ro": "Cârnați proaspeți cu stoemp, piureul flamand de cartofi și morcovi."
+   },
+   "category": {
+    "nl": "Hoofdgerecht",
+    "ro": "Fel principal"
+   },
    "nl": {
     "title": "Braadworst met stoemp",
     "time": "40 min",
@@ -387,6 +443,14 @@
    "alt": {
     "nl": "Gegrilde kipfilet in plakjes op een leisteen",
     "ro": "Piept de pui la grătar, feliat, pe o placă de ardezie"
+   },
+   "description": {
+    "nl": "Kipfilet uit de oven met tijm, citroen en look, sappig in 35 minuten.",
+    "ro": "Piept de pui la cuptor cu cimbru, lămâie și usturoi, suculent în 35 de minute."
+   },
+   "category": {
+    "nl": "Hoofdgerecht",
+    "ro": "Fel principal"
    },
    "nl": {
     "title": "Kipfilet uit de oven met tijm en citroen",
@@ -443,6 +507,14 @@
     "nl": "Krokant gebraden kippenboutjes op een bord",
     "ro": "Pulpe de pui rumenite și crocante, pe o farfurie"
    },
+   "description": {
+    "nl": "Kippenboutjes uit de oven met paprika en look, krokant van buiten.",
+    "ro": "Pulpe de pui la cuptor cu boia și usturoi, crocante la exterior."
+   },
+   "category": {
+    "nl": "Hoofdgerecht",
+    "ro": "Fel principal"
+   },
    "nl": {
     "title": "Kippenboutjes uit de oven met look",
     "time": "1 u",
@@ -497,6 +569,14 @@
    "alt": {
     "nl": "Gebraden kalkoen in een ovenschaal",
     "ro": "Curcan copt într-o tavă"
+   },
+   "description": {
+    "nl": "Kalkoengebraad met veenbessensaus, voor zes personen aan de feesttafel.",
+    "ro": "Friptură de curcan cu sos de merișoare, pentru șase persoane, la masa de sărbătoare."
+   },
+   "category": {
+    "nl": "Hoofdgerecht",
+    "ro": "Fel principal"
    },
    "nl": {
     "title": "Kalkoengebraad met veenbessen",
@@ -553,6 +633,14 @@
     "nl": "Rosé lamsvlees aan het bot, met gegrilde groenten",
     "ro": "Carne de miel rozé, cu os, cu legume la grătar"
    },
+   "description": {
+    "nl": "Lamsbout met knoflook en rozemarijn, in de oven gebraden en rosé gesneden.",
+    "ro": "Pulpă de miel cu usturoi și rozmarin, friptă la cuptor și feliată rozé."
+   },
+   "category": {
+    "nl": "Hoofdgerecht",
+    "ro": "Fel principal"
+   },
    "nl": {
     "title": "Lamsbout met knoflook en rozemarijn",
     "time": "2 u",
@@ -608,6 +696,14 @@
     "nl": "Mici van de grill op sla, met rode ui en paprika",
     "ro": "Mici la grătar pe salată, cu ceapă roșie și ardei"
    },
+   "description": {
+    "nl": "Roemeense mici van de grill, met mosterd en vers brood: klaar in een kwartier.",
+    "ro": "Mici la grătar cu muștar și pâine proaspătă, gata într-un sfert de oră."
+   },
+   "category": {
+    "nl": "Hoofdgerecht",
+    "ro": "Fel principal"
+   },
    "nl": {
     "title": "Mici met mosterd en brood",
     "time": "15 min",
@@ -658,6 +754,14 @@
    "alt": {
     "nl": "Gerookte worst met frietjes en koolsla",
     "ro": "Cârnați afumați cu cartofi prăjiți și salată de varză"
+   },
+   "description": {
+    "nl": "Gerookte worst gestoofd met witte bonen, een Roemeense klassieker.",
+    "ro": "Fasole cu cârnați afumați, un clasic românesc."
+   },
+   "category": {
+    "nl": "Hoofdgerecht",
+    "ro": "Fel principal"
    },
    "nl": {
     "title": "Gerookte worst met witte bonen",
@@ -713,6 +817,14 @@
    "alt": {
     "nl": "Pastrami, deels in dunne plakken gesneden, op een plank",
     "ro": "Pastramă, parțial feliată subțire, pe o planșetă"
+   },
+   "description": {
+    "nl": "Pastrami dun gesneden op geroosterd brood, met mosterd en zure augurk.",
+    "ro": "Pastramă feliată subțire pe pâine prăjită, cu muștar și castraveți murați."
+   },
+   "category": {
+    "nl": "Lunch",
+    "ro": "Gustare"
    },
    "nl": {
     "title": "Pastrami op brood met zure augurk",
