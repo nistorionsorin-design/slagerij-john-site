@@ -5,6 +5,8 @@
 // reference the WhatsApp text quotes. Every rule is src/lib/order-core.js — the same code the server runs.
 // Stage 7: ?menu=<param> shows that seasonal menu's section on top; once a row of it is chosen, the days are the menu's
 // own (menus.json `pickup`) and the WhatsApp text opens with the menu's §5.10 message.
+// Row 18: ?product=<id> (a „Bestel” card on /producten) starts that row at its minimum quantity. Row 18b: it opens the
+// board fold the row sits in; the kg / stuk steppers show their reading („300 g”, „2 stuks”, D-48).
 import { readOrder, daysFor, dayLabel, money, qtyLabel, waText, newRef, qtyRule, toMin, menuOf, menuOpen, totalLabel } from '../lib/order-core.js';
 
 type Unit = 'kg' | 'pers' | 'colli' | 'stuk' | 'liter' | 'portie';
@@ -75,10 +77,10 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
         input.dispatchEvent(new Event('input', { bubbles: true }));
       });
     }
-    // a typed amount snaps to the rule when the field is left (1,2 kg → 1 kg; 1 pers. gourmet → 2)
+    // a typed amount snaps to the rule when the field is left (1,25 kg → 1,3 kg; 1 pers. gourmet → 2); to the gram (D-48)
     input.addEventListener('change', () => {
       const v = Number(input.value.replace(',', '.')) || 0;
-      input.value = v <= 0 ? '0' : String(Math.min(r.max, Math.max(r.min, Math.round(v / r.step) * r.step)));
+      input.value = v <= 0 ? '0' : String(+Math.min(r.max, Math.max(r.min, Math.round(v / r.step) * r.step)).toFixed(3));
       update();
     });
   }
@@ -268,11 +270,16 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
       return update();
     }
     for (const row of $$('.oi')) {
-      const q = Number($<HTMLInputElement>('.qty__in', row)!.value) || 0;
+      const qtyIn = $<HTMLInputElement>('.qty__in', row)!;
+      const q = Number(qtyIn.value) || 0;
       row.classList.toggle('is-on', q > 0);
+      // row 18b (D-48): the stepper's reading over the kg / stuk field — „300 g”, „1,2 kg”, „2 stuks” — while it is not
+      // being typed in (CSS); the field itself stays the number in kg or pieces
+      const reading = $('.qty__r', row);
+      if (reading) reading.textContent = q > 0 ? qtyLabel(q, byId.get(qtyIn.name.slice(2))!.unit, locale) : '';
     }
     const rows = [
-      ...order.lines.flatMap((l: { qty: number; unit: Unit; name: string; sum: number | null; inStore: boolean }) => [span(`${qtyLabel(l.qty, l.unit)} ${l.name}`), span(l.inStore ? t.slip.inStore : l.sum === null ? t.slip.priceTbc : money(l.sum, locale, true))]),
+      ...order.lines.flatMap((l: { qty: number; unit: Unit; name: string; sum: number | null; inStore: boolean }) => [span(`${qtyLabel(l.qty, l.unit, locale)} ${l.name}`), span(l.inStore ? t.slip.inStore : l.sum === null ? t.slip.priceTbc : money(l.sum, locale, true))]),
       ...order.requests.flatMap((r: string) => [span(`„${r}”`), span(t.slip.priceTbc)]),
     ];
     if (rows.length) slipLines.replaceChildren(...rows);
@@ -401,6 +408,25 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
     const panel = document.querySelector<HTMLElement>('[data-done]')!;
     panel.querySelector('[data-done-ref]')!.textContent = back;
     panel.querySelector<HTMLElement>('[data-done-ref-row]')!.hidden = false;
+  }
+
+  // row 18 (lexicon §5.19 20.10): a card's „Bestel” on /producten = ?product=<id>#n-<id>. The anchor brings the row into
+  // view without this script; with it the row's quantity starts at its minimum (1, or the row's `min`) and, once the page
+  // has loaded (the browser's own jump to the anchor resets the focus), the row is put in place under the sign and its
+  // „+” takes the focus — a button, so no phone keyboard opens. A quantity the browser restored is kept.
+  // Row 18b (D-47): a board row sits folded in „Meer rund / varken” — the fold opens first.
+  const asked = byId.get(new URLSearchParams(location.search).get('product') ?? '');
+  const askedQty = asked && field(`q-${asked.id}`);
+  const fold = askedQty ? askedQty.closest('details') : null;
+  if (fold) fold.open = true;
+  if (asked && askedQty && !(Number(askedQty.value) > 0)) {
+    askedQty.value = String(qtyRule(asked).min);
+    const land = () => setTimeout(() => {
+      document.getElementById(`n-${asked.id}`)?.scrollIntoView({ block: 'start', behavior: 'instant' });
+      askedQty.closest('.oi')?.querySelector<HTMLButtonElement>('.qty__b--more')?.focus({ preventScroll: true });
+    });
+    if (document.readyState === 'complete') land();
+    else addEventListener('load', land, { once: true });
   }
 
   syncMethod();

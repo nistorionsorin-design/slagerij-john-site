@@ -1,0 +1,51 @@
+---
+// AsPills — the sticky pill row of /producten + /ro/produse (row 18, D-41; design/css/assortment.css v1, `.as-pills`):
+// one <nav> of plain anchors, one per section of the page (the five per-kg sections of part 1, the five rubrics of
+// part 2), sticky under the fixed sign, sideways on the phone, wrapping on desktop. It replaces the stage-4 radio filter:
+// nothing is hidden, every pill is a jump. Its parent must be the element that holds all ten sections (sticky stays
+// inside its parent).
+// The scroll-spy (below; the file's own contract): one first-party module, ≤ 1 kB minified, an IntersectionObserver over
+// the ten sections — the first one in the band under the sign + the row lights its pill (`.is-active`, aria-current)
+// and scrolls only the row sideways to centre it (never the page). Without the script the pills are anchors. Nothing
+// animates but the row's own scroll, which reduced motion makes instant.
+export interface Props {
+  label: string;
+  items: { id: string; label: string }[];
+}
+const { label, items } = Astro.props;
+---
+<nav class="as-pills" aria-label={label}>
+  {items.map((p) => <a href={`#${p.id}`}>{p.label}</a>)}
+</nav>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('.as-pills');
+  if (nav && 'IntersectionObserver' in window) {
+    const pill = new Map<Element, HTMLAnchorElement>();
+    for (const a of nav.querySelectorAll('a')) {
+      const s = document.getElementById(a.hash.slice(1));
+      if (s) pill.set(s, a);
+    }
+    const seen = new Set<Element>();
+    let on: HTMLAnchorElement | undefined;
+    // the band starts 8 px under the line a jump lands on (the sections' scroll-margin-top = header + row + 8, assortment.css
+    // v1.1) — strictly below it, so the section above a jump target, whose foot touches that line, never counts as seen
+    const top = parseFloat(getComputedStyle([...pill.keys()][0] ?? nav).scrollMarginTop) + 8;
+    const io = new IntersectionObserver(
+      (es) => {
+        for (const e of es) e.isIntersecting ? seen.add(e.target) : seen.delete(e.target);
+        const s = [...pill.keys()].find((k) => seen.has(k));
+        const a = s && pill.get(s);
+        if (!a || a === on) return;
+        on?.classList.remove('is-active');
+        on?.removeAttribute('aria-current');
+        a.classList.add('is-active');
+        a.setAttribute('aria-current', 'true');
+        on = a;
+        nav.scrollTo({ left: a.offsetLeft - (nav.clientWidth - a.offsetWidth) / 2, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      },
+      { rootMargin: `-${top}px 0px -50% 0px` },
+    );
+    for (const s of pill.keys()) io.observe(s);
+  }
+</script>

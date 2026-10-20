@@ -125,18 +125,18 @@ export const daysFor = (method, hours, delivery, at, menu = null) =>
   menu ? menuDays(menu, method, hours, delivery, at)
     : method === 'delivery' ? deliveryDays(hours, delivery, at) : pickupDays(hours, delivery, at);
 
-/** Quantity rule of a product: kg in steps of 0,5 (min 0,5), everything else in whole units; products.json may set
- *  `min` (gourmet „vanaf 2 personen”) or `step`. */
+/** Quantity rule of a product: kg in steps of 100 g (min 100 g — D-48, row 18b; was 0,5 kg), everything else in whole
+ *  units; products.json may set `min` (gourmet „vanaf 2 personen”) or `step` (D-48: per stuk 1/1, per 100 g 0,1/0,1). */
 export function qtyRule(p) {
-  const step = p.step ?? (p.unit === 'kg' ? 0.5 : 1);
+  const step = p.step ?? (p.unit === 'kg' ? 0.1 : 1);
   return { step, min: p.min ?? step, max: p.unit === 'kg' ? 50 : 99 };
 }
-/** A wanted quantity snapped to the product's rule; 0 = not ordered. */
+/** A wanted quantity snapped to the product's rule; 0 = not ordered. Rounded to the gram, so 3 × 0,1 stays 0,3. */
 export function snapQty(p, q) {
   const n = Number(String(q ?? '').replace(',', '.'));
   if (!Number.isFinite(n) || n <= 0) return 0;
   const { step, min, max } = qtyRule(p);
-  return Math.min(max, Math.max(min, Math.round(n / step) * step));
+  return +Math.min(max, Math.max(min, Math.round(n / step) * step)).toFixed(3);
 }
 
 const dec = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
@@ -156,10 +156,13 @@ export function totalLabel(o, labels, cents = true) {
   return money(o.total, o.locale, cents);
 }
 
-/** The quantity as the message writes it: „2×” (colli, stuk, portie) · „1 kg” · „4 pers.” · „2 l”. */
-export function qtyLabel(q, unit) {
-  const n = String(q).replace('.', ',');
-  if (unit === 'kg') return `${n} kg`;
+/** The quantity as the slip, the mails, the WhatsApp message and the stepper's reading write it (D-48, row 18b; lexicon
+ *  §5.19 12:5x / §6 tabla, docs/data/owners-counter-list-2026-10-20.json `qty_display`): kg under 1 kg in grams „300 g”,
+ *  from 1 kg „1,2 kg” · pieces „2 stuks” / „1 stuk” (RO „2 buc.” / „1 buc.”) · „4 pers.” · „2 l” · „2×” (colli, portie). */
+export function qtyLabel(q, unit, locale = 'nl') {
+  const n = String(+Number(q).toFixed(3)).replace('.', ',');
+  if (unit === 'kg') return q < 1 ? `${Math.round(q * 1000)} g` : `${n} kg`;
+  if (unit === 'stuk') return locale === 'ro' ? `${n} buc.` : Number(q) === 1 ? '1 stuk' : `${n} stuks`;
   if (unit === 'pers') return `${n} pers.`;
   if (unit === 'liter') return `${n} l`;
   return `${n}×`;
@@ -304,7 +307,7 @@ export const addressLine = (a) => (a ? `${a.street} ${a.nr}, ${a.postcode} ${a.p
 
 /** One order line for the message: „2× Colli Varken 1 (€90)” · „1 kg Mici” (no price while it is unknown, nor for a row
  *  priced in the shop — row 15d: qty + unit, no price). */
-export const lineText = (l, locale) => `${qtyLabel(l.qty, l.unit)} ${l.name}${l.sum === null ? '' : ` (${money(l.sum, locale)})`}`;
+export const lineText = (l, locale) => `${qtyLabel(l.qty, l.unit, locale)} ${l.name}${l.sum === null ? '' : ` (${money(l.sum, locale)})`}`;
 
 /** The WhatsApp text (docs/order-flow.md §5), also the body of the shop's WhatsApp notification. Delivery adds the
  *  address after the moment; a free request goes in „…” among the lines. An order with menu rows opens with the menu's

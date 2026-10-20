@@ -89,6 +89,11 @@ export interface Product {
   orderable?: boolean;
   /** sold through the bestelbon only, not shown on /producten (its page is a later stage) */
   orderOnly?: boolean;
+  /** row 18b (D-47): a name of the owners' counter list — on /producten in the category's „Krijtbord”, not a tag; in the
+   *  bestelbon folded under „Meer rund (19)” / „Meer varken (31)” */
+  board?: boolean;
+  /** row 18b: a sub-group of the board (the pork board's „organen” = Orgaanvlees / Organe) */
+  group?: 'organen';
 }
 
 export interface Products {

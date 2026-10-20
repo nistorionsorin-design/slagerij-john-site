@@ -2,33 +2,29 @@
 // „Producten & prijzen” (07.10, incl. its 16:45 addendum) unless noted. What is still in [BRACKETS] waits for a fact
 // (gate: WARN in dev, FAIL under --release). /ro/produse (stage 9) = `productenRo`, lexicon §6 „Produse” + the D-33 RO
 // line (13.10), same keys.
+// Row 18 (20.10, D-41 · D-42): the whole assortment — lexicon §5.19 „20.10 — the whole assortment on this page” (NL) and
+// §6 „Produse, 20.10” (RO): the new lead and meta description, the sticky pill row (`pills`, replaces the stage-4 filter),
+// the two part heads (`toog` · `feest`; the §5.30 note moves up into `toog.line`), the five rubrics of part 2 (`rubrics`),
+// the row action and the wheel's hint (`card`), the byline's change note. Strings only from those two blocks.
 
-import { updatedOn } from '../lib/updated';
+import { updatedOn, ASSORTMENT_UPDATED } from '../lib/updated';
 
 export const productenNl = {
-  /** §5.19 meta (57 / 150) */
+  /** §5.19 meta: the title (57) stays; the description = §5.19 20.10 (154) */
   title: 'Vers vlees en prijzen per kg in Zwevezele | Slagerij John',
-  description: 'Dagvers vlees van rund, varken, kip en lam, prijzen per kg zoals aan de toog. Colli\'s, BBQ-pakketten en Roemeense specialiteiten. Bestel via WhatsApp.',
+  description: "Vers vlees per kg zoals aan de toog en het hele feestaanbod met prijs: colli's, gourmet, tapas, warme gerechten en dessert. Bestel via WhatsApp of online.",
 
   /** §5.19 */
   eyebrow: 'Producten & prijzen',
   h1: 'Vers vlees, prijzen per kilo.',
   accent: 'Zoals aan de toog.',
-  /** §5.19 lead, settled 07.10 16:55 */
-  lead: "Dagvers rund, varken, kip en lam, per kilo of per stuk — en onze Roemeense specialiteiten en colli's.",
+  /** §5.19 20.10 lead (replaces the 07.10 lead) */
+  lead: "Dagvers rund, varken, kip en lam, per kilo zoals aan de toog. En voor uw feest, met prijs: colli's, gourmet, tapas, warme gerechten en dessert.",
   /** §5.3 primary */
   order: 'Bestel via WhatsApp',
   /** §5.3 secondary beside it (row 8b, D-33) → the bestelbon */
   online: 'Bestel online',
   onlineHref: '/bestellen',
-
-  /** §5.19 category pills (settled 07.10 16:55) = a filter, „Alles” selected by default; one pill per section,
-   *  the label = the category name in products.json (the page renders them). The legend (screen readers only) =
-   *  §5.15 nav „Producten”. */
-  filter: {
-    legend: 'Producten',
-    all: 'Alles',
-  },
 
   /** lexicon §5.19 „Product cards under the head” (16.10 21:40, D-37 v5; tile 4 + the line under the tiles 17.10,
    *  D-37 v6): the group's hidden H2 (C-06) + the four tiles, in the order of photos.json `producten_head.tiles` */
@@ -43,6 +39,69 @@ export const productenNl = {
     line: 'Onze Roemeense specialiteiten maken we zelf: vers bereid, volgens ons eigen recept, met Belgisch vlees.',
   },
 
+  /** §5.19 20.10 pill row: plain anchors, one per section, in page order (the stage-4 filter and „Alles” retire); the
+   *  nav's accessible name = „Rubrieken” */
+  pills: {
+    label: 'Rubrieken',
+    items: [
+      { id: 'rund', label: 'Rund' },
+      { id: 'varken', label: 'Varken' },
+      { id: 'kip', label: 'Kip & kalkoen' },
+      { id: 'lam', label: 'Lam' },
+      { id: 'roemeens', label: 'Roemeense specialiteiten' },
+      { id: 'colli', label: "Colli's" },
+      { id: 'gourmet', label: 'Gourmet & fondue' },
+      { id: 'tapas', label: 'Tapas & hapjes' },
+      { id: 'warm', label: 'Warm & soepen' },
+      { id: 'dessert', label: 'Dessert' },
+    ],
+  },
+
+  /** §5.19 20.10 part 1 head; its line = the §5.30 note, moved up from under the grid (under the grid: nothing) */
+  toog: {
+    eyebrow: 'Aan de toog',
+    title: 'Per kilo, zoals aan de toog.',
+    line: 'De prijs per kilogram ziet u aan de toog; colli en schotels staan hier met hun prijs.',
+  },
+  /** §5.19 20.10 part 2 head */
+  feest: {
+    eyebrow: 'Feest & traiteur',
+    title: 'Alles voor uw feest, met prijs.',
+    line: 'Per schotel, per stuk, per persoon of per portie. Bestel online of via WhatsApp, een dag vooraf.',
+  },
+  /** §5.19 20.10 the five rubrics, in page order: name · note; `under` = the line under the rows, `more` = its link.
+   *  The colli rubric's „Alle colli's en vleespakketten” → /colli-vleespakketten comes with row 10d (never a link to a
+   *  page that does not exist yet). */
+  rubrics: {
+    colli: { name: "Colli's", note: '5 tot 10 kg, op bestelling' },
+    gourmet: {
+      name: 'Gourmet & fondue',
+      note: 'per persoon, vanaf 2 personen',
+      under: 'BBQ-pakket per persoon en barbecue aan huis met kok: op aanvraag.',
+      more: { label: 'Meer over BBQ & gourmet', href: '/bbq-pakketten' },
+    },
+    tapas: { name: 'Tapas & hapjes', note: 'per schotel of per stuk' },
+    warm: { name: 'Warme gerechten & soepen', note: 'per portie van 200 g · soep per liter' },
+    dessert: { name: "Dessert & extra's", note: 'per persoon of per stuk' },
+  },
+  /** §5.19 20.10 a card of part 2: the action („Bestel” → its bestelbon row) and the phone-only hint under each wheel;
+   *  `count` = the rubric's count for screen readers (design/css/assortment.css markup contract: „6 producten”) */
+  card: {
+    action: 'Bestel',
+    href: (id: string) => `/bestellen?product=${id}#n-${id}`,
+    hint: 'Veeg voor meer →',
+    count: (n: number) => `${n} producten`,
+  },
+  /** §5.19 „20.10 12:5x — the counter board” (row 18b, D-47): the Krijtbord under a per-kg category's tags — eyebrow,
+   *  the pork board's organ group (its first group = the category name), the line under every board + its WhatsApp link
+   *  (→ /wa?src=producten-board); the names = products.json `board` rows; the count's words = `card.count` */
+  board: {
+    eyebrow: 'Alles van de toog',
+    organen: 'Orgaanvlees',
+    foot: 'Prijs per kilo aan de toog. Tik op een naam om te bestellen.',
+    wa: 'Liever via WhatsApp? Stuur ons de naam en het gewicht.',
+  },
+
   /** Roemeense section: eyebrow = §4 / §5.15 page name; heading = lexicon §7 GBP description
    *  „Roemeense specialiteiten: mici, gerookte worst, pastrami.”, the list part; the RO link = the RO page name of
    *  /ro/mici-si-specialitati (§6), as on the home's grid (board: „și în română →”) */
@@ -52,20 +111,11 @@ export const productenNl = {
     roLabel: 'Mici și specialități',
     roHref: '/ro/mici-si-specialitati',
   },
-  /** Colli section (a summary, §5.19 „Scope of this page”): heading = lexicon §7 GBP services. Its „Alle colli's en
-   *  vleespakketten” link comes back with stage 10 (/colli-vleespakketten); until then the only colli link is the
-   *  order block's „Bekijk de colli's” → #colli. */
-  colli: {
-    title: "Colli's en vleespakketten",
-  },
 
-  /** §5.19 note under the grid; the date = the owners' price-list date (FACTS) */
-  note: 'De prijs per kilogram ziet u aan de toog; colli en schotels staan hier met hun prijs.', // row 15, lexicon §5.30
-
-  /** order block: title + the two buttons = §5.19 (the secondary targets #colli, §5.19 addendum); the pickup,
-   *  minimum, delivery and payment lines = §5.5 verbatim (payment = D6 → [BETALING]); label above the message =
-   *  §5.19 addendum; message = §5.10 home NL */
-  card: {
+  /** order block (unchanged in row 18): title + the two buttons = §5.19 (the secondary targets #colli — since row 18 the
+   *  colli rubric of part 2 — until row 10d builds /colli-vleespakketten); the pickup, minimum, delivery and payment
+   *  lines = §5.5 verbatim; label above the message = §5.19 addendum; message = §5.10 home NL */
+  orderCard: {
     title: 'Bestellen? Via WhatsApp of aan de toog.',
     pickup: 'Afhalen in de winkel, op het uur dat u kiest.',
     minimum: 'Geen minimumbestelling bij afhaling.',
@@ -80,34 +130,31 @@ export const productenNl = {
 
   /** FAQ heading = the home's (lexicon §5.15 „Home body strings”; board: eyebrow „Veelgestelde vragen”) */
   faq: 'Wat klanten ons vragen',
-  /** §5.13 byline with SITE_UPDATED (row 15c) and „prijslijst” as the change (§5.19 addendum) */
-  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl')}: prijslijst.`,
+  /** §5.13 byline: the date (row 15c; row 18: this page's own date while SITE_UPDATED is older) + §5.19 20.10's
+   *  change note */
+  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl', ASSORTMENT_UPDATED)}: het hele assortiment.`,
 
   /** BreadcrumbList (lexicon §8.4: „Home” + the page's name) */
   crumbs: { home: 'Home', page: 'Producten & prijzen' },
 };
 
-/** /ro/produse (stage 9) — lexicon §6 „Produse” (07.10) + „D-33 on the RO pages” (13.10), verbatim, keys of `productenNl`.
- *  Where §6 has no line of its own the page takes a §6 string already in use (noted per key). */
+/** /ro/produse (stage 9) — lexicon §6 „Produse” (07.10) + „D-33 on the RO pages” (13.10) + „Produse, 20.10” (row 18),
+ *  verbatim, keys of `productenNl`. Where §6 has no line of its own the page takes a §6 string already in use (noted
+ *  per key). */
 export const productenRo = {
-  /** §6 Produse meta (57 / 150) */
+  /** §6 Produse meta: the title (57) stays; the description = §6 „Produse, 20.10” (149) */
   title: 'Carne proaspătă, prețuri/kg în Zwevezele | Măcelăria John',
-  description: 'Vită, porc, pui și miel, proaspete zilnic, prețuri la kilogram ca la tejghea. Colli, pachete BBQ, mici și specialități românești. Comandă pe WhatsApp.',
+  description: 'Carne la kilogram, ca la tejghea, și tot pentru petrecere, cu preț: colli, gourmet, tapas, preparate calde și desert. Comandă pe WhatsApp sau online.',
 
   eyebrow: 'Produse și prețuri',
   h1: 'Carne proaspătă, prețuri la kilogram.',
   accent: 'Ca la tejghea.',
-  lead: 'Vită, porc, pui și miel, proaspete zilnic, la kilogram sau la bucată, plus specialitățile noastre românești și pachetele colli.',
+  /** §6 „Produse, 20.10” lead */
+  lead: 'Vită, porc, pui și miel, la kilogram, ca la tejghea. Iar pentru petrecere, cu preț: colli, gourmet, tapas, preparate calde și desert.',
   /** D-33 RO line: intro = Comandă pe WhatsApp + Comandă online → /ro/comanda */
   order: 'Comandă pe WhatsApp',
   online: 'Comandă online',
   onlineHref: '/ro/comanda',
-
-  /** §6 pills „Toate · Vită · …” (the names = products.json `name.ro`); legend = §6 nav „Produse” */
-  filter: {
-    legend: 'Produse',
-    all: 'Toate',
-  },
 
   /** lexicon §6 „Produse — the product cards under the head” (16.10 21:40, D-37 v5; tile 4 + the line under the cards
    *  17.10, D-37 v6), same keys as the NL cards */
@@ -122,23 +169,77 @@ export const productenRo = {
     line: 'Specialitățile românești le facem noi, proaspăt preparate, după rețeta casei, din carne belgiană.',
   },
 
-  /** no §6 heading for these two sections: they carry the §6 category name (the pill), no eyebrow, no NL link */
+  /** §6 „Produse, 20.10” rubrici (the pills), accessible name „Rubrici” */
+  pills: {
+    label: 'Rubrici',
+    items: [
+      { id: 'rund', label: 'Vită' },
+      { id: 'varken', label: 'Porc' },
+      { id: 'kip', label: 'Pui și curcan' },
+      { id: 'lam', label: 'Miel' },
+      { id: 'roemeens', label: 'Mici și specialități' },
+      { id: 'colli', label: 'Colli' },
+      { id: 'gourmet', label: 'Gourmet și fondue' },
+      { id: 'tapas', label: 'Tapas și aperitive' },
+      { id: 'warm', label: 'Calde și supe' },
+      { id: 'dessert', label: 'Desert' },
+    ],
+  },
+
+  /** §6 „Produse, 20.10” partea 1 (the line = §5.30) */
+  toog: {
+    eyebrow: 'La tejghea',
+    title: 'La kilogram, ca la tejghea.',
+    line: 'Prețul pe kilogram îl vezi la tejghea; pachetele și platourile au prețul aici.',
+  },
+  /** §6 „Produse, 20.10” partea 2 */
+  feest: {
+    eyebrow: 'Petreceri și catering',
+    title: 'Tot ce ai nevoie pentru petrecere, cu preț.',
+    line: 'La platou, la bucată, de persoană sau la porție. Comanzi online sau pe WhatsApp, cu o zi înainte.',
+  },
+  /** §6 „Produse, 20.10” rubricile; the colli rubric's „Toate pachetele colli” → /ro/colli comes with row 10d */
+  rubrics: {
+    colli: { name: 'Colli', note: '5 până la 10 kg, la comandă' },
+    gourmet: {
+      name: 'Gourmet și fondue',
+      note: 'de persoană, de la 2 persoane',
+      under: 'Pachet BBQ de persoană și grătar la domiciliu cu bucătar: la cerere.',
+      more: { label: 'Mai multe despre grătar și gourmet', href: '/ro/gratar' },
+    },
+    tapas: { name: 'Tapas și aperitive', note: 'la platou sau la bucată' },
+    warm: { name: 'Preparate calde și supe', note: 'porție de 200 g · supa la litru' },
+    dessert: { name: 'Desert și extra', note: 'de persoană sau la bucată' },
+  },
+  /** §6 „Produse, 20.10” acțiunea rândului + the wheel's hint (§5.19 / §6 „Catering, 20.10”); `count` = the
+   *  screen-reader count — no §6 line of its own: „produse” (the page's own word) with the RO numeral rule (≥ 20 takes
+   *  „de”), flagged in the row-18 report for Cowork */
+  card: {
+    action: 'Comandă',
+    href: (id: string) => `/ro/comanda?product=${id}#n-${id}`,
+    hint: 'Glisează pentru mai multe →',
+    count: (n: number) => (n % 100 === 0 || n % 100 >= 20 ? `${n} de produse` : `${n} produse`),
+  },
+  /** §6 „Produse, 20.10 — tabla” (row 18b) → /wa?src=ro-produse-board */
+  board: {
+    eyebrow: 'Tot ce avem la tejghea',
+    organen: 'Organe',
+    foot: 'Prețul pe kilogram la tejghea. Apasă pe un nume ca să comanzi.',
+    wa: 'Preferi WhatsApp? Trimite-ne numele și cantitatea.',
+  },
+
+  /** no §6 heading for this section: it carries the §6 category name (the pill), no eyebrow, no NL link */
   roemeens: {
     eyebrow: '',
     title: 'Mici și specialități',
     roLabel: '',
     roHref: '',
   },
-  colli: {
-    title: 'Colli',
-  },
 
-  note: 'Prețul pe kilogram îl vezi la tejghea; pachetele și platourile au prețul aici.', // row 15, §5.30
-
-  /** order block: title + primary = §6 Produse; secondary = the D-33 RO line („Comandă online” replaces „Vezi pachetele
-   *  colli” → /ro/colli until that page exists); pickup / minimum / payment = §6 „Comandă”; delivery = §6 „Delivery”;
-   *  label = §6 „Mesaj WhatsApp”; message = §5.10 home RO */
-  card: {
+  /** order block (unchanged in row 18): title + primary = §6 Produse; secondary = the D-33 RO line („Comandă online”
+   *  → /ro/comanda); pickup / minimum / payment = §6 „Comandă”; delivery = §6 „Delivery”; label = §6 „Mesaj WhatsApp”;
+   *  message = §5.10 home RO */
+  orderCard: {
     title: 'Comanzi? Pe WhatsApp sau la tejghea.',
     pickup: 'Ridicare din magazin, la ora pe care o alegi.',
     minimum: 'Fără comandă minimă la ridicare.',
@@ -153,8 +254,8 @@ export const productenRo = {
 
   /** the RO FAQ heading of §6 „Acasă” / „Catering” */
   faq: 'Ce ne întreabă clienții',
-  /** §5.13 RO, as /ro/contact */
-  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro')}.`,
+  /** §5.13 RO, as /ro/contact, with §6 „Produse, 20.10”'s change note */
+  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro', ASSORTMENT_UPDATED)}: tot sortimentul.`,
   /** §8.4 with the §6 home crumb „Acasă” */
   crumbs: { home: 'Acasă', page: 'Produse și prețuri' },
 };

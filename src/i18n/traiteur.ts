@@ -17,7 +17,8 @@ export const traiteurNl = {
   eyebrow: 'Traiteur',
   h1: 'Traiteur in de regio Wingene, Tielt en Lichtervelde.',
   accent: 'Ook barbecue aan huis, met kok.',
-  lead: 'Traiteur voor uw feest: koude schotels, hapjes en buffetten, gourmet- en BBQ-pakketten, af te halen in Zwevezele of geleverd aan huis. En barbecue aan huis met kok, in de regio Wingene, Tielt, Lichtervelde en Roeselare.',
+  /** §5.21 lead; its last sentence „— en verder, tot 200 km” = 20.10, D-46 (owners' form `home_bbq.max_km` 200) */
+  lead: 'Traiteur voor uw feest: koude schotels, hapjes en buffetten, gourmet- en BBQ-pakketten, af te halen in Zwevezele of geleverd aan huis. En barbecue aan huis met kok, in de regio Wingene, Tielt, Lichtervelde en Roeselare — en verder, tot 200 km.',
   /** §5.3 primary (traiteur) → the form on this page; §5.3 secondary → tel: */
   primary: 'Vraag een offerte',
   call: 'Bel ons',
@@ -102,12 +103,13 @@ export const traiteurNl = {
     },
   },
 
-  /** §5.21 Regio: the towns as text (§2.5 = areaServed, never city pages, L-03); no kilometres */
+  /** §5.21 Regio: the towns as text (§2.5 = areaServed, never city pages, L-03); the closing line carries the 200 km of
+   *  D-46 (20.10) — the towns and areaServed unchanged */
   region: {
     eyebrow: 'Regio',
     line: 'Traiteur en barbecue aan huis in',
     towns: ['Wingene', 'Zwevezele', 'Lichtervelde', 'Ruddervoorde', 'Tielt', 'Ardooie', 'Pittem', 'Torhout', 'Beernem', 'Roeselare'],
-    closing: 'Verder weg? Vraag het ons.',
+    closing: 'Verder weg? Tot 200 km: vraag het ons.',
   },
 
   /** the head's anchor of the quote form */
@@ -131,7 +133,7 @@ export const traiteurRo: typeof traiteurNl = {
   eyebrow: 'Catering',
   h1: 'Catering românesc în Flandra de Vest.',
   accent: 'Botez, nuntă, aniversare sau un grătar cu bucătar, la tine acasă.',
-  lead: 'Traiteur, cum se spune aici, adică mâncare gătită la comandă pentru petreceri: platouri reci, aperitive și bufete, pachete gourmet și BBQ cu mici și cârnați de casă, de ridicat din Zwevezele sau livrate acasă. Și grătar la domiciliu cu bucătar, în zona Wingene, Tielt, Lichtervelde și Roeselare.',
+  lead: 'Traiteur, cum se spune aici, adică mâncare gătită la comandă pentru petreceri: platouri reci, aperitive și bufete, pachete gourmet și BBQ cu mici și cârnați de casă, de ridicat din Zwevezele sau livrate acasă. Și grătar la domiciliu cu bucătar, în zona Wingene, Tielt, Lichtervelde și Roeselare, și mai departe, până la 200 de km.', // 20.10, D-46 (§6 Catering)
   primary: 'Cere o ofertă',
   call: 'Sună-ne',
 
@@ -204,7 +206,7 @@ export const traiteurRo: typeof traiteurNl = {
     eyebrow: 'Zona',
     line: 'Traiteur și grătar la domiciliu în',
     towns: ['Wingene', 'Zwevezele', 'Lichtervelde', 'Ruddervoorde', 'Tielt', 'Ardooie', 'Pittem', 'Torhout', 'Beernem', 'Roeselare'],
-    closing: 'Mai departe? Întreabă-ne.',
+    closing: 'Mai departe? Până la 200 de km: întreabă-ne.', // 20.10, D-46 (§6 Catering)
   },
 
   /** §6 „Catering”: the form's anchor `#oferta` */

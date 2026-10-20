@@ -3,59 +3,56 @@
 // lead · open chip · WhatsApp · category pills) · photo · one section per category with its counter tags · the note ·
 // the order card · FAQ · byline. Strings: lexicon §5.19 (NL) / §6 „Produse” + the D-33 RO line (RO, stage 9).
 // One view, two pages: src/pages/producten.astro and src/pages/ro/produse.astro.
-// The pills are a filter (§5.19, „Alles” by default) without a script (the CSP and the gate allow no page script):
-// radio inputs, and `main:has(#f-x:checked)` hides the other sections; without :has every section stays visible.
-// A section that is the URL's #target („Bekijk de colli's”) shows whatever the filter says.
-// Desktop derived (D-30): intro left + photo right; each category = heading left, tags right (the home's „Deze week op
-// de toog” pattern); the order card in two columns; FAQ = the home's component.
-// Data: products.json (stage 4 shape; prices null → [PRIJS] until FACTS.md). Strings: src/i18n/producten.ts.
-// JSON-LD: BreadcrumbList (lexicon §8.4) + one Product per tag (§8.3; the offer's price only once FACTS.md has it).
-// Row 14 (16.10, Dan 15:35): the page photo is a frame loop that follows the chips (FrameLoop.astro, the hero's engine
-// reused; photos.json `producten`: 8 frames + `by_chip`); it replaces the single photo (hero frame 2) and the varken
-// section photo of 15:20.
-// D-37 v3 (16.10, Dan 17:01 „b for sure”, 17:13 „the ones appearing on the right just change like the other photos,
-// with Ken Burns”, 17:23 the chop as the ground; spec design/producten-hero.md): the page head is a dark print as on
-// /traiteur — an ink band, full bleed, the bone-in chop (#46, cut out, laid horizontal, RGBA) as a wide slab across its
-// right side, the spec's gradient darkening it only under the text column (it darkens, it does not desaturate), the
-// text column over the left (strings unchanged), and over the right part of the chop one fixed slot that shows one
-// product at a time (HeadSlot.astro: 43 → 42 → 40 → 30, the hero's frame engine). The chop zooms 1 → 1,04 over 30 s
-// (alternate); one pause (the hero's control) holds the head and the frame loop below (FrameLoop `pauseFor`); reduced
-// motion = still. The chop and product 1 are in the HTML at opacity 1, eager (D-12). The loop sits under the band: the
-// phone's 190 px slot as before, a 3 : 1 print across the container from 960; its frame 1 waits for `load` on this page
-// (`deferFirst`, Dan 16.10 after the first D-37 measurement: the head alone = LCP 2,6 s, with the loop's frame 1 2,9).
-// D-37 v4 (16.10, Dan): no full-bleed band any more — the head IS /traiteur's head (src/styles/print-head.css: the
-// contained print, radius, height, padding, type, buttons, gradient) with the chop as its ground and the slot in the
-// print's right column; the chips stay inside it; the loop under it has the print's width.
-// D-37 v4 §6 (16.10 21:26, Dan „take them out, they don't look good there, arrange them nicely down”): no slot in the
-// head any more — text column + the chop ground only; the four cut-outs stand in a counter row right under the head
-// (CounterRow.astro, same width, on the cream page), the loop below that.
-// D-37 v5 §7 (16.10 21:40, Dan 21:36 „in cards like in Traiteur … take out the big one below”): the counter row and the
-// chip-driven frame loop are gone (FrameLoop, its loader, the row; photos.json `producten` stays as data); under the
-// head four tiles on /traiteur's tile (ProductTiles.astro + src/styles/tiles.css), each a link to its chip.
-// D-37 v6 §8 (17.10, Dan 10:21 „the nice ken burns on the hero doesn't work”, 10:30–10:50): the head's ground is two
-// frames — the chop and the top of the pork pile — in a 24 s CSS loop (12 s each, 1,4 s crossfade, a Ken Burns
-// 1 → 1,14 with a small pan while each is up; ph-zoom 1 → 1,04 / 30 s is gone); the chop is the first frame and the LCP
-// image, at opacity 1 from first paint; reduced motion = the chop, still. The tiles become the light tinted pop-out
-// tiles B (ProductTiles.astro); tile 4 = Gerookte worst / Cârnați afumați; a line under them.
-// Row 14e (19.10, Dan 17:50 „on phone you can't see the producten background”; design/heroes-unify.md): the head is the
-// home's hero (PageHero.astro) — the chop and the pork top full screen on the phone, the sign over them, the home's scrim,
-// the text, chip, pause and buttons at the foot; the two frames crossfade on the home's rhythm (9 s a frame, the home's
-// Ken Burns 1 → 1,08; ph-kb is retired). The category pills leave the head: the first row under the hero, on paper.
+// Desktop derived (D-30): each category = heading left, tags right (the home's „Deze week op de toog” pattern); the
+// order card in two columns; FAQ = the home's component.
+// Data: products.json. Strings: src/i18n/producten.ts.
+// JSON-LD: BreadcrumbList (lexicon §8.4) + one Product per row (§8.3; an Offer only where a price shows).
+// History of the head (D-37 v3 … v6, row 14e): the head is the home's hero (PageHero.astro) — the chop and the pork top
+// full screen on the phone, the sign over them, the home's scrim, the text, chip, pause and buttons at the foot; the two
+// frames crossfade on the home's rhythm (9 s a frame, the home's Ken Burns 1 → 1,08). Under it the four tiles B
+// (ProductTiles.astro, D-37 v6) and their line.
+// Row 18 (20.10, D-41 · D-42 · D-44; lexicon §5.19 „20.10 — the whole assortment” + §6 „Produse, 20.10”; Dan's pick A3
+// „Wiel”, design/css/assortment.css v1 ported 1:1 as src/styles/assortment.css): the page is the whole assortment, all
+// 75 rows of products.json, in two parts on one page —
+//   · hero + tiles + their line, unchanged;
+//   · the sticky pill row (AsPills.astro: ten anchors, the scroll-spy; the stage-4 radio filter, its :has rules and
+//     „Alles” are gone — every section stays visible);
+//   · part 1 „Aan de toog” (head + the five per-kg sections, the 15 counter tags exactly as before; the §5.30 note moves
+//     up into the head's line, nothing under the grid);
+//   · part 2 „Feest & traiteur” (head + five rubric cards on paper: colli · gourmet · tapas · warm · dessert = the 60
+//     other rows in file order, `orderOnly` included). Each rubric is a sideways wheel of cards on the phone and a
+//     wrapping grid from 960; a card = the row's own item photo (D-34, 140 px) or an empty paper box of the same size ·
+//     name · line · price + unit · „Bestel”, the whole card one link to its bestelbon row (/bestellen?product=<id>#n-<id>,
+//     order.ts fills the quantity). The rubric head's print = the rubric's `level: section` photo, never on a card.
+//   · order block, FAQ (six items), byline — the order block unchanged (its secondary → #colli = the colli rubric until
+//     row 10d).
+// The pill row needs one parent that holds all ten sections (sticky stays inside its parent), so the parts share one
+// `.container` and the per-kg sections lost their own.
+// JSON-LD (row 18): one ItemList (`…#assortiment` / `…#sortiment`, numberOfItems 75, ListItem → the Product @id, url = the
+// row's anchor on this page) + the 75 Products; an Offer only where a price shows (S-03, D-39: „prijs in de winkel” has
+// none); the BBQ line under the gourmet rubric is text, no node.
 import ProductTiles from '../components/ProductTiles.astro';
 import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import CounterTag from '../components/CounterTag.astro';
+import AsPills from '../components/AsPills.astro';
+import Board from '../components/Board.astro';
+import Thumb from '../components/Thumb.astro';
 import Faq from '../components/Faq.astro';
 import WaIcon from '../components/WaIcon.astro';
 import photos from '../data/photos.json';
 import type { Product } from '../data/types';
-import { products, priceLabel, unitLabel } from '../lib/price';
+import { products, priceLabel, priceUnitLabel } from '../lib/price';
+import { thumbOf } from '../lib/thumbs';
+import { keepUnits } from '../lib/typo';
 import { wa, type Locale } from '../i18n/ui';
 import { productenT } from '../i18n/producten';
 import { receptenT } from '../i18n/recepten';
 import recipes from '../data/recipes.json';
 import '../styles/sections.css';
+import '../styles/assortment.css';
+import '../styles/board.css';
 
 export interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -67,14 +64,32 @@ const path = alternates[locale];
 const homePath = ro ? '/ro' : '/';
 const waSrc = (pos: string) => (ro ? `ro-produse-${pos}` : `producten-${pos}`);
 
-// the board's sections, in its order (§5.19 „Scope of this page”: everything sold by the kilo or the piece, colli's as a
-// summary); BBQ & gourmet — priced per person — has its own page; its item stays in products.json for the home's tag
-const onPage = ['rund', 'varken', 'kip', 'lam', 'roemeens', 'colli'];
-const cats = onPage.map((id) => {
+// part 1 „Aan de toog”: the per-kg sections, the counter tags as before; part 2 „Feest & traiteur”: the five rubrics
+const part1 = ['rund', 'varken', 'kip', 'lam', 'roemeens'];
+const part2 = ['colli', 'gourmet', 'tapas', 'warm', 'dessert'] as const;
+const rowsOf = (id: string) => products.items.filter((p) => p.category === id); // file order, orderOnly included
+// row 18b (D-47): a category's `board` rows (the owners' counter list) are not tags — they make its Krijtbord under the
+// tags, in groups (the pork board: Varken · Orgaanvlees)
+const cats = part1.map((id) => {
   const c = products.categories.find((x) => x.id === id);
   if (!c) throw new Error(`products.json: no category "${id}"`);
-  return { ...c, items: products.items.filter((p) => p.category === id && !p.orderOnly) }; // orderOnly: bestelbon only (stage 5)
+  const board = rowsOf(id).filter((p) => p.board);
+  const organen = board.filter((p) => p.group === 'organen');
+  const boardGroups = organen.length
+    ? [{ label: c.name[locale], items: board.filter((p) => !p.group) }, { label: t.board.organen, items: organen }]
+    : [{ items: board }];
+  return { ...c, items: rowsOf(id).filter((p) => !p.board), board, boardGroups };
 });
+const rubs = part2.map((id) => {
+  const items = rowsOf(id);
+  // the rubric head's print: the first `level: section` photo of the rubric (lexicon §5.19 20.10; colli: none)
+  const print = items.find((p) => thumbOf(p.id)?.level === 'section')?.id;
+  return { id, ...t.rubrics[id], items, print };
+});
+// every row of products.json is on the page, once
+const onPage = [...part1, ...part2];
+const missing = products.items.filter((p) => !onPage.includes(p.category));
+if (missing.length) throw new Error(`products.json: rows outside the page's sections: ${missing.map((p) => p.id).join(', ')}`);
 
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/producten/*.{jpg,jpeg,png,webp}', { eager: true });
 
@@ -101,22 +116,22 @@ const heroFrames = [
   { img: asset(headData.ground_b.src), alt: headData.ground_b.alt[locale], focalX: 50, focalY: 30, zoomX: 60, zoomY: 20, whole: { width: 96, top: 8 } },
 ];
 // spec §4: the lead goes under the hero when the text block covers more of it than the home's own (64,6 % at 390 × 844,
-// measured from the block's top to the hero's foot) — here 60,5 % NL / 65,5 % RO: it stays (row 14e [MEASURED-OURS]
-// local 19.10)
+// measured from the block's top — the chip row — to the hero's foot) — row 14e: 60,5 % NL / 65,5 % RO, it stayed; row 18's
+// lead (one line longer in NL, the same lines in RO) at 390 × 844: 62,9 % NL / 65,5 % RO — it stays (row 18 [MEASURED-OURS]
+// local, 20.10, the same script reading production's 60,5 / 65,5 first)
 const LEAD_BELOW = false;
 // the tiles under the head (spec §8.2): the four cut-outs in their order, the captions of lexicon §5.19 / §6 in the
-// same order; the link = its chip's radio, its href the section it stands for (Alles →
-// the list's first section)
+// same order; each tile links to the section it stands for (all four: #roemeens)
 const tiles = headData.tiles.map((x, i) => ({
   img: asset(x.src),
   alt: x.alt[locale],
   ...t.tiles.items[i],
-  chip: `f-${x.chip}`,
-  href: `#${x.chip === 'all' ? onPage[0] : x.chip}`,
+  href: `#${x.chip === 'all' ? part1[0] : x.chip}`,
 }));
 
-// JSON-LD (lexicon §8.3 / §8.4). The shop's @id is Base.astro's.
+// JSON-LD (lexicon §8.3 / §8.4 + the row-18 ItemList). The shop's @id is Base.astro's.
 const shop = { '@id': `${origin}/#shop` };
+const rowId = (p: Product) => `${origin}${path}#${p.id}`;
 const unitSpec = (p: Product) =>
   p.unit === 'kg'
     ? { unitCode: 'KGM', referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitCode: 'KGM' } }
@@ -125,17 +140,17 @@ const unitSpec = (p: Product) =>
       : { unitText: p.unit };
 // row 15 (lexicon §5.30): a row without a price — „prijs in de winkel” (priceInStore) — carries no Offer (S-03)
 const productLd = (p: Product, category: string) => {
-  const price = p.price === null ? null : { price: p.price.toFixed(2) };
+  const price = p.price === null || p.priceInStore ? null : { price: p.price.toFixed(2) };
   return {
     '@type': 'Product',
-    '@id': `${origin}${path}#${p.id}`,
+    '@id': rowId(p),
     name: p.name[locale],
     category,
     brand: { '@type': 'Brand', name: 'Slagerij John' },
     ...(price && {
       offers: {
         '@type': 'Offer',
-        url: `${origin}${path}#${p.id}`,
+        url: rowId(p),
         priceCurrency: 'EUR',
         ...price,
         priceSpecification: { '@type': 'UnitPriceSpecification', priceCurrency: 'EUR', ...price, ...unitSpec(p) },
@@ -145,6 +160,11 @@ const productLd = (p: Product, category: string) => {
     }),
   };
 };
+// in page order: each category's tags, then its board names (row 18b: name-only Products, no Offer — priceInStore)
+const rows = [
+  ...cats.flatMap((c) => [...c.items, ...c.boardGroups.flatMap((g) => g.items)].map((p) => ({ p, category: c.name[locale] }))),
+  ...rubs.flatMap((r) => r.items.map((p) => ({ p, category: r.name }))),
+];
 const jsonld = [
   {
     '@type': 'BreadcrumbList',
@@ -153,7 +173,14 @@ const jsonld = [
       { '@type': 'ListItem', position: 2, name: t.crumbs.page, item: `${origin}${path}` },
     ],
   },
-  ...cats.flatMap((c) => c.items.map((p) => productLd(p, c.name[locale]))),
+  {
+    '@type': 'ItemList',
+    '@id': `${origin}${path}#${ro ? 'sortiment' : 'assortiment'}`,
+    name: t.crumbs.page,
+    numberOfItems: rows.length,
+    itemListElement: rows.map(({ p }, i) => ({ '@type': 'ListItem', position: i + 1, item: { '@id': rowId(p) }, url: rowId(p) })),
+  },
+  ...rows.map(({ p, category }) => productLd(p, category)),
 ];
 
 // row 17 (lexicon §5.29): a tag whose product has a recipe links to its card on /recepten
@@ -170,66 +197,97 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
       <a class="btn btn--secondary btn--lg" href={t.onlineHref}>{t.online}</a>
     </PageHero>
 
-    {/* the filter (row 14e): the first row under the hero, on paper */}
-    <div class="container pp-filter">
-      <fieldset class="pp-pills">
-        <legend class="vh">{t.filter.legend}</legend>
-        <input class="pp-pills__in" type="radio" name="pp-filter" id="f-all" checked />
-        <label class="pp-pill" for="f-all">{t.filter.all}</label>
-        {cats.map((c) => (
-          <>
-            <input class="pp-pills__in" type="radio" name="pp-filter" id={`f-${c.id}`} />
-            <label class="pp-pill" for={`f-${c.id}`}>{c.name[locale]}</label>
-          </>
-        ))}
-      </fieldset>
-    </div>
-
     <div class="container pp-tiles">
       <ProductTiles tiles={tiles} label={t.tiles.label} line={t.tiles.line} id="pp-tiles-title" />
     </div>
 
-    {cats.map((c) => {
-      const isRo = c.id === 'roemeens';
-      const colli = c.id === 'colli';
-      return (
-        <section class="pp-cat" id={c.id} aria-labelledby={`${c.id}-title`}>
-          <div class="container pp-cat__in">
-            <div class="pp-cat__head">
-              {isRo && t.roemeens.eyebrow && <p class="eyebrow">{t.roemeens.eyebrow}</p>}
-              <h2 class="pp-cat__title" id={`${c.id}-title`}>{isRo ? t.roemeens.title : colli ? t.colli.title : c.name[locale]}</h2>
-            </div>
-            <ul class="pp-cat__tags">
-              {c.items.map((p) => (
-                <li><CounterTag id={p.id} thumb={p.id} locale={locale} name={p.name[locale]} line={p.line?.[locale]} price={priceLabel(p, locale)} unit={unitLabel(p.unit, locale)} tone={p.featured ? 'ink' : 'paper'} recipe={withRecipe.has(p.id) ? { href: `${recipesPath}#${p.id}`, label: rt.tagLink } : undefined} /></li>
-              ))}
-            </ul>
-            {isRo && t.roemeens.roHref && <a class="pp-cat__more" href={t.roemeens.roHref} lang="ro" hreflang="ro">{t.roemeens.roLabel}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a>}
-          </div>
-        </section>
-      );
-    })}
+    {/* row 18: the pill row and both parts in one parent (the row sticks inside it) */}
+    <div class="container pp-as">
+      <AsPills label={t.pills.label} items={t.pills.items} />
 
-    <div class="container pp-note">
-      <p>{t.note}</p>
+      <section class="as-part" id="toog" aria-labelledby="toog-title">
+        <p class="as-part__eyebrow">{t.toog.eyebrow}</p>
+        <h2 class="as-part__title" id="toog-title">{t.toog.title}</h2>
+        <p class="as-part__line">{t.toog.line}</p>
+      </section>
+
+      {cats.map((c) => {
+        const isRo = c.id === 'roemeens';
+        return (
+          <section class="pp-cat as-target" id={c.id} aria-labelledby={`${c.id}-title`}>
+            <div class="pp-cat__in">
+              <div class="pp-cat__head">
+                {isRo && t.roemeens.eyebrow && <p class="eyebrow">{t.roemeens.eyebrow}</p>}
+                <h3 class="pp-cat__title" id={`${c.id}-title`}>{isRo ? t.roemeens.title : c.name[locale]}</h3>
+              </div>
+              <ul class="pp-cat__tags">
+                {c.items.map((p) => (
+                  <li><CounterTag as="h4" id={p.id} thumb={p.id} locale={locale} name={p.name[locale]} line={p.line?.[locale]} price={priceLabel(p, locale)} unit={priceUnitLabel(p, locale) || undefined} tone={p.featured ? 'ink' : 'paper'} recipe={withRecipe.has(p.id) ? { href: `${recipesPath}#${p.id}`, label: rt.tagLink } : undefined} /></li>
+                ))}
+              </ul>
+              {c.board.length > 0 && <Board id={c.id} title={c.name[locale]} eyebrow={t.board.eyebrow} groups={c.boardGroups} count={t.card.count} href={t.card.href} foot={t.board.foot} wa={{ label: t.board.wa, href: wa(waSrc('board')) }} locale={locale} />}
+              {isRo && t.roemeens.roHref && <a class="pp-cat__more" href={t.roemeens.roHref} lang="ro" hreflang="ro">{t.roemeens.roLabel}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a>}
+            </div>
+          </section>
+        );
+      })}
+
+      <section class="as-part" id="feest" aria-labelledby="feest-title">
+        <p class="as-part__eyebrow">{t.feest.eyebrow}</p>
+        <h2 class="as-part__title" id="feest-title">{t.feest.title}</h2>
+        <p class="as-part__line">{t.feest.line}</p>
+      </section>
+
+      <div class="as-rubs">
+        {rubs.map((r) => (
+          <section class="rub" id={r.id} aria-labelledby={`rub-${r.id}`}>
+            <div class="rub__head">
+              {r.print && <span class="rub__print"><Thumb id={r.print} locale={locale} variant="print" /></span>}
+              <h3 class="rub__title" id={`rub-${r.id}`}><span class="rub__name">{r.name}</span><span class="rub__note">{r.note}</span></h3>
+              <span class="rub__count"><span aria-hidden="true">{r.items.length}</span><span class="vh">{t.card.count(r.items.length)}</span></span>
+            </div>
+            <div class="wheel">
+              {r.items.map((p) => {
+                const own = thumbOf(p.id)?.level === 'item';
+                const line = p.line?.[locale];
+                return (
+                  <a class="card" id={p.id} href={t.card.href(p.id)}>
+                    {own ? <span class="card__img"><Thumb id={p.id} locale={locale} variant="card" /></span> : <span class="card__img card__img--none" aria-hidden="true"></span>}
+                    <span class="card__name">{p.name[locale]}</span>
+                    {line && <span class="card__line">{keepUnits(line)}</span>}
+                    <span class="card__price">
+                      {p.priceInStore
+                        ? <span class="card__p card__p--state">{priceLabel(p, locale)}</span>
+                        : <><span class="card__p">{priceLabel(p, locale)}</span><span class="card__u">{priceUnitLabel(p, locale)}</span></>}
+                    </span>
+                    <span class="card__btn">{t.card.action}</span>
+                  </a>
+                );
+              })}
+            </div>
+            <p class="wheel__hint" aria-hidden="true">{t.card.hint}</p>
+            {'under' in r && <p class="rub__under">{r.under} <a href={r.more.href}>{r.more.label}</a></p>}
+          </section>
+        ))}
+      </div>
     </div>
 
     <section class="container pp-order" aria-labelledby="pp-order-title">
       <div class="pp-card">
         <div class="pp-card__text">
-          <h2 class="pp-card__title" id="pp-order-title">{t.card.title}</h2>
-          <p class="pp-card__p">{t.card.pickup}</p>
-          <p class="pp-card__p">{t.card.minimum}</p>
-          <p class="pp-card__p">{t.card.delivery}</p>
-          <p class="pp-card__p pp-card__p--muted">{t.card.pay}</p>
+          <h2 class="pp-card__title" id="pp-order-title">{t.orderCard.title}</h2>
+          <p class="pp-card__p">{t.orderCard.pickup}</p>
+          <p class="pp-card__p">{t.orderCard.minimum}</p>
+          <p class="pp-card__p">{t.orderCard.delivery}</p>
+          <p class="pp-card__p pp-card__p--muted">{t.orderCard.pay}</p>
         </div>
         <div class="pp-card__act">
           <div class="pp-card__msg">
-            <p class="pp-card__label">{t.card.msgLabel}</p>
-            <p class="pp-card__text-msg">{t.card.msg}</p>
+            <p class="pp-card__label">{t.orderCard.msgLabel}</p>
+            <p class="pp-card__text-msg">{t.orderCard.msg}</p>
           </div>
-          <a class="btn btn--primary btn--lg btn--block" href={wa(waSrc('card'))}><WaIcon /><span>{t.card.cta}</span></a>
-          <a class="btn btn--secondary btn--lg btn--block" href={t.card.secondaryHref}>{t.card.secondary}</a>
+          <a class="btn btn--primary btn--lg btn--block" href={wa(waSrc('card'))}><WaIcon /><span>{t.orderCard.cta}</span></a>
+          <a class="btn btn--secondary btn--lg btn--block" href={t.orderCard.secondaryHref}>{t.orderCard.secondary}</a>
         </div>
       </div>
     </section>
@@ -248,44 +306,18 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 </script>
 
 <style>
-  /* ── phone = board Producten (390); the hero: PageHero.astro (row 14e) ── */
+  /* ── phone = board Producten (390); the hero: PageHero.astro (row 14e); the pill row, the part heads and the rubric
+     wheels: src/styles/assortment.css (row 18, ported 1:1) ── */
 
-  /* the chips (row 14e: under the hero, on paper): a hairline chip on the card colour, the chosen one ink with cream
-     text — the NL/RO switch's current segment */
-  .pp-filter { padding-top: 20px; }
-  .pp-pills { margin: 0; padding: 0; border: 0; min-width: 0; display: flex; flex-wrap: wrap; gap: 8px; }
-  /* the radio stays in the tab order (arrow keys move the choice); the label is what you see */
-  .pp-pills__in { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
-  .pp-pill {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--touch);
-    padding: 0 14px;
-    border-radius: var(--r-chip);
-    border: 1px solid var(--line);
-    background: var(--card);
-    color: var(--fg);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    user-select: none;
-  }
-  .pp-pills__in:checked + .pp-pill { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
-  .pp-pills__in:focus-visible + .pp-pill { outline: 2px solid var(--fg); outline-offset: 2px; }
-  @media (hover: hover) { .pp-pills__in:not(:checked) + .pp-pill:hover { border-color: var(--fg); } }
-
-  /* the filter: the chosen category only (a section that is the URL's #target — „Bekijk de colli's” — shows too) */
-  main:has(#f-rund:checked) .pp-cat:not(#rund):not(:target),
-  main:has(#f-varken:checked) .pp-cat:not(#varken):not(:target),
-  main:has(#f-kip:checked) .pp-cat:not(#kip):not(:target),
-  main:has(#f-lam:checked) .pp-cat:not(#lam):not(:target),
-  main:has(#f-roemeens:checked) .pp-cat:not(#roemeens):not(:target),
-  main:has(#f-colli:checked) .pp-cat:not(#colli):not(:target) { display: none; }
-
-  /* the tiles (spec §7): under the pills */
+  /* the tiles (spec §7): the first row under the hero */
   .pp-tiles { padding-top: 20px; }
 
-  .pp-cat { padding: 28px 0 8px; scroll-margin-top: 72px; }
+  /* row 18: the parts' common parent — the pill row sticks inside it */
+  .pp-as { padding-top: 20px; }
+  /* the card photo and the rubric print come from Thumb.astro as a <picture>: it fills the box assortment.css draws */
+  .card__img :global(picture), .rub__print :global(picture) { display: block; width: 100%; height: 100%; }
+
+  .pp-cat { padding: 28px 0 8px; }
   .pp-cat__in { display: flex; flex-direction: column; gap: 14px; }
   .pp-cat__head { display: flex; flex-direction: column; gap: 14px; }
   .pp-cat__title { margin: 0; font-size: 26px; line-height: 1.05; letter-spacing: -0.015em; }
@@ -304,10 +336,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
   .pp-cat__more svg { width: 16px; height: 16px; }
   @media (hover: hover) { .pp-cat__more:hover { color: var(--fg); } }
 
-  .pp-note { padding-top: 16px; }
-  .pp-note p { margin: 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
-
-  .pp-order { padding-top: 24px; }
+  .pp-order { padding-top: 32px; }
   .pp-card {
     display: flex;
     flex-direction: column;
@@ -338,12 +367,10 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 
   /* ── desktop (derived, D-30) ── */
   @media (min-width: 960px) {
-    .pp-filter { padding-top: 40px; }
-
-    /* the tiles under the pills */
     .pp-tiles { padding-top: 40px; }
+    .pp-as { padding-top: 40px; }
 
-    .pp-cat { padding: 0; scroll-margin-top: 80px; }
+    .pp-cat { padding: 0; }
     .pp-cat__in {
       display: grid;
       grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
@@ -355,15 +382,14 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
       padding-bottom: 40px;
       border-top: 1px solid var(--line);
     }
-    .pp-cat:first-of-type .pp-cat__in { margin-top: 40px; }
     .pp-cat__head { grid-area: head; gap: 14px; }
     .pp-cat__title { font-size: 36px; line-height: 1; letter-spacing: -0.02em; }
     .pp-cat__tags { grid-area: tags; gap: 12px; }
     .pp-cat__more { grid-area: more; }
+    /* row 18b: the Krijtbord under the tags, in the tags' column */
+    .pp-cat__in > :global(.board) { grid-column: 2; }
 
-    .pp-note { padding-top: 0; }
-    .pp-note p { padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; }
-    .pp-order { padding-top: 40px; }
+    .pp-order { padding-top: 56px; }
     .pp-card {
       display: grid;
       grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);

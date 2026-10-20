@@ -17,12 +17,13 @@ import OrderSlip from './OrderSlip.astro';
 import Thumb from './Thumb.astro';
 import { thumbOf } from '../lib/thumbs';
 import { keepUnits } from '../lib/typo';
-import { products, priceLabel, unitLabel } from '../lib/price';
+import { products, priceLabel, priceUnitLabel } from '../lib/price';
 import { menus, fillMenu } from '../lib/menu';
 import { qtyRule, fromMin, waText, menuRows, menuOpen, money } from '../lib/order-core.js';
 import { bestellenT } from '../i18n/bestellen';
 import type { Locale } from '../i18n/ui';
 import allergens from '../data/allergens.json';
+import '../styles/board.css';
 // stage 7b / row 15b: flags ?menu=… on <html> during parsing (no shift); the file says why it is a classic script
 import seasonJs from '../scripts/OrderForm.season.js?url';
 
@@ -61,6 +62,29 @@ const listsOf = (c: Group) =>
         .map((s) => ({ id: `${c.id}-${s.id}`, sub: s.name[locale], note: s.note?.[locale], lead: s.lead?.[locale], items: c.items.filter((p) => (p as Product & { section?: string }).section === s.id) }))
         .filter((l) => l.items.length)
     : [{ id: c.id, sub: undefined, note: undefined, lead: undefined, items: c.items }];
+// row 18b (D-47 · D1, design/css/board.css): a per-kg category's board rows (products.json `board`, the owners' counter
+// list) follow its tag rows, folded in one native <details class="ocat__more"> — „Meer rund (19)” / „Meer varken (31)”;
+// the pork fold holds two lists under their sub-headings, Varken · Orgaanvlees. The 15 tag rows and every traiteur row
+// stay as they are. A deep link (?product=<id>) opens the fold (order.ts). The summary's label and count share one span:
+// board.css lays the summary out space-between, so the bare text, the count and its „+” would spread into three columns.
+type List = ReturnType<typeof listsOf>[number];
+const foldLabel: Record<string, string | undefined> = { rund: t.products.more_rund, varken: t.products.more_varken };
+const blocksOf = (c: Group): { fold?: { label: string; n: number }; lists: List[] }[] => {
+  const lists = listsOf({ ...c, items: c.items.filter((p) => !p.board) });
+  const board = c.items.filter((p) => p.board);
+  if (!board.length) return [{ lists }];
+  const label = foldLabel[c.id];
+  if (!label) throw new Error(`bestellen.ts: no fold summary for the board rows of "${c.id}"`);
+  const main = board.filter((p) => !p.group);
+  const organen = board.filter((p) => p.group === 'organen');
+  const folded: List[] = organen.length
+    ? [
+        { id: `${c.id}-board`, sub: c.name[locale], note: undefined, lead: undefined, items: main },
+        { id: `${c.id}-organen`, sub: t.products.organen, note: undefined, lead: undefined, items: organen },
+      ]
+    : [{ id: `${c.id}-board`, sub: undefined, note: undefined, lead: undefined, items: main }];
+  return [{ lists }, { fold: { label, n: board.length }, lists: folded.filter((l) => l.items.length) }];
+};
 // row 15b (lexicon §5.22, 13.10): the eindejaar menu holds these groups' dishes as its own rows — under ?menu=<param>
 // they and their pills are hidden (one dish, one place); the colli and the per-kg groups follow the menu. Without ?menu=
 // nothing changes. OrderForm.season.js flags <html data-order-menu> before the pills are parsed, so nothing shifts.
@@ -128,7 +152,8 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
           <h3 class="ocat__title">{c.name[locale]}</h3>
           {c.menu && <p class="ocat__note" data-season-note hidden={!c.menu.open}>{c.menu.note}</p>}
           {c.menu && <p class="ocat__note ocat__note--closed" data-season-closed hidden={c.menu.open}>{c.menu.closed}</p>}
-          {listsOf(c).map((l) => (<>
+          {blocksOf(c).map((b) => {
+          const lists = b.lists.map((l) => (<>
           {l.sub && <h4 class="ocat__sub" id={`sub-${l.id}`}>{l.sub}{l.note && <span class="ocat__sub-note"> · {l.note}</span>}</h4>}
           {l.lead && <p class="ocat__note">{l.lead}</p>}
           <ul class="ocat__list" aria-labelledby={l.sub ? `sub-${l.id}` : undefined}>
@@ -149,13 +174,14 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
                   <div class="oi__foot">
                     <p class="oi__price">
                       <span class:list={['oi__amount', { 'oi__amount--ph': ph, 'oi__amount--store': p.priceInStore }]}>{priceLabel(p, locale)}</span>
-                      <span class="oi__unit">{unitLabel(p.unit, locale)}</span>
+                      {priceUnitLabel(p, locale) && <span class="oi__unit">{priceUnitLabel(p, locale)}</span>}
                     </p>
-                    <div class="qty">
+                    <div class="qty" data-r={p.unit === 'kg' || p.unit === 'stuk' || undefined}>
                       <button class="qty__b" type="button" data-step="-1" aria-label={`${t.products.less}: ${p.name[locale]}`} hidden>−</button>
                       <label class="vh" for={`q-${p.id}`}>{t.products.qty}: {p.name[locale]}</label>
                       <input class="qty__in" type="number" inputmode="decimal" id={`q-${p.id}`} name={`q-${p.id}`} value="0" min="0" max={r.max} step={r.step} data-min={r.min} />
                       {qtyUnit[p.unit] && <span class="qty__u" aria-hidden="true">{qtyUnit[p.unit]}</span>}
+                      {(p.unit === 'kg' || p.unit === 'stuk') && <span class="qty__r" aria-hidden="true"></span>}
                       <button class="qty__b qty__b--more" type="button" data-step="1" aria-label={`${t.products.more}: ${p.name[locale]}`} hidden>+</button>
                     </div>
                   </div>
@@ -163,7 +189,11 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
               );
             })}
           </ul>
-          </>))}
+          </>));
+          return b.fold
+            ? <details class="ocat__more"><summary><span>{b.fold.label} <span class="ocat__more-n">({b.fold.n})</span></span></summary>{lists}</details>
+            : lists;
+          })}
         </div>
       </>))}
 
@@ -406,7 +436,8 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
   .oi:has(> .thumb-pic) { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 10px 12px; align-items: center; }
   .oi:has(> .thumb-pic) > .oi__foot { grid-column: 1 / -1; }
   .oi:has(> .thumb-pic) > .oi__pin { top: 36px; }
-  .oi__name { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 19px; line-height: 1.1; }
+  /* row 18: the name is the landing anchor of /producten's „Bestel” (#n-<id>) — it lands clear of the fixed sign */
+  .oi__name { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 19px; line-height: 1.1; scroll-margin-top: 96px; }
   .oi__line { margin: 0; font-size: 12px; line-height: 1.35; color: var(--muted); }
   /* a long priced label („vanaf €10” / „de la 10 €”) keeps the stepper inside the card on a 390 px row: the price takes the
      room the stepper leaves and drops its unit under the amount; on a row narrower still, the stepper drops under the price */
@@ -458,6 +489,28 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
   .qty.is-live .qty__in { width: 44px; padding: 0; }
   .qty__u { padding-right: 8px; font-size: 11px; color: var(--muted); }
   .qty.is-live .qty__u { padding-right: 4px; margin-left: -4px; }
+  /* row 18b (D-48): a kg / stuk field gets its reading laid over it between − and + — „300 g”, „1,2 kg”, „2 stuks” (set by
+     order.ts with the slip's own words); typing in the field hides it, so the raw number (kg / pieces) is what you edit.
+     Empty (nothing chosen, or no script) = not shown. The field widens a little for „12 stuks”. */
+  .qty { position: relative; }
+  .qty.is-live[data-r] .qty__in { width: 64px; }
+  .qty__r {
+    position: absolute;
+    inset: 0 var(--touch);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card);
+    font-size: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--fg);
+    pointer-events: none;
+  }
+  .qty__r:empty, .qty__in:focus ~ .qty__r { display: none; }
+  /* row 18b: the board rows inside the fold keep the category's 10 px rhythm under the summary pill */
+  .ocat__more > .ocat__list { margin-top: 10px; }
 
   /* the free request */
   .or {

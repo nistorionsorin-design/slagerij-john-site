@@ -33,6 +33,11 @@ export const bestellenNl = {
     less: 'Minder', // aria
     more: 'Meer', // aria
     qty: 'Aantal', // the number field's label (screen readers)
+    /** row 18b (D-47, lexicon §5.19 „20.10 12:5x — the counter board”): the fold's summary per category (the count is
+     *  the live number of board rows) and the organ meats' sub-heading inside the pork fold */
+    more_rund: 'Meer rund',
+    more_varken: 'Meer varken',
+    organen: 'Orgaanvlees',
   },
 
   /** stage 7: the menu section on top when the bestelbon opens with ?menu=eindejaar (lexicon §5.22 „menus.json”).
@@ -178,6 +183,10 @@ export const bestellenRo = {
     less: 'Mai puțin',
     more: 'Mai mult',
     qty: 'Cantitate',
+    /** row 18b: §6 „Produse, 20.10 — tabla” */
+    more_rund: 'Mai multe de vită',
+    more_varken: 'Mai multe de porc',
+    organen: 'Organe',
   },
 
   /** §6 „Sărbători”: the bestelbon's note and the line after the deadline */

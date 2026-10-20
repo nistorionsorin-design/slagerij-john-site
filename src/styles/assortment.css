@@ -1,0 +1,128 @@
+/* Assortiment — /producten · /ro/produse, part 2 „Feest & traiteur” + the sticky pill row · v1.1 (20.10.2026 12:1x; v1 11:0x)
+   v1.1 — after Claude Code's row-18 report: (1) the header floats 14 px under the top of the phone screen (16 px on desktop), so the
+   pill row sticks at 62 / 72 px (= the header's bottom edge) and every jump target lands under header + row — the values are the
+   custom properties --as-head / --as-row below, nothing else moved; Claude Code drops its in-page override and ports this file 1:1.
+   (2) the pill row wraps from 1200 px (lexicon §5.19 20.10), not from 960: between 960 and 1199 it keeps the sideways scroll, so
+   „Dessert” never sits alone on a second line.
+   Dan 20.10 10:54: „a3” on design/assortiment-variants.html — treatment A3 „Wiel” (D-42; the page = D-41, the order of the week = D-44).
+   Source of truth for the pill row, the two part heads and the five rubric wheels of views/Producten.astro. Port 1:1 into
+   site/src/styles/assortment.css (imported by the view, global like menu-card.css) — this file carries the whole block, not a delta.
+   Tokens from tokens.css (--paper --card --line --fg --muted --tag --tag-line --tag-pin --ox --ink --on-ink --f-display --f-ui
+   --fs-eyebrow --fs-body --r-frame --r-frame-lg --r-tag). Rendered on the sheet with the real 60 rows of products.json and the real fonts
+   at 390 px; the desktop (≥ 960) is derived (D-30): the wheels become wrapping grids, the pill row wraps.
+
+   The idea (Dan: „a smart trendy scroll, rotative, so people can see, mostly on the phone”): under the counter tags the party range
+   is five rubric cards on paper. Each rubric is a sideways wheel of product cards — one flick turns the wheel one card, the photo
+   carries the card, the price sits in oxblood, every card is one link into the bestelbon row. A sticky pill row under the header
+   jumps to any of the ten sections and follows the scroll. Part 1 (Aan de toog, the 15 CounterTags) does not change.
+
+   Markup (NL shown; RO = the same keys from lexicon §6 „Produse, 20.10”; ids = the section ids the pills point at):
+   <nav class="as-pills" aria-label="Rubrieken">                                   ← right under the tiles' line, before part 1
+     <a href="#rund">Rund</a><a href="#varken">Varken</a><a href="#kip">Kip &amp; kalkoen</a><a href="#lam">Lam</a>
+     <a href="#roemeens">Roemeense specialiteiten</a><a href="#colli">Colli's</a><a href="#gourmet">Gourmet &amp; fondue</a>
+     <a href="#tapas">Tapas &amp; hapjes</a><a href="#warm">Warm &amp; soepen</a><a href="#dessert">Dessert</a>
+   </nav>
+   <section class="as-part" id="toog" aria-labelledby="toog-title">                ← part 1 head; the CounterTag sections follow as today
+     <p class="as-part__eyebrow">Aan de toog</p><h2 class="as-part__title" id="toog-title">Per kilo, zoals aan de toog.</h2>
+     <p class="as-part__line">De prijs per kilogram ziet u aan de toog; colli en schotels staan hier met hun prijs.</p>
+   </section>
+   … the five per-kg sections (#rund … #roemeens), unchanged …
+   <section class="as-part" id="feest" aria-labelledby="feest-title">              ← part 2 head
+     <p class="as-part__eyebrow">Feest &amp; traiteur</p><h2 class="as-part__title" id="feest-title">Alles voor uw feest, met prijs.</h2>
+     <p class="as-part__line">Per schotel, per stuk, per persoon of per portie. Bestel online of via WhatsApp, een dag vooraf.</p>
+   </section>
+   <div class="as-rubs">
+     <section class="rub" id="colli" aria-labelledby="rub-colli">                   ← five of these: colli · gourmet · tapas · warm · dessert
+       <div class="rub__head">
+         <span class="rub__print"><img src="…" alt="" width="64" height="64" loading="lazy" decoding="async"></span>   ← the section photo (product-photos.json level: section), optional
+         <h3 class="rub__title" id="rub-colli"><span class="rub__name">Colli's</span><span class="rub__note">5 tot 10 kg, op bestelling</span></h3>
+         <span class="rub__count" aria-label="6 producten">6</span>
+       </div>
+       <div class="wheel">
+         <a class="card" href="/bestellen?product=colli-varken-1#n-colli-varken-1">
+           <span class="card__img"><img src="…" alt="" width="140" height="140" loading="lazy" decoding="async"></span>   ← the own item photo (D-34), 280 px source, AVIF + WebP ≤ 14 kB
+           <!-- a row without its own photo: <span class="card__img card__img--none" aria-hidden="true"></span> — an empty paper box, same size, never a placeholder image -->
+           <span class="card__name">Colli Varken 1</span>
+           <span class="card__line">5 kg: spiering, filet kotelet, spek, worst, gehakt</span>
+           <span class="card__price"><span class="card__p">€45</span><span class="card__u">/colli</span></span>
+           <!-- „prijs in de winkel” rows (D-39): <span class="card__price"><span class="card__p card__p--state">prijs in de winkel</span></span> ; fondue: card__p = „vanaf €10” -->
+           <span class="card__btn">Bestel</span>
+         </a>
+         … one card per row of the rubric, products.json order …
+       </div>
+       <p class="wheel__hint">Veeg voor meer →</p>                                   ← phone only; RO „Glisează pentru mai multe →”
+       <p class="rub__under"><a href="/colli-vleespakketten">Alle colli's en vleespakketten</a></p>   ← only the colli and gourmet rubrics (lexicon §5.19 20.10); the colli link only once row 10d is live
+     </section>
+   </div>
+   The scroll-spy (one first-party file, ≤ 1 kB, CSP script-src 'self'): an IntersectionObserver over the ten sections toggles
+   `.is-active` on the matching pill and scrolls that pill into view (inline: 'center'); without the script the pills are plain anchors.
+   Every section the pills point at carries `scroll-margin-top` = header + pill row (see .as-target). Nothing animates; the only motion
+   is the user's own scroll (U-21). */
+
+/* ---------- the pill row: sticky under the fixed header (D-27: 48 px compact + 14 px float on the phone = 62; 56 + 16 = 72 on desktop) ---------- */
+:root{--as-head:62px;--as-row:49px}                                        /* v1.1: header bottom edge · pill row height (8 + 32 + 8 + 1) */
+.as-pills{position:sticky;top:var(--as-head);z-index:4;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * var(--gutter,20px));padding:8px var(--gutter,20px);background:rgba(244,237,224,.96);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.as-pills::-webkit-scrollbar{display:none}
+.as-pills a{flex:0 0 auto;display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;background:var(--tag);border:1px solid var(--tag-line);color:var(--fg);font-family:var(--f-ui);font-size:12px;font-weight:600;letter-spacing:.01em;text-decoration:none;white-space:nowrap}
+.as-pills a.is-active{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.as-pills a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+@media (hover:hover){.as-pills a:hover{background:var(--tag-line)}.as-pills a.is-active:hover{background:var(--ink)}}
+/* every jump target lands under the header + the pill row (62 + 49 + 8 on the phone) */
+.as-target,.as-part,.rub{scroll-margin-top:calc(var(--as-head) + var(--as-row) + 8px)}
+
+/* ---------- the two part heads ---------- */
+.as-part{margin:18px 0 8px}
+.as-part__eyebrow{font-size:var(--fs-eyebrow,11px);letter-spacing:.16em;text-transform:uppercase;color:var(--ox);margin:0 0 4px;font-weight:600;line-height:1.3}
+.as-part__title{font-family:var(--f-display);font-optical-sizing:auto;font-weight:500;font-size:26px;line-height:1.05;letter-spacing:-.01em;color:var(--fg);margin:0 0 6px}
+.as-part__line{font-size:14px;line-height:1.45;color:var(--muted);margin:0 0 12px}
+
+/* ---------- the rubric cards on paper (the menu card's structure, D-35, in the paper palette — a dark catalogue tires, UI §4) ---------- */
+.as-rubs{display:flex;flex-direction:column;gap:18px}
+.rub{background:var(--card);border:1px solid var(--line);border-radius:var(--r-frame);padding:14px 0 12px}
+.rub__head{display:flex;align-items:flex-end;gap:12px;margin:0 16px 10px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.rub__print{flex:none;width:64px;height:64px;border-radius:var(--r-tag,10px);overflow:hidden;background:var(--tag);box-shadow:0 1px 2px rgba(26,21,17,.12)}
+.rub__print img{width:100%;height:100%;object-fit:cover;display:block}
+.rub__title{flex:1;display:flex;flex-direction:column;gap:2px;margin:0;font-family:var(--f-display);font-optical-sizing:auto;font-style:italic;font-weight:400;font-size:23px;line-height:1.05;letter-spacing:0;color:var(--fg)}
+.rub__note{font-family:var(--f-ui);font-style:normal;font-weight:400;font-size:12px;letter-spacing:.02em;color:var(--muted)}
+.rub__count{align-self:flex-start;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* ---------- the wheel: sideways snap strip on the phone (A3), one card per flick; bleeds to the card edge ---------- */
+.wheel{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:16px;padding:4px 16px 8px;scrollbar-width:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.wheel::-webkit-scrollbar{display:none}
+.card{flex:0 0 156px;scroll-snap-align:start;display:flex;flex-direction:column;gap:4px;min-height:236px;padding:8px;border-radius:12px;background:var(--paper);border:1px solid var(--line);color:var(--fg);text-decoration:none;font-family:var(--f-ui)}
+.card:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+@media (hover:hover){.card:hover{border-color:var(--tag-pin,#C7B897);box-shadow:0 1px 2px rgba(26,21,17,.08),0 10px 24px -16px rgba(26,21,17,.35)}}
+.card__img{display:block;width:100%;aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--tag)}
+.card__img img{width:100%;height:100%;object-fit:cover;display:block}
+.card__img--none{background:var(--tag);opacity:.55}                       /* no photo: an empty box, same size (D-34: never a placeholder image) */
+.card__name{margin-top:4px;font-size:13px;font-weight:600;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card__line{font-size:11px;line-height:1.25;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card__price{margin-top:auto;font-variant-numeric:tabular-nums;line-height:1.2}
+.card__p{font-size:14px;font-weight:600;color:var(--ox)}
+.card__p--state{font-size:11px}                                            /* „prijs in de winkel” / „preț în magazin” */
+.card__u{margin-left:2px;font-size:11px;color:var(--muted)}
+.card__btn{align-self:flex-start;margin-top:4px;padding:6px 10px;border:1px solid var(--ink);border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;line-height:1}
+.wheel__hint{margin:0 16px;font-size:11px;color:var(--muted);text-align:right}
+.rub__under{margin:8px 16px 0;font-size:13px;line-height:1.45;color:var(--ox);font-weight:600}
+.rub__under a{color:inherit}
+
+/* ---------- desktop (≥ 960, the view's own step): the wheel becomes a wrapping grid; the pill row still scrolls sideways until 1200 ---------- */
+@media (min-width:960px){
+  :root{--as-head:72px;--as-row:52px}
+  .as-pills{padding:10px var(--gutter,20px);background:var(--paper);backdrop-filter:none;-webkit-backdrop-filter:none}
+  .as-part__title{font-size:34px}
+  .as-rubs{gap:22px}
+  .rub{border-radius:var(--r-frame-lg);padding:20px 0 18px}
+  .rub__head{margin:0 24px 14px}
+  .rub__title{font-size:26px}
+  .wheel{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:12px;overflow:visible;padding:0 24px;scroll-snap-type:none}
+  .card{flex:none;min-height:248px}
+  .wheel__hint{display:none}
+  .rub__under{margin:12px 24px 0}
+}
+/* ---------- from 1200 (the lexicon's figure): the pill row wraps, no sideways scroll ---------- */
+@media (min-width:1200px){
+  .as-pills{flex-wrap:wrap;overflow:visible;margin:0;padding:10px 0}
+}
+/* nothing animates here; the pills' scrollIntoView uses the page's scroll-behavior, which reduced motion already sets to auto */
+@media (prefers-reduced-motion:reduce){.as-pills,.wheel{scroll-behavior:auto}}

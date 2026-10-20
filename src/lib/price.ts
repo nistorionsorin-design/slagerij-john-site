@@ -23,6 +23,9 @@ export const inStoreLabel: Record<Locale, string> = { nl: 'prijs in de winkel', 
 const amount = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 
 export const unitLabel = (unit: Unit, locale: Locale) => units[locale][unit];
+/** The unit beside a row's price. Row 18b (D-48): a „prijs in de winkel” row ordered per stuk shows no unit — the shop's
+ *  price is not a price per piece; its order unit shows on the stepper („2 stuks”). Every other row: unitLabel. */
+export const priceUnitLabel = (p: Product, locale: Locale) => (p.priceInStore && p.unit === 'stuk' ? '' : unitLabel(p.unit, locale));
 
 export const priceLabel = (p: Product, locale: Locale) => {
   if (p.priceInStore) return inStoreLabel[locale];

@@ -9,9 +9,8 @@
 // copy so a tile is never empty without JS.
 // Replaces the v5 ink tiles on /traiteur's tile (tiles.css, still /traiteur's own). Below the head, never the LCP:
 // every image lazy, AVIF alpha + WebP alpha. Captions = lexicon §5.19 / §6 product cards; the group's H2 is visually
-// hidden; the line under the tiles = lexicon §5.19 / §6 Produse (17.10). Each tile is a link to its category: without
-// JS the href scrolls to that section (#roemeens, or the list's first section for „Alles”); with JS (below) it also
-// checks the chip's radio, then scrolls to the first section the filter shows and moves focus to its heading.
+// hidden; the line under the tiles = lexicon §5.19 / §6 Produse (17.10). Each tile is a link to its section
+// (#roemeens). Row 18 (20.10): the stage-4 filter is gone, so the tile is a plain jump — no script on the click.
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 
@@ -20,8 +19,7 @@ interface Tile {
   alt: string;
   name: string;
   sub: string;
-  /** the chip's radio id (f-roemeens, f-all …) and the section the link falls back to */
-  chip: string;
+  /** the section the tile jumps to */
   href: string;
 }
 export interface Props {
@@ -52,7 +50,7 @@ const built = await Promise.all(tiles.map(async (p, k) => {
   <ul class="pt__grid">
     {built.map((p) => (
       <li class="pt__tile" style={p.style}>
-        <a class="pt__link" href={p.href} data-chip={p.chip}>
+        <a class="pt__link" href={p.href}>
           <span class="pt__cut" data-cut>
             <template data-frames><picture><source type="image/avif" srcset={p.avif} sizes={p.sizes} /><img src={p.src} srcset={p.webp} sizes={p.sizes} width={p.img.width} height={p.img.height} alt={p.alt} loading="lazy" decoding="async" /></picture></template>
             <noscript><picture><source type="image/avif" srcset={p.avif} sizes={p.sizes} /><img src={p.src} srcset={p.webp} sizes={p.sizes} width={p.img.width} height={p.img.height} alt={p.alt} loading="lazy" decoding="async" /></picture></noscript>
@@ -72,22 +70,6 @@ const built = await Promise.all(tiles.map(async (p, k) => {
   import { afterLoadPaint, insertFrames } from '../scripts/frames';
   // the products: in after the head has painted
   afterLoadPaint(() => { for (const c of document.querySelectorAll<HTMLElement>('.pt__cut[data-cut]')) insertFrames(c); });
-
-  // a tile = its chip: check the radio (the page's CSS filter follows :checked), then bring the list into view
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-  for (const a of document.querySelectorAll<HTMLAnchorElement>('.pt__link[data-chip]'))
-    a.addEventListener('click', (ev) => {
-      const radio = document.getElementById(a.dataset.chip!) as HTMLInputElement | null;
-      if (!radio) return; // no chip: the href's own jump stays
-      ev.preventDefault();
-      radio.checked = true;
-      radio.dispatchEvent(new Event('change', { bubbles: true }));
-      const first = [...document.querySelectorAll<HTMLElement>('.pp-cat')].find((s) => getComputedStyle(s).display !== 'none');
-      if (!first) return;
-      first.scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth', block: 'start' });
-      const h = first.querySelector<HTMLElement>('h2');
-      if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); }
-    });
 </script>
 
 <style>

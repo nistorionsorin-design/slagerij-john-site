@@ -444,8 +444,9 @@ if (built) {
 
   // client JS budget (D-06 one island + D-12 hero loop + D-20 open chip + the header's menu and
   // smart-sticky, build plan stage 0b2 + the bestelbon, stage 5 + the traiteur quote form, stage 6 + the /producten
-  // tiles' chip links, D-37 v5 + the /producten hero's frame 2, PageHero's loop, row 14e): a script ships only
-  // on a page that mounts its component, from /_astro/, never inline (CSP script-src 'self').
+  // tiles' chip links, D-37 v5 + the /producten hero's frame 2, PageHero's loop, row 14e + the /producten pill row's
+  // scroll-spy, row 18 — ≤ 1 kB, design/css/assortment.css): a script ships only on a page that mounts its component,
+  // from /_astro/, never inline (CSP script-src 'self').
   {
     const js = walk(dist).filter((f) => /\.(js|mjs)$/.test(f));
     const inline = pages.filter((p) => /<script(?![^>]*application\/(ld\+)?json)[^>]*>[\s\S]*?\S[\s\S]*?<\/script>/i.test(p.html.replace(/<script[^>]*src=[^>]*><\/script>/gi, '')));
@@ -460,14 +461,19 @@ if (built) {
       ['ProductTiles', /<section class="pt[\s"]/],
       ['Producten', /<section class="hero sh sh--loop[\s"]/],
       ['Bbq', /<section class="hero sh sh--loop[\s"]/],
+      ['AsPills', /<nav class="as-pills[\s"]/],
     ];
+    for (const f of js.filter((f) => /[\\/]AsPills\./.test(f))) {
+      const size = statSync(f).size;
+      if (size > 1024) e.push(`${rel(f)}: ${size} B — the pill row's scroll-spy is ≤ 1 kB (row 18)`);
+    }
     for (const p of pages)
       for (const tag of p.html.match(/<script[^>]*\ssrc="[^"]*"[^>]*>/gi) || []) {
         const src = attr(tag, 'src');
         const file = src.split('/').pop();
         const m = mounts.find(([name]) => file.startsWith(name + '.'));
         if (!src.startsWith('/_astro/')) e.push(`${p.file}: ${src} not served from /_astro/`);
-        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / Header / OpenChip / QaBox / OrderForm / QuoteForm / ProductTiles / Producten / Bbq)`);
+        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / Header / OpenChip / QaBox / OrderForm / QuoteForm / ProductTiles / Producten / Bbq / AsPills)`);
         else if (!m[1].test(p.html)) e.push(`${p.file}: ships ${file} without its component`);
       }
     verdict('client-js', e, `${js.length} JS files in dist; no inline script; each script ships only with its component`);

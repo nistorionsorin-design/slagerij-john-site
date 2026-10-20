@@ -1,0 +1,68 @@
+/* Krijtbord — /producten · /ro/produse, the counter board under each per-kg category's tags, + the bestelbon fold · v1 (20.10.2026 13:3x)
+   Dan 20.10 12:48 („ok with your recommendation but we need to make them possible for bestel also”) + 13:25 („implement all”): treatment
+   C1a „Krijtbord” (ink) on the sheet design/assortiment-variants.html section C, and D1 „Gevouwen” for the bestelbon (section D). D-47, D-48.
+   Source of truth for Board.astro (views/Producten.astro) and for the folded groups of OrderForm.astro. Port 1:1 into
+   site/src/styles/board.css (imported by both views, global like menu-card.css). Tokens from tokens.css (--ink --on-ink --on-ink-muted
+   --card --line --tag --tag-line --fg --muted --ox --f-display --f-ui --fs-eyebrow --r-frame). Rendered on the sheet with the owners' 50
+   names at 350 and 742 px with the real fonts.
+
+   The idea: the board at the counter. Under the category's counter tags (paper) one ink board with everything the counter has, the
+   names in the owners' own words, two columns, a Fraunces italic head on a rule, the count at the right; the pork board in two groups
+   (Varken · Orgaanvlees). Every name is a link into the bestelbon row (the same ?product= mechanism as the wheel cards); a line under the
+   board says the price is at the counter and offers WhatsApp. In the bestelbon the board names sit after the category's tag rows,
+   folded under one native <details> („Meer rund (19)”) — no script to open it by hand; the deep link opens it (order.ts).
+
+   Markup — the board (NL shown; RO = lexicon §6 „Produse, 20.10 — tabla”; one per per-kg category, right after its CounterTag grid):
+   <section class="board" id="board-rund" aria-labelledby="board-rund-title">
+     <p class="board__eyebrow">Alles van de toog</p>
+     <h3 class="board__title" id="board-rund-title"><span>Rund</span><span class="board__count" aria-label="19 producten">19</span></h3>
+     <!-- the pork board only: <p class="board__group">Varken</p> … list … <p class="board__group">Orgaanvlees</p> … list … -->
+     <ul class="board__list">
+       <li><a href="/bestellen?product=biefstuk#n-biefstuk">Biefstuk</a></li>
+       … the group's items in the data file's order (docs/data/owners-counter-list-2026-10-20.json) …
+     </ul>
+     <p class="board__foot">Prijs per kilo aan de toog. Tik op een naam om te bestellen. <a href="/wa?src=producten-board">Liever via WhatsApp? Stuur ons de naam en het gewicht.</a></p>
+   </section>
+
+   Markup — the bestelbon fold (inside the category's .ocat, after the tag rows; the rows inside are ordinary .oi rows):
+   <details class="ocat__more">
+     <summary>Meer rund <span class="ocat__more-n">(19)</span></summary>
+     <!-- pork: <h4 class="ocat__sub">Varken</h4> rows … <h4 class="ocat__sub">Orgaanvlees</h4> rows … -->
+     … rows …
+   </details>
+   order.ts: a ?product=<id> whose row sits inside a closed <details> sets details.open = true before it sets the quantity and
+   scrolls to #n-<id>. Nothing animates. */
+
+/* ---------- the board ---------- */
+.board{margin:12px 0 4px;padding:14px 16px 12px;border-radius:var(--r-frame);background:var(--ink);color:var(--on-ink);font-family:var(--f-ui)}
+.board__eyebrow{margin:0 0 2px;font-size:var(--fs-eyebrow,11px);letter-spacing:.16em;text-transform:uppercase;font-weight:600;line-height:1.3;color:var(--on-ink-muted)}
+.board__title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 8px;padding-bottom:7px;border-bottom:1px solid rgba(244,237,224,.32);font-family:var(--f-display);font-optical-sizing:auto;font-style:italic;font-weight:400;font-size:23px;line-height:1.05;letter-spacing:0;color:var(--on-ink)}
+.board__count{font-family:var(--f-ui);font-style:normal;font-size:12px;color:var(--on-ink-muted);font-variant-numeric:tabular-nums}
+.board__group{margin:10px 0 4px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--on-ink-muted)}
+.board__list{list-style:none;margin:0;padding:0;columns:2;column-gap:18px}
+.board__list li{break-inside:avoid;padding:5px 0;border-bottom:1px dotted rgba(244,237,224,.28)}
+.board__list a{display:block;min-height:24px;color:inherit;text-decoration:none;font-size:14px;line-height:1.25}
+.board__list a::after{content:"›";float:right;opacity:.5}
+.board__list a:focus-visible{outline:2px solid var(--on-ink);outline-offset:2px}
+@media (hover:hover){.board__list a:hover::after{opacity:1}}
+.board__foot{margin:10px 0 0;font-size:12px;line-height:1.4;color:var(--on-ink-muted)}
+.board__foot a{color:var(--on-ink);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+
+/* ---------- the bestelbon fold ---------- */
+.ocat__more{margin-top:6px}
+.ocat__more summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;min-height:44px;padding:0 14px;border-radius:999px;background:var(--tag);border:1px solid var(--tag-line);color:var(--fg);font-family:var(--f-ui);font-size:13px;font-weight:600}
+.ocat__more summary::-webkit-details-marker{display:none}
+.ocat__more summary::after{content:"+";font-size:18px;line-height:1}
+.ocat__more[open] summary::after{content:"–"}
+.ocat__more summary:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.ocat__more-n{color:var(--muted);font-weight:500;margin-left:4px}
+.ocat__more .ocat__sub{margin-top:10px}
+
+/* ---------- desktop (≥ 960, the view's own step) ---------- */
+@media (min-width:960px){
+  .board{padding:20px 24px 16px;border-radius:var(--r-frame-lg,18px)}
+  .board__title{font-size:26px}
+  .board__list{columns:3;column-gap:28px}
+  .board__list a{font-size:15px}
+}
+/* nothing moves: the fold opens natively, the board is text */
