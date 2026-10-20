@@ -195,6 +195,13 @@ if (built) {
     let n = 0;
     const photos = json('photos.json');
     for (const p of pages) {
+      // row 19 (the /traiteur gallery, design/css/gallery.css): a JPEG may be the <img> fallback only inside a
+      // <picture> that offers AVIF and WebP first — every current browser takes a <source>, never the fallback
+      const fallbackOk = new Set(
+        (p.html.match(/<picture\b[\s\S]*?<\/picture>/gi) || [])
+          .filter((pic) => /<source\b[^>]*type="image\/avif"/i.test(pic) && /<source\b[^>]*type="image\/webp"/i.test(pic))
+          .flatMap((pic) => pic.match(/<img\b[^>]*>/gi) || []),
+      );
       for (const tag of p.html.match(/<img\b[^>]*>/gi) || []) {
         n++;
         const src = attr(tag, 'src') ?? '';
@@ -206,12 +213,14 @@ if (built) {
         // slot product 1) is eager and says so with data-first-paint (D-12)
         const firstPaint = /\sdata-first-paint(?=[\s=/>])/i.test(tag) && attr(tag, 'loading') === 'eager';
         if (!hero && !firstPaint && attr(tag, 'loading') !== 'lazy') e.push(`${p.file}: ${src} not lazy`);
-        if (!/\.(avif|webp|svg)(\?|$)/i.test(src)) e.push(`${p.file}: ${src} is not AVIF/WebP`);
+        if (!/\.(avif|webp|svg)(\?|$)/i.test(src) && !(fallbackOk.has(tag) && /\.jpe?g(\?|$)/i.test(src))) e.push(`${p.file}: ${src} is not AVIF/WebP`);
       }
       if ((p.html.match(/fetchpriority="high"/gi) || []).length > 1) e.push(`${p.file}: more than one fetchpriority=high`);
     }
     for (const ph of [...photos.hero, ...photos.loop, ...photos.gallery, ...(photos.traiteur ?? [])])
       if (!ph.alt?.nl?.trim() || !ph.alt?.ro?.trim()) e.push(`photos.json: ${ph.src} lacks alt NL/RO`);
+    for (const g of json('gallery-traiteur.json').items)
+      if (!g.alt?.nl?.trim() || !g.alt?.ro?.trim()) e.push(`gallery-traiteur.json: ${g.src} lacks alt NL/RO`);
     verdict('images', e, `${n} <img>: width/height, alt, lazy, AVIF/WebP`);
     if (!n) warn('images-empty', 'no images built yet → hero ≤ 90 kB mobile is not exercised');
     else warn('hero-weight', 'hero frame ≤ 90 kB mobile: check the served variant in the browser, not automated here');

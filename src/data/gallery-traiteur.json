@@ -1,0 +1,205 @@
+{
+  "_source": "Poured from docs/data/gallery-traiteur.json (Cowork, 2026-10-20) for build-plan row 19 (D-45): the ten tiles in order. src = the photo cut to its tile's shape (tiles 1 and 6: 16:9, the rest 1:1) at focalX/focalY, full resolution, from `from`. Strings = lexicon §5.21 „20.10 — the gallery” / §6 „Catering, 20.10”. Cowork owns the source file; re-pour, do not edit here.",
+  "items": [
+    {
+      "id": "vleesschotel-feest",
+      "src": "traiteur/galerij-vleesschotel-op-een-feest-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at11.jpeg",
+      "inventory": "p12",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Charcuterieschotel op een feest, met een stapel borden ernaast",
+        "ro": "Platou de mezeluri la o petrecere, cu farfurii stivuite alături"
+      },
+      "caption": {
+        "nl": "Vleesschotel op een feest",
+        "ro": "Platou de mezeluri, la o petrecere"
+      },
+      "text": {
+        "nl": "Charcuterie en kaas, geschikt voor de lange tafel.",
+        "ro": "Mezeluri și brânzeturi, aranjate pentru masa lungă."
+      }
+    },
+    {
+      "id": "kaas-charcuterie-buffet",
+      "src": "traiteur/galerij-kaas-en-charcuterie-op-het-buffet-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05  4.jpeg",
+      "inventory": "p01",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Kaas en charcuterie op een buffettafel, met tang",
+        "ro": "Brânzeturi și mezeluri pe o masă de bufet, cu clește"
+      },
+      "caption": {
+        "nl": "Kaas en charcuterie op het buffet",
+        "ro": "Brânzeturi și mezeluri, pe bufet"
+      },
+      "text": {
+        "nl": "Geschikt vóór de gasten er zijn.",
+        "ro": "Aranjate înainte să vină oaspeții."
+      }
+    },
+    {
+      "id": "hapjesschotel-lange-tafel",
+      "src": "traiteur/galerij-hapjesschotel-op-een-lange-tafel-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.14 15.jpeg",
+      "inventory": "q15",
+      "focalX": 50,
+      "focalY": 60,
+      "alt": {
+        "nl": "Lange hapjesschotel op een donkere tafel",
+        "ro": "Platou lung de aperitive pe o masă închisă la culoare"
+      },
+      "caption": {
+        "nl": "Hapjesschotel op een lange tafel",
+        "ro": "Platou de aperitive pe o masă lungă"
+      },
+      "text": {
+        "nl": "Eén lange schotel, alles koud, voor een receptie.",
+        "ro": "Un singur platou lung, totul rece, pentru o recepție."
+      }
+    },
+    {
+      "id": "slaatjes-kommetjes",
+      "src": "traiteur/galerij-slaatjes-per-kommetje-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/plate 2.jpeg",
+      "inventory": "q25",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Slaatjes in kleine kommetjes voor een buffet",
+        "ro": "Salate în boluri mici, pentru bufet"
+      },
+      "caption": {
+        "nl": "Slaatjes, per kommetje",
+        "ro": "Salate, în boluri mici"
+      },
+      "text": {
+        "nl": "Fris en kleurrijk, één kommetje per gast.",
+        "ro": "Proaspete și colorate, un bol pentru fiecare oaspete."
+      }
+    },
+    {
+      "id": "wraps-zalm-hesp",
+      "src": "traiteur/galerij-wraps-met-zalm-en-hesp-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/plate1.jpeg",
+      "inventory": "q26",
+      "focalX": 50,
+      "focalY": 60,
+      "alt": {
+        "nl": "Schaal met wraps met zalm en hesp",
+        "ro": "Tavă cu wrapuri cu somon și șuncă"
+      },
+      "caption": {
+        "nl": "Wraps met zalm en hesp",
+        "ro": "Wrapuri cu somon și șuncă"
+      },
+      "text": {
+        "nl": "Per stuk, zoveel u er nodig hebt.",
+        "ro": "La bucată, câte ai nevoie."
+      }
+    },
+    {
+      "id": "tacos-feest",
+      "src": "traiteur/galerij-tacos-voor-een-feest-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/sandwhich.jpeg",
+      "inventory": "q27",
+      "focalX": 50,
+      "focalY": 40,
+      "alt": {
+        "nl": "Gevulde taco's in schalen",
+        "ro": "Taco umplute, în caserole"
+      },
+      "caption": {
+        "nl": "Taco's voor een feest",
+        "ro": "Taco pentru o petrecere"
+      },
+      "text": {
+        "nl": "Met gehakt of met kip, uit het vuistje.",
+        "ro": "Cu carne tocată sau cu pui, de mâncat din mână."
+      }
+    },
+    {
+      "id": "mini-brochettes-dipsaus",
+      "src": "traiteur/galerij-mini-brochettes-met-dipsaus-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/mini frigarui.jpeg",
+      "inventory": "q24",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Ronde schotel met mini brochettes rond een kommetje saus",
+        "ro": "Platou rotund cu mini frigărui în jurul unui bol cu sos"
+      },
+      "caption": {
+        "nl": "Mini brochettes met dipsaus",
+        "ro": "Mini frigărui cu sos"
+      },
+      "text": {
+        "nl": "Klein, op een stokje, de saus in het midden.",
+        "ro": "Mici, pe băț, cu sosul la mijloc."
+      }
+    },
+    {
+      "id": "kaasschotel-druiven-walnoten",
+      "src": "traiteur/galerij-kaasschotel-met-druiven-en-walnoten-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.13 8.jpeg",
+      "inventory": "q13",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Kaasblokjes met druiven en walnoten, met het kaartje van Slagerij John",
+        "ro": "Cuburi de brânză cu struguri și nuci, cu cartonașul Slagerij John"
+      },
+      "caption": {
+        "nl": "Kaasschotel met druiven en walnoten",
+        "ro": "Platou de brânzeturi cu struguri și nuci"
+      },
+      "text": {
+        "nl": "Blokjes kaas, druiven en walnoten: voor bij het aperitief.",
+        "ro": "Cuburi de brânză, struguri și nuci: pentru aperitiv."
+      }
+    },
+    {
+      "id": "koude-schotel",
+      "src": "traiteur/galerij-koude-schotel-slagerij-john.jpg",
+      "from": "assets/raw/2025-12-05-facebook/fb_01_122186729426357023.jpg",
+      "inventory": "fb-01",
+      "focalX": 50,
+      "focalY": 45,
+      "alt": {
+        "nl": "Koude schotel met hesp, salami, eieren en vleessalade",
+        "ro": "Platou rece cu șuncă, salam, ouă și salată de carne"
+      },
+      "caption": {
+        "nl": "Koude schotel",
+        "ro": "Platou rece"
+      },
+      "text": {
+        "nl": "Hesp, salami, eieren en vleessalade, per persoon.",
+        "ro": "Șuncă, salam, ouă și salată de carne, de persoană."
+      }
+    },
+    {
+      "id": "john-grill",
+      "src": "traiteur/galerij-john-aan-de-grill-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/john gratar.jpeg",
+      "inventory": "B2",
+      "focalX": 50,
+      "focalY": 40,
+      "alt": {
+        "nl": "John aan de grote houtskoolgrill, buiten",
+        "ro": "John la grătarul mare cu cărbuni, afară"
+      },
+      "caption": {
+        "nl": "John aan de grill",
+        "ro": "John la grătar"
+      },
+      "text": {
+        "nl": "Barbecue aan huis: de grill is voor ons, de tafel voor u.",
+        "ro": "Grătar la domiciliu: grătarul e treaba noastră, masa e a ta."
+      }
+    }
+  ]
+}

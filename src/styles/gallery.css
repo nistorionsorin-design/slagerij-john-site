@@ -1,0 +1,58 @@
+/* Galerij — /traiteur · /ro/catering, „Van onze feesten” · v1 (20.10.2026 11:0x)
+   Dan 20.10 10:54: „b 2 … maybe we can use a little the nice writing from the website on them, like the little description” on
+   design/assortiment-variants.html — treatment B2 „Mozaïek” (D-45), every tile with a two-line caption: a title and one short description.
+   Source of truth for the gallery block of views/Traiteur.astro (component Gallery.astro, fed by docs/data/gallery-traiteur.json). Port 1:1
+   into site/src/styles/gallery.css (imported by the view, global like menu-card.css). Tokens from tokens.css (--paper --card --line --fg
+   --muted --tag --ox --f-display --f-ui --fs-eyebrow --r-tile). Placed under „Wat u bij ons bestelt” and above „Per persoon” (D-45).
+
+   The idea: ten of the owners' own photos (D-15 — no stock, no old-site webp) as a magazine page: two columns on the phone, the first and
+   the sixth tile wide (16:9), the rest square; four columns from 960 with the same two wide tiles (row 1: wide + two squares, row 2: two
+   squares + wide, row 3: four squares). Under each photo a title in the UI face and one line of description in muted ink — the old site's
+   caption rhythm („Colorat și proaspăt — …”), rewritten without kitsch or claims (lexicon §2.6, LR-K). No lightbox, no script, nothing moves
+   (U-21); every image has width/height (CLS 0, U-22) and loads lazy — the block sits under the fold on both pages.
+
+   Markup (NL shown; RO = lexicon §6 „Catering, 20.10”; the ten figures in the order of gallery-traiteur.json):
+   <section class="gal" id="galerij" aria-labelledby="gal-title">
+     <p class="gal__eyebrow">Van onze feesten</p>
+     <h2 class="gal__title" id="gal-title">Zo ziet het eruit.</h2>
+     <p class="gal__intro">Schotels, buffetten en barbecues die wij maakten. Eigen foto's, geen stockbeelden.</p>
+     <div class="gal__grid">
+       <figure class="gal__fig">
+         <picture>
+           <source type="image/avif" srcset="…-340.avif 340w, …-720.avif 720w, …-1040.avif 1040w" sizes="(min-width:960px) 514px, calc(100vw - 40px)">
+           <img src="…-720.jpg" srcset="…" sizes="…" width="1040" height="585" alt="Charcuterieschotel op een feest, met een stapel borden ernaast" loading="lazy" decoding="async" style="object-position:50% 50%">
+         </picture>                                                                       ← tiles 1 and 6: 16:9 sources 720 / 1040 px (≤ 50 / 80 kB AVIF)
+         <figcaption><span class="gal__t">Vleesschotel op een feest</span><span class="gal__d">Charcuterie en kaas, geschikt voor de lange tafel.</span></figcaption>
+       </figure>
+       … tiles 2–5, 7–10: square sources 340 / 520 px (≤ 28 / 45 kB AVIF), sizes="(min-width:960px) 251px, calc(50vw - 25px)" …
+     </div>
+   </section>
+   The focal point comes from gallery-traiteur.json (focalX/focalY → object-position). WebP next to AVIF; JPEG fallback in <img src>. */
+
+/* ---------- the block ---------- */
+.gal{margin:28px 0}
+.gal__eyebrow{font-size:var(--fs-eyebrow,11px);letter-spacing:.16em;text-transform:uppercase;color:var(--ox);margin:0 0 4px;font-weight:600;line-height:1.3}
+.gal__title{font-family:var(--f-display);font-optical-sizing:auto;font-weight:500;font-size:26px;line-height:1.05;letter-spacing:-.01em;color:var(--fg);margin:0 0 6px}
+.gal__intro{font-size:14px;line-height:1.45;color:var(--muted);margin:0 0 14px}
+
+/* ---------- the mosaic: two columns on the phone; tiles 1 and 6 span both, 16:9; the rest square ---------- */
+.gal__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gal__fig{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.gal__fig picture,.gal__fig img{display:block;width:100%}
+.gal__fig img{aspect-ratio:1;object-fit:cover;border-radius:var(--r-tile,14px);background:var(--tag)}          /* the paper-tint box holds the space while the image loads (CLS 0) */
+.gal__fig:nth-child(1),.gal__fig:nth-child(6){grid-column:span 2}
+.gal__fig:nth-child(1) img,.gal__fig:nth-child(6) img{aspect-ratio:16/9}
+figcaption.gal__cap,.gal__fig figcaption{display:flex;flex-direction:column;gap:2px;padding:0 2px}
+.gal__t{font-family:var(--f-ui);font-size:13px;font-weight:600;line-height:1.25;color:var(--fg)}
+.gal__d{font-size:12px;line-height:1.35;color:var(--muted)}
+
+/* ---------- desktop (≥ 960): four columns, the same two wide tiles; the block keeps the page's container ---------- */
+@media (min-width:960px){
+  .gal{margin:40px 0}
+  .gal__title{font-size:34px}
+  .gal__grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  .gal__fig:nth-child(1),.gal__fig:nth-child(6){grid-column:span 2}
+  .gal__t{font-size:14px}
+  .gal__d{font-size:13px}
+}
+/* nothing moves: no hover zoom, no transition — the photos are the content */

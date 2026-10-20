@@ -1,7 +1,8 @@
 ---
 // /traiteur — Traiteur & barbecue aan huis (stage 6). Canvas board Traiteur (mobile 390) is the concept (D-30), its
 // sections in order: the dark photo head (eyebrow · H1 · accent) · lead + Vraag een offerte + Bel ons · four photo tiles
-// (static, D-13) · prices per person (counter tags) · occasions · the quote form (#offerte) · region · FAQ · byline.
+// (static, D-13) · the gallery (row 19, Gallery.astro) · prices per person (counter tags) · occasions · the quote
+// form (#offerte) · region · FAQ · byline.
 // Row 14e (19.10, design/heroes-unify.md): the head is the home's hero (PageHero.astro) — the photo full screen on the
 // phone, the sign over it, the text and both buttons at its foot.
 // Desktop derived (D-30): the hero full bleed with the text over its left side; tiles in a 3-column mosaic
@@ -16,6 +17,7 @@ import ArtPicture from '../components/ArtPicture.astro';
 import PageHero from '../components/PageHero.astro';
 import CounterTag from '../components/CounterTag.astro';
 import QuoteForm from '../components/QuoteForm.astro';
+import Gallery from '../components/Gallery.astro';
 import Faq from '../components/Faq.astro';
 import entity from '../data/entity.json';
 import photos from '../data/photos.json';
@@ -114,6 +116,12 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
         ))}
       </ul>
     </section>
+
+    {/* row 19 (D-45): the gallery, under „Wat u bij ons bestelt”, above „Per persoon”; the wrapper keeps the page's
+        container (gallery.css sets the block's own vertical margin) */}
+    <div class="container">
+      <Gallery locale={locale} />
+    </div>
 
     <section class="container tp" aria-labelledby="tp-title">
       <div class="tp__head">

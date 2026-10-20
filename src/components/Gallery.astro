@@ -1,0 +1,83 @@
+---
+// Gallery — /traiteur · /ro/catering, „Van onze feesten” / „De la petrecerile noastre” (build-plan row 19, D-45; Dan
+// 20.10 10:54: B2 Mozaïek). Markup = the contract in the header of src/styles/gallery.css (design/css/gallery.css v1,
+// ported 1:1): section · eyebrow · H2 · intro · ten <figure> with a <figcaption> = title (gal__t) + one line (gal__d).
+// Data: src/data/gallery-traiteur.json (poured from docs/data/gallery-traiteur.json, ten items in order); the head's
+// strings: src/i18n/traiteur.ts `gallery` (lexicon §5.21 „20.10 — the gallery” / §6 „Catering, 20.10”).
+// Images: each source file is the photo already cut to its tile's shape at the data's focal point (tiles 1 and 6 =
+// 16:9, the rest 1:1 — the CSS's nth-child(1), nth-child(6)), so object-position (kept, as the contract asks) has
+// nothing left to move. Sizes as the CSS header states: squares 340 / 520 px, the two wide tiles 720 / 1040 px (never
+// upscaled: the tacos photo is 942 px wide, so its second size is 942); AVIF + WebP <source>s, the JPEG as the <img>
+// fallback; width/height = the largest size (CLS 0), lazy + async on all ten (the block sits under the fold), no
+// script, no lightbox, nothing moves (U-21). No JSON-LD (§5.21: no ImageGallery).
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import gallery from '../data/gallery-traiteur.json';
+import { traiteurT } from '../i18n/traiteur';
+import type { Locale } from '../i18n/ui';
+import '../styles/gallery.css';
+
+export interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = traiteurT[locale].gallery;
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/traiteur/galerij-*.jpg', { eager: true });
+const file = (src: string) => {
+  const m = files[`../assets/${src}`];
+  if (!m) throw new Error(`gallery-traiteur.json: src/assets/${src} not found`);
+  return m.default;
+};
+
+// sizes from the CSS header (the 4-column desktop grid: 251 px squares, 514 px wide tiles)
+const SIZES = { wide: '(min-width:960px) 514px, calc(100vw - 40px)', square: '(min-width:960px) 251px, calc(50vw - 25px)' };
+// AVIF / WebP / JPEG quality: the budget is the CSS header's (squares ≤ 28 / 45 kB AVIF, wide ≤ 50 / 80 kB) and
+// row 19's ≤ 320 kB over the phone scroll
+const Q = { avif: 45, webp: 60, jpg: 70 };
+
+const figs = await Promise.all(
+  gallery.items.map(async (it, i) => {
+    const img = file(it.src);
+    const wide = i === 0 || i === 5;
+    const ratio = wide ? 16 / 9 : 1;
+    const widths = (wide ? [720, 1040] : [340, 520]).map((w) => Math.min(w, img.width));
+    const width = widths[widths.length - 1];
+    const height = Math.round(width / ratio);
+    const opts = { src: img, width, height, widths, fit: 'cover' as const };
+    const [avif, webp, jpg] = await Promise.all([
+      getImage({ ...opts, format: 'avif', quality: Q.avif }),
+      getImage({ ...opts, format: 'webp', quality: Q.webp }),
+      getImage({ ...opts, format: 'jpg', quality: Q.jpg }),
+    ]);
+    return {
+      sizes: wide ? SIZES.wide : SIZES.square,
+      avif: avif.srcSet.attribute,
+      webp: webp.srcSet.attribute,
+      jpg: jpg.srcSet.attribute,
+      src: jpg.srcSet.values[0]?.url ?? jpg.src,
+      width,
+      height,
+      alt: it.alt[locale as 'nl' | 'ro'],
+      pos: `object-position:${it.focalX}% ${it.focalY}%`,
+      title: it.caption[locale as 'nl' | 'ro'],
+      line: it.text[locale as 'nl' | 'ro'],
+    };
+  }),
+);
+---
+<section class="gal" id={t.anchor} aria-labelledby="gal-title">
+  <p class="gal__eyebrow">{t.eyebrow}</p>
+  <h2 class="gal__title" id="gal-title">{t.title}</h2>
+  <p class="gal__intro">{t.intro}</p>
+  <div class="gal__grid">
+    {figs.map((f) => (
+      <figure class="gal__fig">
+        <picture>
+          <source type="image/avif" srcset={f.avif} sizes={f.sizes} />
+          <source type="image/webp" srcset={f.webp} sizes={f.sizes} />
+          <img src={f.src} srcset={f.jpg} sizes={f.sizes} width={f.width} height={f.height} alt={f.alt} loading="lazy" decoding="async" style={f.pos} />
+        </picture>
+        <figcaption><span class="gal__t">{f.title}</span><span class="gal__d">{f.line}</span></figcaption>
+      </figure>
+    ))}
+  </div>
+</section>

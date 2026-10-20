@@ -34,6 +34,16 @@ export const traiteurNl = {
     ],
   },
 
+  /** §5.21 „20.10 — the gallery” (row 19, D-45): the block's head; the ten tiles (alt · title · line) are
+   *  src/data/gallery-traiteur.json, poured from docs/data/gallery-traiteur.json */
+  gallery: {
+    eyebrow: 'Van onze feesten',
+    title: 'Zo ziet het eruit.',
+    intro: "Schotels, buffetten en barbecues die wij maakten. Eigen foto's, geen stockbeelden.",
+    /** the section's anchor */
+    anchor: 'galerij',
+  },
+
   /** §5.21 „Per persoon” (the board's price block). `product` = the products.json item whose price the row shows
    *  (gourmet 9: the same price as the bestelbon); the others carry their [PRIJS] here until FACTS.md (D 1–2).
    *  Row 5 is the board's ink tag; its „offerte op aanvraag” is split as the board sets it: „offerte” in the price
@@ -145,6 +155,14 @@ export const traiteurRo: typeof traiteurNl = {
       { name: 'Aperitive și platouri festive', sub: 'reci și calde, pentru acasă' },
       { name: 'Grătar la domiciliu, cu bucătar', sub: 'zona Wingene, Tielt, Lichtervelde și Roeselare' },
     ],
+  },
+
+  /** §6 „Catering, 20.10 — galeria” */
+  gallery: {
+    eyebrow: 'De la petrecerile noastre',
+    title: 'Așa arată.',
+    intro: 'Platouri, bufete și grătare făcute de noi. Fotografii proprii, nu de stoc.',
+    anchor: 'galerie',
   },
 
   /** row 5 split as on NL: „ofertă” in the price place, „la cerere” in the unit place */
