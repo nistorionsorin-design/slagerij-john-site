@@ -9,6 +9,8 @@ import { dateLabel } from './menu';
 export const SITE_UPDATED = '2026-10-19';
 /** /producten + /ro/produse: the whole assortment (row 18, lexicon §5.19 20.10) */
 export const ASSORTMENT_UPDATED = '2026-10-20';
+/** /colli-vleespakketten + /ro/colli: the page is new (row 10d, lexicon §5.28) */
+export const COLLI_UPDATED = '2026-10-20';
 
 /** „19 oktober 2026” / „19 octombrie 2026” — or `since`'s date when it is later than SITE_UPDATED (ISO dates compare as text) */
 export const updatedOn = (locale: Locale, since?: string) => {

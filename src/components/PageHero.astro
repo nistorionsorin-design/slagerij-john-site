@@ -260,7 +260,10 @@ const hasCta = Astro.slots.has('default');
   .sh__say-play { display: none; }
   .sh:has(.hp:checked) .sh__say-pause { display: none; }
   .sh:has(.hp:checked) .sh__say-play { display: inline; }
-  .sh:has(.hp:checked) :is(.sh__f, :global(.sh__k)) { animation-play-state: paused; }
+  /* two selectors, not :is(.sh__f, :global(.sh__k)): Astro scoped that compound as a whole ([data-astro-cid]:is(…)), and
+     the zooming <img> is HeroPic's, without this component's attribute — the zoom never paused (row 10d, 20.10) */
+  .sh:has(.hp:checked) .sh__f,
+  .sh:has(.hp:checked) :global(.sh__k) { animation-play-state: paused; }
   /* a loop shows its pause once it is live (the home's rule); the space stays */
   .sh--loop:not(.is-live) .sh__pause { visibility: hidden; }
 

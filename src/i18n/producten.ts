@@ -70,10 +70,10 @@ export const productenNl = {
     line: 'Per schotel, per stuk, per persoon of per portie. Bestel online of via WhatsApp, een dag vooraf.',
   },
   /** §5.19 20.10 the five rubrics, in page order: name · note; `under` = the line under the rows, `more` = its link.
-   *  The colli rubric's „Alle colli's en vleespakketten” → /colli-vleespakketten comes with row 10d (never a link to a
-   *  page that does not exist yet). */
+   *  Row 10d (20.10): the colli rubric's line is its link alone, „Alle colli's en vleespakketten” → /colli-vleespakketten
+   *  (§5.28 link swaps; design/css/assortment.css markup contract). */
   rubrics: {
-    colli: { name: "Colli's", note: '5 tot 10 kg, op bestelling' },
+    colli: { name: "Colli's", note: '5 tot 10 kg, op bestelling', more: { label: "Alle colli's en vleespakketten", href: '/colli-vleespakketten' } },
     gourmet: {
       name: 'Gourmet & fondue',
       note: 'per persoon, vanaf 2 personen',
@@ -112,9 +112,9 @@ export const productenNl = {
     roHref: '/ro/mici-si-specialitati',
   },
 
-  /** order block (unchanged in row 18): title + the two buttons = §5.19 (the secondary targets #colli — since row 18 the
-   *  colli rubric of part 2 — until row 10d builds /colli-vleespakketten); the pickup, minimum, delivery and payment
-   *  lines = §5.5 verbatim; label above the message = §5.19 addendum; message = §5.10 home NL */
+  /** order block: title + the two buttons = §5.19 (row 10d, §5.28 link swaps: the secondary → /colli-vleespakketten,
+   *  was #colli); the pickup, minimum, delivery and payment lines = §5.5 verbatim; label above the message = §5.19
+   *  addendum; message = §5.10 home NL */
   orderCard: {
     title: 'Bestellen? Via WhatsApp of aan de toog.',
     pickup: 'Afhalen in de winkel, op het uur dat u kiest.',
@@ -125,7 +125,7 @@ export const productenNl = {
     msg: 'Dag, ik wil graag bestellen bij Slagerij John:',
     cta: 'Bestel via WhatsApp',
     secondary: "Bekijk de colli's",
-    secondaryHref: '#colli',
+    secondaryHref: '/colli-vleespakketten',
   },
 
   /** FAQ heading = the home's (lexicon §5.15 „Home body strings”; board: eyebrow „Veelgestelde vragen”) */
@@ -198,9 +198,9 @@ export const productenRo = {
     title: 'Tot ce ai nevoie pentru petrecere, cu preț.',
     line: 'La platou, la bucată, de persoană sau la porție. Comanzi online sau pe WhatsApp, cu o zi înainte.',
   },
-  /** §6 „Produse, 20.10” rubricile; the colli rubric's „Toate pachetele colli” → /ro/colli comes with row 10d */
+  /** §6 „Produse, 20.10” rubricile; row 10d: the colli rubric's „Toate pachetele colli” → /ro/colli */
   rubrics: {
-    colli: { name: 'Colli', note: '5 până la 10 kg, la comandă' },
+    colli: { name: 'Colli', note: '5 până la 10 kg, la comandă', more: { label: 'Toate pachetele colli', href: '/ro/colli' } },
     gourmet: {
       name: 'Gourmet și fondue',
       note: 'de persoană, de la 2 persoane',
@@ -236,9 +236,10 @@ export const productenRo = {
     roHref: '',
   },
 
-  /** order block (unchanged in row 18): title + primary = §6 Produse; secondary = the D-33 RO line („Comandă online”
-   *  → /ro/comanda); pickup / minimum / payment = §6 „Comandă”; delivery = §6 „Delivery”; label = §6 „Mesaj WhatsApp”;
-   *  message = §5.10 home RO */
+  /** order block: title + primary = §6 Produse; secondary = §6 Produse „Vezi pachetele colli” → /ro/colli (row 10d,
+   *  §5.28 link swaps — the D-33 stand-in „Comandă online” → /ro/comanda held the place until /ro/colli existed);
+   *  pickup / minimum / payment = §6 „Comandă”; delivery = §6 „Delivery”; label = §6 „Mesaj WhatsApp”; message = §5.10
+   *  home RO */
   orderCard: {
     title: 'Comanzi? Pe WhatsApp sau la tejghea.',
     pickup: 'Ridicare din magazin, la ora pe care o alegi.',
@@ -248,8 +249,8 @@ export const productenRo = {
     msgLabel: 'Mesaj WhatsApp',
     msg: 'Bună, aș vrea să comand la Măcelăria John:',
     cta: 'Comandă pe WhatsApp',
-    secondary: 'Comandă online',
-    secondaryHref: '/ro/comanda',
+    secondary: 'Vezi pachetele colli',
+    secondaryHref: '/ro/colli',
   },
 
   /** the RO FAQ heading of §6 „Acasă” / „Catering” */

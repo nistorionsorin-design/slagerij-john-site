@@ -53,7 +53,7 @@
     }
   ],
   "pages": {
-    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4; RO (stage 9) = the four §6 „Produse” items verbatim. /bestellen = lexicon §5.11 „Bestellen” (three items, added 07.10 for stage 5; §5.20 „FAQ on the page”), NL and RO verbatim; [BETALING] / [PLATĂ] stay visible until D6. Claude Code, stage 5 revision. /traiteur = lexicon §5.11 „Traiteur” (five items, added 08.10 for stage 6; §5.21 „FAQ on the page”), NL and RO verbatim, in that order; [PRIJS] / [PREȚ] stay visible until the owners answer (owners sheet D). Claude Code, stage 6. Row 15b (13.10): item 1 NL + RO = the §5.11 rewrite with the owners’ figures (docs/data/price-list.json), no placeholder left in it. /feestmenu-eindejaar = lexicon §5.11 „Eindejaar” (three items, added 08.10 for stage 7; §5.22 „FAQ on the page”), NL and RO verbatim, in that order; the third = the „Bestellen” item „Hoe betaal ik?” unchanged; [DATUM] / [UUR] / [BETALING] (RO [DATA] / [ORA] / [PLATĂ]) stay visible until the owners answer (B 3, B 11, D6). Claude Code, stage 7. /contact = lexicon §5.11 „Contact” (four items, added 09.10 for stage 8; §5.23 „FAQ”), NL and RO verbatim, in that order (open op zondag · leveren Tielt / Lichtervelde / Roeselare · open op feestdagen · bellen om te bestellen); [WHATSAPP-ANTWOORD] / [WHATSAPP-RĂSPUNS] stay visible until B 5. Claude Code, stage 8. /bbq-pakketten = lexicon §5.24 „FAQ on the page” (four items, added 15.10 for row 10a), NL and RO (§6 „Grătar”) verbatim, in that order: the home item gourmet per persoon · the Eindejaar item gourmetschotel bezorgen · the new item vlees per persoon (no gram figure: the owners’ number, sheet D 2) · the Traiteur item hoe lang vooraf. Claude Code, row 10a. /roemeense-specialiteiten = lexicon §5.25 „FAQ on the page” (four items, added 15.10 for row 10b), NL in §5.25’s order: the home item Wat zijn mici? (its [PRIJS] / [AANTAL] stay visible) · the new item Hoe bak ik mici? · the home items kleine hoeveelheden and leveren Tielt / Lichtervelde / Roeselare; RO = §6 „Mici și specialități”: the two new items Cât costă micii la kilogram? ([PREȚ] / [NUMĂR] visible) and Cum fac micii? · the §6 „Produse” items cantități mici and livrare (§6 names the delivery item „Livrați la …” with „the §6 Catering answer”; the /ro/catering delivery item answers „Amândouă …” to another question, so the §6 Produse item — question and answer as on /ro/produse — is reused verbatim). Claude Code, row 10b. Row 18 (Claude Code, 20.10, lexicon §5.19 „20.10 — the whole assortment” + §6 „Produse, 20.10”): /producten + /ro/produse get two more items, fifth and sixth — the home item „Hoeveel is 1 colli?” / „Cât înseamnă un colli?” (the €45 answer, confirmed 19.10) and „Hoe lang vooraf moet ik bestellen?” / „Cu cât timp înainte comand?” with the 20.10 answer (owners 19.10: one day ahead, cut-off 12:00), which also replaces the 08.10 answer on /traiteur + /ro/catering; the Eindejaar item carries the deadline and the pickup hours in source (20 december · 08:00–18:00, §5.30; D-44), as menus.json fills them. Row 18 changes paste (Claude Code, 20.10 12:1x, D-46; lexicon §5.11 „20.10, two items” + §5.19 20.10 + §6 „Produse, 20.10”): the lead-time item is two items — (a) schotels en hapjes / platourile, (b) barbecue aan huis / grătar la domiciliu — on /traiteur, /ro/catering, /bbq-pakketten and /ro/gratar in place of the one old item, (a) only on /producten and /ro/produse (the 10:4x merged answer is gone); the traiteur item „Komt er iemand mee koken of bedienen?” / „Vine cineva să gătească sau să servească?” names nobody (§5.11 20.10: „een kok van ons” / „un bucătar de la noi”).",
+    "_source": "Per-page questions (stage 4, revised 07.10): /producten = lexicon §5.19 „FAQ on this page” — the four §5.11 questions without a fact gap, answers verbatim as on the home (Mici's [PRIJS] / [AANTAL] stay visible). Claude Code, stage 4; RO (stage 9) = the four §6 „Produse” items verbatim. /bestellen = lexicon §5.11 „Bestellen” (three items, added 07.10 for stage 5; §5.20 „FAQ on the page”), NL and RO verbatim; [BETALING] / [PLATĂ] stay visible until D6. Claude Code, stage 5 revision. /traiteur = lexicon §5.11 „Traiteur” (five items, added 08.10 for stage 6; §5.21 „FAQ on the page”), NL and RO verbatim, in that order; [PRIJS] / [PREȚ] stay visible until the owners answer (owners sheet D). Claude Code, stage 6. Row 15b (13.10): item 1 NL + RO = the §5.11 rewrite with the owners’ figures (docs/data/price-list.json), no placeholder left in it. /feestmenu-eindejaar = lexicon §5.11 „Eindejaar” (three items, added 08.10 for stage 7; §5.22 „FAQ on the page”), NL and RO verbatim, in that order; the third = the „Bestellen” item „Hoe betaal ik?” unchanged; [DATUM] / [UUR] / [BETALING] (RO [DATA] / [ORA] / [PLATĂ]) stay visible until the owners answer (B 3, B 11, D6). Claude Code, stage 7. /contact = lexicon §5.11 „Contact” (four items, added 09.10 for stage 8; §5.23 „FAQ”), NL and RO verbatim, in that order (open op zondag · leveren Tielt / Lichtervelde / Roeselare · open op feestdagen · bellen om te bestellen); [WHATSAPP-ANTWOORD] / [WHATSAPP-RĂSPUNS] stay visible until B 5. Claude Code, stage 8. /bbq-pakketten = lexicon §5.24 „FAQ on the page” (four items, added 15.10 for row 10a), NL and RO (§6 „Grătar”) verbatim, in that order: the home item gourmet per persoon · the Eindejaar item gourmetschotel bezorgen · the new item vlees per persoon (no gram figure: the owners’ number, sheet D 2) · the Traiteur item hoe lang vooraf. Claude Code, row 10a. /roemeense-specialiteiten = lexicon §5.25 „FAQ on the page” (four items, added 15.10 for row 10b), NL in §5.25’s order: the home item Wat zijn mici? (its [PRIJS] / [AANTAL] stay visible) · the new item Hoe bak ik mici? · the home items kleine hoeveelheden and leveren Tielt / Lichtervelde / Roeselare; RO = §6 „Mici și specialități”: the two new items Cât costă micii la kilogram? ([PREȚ] / [NUMĂR] visible) and Cum fac micii? · the §6 „Produse” items cantități mici and livrare (§6 names the delivery item „Livrați la …” with „the §6 Catering answer”; the /ro/catering delivery item answers „Amândouă …” to another question, so the §6 Produse item — question and answer as on /ro/produse — is reused verbatim). Claude Code, row 10b. Row 18 (Claude Code, 20.10, lexicon §5.19 „20.10 — the whole assortment” + §6 „Produse, 20.10”): /producten + /ro/produse get two more items, fifth and sixth — the home item „Hoeveel is 1 colli?” / „Cât înseamnă un colli?” (the €45 answer, confirmed 19.10) and „Hoe lang vooraf moet ik bestellen?” / „Cu cât timp înainte comand?” with the 20.10 answer (owners 19.10: one day ahead, cut-off 12:00), which also replaces the 08.10 answer on /traiteur + /ro/catering; the Eindejaar item carries the deadline and the pickup hours in source (20 december · 08:00–18:00, §5.30; D-44), as menus.json fills them. Row 18 changes paste (Claude Code, 20.10 12:1x, D-46; lexicon §5.11 „20.10, two items” + §5.19 20.10 + §6 „Produse, 20.10”): the lead-time item is two items — (a) schotels en hapjes / platourile, (b) barbecue aan huis / grătar la domiciliu — on /traiteur, /ro/catering, /bbq-pakketten and /ro/gratar in place of the one old item, (a) only on /producten and /ro/produse (the 10:4x merged answer is gone); the traiteur item „Komt er iemand mee koken of bedienen?” / „Vine cineva să gătească sau să servească?” names nobody (§5.11 20.10: „een kok van ons” / „un bucătar de la noi”). /colli-vleespakketten = lexicon §5.28 „FAQ on the page” (five items, added 20.10 for row 10d: the §4 fan-out — hoeveel is 1 colli · wat zit erin · invriezen · afhalen of levering · vooraf betalen), NL verbatim in that order; RO = §6 „Colli” verbatim. Item 1 is §5.28 its own wording of the §5.11 answer („5 tot 10 kg”, the owners’ €45). Claude Code, row 10d.",
     "producten": {
       "nl": [
         {
@@ -341,6 +341,52 @@
         {
           "q": "Livrați în Tielt, Lichtervelde sau Roeselare?",
           "a": "Da. Lichtervelde și Wingene sunt la sub 10 km (gratuit de la 50 €), Tielt și Roeselare la sub 20 km (gratuit de la 100 €); distanța se măsoară de la magazin."
+        }
+      ]
+    },
+    "colli": {
+      "nl": [
+        {
+          "q": "Hoeveel is 1 colli?",
+          "a": "Een colli is een vast pakket van 5 tot 10 kg; Colli Varken 1 bevat 1 kg spiering, 1 kg filet kotelet, 1 kg spek, 1 kg worst en 1 kg gehakt voor €45."
+        },
+        {
+          "q": "Wat zit er in een colli?",
+          "a": "Van elk product 1 kg; de inhoud staat bij elk pakket en ligt vast. Wilt u een product ruilen, vraag het via WhatsApp."
+        },
+        {
+          "q": "Kan ik een colli invriezen?",
+          "a": "Ja. Verdeel het vlees per maaltijd en vries het in op de dag van afhaling."
+        },
+        {
+          "q": "Afhalen of laten leveren?",
+          "a": "Allebei. Afhalen in de winkel op het uur dat u kiest. Levering aan huis maandag tot zaterdag tussen 18 en 19.30 uur: gratis tot 10 km vanaf €50 en tot 20 km vanaf €100; daarbuiten €1 per km."
+        },
+        {
+          "q": "Moet ik vooraf betalen?",
+          "a": "Nee. U betaalt bij afhaling of aan de deur: cash, Bancontact, Payconiq, Visa of Mastercard."
+        }
+      ],
+      "ro": [
+        {
+          "q": "Cât înseamnă un colli?",
+          "a": "Un colli e un pachet fix de 5 până la 10 kg; Colli Porc 1 are 1 kg ceafă, 1 kg cotlet, 1 kg piept de porc, 1 kg cârnați și 1 kg carne tocată, la 45 €."
+        },
+        {
+          "q": "Ce conține un colli?",
+          "a": "Câte 1 kg din fiecare produs; conținutul e scris la fiecare pachet și e fix. Dacă vrei să schimbi un produs, întreabă-ne pe WhatsApp."
+        },
+        {
+          "q": "Pot congela un colli?",
+          "a": "Da. Împarte carnea pe porții și pune-o la congelator în ziua ridicării."
+        },
+        {
+          "q": "Ridicare sau livrare?",
+          "a": "Ambele. Ridici din magazin la ora pe care o alegi. Livrăm acasă de luni până sâmbătă, între 18 și 19.30: gratuit până la 10 km de la 50 € și până la 20 km de la 100 €; apoi 1 € pe km."
+        },
+        {
+          "q": "Plătesc în avans?",
+          "a": "Nu. Plătești la ridicare sau la ușă: numerar, Bancontact, Payconiq, Visa sau Mastercard."
         }
       ]
     }

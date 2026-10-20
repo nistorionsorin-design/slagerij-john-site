@@ -674,6 +674,20 @@
       }
     }
   ],
+  "_colli_source": "Row 10d (20.10): /colli-vleespakketten + /ro/colli — the hero (D-40, lexicon §5.28 head): p16 = assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at15.jpeg (2040 × 942: ten packed trays on the counter with the brand card; it reads as a Colli John (observed, not confirmed: Georgiana confirms) — the alt stays neutral until then), copied byte-identical (sha256 f2f45f06…), no colour change. Wide (2,17 : 1): drawn whole on the phone with its blurred copy behind it (PageHero `whole` + backdrop, the /recepten head), as the home draws the pig on the spit. Alts NL/RO verbatim from §5.28 / §6 „Colli”.",
+  "colli": [
+    {
+      "src": "colli/colli-in-schalen-op-de-toog-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at15.jpeg",
+      "role": "hero",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Een colli in schalen op de toog, klaar voor afhaling",
+        "ro": "Un colli în caserole pe tejghea, gata de ridicat"
+      }
+    }
+  ],
   "_producten_source": "Row 14 (16.10, Dan 15:35): /producten + /ro/produse — the page photo under the category chips is a frame loop (FrameLoop.astro, the hero engine reused): docs/data/phone-shoot-slots.json `producten` as it is — 8 frames (n = the §B5 number, wb display, focal + zoom origin, the categories they show, alts NL/RO verbatim) and `by_chip` (chip → frame numbers; rund · lam · colli = \"alles\": nothing shot yet, never a stock photo). Files shared with the other row-14 keys (one white-balanced source per original). Replaces the single #46 varken entry of 16.10 15:20.",
   "producten": {
     "frames": [

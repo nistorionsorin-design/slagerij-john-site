@@ -24,8 +24,9 @@
 //     wrapping grid from 960; a card = the row's own item photo (D-34, 140 px) or an empty paper box of the same size ·
 //     name · line · price + unit · „Bestel”, the whole card one link to its bestelbon row (/bestellen?product=<id>#n-<id>,
 //     order.ts fills the quantity). The rubric head's print = the rubric's `level: section` photo, never on a card.
-//   · order block, FAQ (six items), byline — the order block unchanged (its secondary → #colli = the colli rubric until
-//     row 10d).
+//   · order block, FAQ (six items), byline — the order block unchanged.
+// Row 10d (20.10, lexicon §5.28 link swaps): the order block's secondary and the colli rubric's line („Alle colli's en
+// vleespakketten”, its link alone) → /colli-vleespakketten · /ro/colli; the six colli stay rows here (D-43).
 // The pill row needs one parent that holds all ten sections (sticky stays inside its parent), so the parts share one
 // `.container` and the per-kg sections lost their own.
 // JSON-LD (row 18): one ItemList (`…#assortiment` / `…#sortiment`, numberOfItems 75, ListItem → the Product @id, url = the
@@ -266,7 +267,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
               })}
             </div>
             <p class="wheel__hint" aria-hidden="true">{t.card.hint}</p>
-            {'under' in r && <p class="rub__under">{r.under} <a href={r.more.href}>{r.more.label}</a></p>}
+            {'more' in r && <p class="rub__under">{'under' in r && <>{r.under} </>}<a href={r.more.href}>{r.more.label}</a></p>}
           </section>
         ))}
       </div>

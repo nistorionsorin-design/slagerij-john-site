@@ -1,0 +1,350 @@
+---
+// /colli-vleespakketten — Colli's & vleespakketten (row 10d, 20.10; D-43, Dan „3 B”). No board: the page follows
+// /bbq-pakketten (D-30) — the hero (PageHero, D-40) · the six colli as cards · the line under the cards · three steps ·
+// FAQ · byline. Strings: src/i18n/colli.ts (lexicon §5.28; RO §6 „Colli”). One view, two pages:
+// src/pages/colli-vleespakketten.astro and src/pages/ro/colli.astro.
+// The hero: photo p16 (photos.json `colli`, ten packed trays on the counter, 2040 × 942). Too wide for the phone's 1 : 2
+// box — a cover crop would keep a quarter of it at 471 px — so it is drawn whole with its blurred copy behind it
+// (PageHero `whole` + backdrop, as the /recepten head and the home's pig on the spit); on desktop the dark print, the
+// photo at its right behind the text's gradient. One photo: the home's Ken Burns, pause, reduced motion = still, the
+// frame at opacity 1 from first paint (D-12) — CSS only, no script.
+// A card = a large counter tag (brief §4: the tag ground, the pin hole, the price in oxblood): name · weight · line ·
+// the contents as a real list („1 kg” before each product, C-12) · the contents' own item photos where
+// product-photos.json has them (D-34) · price /colli · the per-kilo figure muted · „Bestel” → its bestelbon row
+// (/bestellen?product=<id>#n-<id>; order.ts fills the quantity). Phone: one column; 2 from 640; 3 from 1100.
+// JSON-LD (§5.28): BreadcrumbList (§8.4) + WebPage (§8.2) about the shop's @id + one Product per colli (§8.3: name,
+// description = products.json's contents line, weight in KGM, Offer with price + eligibleQuantity 1 colli; no
+// `availability` — order only, nothing is claimed in stock). The shop's @id is Base.astro's.
+import type { ImageMetadata } from 'astro';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Thumb from '../components/Thumb.astro';
+import WaIcon from '../components/WaIcon.astro';
+import Faq from '../components/Faq.astro';
+import photos from '../data/photos.json';
+import type { Photo } from '../data/types';
+import { item, priceLabel, priceUnitLabel, products } from '../lib/price';
+import { thumbOf } from '../lib/thumbs';
+import { keepUnits } from '../lib/typo';
+import { wa, type Locale } from '../i18n/ui';
+import { colliT } from '../i18n/colli';
+import '../styles/sections.css';
+
+export interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = colliT[locale];
+const ro = locale === 'ro';
+const origin = 'https://slagerij-john.be';
+const alternates = { nl: '/colli-vleespakketten', ro: '/ro/colli' };
+const path = alternates[locale];
+const homePath = ro ? '/ro' : '/';
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/colli/*.{jpg,jpeg,png,webp}', { eager: true });
+const file = (src: string) => {
+  const m = files[`../assets/${src}`];
+  if (!m) throw new Error(`photos.json: src/assets/${src} not found`);
+  return m.default;
+};
+
+// the hero (see the head): p16 whole, the blurred copy behind it; AVIF quality 40 as the other heads
+const heroFrames = (photos.colli as Photo[])
+  .filter((p) => p.role === 'hero')
+  .map((p) => ({ img: file(p.src), alt: p.alt[locale], focalX: p.focalX, focalY: p.focalY, zoomX: p.zoomX, zoomY: p.zoomY, whole: { width: 125, top: 10, backdrop: true } }));
+// spec §4 (design/heroes-unify.md): the lead goes under the hero when the text block covers more of it than the home's
+// own (64,6 % at 390 × 844): with the lead in, 78,5 % NL and RO (without it 64,8 %) — row 10d [MEASURED-OURS] local 20.10
+const LEAD_BELOW = true;
+
+const waHref = `${wa(t.primarySrc)}&text=${encodeURIComponent(t.waMessage)}${ro ? '&lang=ro' : ''}`;
+
+// the contents' own item photos (D-34, product-photos.json), in contents order — matched by the product's name, never by
+// kin: „varkensgehakt” is not the rund counter's „gehakt”, „worst” is not „braadworst” (lexicon §5.28: the product shown
+// is the product named). Gehakt · spiering · braadworst · mici are the four that have one (20.10). `at` = the line of the
+// card's list the photo belongs to: its word (without „1 kg”) is the photo's caption, in the page's language, so the
+// photo points at its line (braadworst and mici look alike at 56 px). The build checks the NL line names the product.
+const strip: Record<string, { photo: string; at: number }[]> = {
+  'colli-varken-1': [{ photo: 'spiering', at: 0 }, { photo: 'gehakt', at: 4 }],
+  'colli-varken-2': [{ photo: 'spiering', at: 0 }, { photo: 'gehakt', at: 5 }],
+  'colli-kip': [],
+  'colli-kip-varken': [{ photo: 'spiering', at: 4 }],
+  'colli-bbq': [{ photo: 'braadworst', at: 1 }, { photo: 'mici', at: 2 }],
+  'colli-john': [{ photo: 'braadworst', at: 0 }],
+};
+
+// the cards: the strings' six against products.json's colli rows — same ids in the same order, the same names, and the
+// per-kilo figure = price ÷ weight (rounded to the cent, the site's price format); a mismatch fails the build
+const rows = products.items.filter((p) => p.category === 'colli');
+if (rows.map((p) => p.id).join() !== t.cards.items.map((c) => c.id).join())
+  throw new Error(`colli.ts: the cards (${t.cards.items.map((c) => c.id)}) are not products.json's colli rows (${rows.map((p) => p.id)})`);
+const amount = (n: number) => {
+  const r = Math.round(n * 100) / 100;
+  return Number.isInteger(r) ? String(r) : r.toFixed(2).replace('.', ',');
+};
+const cards = t.cards.items.map((c) => {
+  const p = item(c.id);
+  if (p.name[locale] !== c.name) throw new Error(`colli.ts: „${c.name}” ≠ products.json „${p.name[locale]}”`);
+  if (p.price === null) throw new Error(`products.json: ${c.id} has no price`);
+  const perKg = ro ? `${amount(p.price / c.kg)} €` : `€${amount(p.price / c.kg)}`;
+  if (!c.perKg.startsWith(`${perKg} `)) throw new Error(`colli.ts: ${c.id} „${c.perKg}” — the price says ${perKg} per kilo`);
+  const nl = colliT.nl.cards.items.find((x) => x.id === c.id)!;
+  const pics = (strip[c.id] ?? [])
+    .filter((x) => thumbOf(x.photo)?.level === 'item')
+    .map((x) => {
+      if (!nl.contents[x.at]?.toLowerCase().endsWith(` ${item(x.photo).name.nl.toLowerCase()}`))
+        throw new Error(`Colli.astro strip: ${c.id} line ${x.at} „${nl.contents[x.at]}” is not ${x.photo}`);
+      return { id: x.photo, caption: c.contents[x.at].replace(/^1 kg /, '') };
+    });
+  return { ...c, p, price: priceLabel(p, locale), unit: priceUnitLabel(p, locale), pics };
+});
+
+const category = products.categories.find((c) => c.id === 'colli')?.name[locale];
+const shop = { '@id': `${origin}/#shop` };
+const productLd = (c: (typeof cards)[number]) => {
+  const url = `${origin}${path}#${c.id}`;
+  return {
+    '@type': 'Product',
+    '@id': url,
+    name: c.name,
+    description: c.p.line?.[locale],
+    category,
+    brand: { '@type': 'Brand', name: 'Slagerij John' },
+    weight: { '@type': 'QuantitativeValue', value: c.kg, unitCode: 'KGM' },
+    offers: {
+      '@type': 'Offer',
+      url,
+      priceCurrency: 'EUR',
+      price: c.p.price!.toFixed(2),
+      eligibleQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'colli' },
+      availableAtOrFrom: shop,
+      seller: shop,
+    },
+  };
+};
+const jsonld = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t.crumbs.home, item: `${origin}${homePath}` },
+      { '@type': 'ListItem', position: 2, name: t.crumbs.page, item: `${origin}${path}` },
+    ],
+  },
+  {
+    '@type': 'WebPage',
+    '@id': `${origin}${path}#webpage`,
+    url: `${origin}${path}`,
+    name: t.title,
+    description: t.description,
+    inLanguage: ro ? 'ro-BE' : 'nl-BE',
+    isPartOf: { '@type': 'WebSite', '@id': `${origin}/#website`, url: `${origin}/`, name: 'Slagerij John' },
+    about: shop,
+  },
+  ...cards.map(productLd),
+];
+
+const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
+---
+<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero">
+  <main id="main" class="cl">
+    <PageHero locale={locale} id="cl-title" eyebrow={t.eyebrow} h1={t.h1} accent={t.accent} lead={t.lead} leadBelow={LEAD_BELOW} frames={heroFrames} quality={40}>
+      <a class="btn btn--primary btn--lg" href={waHref} rel="nofollow"><WaIcon /><span>{t.primary}</span></a>
+      <a class="btn btn--secondary btn--lg" href={t.secondaryHref}>{t.secondary}</a>
+    </PageHero>
+
+    <section class="container ck-sec" aria-labelledby="ck-title">
+      <h2 class="ck-sec__title" id="ck-title">{t.cards.label}</h2>
+      <ul class="ck-grid">
+        {cards.map((c) => (
+          <li class="ck-grid__item">
+            <article class="ck" id={c.id} aria-labelledby={`${c.id}-name`}>
+              <span class="ck__pin" aria-hidden="true"></span>
+              <div class="ck__head">
+                <h3 class="ck__name" id={`${c.id}-name`}>{c.name}</h3>
+                <span class="ck__kg">{c.kg} kg</span>
+              </div>
+              <p class="ck__line">{c.line}</p>
+              <ul class="ck__list">
+                {c.contents.map((x) => {
+                  const m = x.match(/^(1 kg) (.+)$/);
+                  return <li>{m ? <><span class="ck__qty">{m[1]}</span> {m[2]}</> : x}</li>;
+                })}
+              </ul>
+              {c.pics.length > 0 && (
+                <ul class="ck__pics">
+                  {c.pics.map((x) => <li class="ck__pic"><Thumb id={x.id} locale={locale} /><span class="ck__pic-name" aria-hidden="true">{x.caption}</span></li>)}
+                </ul>
+              )}
+              <div class="ck__foot">
+                <div class="ck__money">
+                  <p class="ck__price"><span class="ck__amount">{c.price}</span><span class="ck__unit">{c.unit}</span></p>
+                  <p class="ck__perkg">{c.perKg}</p>
+                </div>
+                <a class="btn btn--secondary ck__btn" href={t.cards.href(c.id)}>{t.cards.action}<span class="vh"> {c.name}</span></a>
+              </div>
+            </article>
+          </li>
+        ))}
+      </ul>
+      <div class="ck-under">
+        <p>{t.under.swap}</p>
+        <a class="link-arrow" href={t.under.perKilo.href}>{t.under.perKilo.label}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a>
+        <a class="link-arrow" href={t.under.bbq.href}>{t.under.bbq.label}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a>
+      </div>
+    </section>
+
+    <section class="container cs" aria-labelledby="cs-title">
+      <h2 class="eyebrow cs__title" id="cs-title">{t.steps.eyebrow}</h2>
+      <ol class="cs__list">
+        {t.steps.items.map((s, i) => (
+          <li class="cs__step">
+            <span class="cs__n" aria-hidden="true">{i + 1}</span>
+            <p class="cs__text"><strong>{s.title}</strong> {keepUnits(s.text)}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <Faq locale={locale} title={t.faq} page="colli" />
+
+    <div class="container cl-byline">
+      <p>{t.byline}</p>
+    </div>
+  </main>
+</Base>
+
+<style>
+  /* ── phone: the hero is PageHero.astro (row 14e); then the cards in the 20 px gutters ── */
+  .ck-sec { display: flex; flex-direction: column; gap: 14px; padding-top: 28px; padding-bottom: 8px; }
+  .ck-sec__title { margin: 0; font-size: 26px; line-height: 1.05; letter-spacing: -0.015em; }
+  .ck-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .ck-grid__item { display: flex; }
+
+  /* the card: the counter tag grown up (CounterTag.astro's ground, line, pin and oxblood price) */
+  .ck {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px 16px 16px 34px;
+    background: var(--tag);
+    border: 1px solid var(--tag-line);
+    border-radius: var(--r-tile);
+    color: var(--fg);
+    scroll-margin-top: 76px;
+  }
+  .ck__pin {
+    position: absolute;
+    left: 13px;
+    top: 24px;
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    background: var(--paper);
+    border: 1px solid var(--tag-pin);
+  }
+  .ck__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .ck__name { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 22px; line-height: 1.1; letter-spacing: -0.005em; }
+  .ck__kg {
+    flex: none;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--ox-tint);
+    color: var(--ox);
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .ck__line { margin: 0; font-size: 14px; line-height: 1.4; color: var(--muted); }
+  /* the contents: a real list, two columns, „1 kg” in tabular figures */
+  .ck__list {
+    list-style: none;
+    margin: 2px 0 0;
+    padding: 10px 0 0;
+    border-top: 1px dashed var(--tag-line);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px 14px;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+  .ck__qty { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ck__pics { list-style: none; margin: 2px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+  .ck__pic { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 72px; }
+  .ck__pics :global(.thumb) { width: 56px; height: 56px; }
+  /* the photo's line word, under it (aria-hidden: the photo's alt names the product) */
+  .ck__pic-name { font-size: 11px; line-height: 1.2; color: var(--muted); text-align: center; }
+  /* the foot: price + per kilo left, „Bestel” right — pushed to the card's bottom so a grid row's prices line up */
+  .ck__foot {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px dashed var(--tag-line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .ck__money { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .ck__price { margin: 0; display: flex; align-items: baseline; gap: 3px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ck__amount { font-size: 30px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; color: var(--ox); }
+  .ck__unit { font-size: var(--fs-caption); color: var(--muted); }
+  .ck__perkg { margin: 0; font-size: 13px; line-height: 1.3; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .ck__btn { flex: none; }
+
+  /* the line under the cards and its two links */
+  .ck-under { display: flex; flex-direction: column; gap: 0; padding-top: 6px; }
+  .ck-under p { margin: 0 0 4px; font-size: 14px; line-height: 1.45; }
+  .ck-under .link-arrow { align-self: flex-start; }
+
+  /* three steps: /bbq-pakketten's (numbered ring, oxblood), the step's first words in bold */
+  .cs { display: flex; flex-direction: column; gap: 12px; padding-top: 26px; padding-bottom: 8px; }
+  .cs__title { margin: 0; font-family: var(--f-ui); font-weight: 600; letter-spacing: 0.16em; }
+  .cs__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  .cs__step { display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start; }
+  .cs__n {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--ox);
+    border-radius: 999px;
+    color: var(--ox);
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: 17px;
+  }
+  .cs__text { margin: 0; padding-top: 7px; font-size: 15px; line-height: 1.45; max-width: 56ch; }
+  .cs__text strong { font-weight: 600; }
+
+  .cl-byline { padding-top: 20px; padding-bottom: 28px; }
+  .cl-byline p { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12px; line-height: 1.5; color: var(--muted); }
+
+  /* two cards a row from 640 (a tablet, a phone on its side) */
+  @media (min-width: 640px) {
+    .ck-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  }
+
+  /* ── desktop (derived, D-30) ── */
+  @media (min-width: 960px) {
+    .ck-sec { padding-top: 80px; gap: 24px; }
+    .ck-sec__title { font-size: 44px; line-height: 1; letter-spacing: -0.02em; }
+    .ck { padding: 20px 22px 20px 38px; gap: 12px; }
+    .ck__pin { left: 15px; top: 29px; }
+    .ck__name { font-size: 24px; }
+    .ck__line { font-size: var(--fs-body); line-height: 1.45; }
+    .ck__list { font-size: 15px; }
+    .ck__amount { font-size: 32px; }
+    .ck-under { padding-top: 8px; }
+    .ck-under p { font-size: var(--fs-body); line-height: 1.5; color: var(--muted); }
+
+    .cs { padding-top: 80px; gap: 20px; }
+    .cs__list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+    .cs__text { font-size: var(--fs-body); line-height: 1.5; }
+
+    .cl-byline { padding-top: 56px; padding-bottom: 80px; }
+  }
+  /* three a row from 1100 */
+  @media (min-width: 1100px) {
+    .ck-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  }
+</style>
