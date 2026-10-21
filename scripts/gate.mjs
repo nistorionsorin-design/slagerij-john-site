@@ -3,6 +3,7 @@
 // or needs a browser/deployed URL; it never hides a failure on real content.
 import { spawnSync } from 'node:child_process';
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { brotliDecompressSync } from 'node:zlib';
 import { join, relative, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -33,6 +34,59 @@ const json = (name) => JSON.parse(read(join(root, 'src/data', name)));
 const attr = (tag, name) => tag.match(new RegExp(`\\s${name}="([^"]*)"`, 'i'))?.[1];
 const decode = (s) => s.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
 const visibleText = (html) => html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' ');
+
+// The code points a WOFF2 file draws (check 5b), with no dependency: WOFF2 (W3C) is a 48-byte header, a table
+// directory, then one brotli stream holding the tables in directory order without padding. cmap is never transformed;
+// glyf/loca carry a transformLength at transform version 0, every other table at a non-zero version. cmap subtables
+// 4 and 12 are read. Matches fontTools' getBestCmap() on the six shipped files (row 20, 21.10).
+function woff2Cmap(buf) {
+  if (buf.toString('latin1', 0, 4) !== 'wOF2') throw new Error('not WOFF2');
+  let p = 48;
+  const base128 = () => {
+    let v = 0;
+    for (let i = 0; i < 5; i++) {
+      const b = buf[p++];
+      v = v * 128 + (b & 0x7f);
+      if (!(b & 0x80)) return v;
+    }
+    throw new Error('bad UIntBase128');
+  };
+  const tables = [];
+  for (let i = 0, n = buf.readUInt16BE(12); i < n; i++) {
+    const flags = buf[p++];
+    const tag = (flags & 0x3f) === 63 ? buf.toString('latin1', p, (p += 4)) : { 0: 'cmap', 10: 'glyf', 11: 'loca' }[flags & 0x3f] ?? '';
+    const orig = base128();
+    tables.push({ tag, len: (tag === 'glyf' || tag === 'loca' ? flags >> 6 === 0 : flags >> 6 !== 0) ? base128() : orig });
+  }
+  const data = brotliDecompressSync(buf.subarray(p, p + buf.readUInt32BE(20)));
+  let off = 0;
+  for (const t of tables) {
+    if (t.tag === 'cmap') break;
+    off += t.len;
+  }
+  const cps = new Set();
+  for (let i = 0, n = data.readUInt16BE(off + 2); i < n; i++) {
+    const s = off + data.readUInt32BE(off + 8 + i * 8);
+    const format = data.readUInt16BE(s);
+    if (format === 4) {
+      const segs = data.readUInt16BE(s + 6) / 2;
+      const end = s + 14, start = end + segs * 2 + 2, delta = start + segs * 2, range = delta + segs * 2;
+      for (let k = 0; k < segs; k++) {
+        const a = data.readUInt16BE(start + k * 2), b = data.readUInt16BE(end + k * 2), d = data.readUInt16BE(delta + k * 2), r = data.readUInt16BE(range + k * 2);
+        for (let c = a; c <= b && c !== 0xffff; c++) {
+          const g = r ? data.readUInt16BE(range + k * 2 + r + (c - a) * 2) : c;
+          if (r ? g && (g + d) & 0xffff : (g + d) & 0xffff) cps.add(c);
+        }
+      }
+    } else if (format === 12) {
+      for (let k = 0, n = data.readUInt32BE(s + 12); k < n; k++) {
+        const g = s + 16 + k * 12, a = data.readUInt32BE(g), b = data.readUInt32BE(g + 4), id = data.readUInt32BE(g + 8);
+        for (let c = a; c <= b; c++) if (id + c - a) cps.add(c);
+      }
+    }
+  }
+  return cps;
+}
 
 // 1 — astro check + astro build
 function run(id, args) {
@@ -187,6 +241,52 @@ if (built) {
     if (fonts.some((f) => !rel(f).startsWith('dist/_astro/'))) e.push('font file outside /_astro/');
     if (!fonts.length) e.push('no self-hosted font files in dist/_astro/');
     verdict('third-party', e, `0 off-site requests in ${pages.length} pages + assets; ${fonts.length} font files, all in /_astro/`);
+  }
+
+  // 5b — font coverage (row 20, D-49): the Latin files are cut to the characters the site uses (fonts.css header,
+  // scripts/glyphs.mjs). Every character of a built page's text, and of the CSS `content:` strings, must be in the cmap
+  // of a font file whose @font-face unicode-range takes it — else Georgia / Arial draws it inside a brand-font word.
+  // FALLBACK: the symbols the fallback font has always drawn (outside @fontsource's published range, 21.10).
+  {
+    const e = [];
+    const FALLBACK = new Set(['→', '★']);
+    const css = [
+      ...walk(dist).filter((f) => f.endsWith('.css')).map(read),
+      ...pages.flatMap((p) => [...p.html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/gi)].map((m) => m[1])),
+    ].join('\n');
+    const faces = new Map();
+    for (const [face] of css.matchAll(/@font-face\s*\{[^}]*\}/gi)) {
+      const url = face.match(/url\(\s*['"]?([^'")]+\.woff2)/i)?.[1];
+      if (!url || faces.has(url)) continue;
+      const file = join(dist, url.replace(/^\//, ''));
+      if (!existsSync(file)) {
+        e.push(`@font-face ${url}: no such file in dist/`);
+        continue;
+      }
+      // U+20-7E, U+2026, or a minifier's wildcard U+201?
+      const ranges = (face.match(/unicode-range:\s*([^;}]+)/i)?.[1] ?? 'U+0-10FFFF').split(',').map((r) => {
+        const [a, b = a] = r.trim().replace(/^u\+/i, '').split('-');
+        return [parseInt(a.replace(/\?/g, '0'), 16), parseInt(b.replace(/\?/g, 'f'), 16)];
+      });
+      faces.set(url, { ranges, cmap: woff2Cmap(readFileSync(file)) });
+    }
+    const drawn = (cp) => [...faces.values()].some((f) => f.cmap.has(cp) && f.ranges.some(([a, b]) => cp >= a && cp <= b));
+    const missing = new Map();
+    const scan = (label, text) => {
+      for (const ch of text) {
+        const cp = ch.codePointAt(0);
+        if (cp > 0x20 && !FALLBACK.has(ch) && !drawn(cp)) missing.set(ch, new Set([...(missing.get(ch) ?? []), label]));
+      }
+    };
+    const chars = (s) => s.replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16))).replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(+d)).replace(/&nbsp;/g, ' ');
+    for (const p of pages) scan(p.file, chars(decode(visibleText(p.html))));
+    for (const m of css.matchAll(/content:\s*(["'])(.*?)\1/g)) scan('CSS content', m[2].replace(/\\([0-9a-f]{1,6})\s?/gi, (_, h) => String.fromCodePoint(parseInt(h, 16))));
+    if (!faces.size) e.push('no @font-face with a woff2 file in the built CSS');
+    for (const [ch, where] of missing) {
+      const list = [...where];
+      e.push(`U+${ch.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')} «${ch}» in no font file's cmap + unicode-range: ${list.slice(0, 4).join(', ')}${list.length > 4 ? ` +${list.length - 4}` : ''} — run scripts/glyphs.mjs, re-cut the Latin files (fonts.css header)`);
+    }
+    verdict('font-cmap', e, `every character of ${pages.length} pages + CSS content drawn by one of ${faces.size} font files (cmap ∩ unicode-range); ${[...FALLBACK].join(' ')} by the fallback, as always`);
   }
 
   // 6 — images

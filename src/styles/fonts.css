@@ -1,12 +1,18 @@
 /* Self-hosted fonts (D-08, BE-05, U-19): Fraunces variable with the opsz axis
    (brief §3: optical size on) and Inter Tight variable (wght). font-display: swap.
-   Latin from @fontsource-variable as published. Latin Extended is cut down to the
+   Latin (row 20, D-49): the @fontsource-variable latin files cut to the characters the
+   site uses — `node scripts/glyphs.mjs` after a build lists them and prints the
+   --unicodes string (205 code points; 177,9 kB for the three instead of 193,7). Their
+   unicode-range = the shipped cmap; → and ★ stay with the fallback, as they always were
+   (outside @fontsource's published range). The gate's `font-cmap` check fails on a
+   page character no file draws. Latin Extended is cut down to the
    Romanian letters it holds — Ă ă Ș ș Ț ț (â î are already in Latin): the full files
    weigh 59–90 kB each and a single „ă” (the footer's „Română”) pulled them onto every
    NL page, ahead of the LCP text. Other Latin-Extended letters fall back to Georgia /
-   Arial. The subsets keep both variable axes. Regenerate after a font update with:
+   Arial. The subsets keep both variable axes and every layout feature. Regenerate after a font update with:
+     pyftsubset <fontsource latin file> --unicodes="<glyphs.mjs output>" --layout-features='*' --flavor=woff2 --output-file=src/assets/fonts/<same name>.woff2
      pyftsubset <fontsource latin-ext file> --unicodes="U+0102-0103,U+0218-021B"        --layout-features='*' --flavor=woff2 --output-file=src/assets/fonts/<name>.woff2
-   (fonttools 4.66 + brotli, 06.10.2026). */
+   (fonttools 4.66 + brotli, 06.10.2026; Latin 21.10.2026). */
 
 /* Fraunces — display */
 @font-face {
@@ -14,8 +20,8 @@
   font-style: normal;
   font-display: swap;
   font-weight: 100 900;
-  src: url('../../node_modules/@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2') format('woff2-variations');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url('../assets/fonts/fraunces-latin-opsz-normal.woff2') format('woff2-variations');
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2212;
 }
 @font-face {
   font-family: 'Fraunces Variable';
@@ -30,8 +36,8 @@
   font-style: italic;
   font-display: swap;
   font-weight: 100 900;
-  src: url('../../node_modules/@fontsource-variable/fraunces/files/fraunces-latin-opsz-italic.woff2') format('woff2-variations');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url('../assets/fonts/fraunces-latin-opsz-italic.woff2') format('woff2-variations');
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2212;
 }
 @font-face {
   font-family: 'Fraunces Variable';
@@ -48,8 +54,8 @@
   font-style: normal;
   font-display: swap;
   font-weight: 100 900;
-  src: url('../../node_modules/@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2') format('woff2-variations');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url('../assets/fonts/inter-tight-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2212;
 }
 @font-face {
   font-family: 'Inter Tight Variable';
