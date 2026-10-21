@@ -32,6 +32,7 @@ import stampRo from '../assets/stamp-ro.svg?raw';
 import WaIcon from './WaIcon.astro';
 import OpenChip from './OpenChip.astro';
 import { hero as copy, wa, type Locale } from '../i18n/ui';
+import { homeSizes, homeWidths } from '../lib/hero-image';
 
 export interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -85,16 +86,10 @@ const frames = heroPhotos.map((p, i) => {
   const mod = files[`../assets/${p.src}`];
   if (!mod) throw new Error(`photos.json hero ${p.id}: src/assets/${p.src} not found`);
   const img = mod.default;
-  const r = (img.width / img.height).toFixed(3);
-  const max = Math.min(img.width, 1600);
-  const widths = [480, 768, 1080, 1600].filter((w) => w < max).concat(max);
-  // The frame covers its box: on a phone the full screen (height-bound for wide photos),
-  // on desktop the pinned print right of the seam (hero-seam.css: 45 % wide, 48 % from 1600 px,
-  // 16 px inset top and bottom).
-  // From 1600 px the photo panel is half the width (1fr 1fr).
-  // The phone term is 1 px short of the drawn width: a 3:4 frame on Lighthouse's phone (823 px tall, DPR 1,75) asked for
-  // 1080,2 device px and got the 1500/1600 file (199 kB for the counter photo) for 0,2 px — 1 px is invisible (row 14c).
-  const sizes = `(min-width: 1600px) max(48vw, calc((100vh - 32px) * ${r})), (min-width: 960px) max(45vw, calc((100vh - 32px) * ${r})), max(100vw, calc(100vh * ${r} - 1px))`;
+  // widths and sizes: src/lib/hero-image.ts (row 16 prep, 21.10 — shared with HeroPreload.astro, which preloads frame 1
+  // from <head> with the same call): the frame covers the full screen on a phone, the pinned print on desktop
+  const widths = homeWidths(img);
+  const sizes = homeSizes(img);
   const fx = p.focalX ?? 50, fy = p.focalY ?? 50;
   const style = `object-position:${fx}% ${fy}%;transform-origin:${p.zoomX ?? fx}% ${p.zoomY ?? fy}%;animation-delay:${FRAME_DELAY[i]}s`;
   // a „whole” frame (Dan 17.10, the pig on the spit: „too close up, must be further so we can see it”): the photo is
@@ -102,7 +97,7 @@ const frames = heroPhotos.map((p, i) => {
   // `top` % (phone) / 50 % (desktop); the same file again, blurred and darkened, fills the frame behind it (same
   // sizes → the same srcset pick → no second download). Ken Burns and the wipe as every frame.
   const whole = p.whole && {
-    sizes: `(min-width: 1600px) calc(48vw * ${(100 / p.whole.w).toFixed(3)}), (min-width: 960px) calc(45vw * ${(100 / p.whole.w).toFixed(3)}), calc(100vw * ${(100 / p.whole.w).toFixed(3)})`,
+    sizes: homeSizes(img, p.whole.w),
     style: `${style};--wx:${((-100 * p.whole.x) / p.whole.w).toFixed(2)}%;--ww:${(10000 / p.whole.w).toFixed(2)}%;--wt:${p.whole.top}%;--wy:${-fy}%`,
   };
   return { p, img, widths, sizes: whole ? whole.sizes : sizes, style: whole ? whole.style : style, whole: !!whole, delay: FRAME_DELAY[i], wipe: WIPE[i], tagDelay: TAG_DELAY[i], tag: tagOf(p) };

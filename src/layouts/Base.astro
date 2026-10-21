@@ -2,6 +2,10 @@
 // Head, hreflang pair, canonical, JSON-LD, self-hosted fonts, and the layout frame:
 // skip link · Header (the sign) · <slot> (the page's <main>) · Menu (the no-JS list; header.ts
 // makes it the overlay) · Footer · BottomBar (mobile).
+// The `head` slot (row 16 prep, 21.10) sits right after the font preloads: a hero page puts HeroPreload.astro there, so
+// the first frame is requested from the first bytes of the document, ahead of the inline CSS; the fonts stay the first
+// requests, as since stage 7b (with the image ahead of them, 1 of 2 desktop runs of /producten showed a 0,024 shift of
+// the hero text, 21.10).
 // No facts here: entity.json and hours.json carry the values.
 import '../styles/fonts.css';
 import '../styles/tokens.css';
@@ -112,6 +116,7 @@ const jsonld = entity.name
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     {preloads.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin fetchpriority="low" />)}
+    <slot name="head" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#F4EDE0" />

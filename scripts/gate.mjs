@@ -215,7 +215,22 @@ if (built) {
         if (!hero && !firstPaint && attr(tag, 'loading') !== 'lazy') e.push(`${p.file}: ${src} not lazy`);
         if (!/\.(avif|webp|svg)(\?|$)/i.test(src) && !(fallbackOk.has(tag) && /\.jpe?g(\?|$)/i.test(src))) e.push(`${p.file}: ${src} is not AVIF/WebP`);
       }
-      if ((p.html.match(/fetchpriority="high"/gi) || []).length > 1) e.push(`${p.file}: more than one fetchpriority=high`);
+      // one high-priority image per page: the hero's frame 1 <img>. Row 16 prep (21.10): HeroPreload.astro also preloads
+      // that frame from <head> (fetchpriority high, one link per <source media> range, so a viewport fetches one file) —
+      // each such link must name a srcset + sizes of the frame's own <picture>, else the browser downloads a second file
+      const highImgs = p.html.match(/<img\b[^>]*fetchpriority="high"[^>]*>/gi) || [];
+      const preloads = p.html.match(/<link\b[^>]*rel="preload"[^>]*as="image"[^>]*>/gi) || [];
+      if (highImgs.length > 1) e.push(`${p.file}: more than one fetchpriority=high <img>`);
+      if ((p.html.match(/fetchpriority="high"/gi) || []).length > highImgs.length + preloads.length) e.push(`${p.file}: fetchpriority=high outside the hero frame and its preload`);
+      if (preloads.length) {
+        const at = p.html.search(/<img\b[^>]*fetchpriority="high"/i);
+        const pic = at < 0 ? '' : p.html.slice(p.html.lastIndexOf('<picture', at), p.html.indexOf('</picture>', at));
+        const cands = pic.match(/<(?:source|img)\b[^>]*>/gi) || [];
+        for (const l of preloads) {
+          const c = cands.find((t) => attr(t, 'srcset') === attr(l, 'imagesrcset'));
+          if (!c || attr(c, 'sizes') !== attr(l, 'imagesizes')) e.push(`${p.file}: image preload (${attr(l, 'media') ?? 'all'}) is not a source of the hero's frame 1`);
+        }
+      }
     }
     for (const ph of [...photos.hero, ...photos.loop, ...photos.gallery, ...(photos.traiteur ?? [])])
       if (!ph.alt?.nl?.trim() || !ph.alt?.ro?.trim()) e.push(`photos.json: ${ph.src} lacks alt NL/RO`);

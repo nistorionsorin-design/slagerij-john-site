@@ -18,6 +18,7 @@
 import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
+import HeroPreload from '../components/HeroPreload.astro';
 import WaIcon from '../components/WaIcon.astro';
 import Faq from '../components/Faq.astro';
 import Thumb from '../components/Thumb.astro';
@@ -115,6 +116,7 @@ const jsonld = [
 ];
 ---
 <Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero">
+  <HeroPreload slot="head" frame={heroFrames[0]} />
   <main id="main" class="ej">
     <PageHero locale={locale} id="eh-title" eyebrow={t.eyebrow} h1={t.h1} accent={fill(t.accent)} lead={fill(t.lead)} leadBelow={LEAD_BELOW} frames={heroFrames}>
       <a class="btn btn--primary btn--lg" href={t.primaryHref}>{t.primary}</a>

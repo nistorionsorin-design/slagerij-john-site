@@ -22,6 +22,7 @@ import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import ArtPicture from '../components/ArtPicture.astro';
 import PageHero from '../components/PageHero.astro';
+import HeroPreload from '../components/HeroPreload.astro';
 import CounterTag from '../components/CounterTag.astro';
 import WaIcon from '../components/WaIcon.astro';
 import Faq from '../components/Faq.astro';
@@ -143,6 +144,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 const utensils = '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>';
 ---
 <Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero">
+  <HeroPreload slot="head" frame={heroFrames[0]} quality={40} />
   <main id="main" class="rs">
     <PageHero locale={locale} id="rh-title" eyebrow={t.eyebrow} h1={t.h1} accent={t.accent} lead={t.lead} leadBelow={LEAD_BELOW} frames={heroFrames} quality={40}>
       <a class="btn btn--primary btn--lg" href={waHref} rel="nofollow"><WaIcon /><span>{t.primary}</span></a>

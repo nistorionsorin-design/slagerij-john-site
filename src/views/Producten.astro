@@ -36,6 +36,7 @@ import ProductTiles from '../components/ProductTiles.astro';
 import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
+import HeroPreload from '../components/HeroPreload.astro';
 import CounterTag from '../components/CounterTag.astro';
 import AsPills from '../components/AsPills.astro';
 import Board from '../components/Board.astro';
@@ -192,6 +193,7 @@ const recipesPath = ro ? '/ro/retete' : '/recepten';
 const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 ---
 <Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero">
+  <HeroPreload slot="head" frame={heroFrames[0]} quality={40} />
   <main id="main" class="pp">
     <PageHero locale={locale} id="pp-title" eyebrow={t.eyebrow} h1={t.h1} accent={t.accent} lead={t.lead} leadBelow={LEAD_BELOW} chip frames={heroFrames} quality={40}>
       <a class="btn btn--primary btn--lg" href={wa(waSrc('intro'))}><WaIcon /><span>{t.order}</span></a>

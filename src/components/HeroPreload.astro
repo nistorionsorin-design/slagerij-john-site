@@ -1,0 +1,36 @@
+---
+// HeroPreload — frame 1 of the page's hero, preloaded from <head> (row 16 prep, 21.10). The page puts it into Base's
+// `head` slot: <HeroPreload slot="head" frame={heroFrames[0]} quality={…} /> beside a PageHero (the same frame and quality
+// the PageHero gets), <HeroPreload slot="head" home /> beside the home's Hero. It makes the hero's own calls
+// (src/lib/hero-image.ts), so the link names the file the <picture> fetches: one request, started from the first bytes of
+// the document instead of 14–22 kB (gzip) into it, where the inline CSS and the sign leave the <img>. AVIF only —
+// type="image/avif": a browser without AVIF skips the link and the <picture> falls back to WebP as before — with
+// fetchpriority high as the <img> (D-12), one link per <source media> range, so a viewport preloads only its own file.
+import type { ImageMetadata } from 'astro';
+import photos from '../data/photos.json';
+import type { HeroPhoto } from '../data/types';
+import { frameSets, framePreloads, homePreload, type Frame, type Preload } from '../lib/hero-image';
+
+export interface Props {
+  /** a PageHero's frame 1 and its quality (PageHero's default 45) */
+  frame?: Frame;
+  quality?: number;
+  /** the home's Hero: frame 1 of photos.json `hero` */
+  home?: boolean;
+}
+const { frame, quality = 45, home = false } = Astro.props;
+
+let links: Preload[];
+if (home) {
+  const files = import.meta.glob<{ default: ImageMetadata }>('../assets/hero/*.{jpg,jpeg,png,webp}', { eager: true });
+  const p = (photos.hero as HeroPhoto[])[0];
+  const img = files[`../assets/${p.src}`]?.default;
+  if (!img) throw new Error(`HeroPreload: src/assets/${p.src} not found`);
+  links = await homePreload(img, p.quality ?? 45, p.whole?.w);
+} else if (frame) {
+  links = framePreloads(await frameSets(frame, quality));
+} else {
+  throw new Error('HeroPreload: pass `frame` or `home`');
+}
+---
+{links.map((l) => <link rel="preload" as="image" type="image/avif" fetchpriority="high" media={l.media} imagesrcset={l.srcset} imagesizes={l.sizes} />)}

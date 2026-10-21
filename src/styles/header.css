@@ -1,4 +1,4 @@
-/* Header — „het uithangbord” (the shop sign) · v2.6 (13.10.2026 10:25: the open chip stands alone in the menu foot and Route moves into the socials row — the chip's eight states no longer push anything to a second line; measured on all eight states, NL + RO. v2.5 13.10: the eight-item overlay (D-33) fits 390×844, 360×740 and 375×667; v2.4 06.10: wider, compact on scroll, never hides; sticky on mobile too; 44 px socials)
+/* Header — „het uithangbord” (the shop sign) · v2.7 (21.10.2026, Claude Code, row 16 prep: at 1024 px the wordmark ran 12 px into „Bestellen” (NL, Chrome 155, 15 px scrollbar) and 5 px at 1120 — the six-link nav (D-33) is wider than the narrow-laptop steps were cut for; two numbers move: the wordmark hides up to 1079 (was 1023), the tight nav step runs up to 1179 (was 1119); 1180 and up, the compact sign, the phone and the menu unchanged. v2.6 13.10.2026 10:25: the open chip stands alone in the menu foot and Route moves into the socials row — the chip's eight states no longer push anything to a second line; measured on all eight states, NL + RO. v2.5 13.10: the eight-item overlay (D-33) fits 390×844, 360×740 and 375×667; v2.4 06.10: wider, compact on scroll, never hides; sticky on mobile too; 44 px socials)
    Dan, 06.10 11:54: „the upper part — coolest trends, really nice, maybe on a darker background, make it special”.
    Source of truth: canvas boards „Header · mobiel 390 (3 toestanden)” and „Header · desktop 1440 (2 toestanden)”. Port 1:1.
 
@@ -92,8 +92,8 @@
 }
 /* narrow laptops and tablets in landscape (Claude Code, stage 0b2 — kept as the rule): */
 @media (min-width:960px) and (max-width:1279px){.sign__place{display:none}}
-@media (min-width:960px) and (max-width:1119px){.sign{gap:16px}.sign__nav{gap:16px}.sign__nav a{font-size:14px}}
-@media (min-width:960px) and (max-width:1023px){.sign__name{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
+@media (min-width:960px) and (max-width:1179px){.sign{gap:16px}.sign__nav{gap:16px}.sign__nav a{font-size:14px}}
+@media (min-width:960px) and (max-width:1079px){.sign__name{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
 @media (prefers-reduced-motion:reduce){.sign{transition:none}.sign__burger svg line{transition:none}.sign__nav a::after{transition:none}}
 
 /* ---------- the overlay menu (mobile; on desktop the links sit in the sign) ----------
@@ -146,7 +146,7 @@
 @media (prefers-reduced-motion:reduce){.menu:not([hidden]) .menu__links a{animation:none}}
 @media (min-width:960px){.menu{display:none!important}}
 
-/* ===== site additions (Claude Code, stage 0b2 / 1b; re-ported on v2.6 — narrow-laptop steps, mobile sticky and the socials row live in the file above) — below this line only; everything above is design/css/header.css 1:1 ===== */
+/* ===== site additions (Claude Code, stage 0b2 / 1b; re-ported on v2.6, v2.7 21.10 — narrow-laptop steps, mobile sticky and the socials row live in the file above) — below this line only; everything above is design/css/header.css 1:1 ===== */
 
 /* focus rings in paper on the sign and in the menu (board „Header · desktop 1440”: „Focusringen in papier”);
    the .btn / .btn-icon / .lang__seg / a rules set the ring, this only recolours it */

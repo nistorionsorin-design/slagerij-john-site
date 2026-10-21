@@ -14,7 +14,8 @@
 // The pause is the home's control (CSS :has, WCAG 2.2.2) on every hero that moves; reduced motion = frame 1, still.
 // LCP (spec §7): frame 1 is a plain <img> at opacity 1 from first paint, eager, fetchpriority high; each frame is cut at
 // build to its box (phone 1 : 2 ≤ 828 px, tablet 4 : 5, desktop 2 : 1) at its focal point, AVIF + WebP, so a phone fetches
-// ≤ 828 px; the height comes from the CSS, never from the image (CLS 0).
+// ≤ 828 px; the height comes from the CSS, never from the image (CLS 0). Since row 16 prep (21.10) the view also puts
+// HeroPreload.astro (same frame, same quality) into Base's head slot: frame 1 is requested from the document's first bytes.
 // Desktop (≥ 960, spec §8, derived; Dan 19.10 19:4x „you made the heroes too wide, they weren't like this”): the dark
 // print the showcase heads had before this row (print-head.css, removed) — in the page's width between the 56 px gutters
 // (max 1440), 32 px under the sign's 96 px, min(640px, 100svh − 140px) tall, radius 18 — the photo inside it, the text
@@ -26,26 +27,14 @@
 // height, on desktop as tall as the hero, standing at its right behind the text's gradient. An opaque photo gets the home's
 // treatment of the pig on the spit (Hero.astro `whole`): the same file blurred and darkened behind it, its edges faded
 // into that; a cut-out (alpha) needs nothing — the hero's ink is its ground.
-import { getImage } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
+// The cuts (phone 1 : 2 · tablet 4 : 5 · desktop 2 : 1, or a whole frame's own shape) live in src/lib/hero-image.ts since
+// row 16 prep (21.10): HeroPreload.astro preloads frame 1 from <head> with the same calls, so both name the same file.
 import OpenChip from './OpenChip.astro';
 import HeroPic from './HeroPic.astro';
+import { frameSets, type Frame } from '../lib/hero-image';
 import { hero as heroCopy, type Locale } from '../i18n/ui';
 
-export interface Frame {
-  img: ImageMetadata;
-  alt: string;
-  focalX?: number;
-  focalY?: number;
-  /** the zoom's origin (photos.json zoomX / zoomY), else the focal point */
-  zoomX?: number;
-  zoomY?: number;
-  /** the desktop crop's focal row, where it differs (John's face in the top fifth of john-bbq) */
-  desktopFocalY?: number;
-  /** draw the photo whole instead of covering the hero: phone width in % of the hero's, its top edge in % of the hero's
-      height; `backdrop`: an opaque photo — the blurred copy behind it */
-  whole?: { width: number; top: number; backdrop?: boolean };
-}
+export type { Frame };
 export interface Props {
   locale: Locale;
   /** the H1's id (aria-labelledby of the section) */
@@ -66,43 +55,12 @@ const say = heroCopy[locale];
 const N = frames.length;
 const T = 9 * N;
 
-// sharp crops by keyword: the focal point mapped to its third of the frame (ArtPicture's rule)
-const gravity = (x = 50, y = 50) =>
-  [y < 40 ? 'top' : y > 60 ? 'bottom' : '', x < 40 ? 'left' : x > 60 ? 'right' : ''].filter(Boolean).join(' ') || 'center';
-// the three boxes. Phone: 1 : 2 (390 × 844 is 0,46, 360 × 640 is 0,56), drawn max(100vw, ½ of the height); Lighthouse's
-// 412 × 823 at DPR 1,75 asks ≈ 720 px → the ≤ 828 file. Tablet (600–959, still the phone layout, the hero ≤ 920 px tall):
-// 4 : 5. Desktop: 2 : 1, drawn max(the print's width, twice its height) — the print is the container less its gutters.
-const boxes = {
-  m: { ratio: 0.5, steps: [480, 640, 828], max: 828, sizes: 'max(100vw, 50vh)' },
-  t: { ratio: 0.8, steps: [828, 1080, 1280, 1600], max: 1600, sizes: 'max(100vw, min(100vh, 920px) * 0.8)' },
-  d: { ratio: 2, steps: [1280, 1600, 2040], max: 2040, sizes: 'max(min(100vw, 1440px) - 112px, min(640px, 100vh - 140px) * 2)' },
-};
-const cut = async (f: Frame, b: (typeof boxes)['m'], fy = f.focalY) => {
-  const width = Math.min(f.img.width, Math.round(f.img.height * b.ratio), b.max);
-  const height = Math.round(width / b.ratio);
-  const opts = { src: f.img, width, height, fit: 'cover' as const, position: gravity(f.focalX, fy), widths: b.steps.filter((w) => w < width).concat(width) };
-  const [avif, webp] = await Promise.all([getImage({ ...opts, format: 'avif', quality }), getImage({ ...opts, format: 'webp', quality: quality + 10 })]);
-  return { width, height, avif: avif.srcSet.attribute, webp: webp.srcSet.attribute, src: webp.src, sizes: b.sizes };
-};
-
 // animation delays (the home's convention: a frame's cycle starts with its fade-in): frame 1 is seen from T − 2 s to 9 s,
 // so at t = 0 it is 2 s into its zoom; frame k ≥ 2 fades in at 9 (k − 1) − 2 s
 const delay = (k: number) => (k === 0 ? -2 : 9 * k - 2 - T);
-// a whole frame keeps the photo's own shape in every box (no cut): phone drawn width % of the hero, tablet ≤ 82 % of it,
-// desktop as tall as the hero + 12 % (CSS below)
-const wholeBoxes = (f: Frame) => {
-  const ratio = f.img.width / f.img.height;
-  const w = f.whole!.width / 100;
-  return {
-    m: { ratio, steps: [480, 640, 828], max: 828, sizes: `calc(100vw * ${w})` },
-    t: { ratio, steps: [828, 1080, 1280, 1600], max: 1600, sizes: `calc(100vw * ${Math.min(w, 0.82)})` },
-    d: { ratio, steps: [1080, 1280, 1600], max: 1600, sizes: `calc(min(640px, 100vh - 140px) * ${(1.12 * ratio).toFixed(3)})` },
-  };
-};
 const pics = await Promise.all(
   frames.map(async (f, k) => {
-    const b = f.whole ? wholeBoxes(f) : boxes;
-    const [m, t, d] = await Promise.all([cut(f, b.m), cut(f, b.t), cut(f, b.d, f.desktopFocalY ?? f.focalY)]);
+    const { m, t, d } = await frameSets(f, quality);
     const fx = f.focalX ?? 50, fy = f.focalY ?? 50;
     const anim = N > 1 ? `;animation-delay:${delay(k)}s` : '';
     const size = f.whole ? `;--ww:${f.whole.width}%;--wt:${f.whole.top}%` : '';

@@ -15,6 +15,7 @@ import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import ArtPicture from '../components/ArtPicture.astro';
 import PageHero from '../components/PageHero.astro';
+import HeroPreload from '../components/HeroPreload.astro';
 import CounterTag from '../components/CounterTag.astro';
 import QuoteForm from '../components/QuoteForm.astro';
 import Gallery from '../components/Gallery.astro';
@@ -96,6 +97,7 @@ const jsonld = [
 const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 ---
 <Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero">
+  <HeroPreload slot="head" frame={heroFrames[0]} quality={40} />
   <main id="main" class="tr">
     <PageHero locale={locale} id="th-title" eyebrow={t.eyebrow} h1={t.h1} accent={t.accent} lead={t.lead} leadBelow={LEAD_BELOW} frames={heroFrames} quality={40}>
       <a class="btn btn--quote btn--lg" href={`#${t.anchor}`}>{t.primary}</a>

@@ -1,4 +1,15 @@
-/* Galerij — /traiteur · /ro/catering, „Van onze feesten” · v1 (20.10.2026 11:0x)
+/* Galerij — /traiteur · /ro/catering, „Van onze feesten” · v1.1 (21.10.2026 15:2x — sizes for the 1328 px container + two retina widths; v1 20.10.2026 11:0x)
+   v1.1 (Cowork, from Claude Code's measurement on the built /traiteur, 21.10, STATE open question 9): the v1 strings named the 960 px grid
+   (251 / 514 px) and never grew; the container caps at 1328 px, where a square is 323 px and a wide tile 658 px (1200 px: 259 / 530;
+   960 px: 199 / 410; 390 px: 170 / 350 — the phone strings were exact). New strings, both tiers:
+     squares  sizes="(min-width:1440px) 323px, (min-width:960px) calc(25vw - 37px), calc(50vw - 25px)"
+     wide     sizes="(min-width:1440px) 658px, (min-width:960px) calc(50vw - 62px), calc(100vw - 40px)"
+   Widths: squares 340 / 520 / 660 (660 serves 323 px at DPR 2; every square source is ≥ 942 px, nothing upscaled; a 390 px phone at
+   DPR 3 asks 510 → still 520, so the phone pays nothing) · wide 720 / 1040 / 1316 (1316 serves 658 px at DPR 2; vleesschotel 1675 px ok,
+   tacos 942 px stays capped at 942). Byte budget for the new widths: a 660 square ≤ 65 kB AVIF, a 1316 wide ≤ 120 kB AVIF.
+   Phone rule (row 19, kept): ≤ 320 kB AVIF over the whole phone scroll at DPR ≥ 2,6. A 390 px phone at DPR 3 asks 1050 px for a wide
+   tile and will pick 1316 once it exists (1040 < 1050) → the port measures the DPR-3 scroll on /traiteur; if it exceeds 320 kB, the
+   wide tier stays 720 / 1040 (the 1316 width is dropped, squares keep 660) and the header says so. No visual change either way (R12 n/a).
    Dan 20.10 10:54: „b 2 … maybe we can use a little the nice writing from the website on them, like the little description” on
    design/assortiment-variants.html — treatment B2 „Mozaïek” (D-45), every tile with a two-line caption: a title and one short description.
    Source of truth for the gallery block of views/Traiteur.astro (component Gallery.astro, fed by docs/data/gallery-traiteur.json). Port 1:1
@@ -19,12 +30,12 @@
      <div class="gal__grid">
        <figure class="gal__fig">
          <picture>
-           <source type="image/avif" srcset="…-340.avif 340w, …-720.avif 720w, …-1040.avif 1040w" sizes="(min-width:960px) 514px, calc(100vw - 40px)">
+           <source type="image/avif" srcset="…-720.avif 720w, …-1040.avif 1040w, …-1316.avif 1316w" sizes="(min-width:1440px) 658px, (min-width:960px) calc(50vw - 62px), calc(100vw - 40px)">
            <img src="…-720.jpg" srcset="…" sizes="…" width="1040" height="585" alt="Charcuterieschotel op een feest, met een stapel borden ernaast" loading="lazy" decoding="async" style="object-position:50% 50%">
-         </picture>                                                                       ← tiles 1 and 6: 16:9 sources 720 / 1040 px (≤ 50 / 80 kB AVIF)
+         </picture>                                                                       ← tiles 1 and 6: 16:9 sources 720 / 1040 / 1316 px (≤ 50 / 80 / 120 kB AVIF)
          <figcaption><span class="gal__t">Vleesschotel op een feest</span><span class="gal__d">Charcuterie en kaas, geschikt voor de lange tafel.</span></figcaption>
        </figure>
-       … tiles 2–5, 7–10: square sources 340 / 520 px (≤ 28 / 45 kB AVIF), sizes="(min-width:960px) 251px, calc(50vw - 25px)" …
+       … tiles 2–5, 7–10: square sources 340 / 520 / 660 px (≤ 28 / 45 / 65 kB AVIF), sizes="(min-width:1440px) 323px, (min-width:960px) calc(25vw - 37px), calc(50vw - 25px)" …
      </div>
    </section>
    The focal point comes from gallery-traiteur.json (focalX/focalY → object-position). WebP next to AVIF; JPEG fallback in <img src>. */

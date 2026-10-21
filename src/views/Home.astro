@@ -6,6 +6,7 @@
 // and src/pages/ro/index.astro.
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
+import HeroPreload from '../components/HeroPreload.astro';
 import TrustStrip from '../components/TrustStrip.astro';
 import ToogWeek from '../components/ToogWeek.astro';
 import CategoryGrid from '../components/CategoryGrid.astro';
@@ -35,6 +36,7 @@ const meta = {
 }[locale];
 ---
 <Base title={meta.title} description={meta.description} locale={locale} path={alternates[locale]} alternates={alternates} navVariant="hero" hoursCard>
+  <HeroPreload slot="head" home />
   <main id="main">
     <Hero locale={locale}>
       <TrustStrip slot="trust" place="hero" locale={locale} />
