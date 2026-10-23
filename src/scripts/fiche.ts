@@ -2,7 +2,8 @@
 // a paper row or an entrance tile (row 22b, v2: `.row` · `.vit__tile`; the name from `.row__name` / `.vit__name`) —
 // opens the page's one <dialog class="fiche">, filled from that row: the id from the
 // link's ?product=, the name and the category (`data-cat`) from the page, the unit from `data-fiche` (Dan 23.10 17:2x:
-// the unit, not the id), the rest from Fiche.astro's JSON when the row has more. The photo's <picture> is built here, so its
+// the unit, not the id), the rest from Fiche.astro's JSON when the row has more; a row with a counter alias (row 22c)
+// lends the sheet its unit line as the price line. The photo's <picture> is built here, so its
 // file is fetched on open only; a row without one keeps the frame hidden. The stepper = the bestelbon's D-48 rule and
 // reading (src/lib/order-core.js qtyRule / qtyLabel, copied: importing them would ship that 7,6 kB chunk here), from
 // the row's minimum; „Op de bestelbon zetten” = the row's own bestelbon link + &q=<quantity> (order.ts sets it there),
@@ -74,6 +75,11 @@ if (d && dataEl && 'showModal' in d) {
     line.hidden = !r[4];
     price.textContent = r[3] || (r[0] === 'kg' ? price.dataset.kg : price.dataset.stuk) || '';
     price.classList.toggle('fiche__price-l--num', !!r[3]);
+    // row 22c (D-52): a row whose line leads with the counter's Romanian name (NL page) keeps that line here, its
+    // lang="ro" span included — „kaizer · per 100 g · prijs in de winkel”
+    const cap = a.querySelector('.row__cap, .vit__cap');
+    const alias = cap?.querySelector('[lang]');
+    if (cap && alias) price.replaceChildren(...cap.cloneNode(true).childNodes);
     ph.replaceChildren();
     ph.hidden = !r[6];
     if (r[5] && r[6]) {
@@ -88,7 +94,8 @@ if (d && dataEl && 'showModal' in d) {
     input.step = String(r[1]);
     input.min = String(r[2]);
     for (const el of [less, more, label]) named(el, name);
-    wa.href = `${waBase}&text=${encodeURIComponent(`${wa.dataset.msg} ${name}`)}`;
+    // the message to the shop names the row as the order text does (order-core.js orderName): „Gerookt buikspek (kaizer)”
+    wa.href = `${waBase}&text=${encodeURIComponent(`${wa.dataset.msg} ${alias ? `${name} (${alias.textContent})` : name}`)}`;
     show(r[2]);
     d.showModal();
   });

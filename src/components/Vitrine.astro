@@ -25,8 +25,9 @@ export interface Props {
   eyebrow: string;
   line: string;
   href: (id: string) => string;
-  /** the unit line under the name; `price` = the row shows a figure */
-  cap: (p: Product) => { text: string; price: boolean };
+  /** the unit line under the name; `price` = the row shows a figure; `alias` = the counter's Romanian name before it on
+   *  the NL page (row 22c, D-52), else '' */
+  cap: (p: Product) => { alias: string; text: string; price: boolean };
   locale: Locale;
 }
 const { id, label, rows, eyebrow, line, href, cap, locale } = Astro.props;
@@ -55,7 +56,7 @@ const sizes = '(min-width: 960px) 180px, calc(50vw - 21px)';
         <a class="vit__tile" href={href(p.id)} data-fiche={p.unit}>
           <span class="vit__ph"><picture><source type="image/avif" srcset={avif} sizes={sizes} /><source type="image/webp" srcset={webp} sizes={sizes} /><img src={src} alt="" width="340" height="255" loading="lazy" decoding="async" /></picture></span>
           <span class="vit__name">{p.name[locale]}</span>
-          <span class:list={['vit__cap', { 'vit__cap--price': cap.price }]}>{cap.text}</span>
+          <span class:list={['vit__cap', { 'vit__cap--price': cap.price }]}>{cap.alias && <><span lang="ro">{cap.alias}</span>{' · '}</>}{cap.text}</span>
         </a>
       ))}
     </div>

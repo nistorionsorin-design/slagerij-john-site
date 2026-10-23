@@ -33,7 +33,8 @@ export interface Props {
   /** the fold's words around the count and the group's name: „Toon alle ” · „ van ” */
   more: readonly [string, string];
   href: (id: string) => string;
-  cap: (p: Product) => { text: string; price: boolean };
+  /** the unit line; `alias` = the counter's Romanian name before it on the NL page (row 22c, D-52), else '' */
+  cap: (p: Product) => { alias: string; text: string; price: boolean };
   foot: string;
   wa: { label: string; href: string };
   locale: Locale;
@@ -50,7 +51,7 @@ const OPEN = 6;
       return (
         <li><a class="row" id={p.id} href={href(p.id)} data-fiche={p.unit}>
           {ownPhoto(p.id) ? <span class="row__ph"><Thumb id={p.id} locale={locale} variant="row" /></span> : <span class="row__mono" aria-hidden="true">{[...p.name[locale]][0].toUpperCase()}</span>}
-          <span class="row__txt"><span class="row__name">{p.name[locale]}</span><span class:list={['row__cap', { 'row__cap--price': c.price }]}>{c.text}</span></span>
+          <span class="row__txt"><span class="row__name">{p.name[locale]}</span><span class:list={['row__cap', { 'row__cap--price': c.price }]}>{c.alias && <><span lang="ro">{c.alias}</span>{' · '}</>}{c.text}</span></span>
           <span class="row__cta">{cta}</span>
         </a></li>
       );

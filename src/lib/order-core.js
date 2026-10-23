@@ -218,6 +218,12 @@ export function newRef(at = new Date()) {
   return `SJ-${brussels(at).day.getUTCFullYear()}-${[...r].map((x) => abc[x % abc.length]).join('')}`;
 }
 
+/** The counter's Romanian name as the NL page writes it (row 22c, D-52): lowercase, as the counter writes it — „kaizer”. */
+export const aliasLabel = (p) => p.alias?.ro.toLocaleLowerCase('ro') ?? '';
+/** A product's name in the order text — the slip, the mails, the WhatsApp message: on an NL order a row with a counter
+ *  alias carries it in brackets, „Gerookt buikspek (kaizer)”, the name the shop uses; the RO name already is it. */
+export const orderName = (p, locale) => (locale === 'nl' && p.alias ? `${p.name.nl} (${aliasLabel(p)})` : p.name[locale]);
+
 const clean = (v, max) => String(v ?? '').replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
 const cleanBlock = (v, max) => String(v ?? '').replace(/\r\n?/g, '\n').replace(/[\u0000-\u0009\u000b-\u001f\u007f]+/g, ' ').trim().slice(0, max);
 
@@ -240,7 +246,7 @@ export function readOrder(input, { products, hours, delivery, menus }, at = new 
     if (!qty) continue;
     // row 15d: a row priced in the shop (priceInStore) has no sum, and it is not „unknown” either: the total leaves it out
     const inStore = !!p.priceInStore;
-    lines.push({ id, name: p.name[locale], unit: p.unit, qty, price: p.price, sum: p.price === null || inStore ? null : +(p.price * qty).toFixed(2), inStore, menu: p.menu ?? null });
+    lines.push({ id, name: orderName(p, locale), unit: p.unit, qty, price: p.price, sum: p.price === null || inStore ? null : +(p.price * qty).toFixed(2), inStore, menu: p.menu ?? null });
   }
   const requests = (Array.isArray(input.requests) ? input.requests : [input.requests])
     .map((r) => clean(r, 200))

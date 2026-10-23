@@ -12,7 +12,7 @@
 import { readOrder, daysFor, dayLabel, money, qtyLabel, waText, newRef, qtyRule, snapQty, toMin, menuOf, menuOpen, totalLabel } from '../lib/order-core.js';
 
 type Unit = 'kg' | 'pers' | 'colli' | 'stuk' | 'liter' | 'portie';
-interface Item { id: string; category: string; name: Partial<Record<'nl' | 'ro', string>>; unit: Unit; price: number | null; priceFrom?: boolean; priceInStore?: boolean; min?: number; step?: number }
+interface Item { id: string; category: string; name: Partial<Record<'nl' | 'ro', string>>; alias?: { ro: string }; unit: Unit; price: number | null; priceFrom?: boolean; priceInStore?: boolean; min?: number; step?: number }
 interface Data {
   locale: 'nl' | 'ro';
   items: Item[];

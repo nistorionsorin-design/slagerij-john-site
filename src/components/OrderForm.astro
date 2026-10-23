@@ -118,7 +118,7 @@ const scriptData = {
   locale,
   items: [...menuRowsAll, ...products.items]
     .filter((p) => p.orderable !== false)
-    .map((p) => ({ id: p.id, category: p.category, name: { [locale]: p.name[locale] }, unit: p.unit, price: p.price, priceFrom: p.priceFrom, priceInStore: p.priceInStore, min: p.min, step: p.step })),
+    .map((p) => ({ id: p.id, category: p.category, name: { [locale]: p.name[locale] }, alias: locale === 'nl' ? p.alias : undefined, unit: p.unit, price: p.price, priceFrom: p.priceFrom, priceInStore: p.priceInStore, min: p.min, step: p.step })),
   delivery: { ...delivery, _source: undefined },
   menus: { menus: menus.menus },
   qtyUnit,

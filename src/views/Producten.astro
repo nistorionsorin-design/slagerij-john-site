@@ -75,6 +75,7 @@ import { products, priceLabel, priceUnitLabel } from '../lib/price';
 import { thumbOf, entranceOf } from '../lib/thumbs';
 import { boardGroups } from '../lib/board';
 import { keepUnits } from '../lib/typo';
+import { aliasLabel } from '../lib/order-core.js';
 import { ASSORTMENT_UPDATED } from '../lib/updated';
 import { wa, type Locale } from '../i18n/ui';
 import { productenT } from '../i18n/producten';
@@ -115,11 +116,15 @@ const cats = part1.map((id) => {
 const ficheRows = [...new Set(cats.flatMap((c) => [...c.entrance, ...c.board]))];
 // row 22b: the unit line of a row or a tile — the D-48 class + „prijs in de winkel”, or the row's price (D-39: never a
 // figure the data does not have; a row without either keeps its visible placeholder, C-04)
+// Row 22c (D-52): on the NL page a Romanian charcuterie row's counter name leads that line, lowercase — „kaizer · per
+// 100 g · prijs in de winkel”; Rows / Vitrine set it in a lang="ro" span, the sheet copies the row's line
 const unitWord = (p: Product) => (p.unit === 'kg' ? t.rows.per100 : p.unit === 'stuk' ? t.rows.perStuk : '');
-const cap = (p: Product) =>
-  p.priceInStore
+const cap = (p: Product) => ({
+  alias: ro ? '' : aliasLabel(p),
+  ...(p.priceInStore
     ? { text: [unitWord(p), priceLabel(p, locale)].filter(Boolean).join(' · '), price: false }
-    : { text: `${priceLabel(p, locale)}${priceUnitLabel(p, locale)}`, price: p.price !== null };
+    : { text: `${priceLabel(p, locale)}${priceUnitLabel(p, locale)}`, price: p.price !== null }),
+});
 const rubs = part2.map((id) => {
   const items = rowsOf(id);
   // the rubric head's print: the first `level: section` photo of the rubric (lexicon §5.19 20.10; colli: none)

@@ -79,6 +79,10 @@ export interface Product {
   priceInStore?: boolean;
   /** row 15d: the name's language when it differs from the page's (the RO dish names on /feestmenu-eindejaar) */
   nameLang?: 'ro';
+  /** row 22c (D-52): a Romanian charcuterie row's counter name (docs/data/owners-counter-list-2026-10-22.json
+   *  `alias_ro`) — on the NL page small before the unit line („kaizer · per 100 g · prijs in de winkel”) and in brackets
+   *  in the NL order text („Gerookt buikspek (kaizer)”, order-core.js orderName); the RO page shows `name.ro` only */
+  alias?: { ro: string };
   unit: Unit;
   /** the „aanbevolen pakket” look of board Toog: the ink tag */
   featured?: boolean;

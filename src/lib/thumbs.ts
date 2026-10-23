@@ -45,8 +45,8 @@ export const gravity = (x = 50, y = 50) =>
   [y < 40 ? 'top' : y > 60 ? 'bottom' : '', x < 40 ? 'left' : x > 60 ? 'right' : ''].filter(Boolean).join(' ') || 'center';
 
 /** Row 22: the row's own photo when its file is big enough for the Vitrine tile (520 w) and the sheet (720 × 440) — the
- *  build never enlarges, so a smaller file would show soft. On 23.10 one entry fails: gehakt's site file is a 128 × 171
- *  thumb cut (row 14); every other is ≥ 1 554 px wide. It keeps its tag thumb; a full-size cut lights it up. */
+ *  build never enlarges, so a smaller file would show soft. Every entry is ≥ 1 554 px wide since row 22c (gehakt's
+ *  128 × 171 thumb cut of row 14 replaced by a 1558 × 2077 cut from the same original, the same white balance). */
 export const bigPhoto = (id: string): ProductPhoto | null => {
   const e = ownPhoto(id);
   return e && photoFile(e).width >= 720 ? e : null;

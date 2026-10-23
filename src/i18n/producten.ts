@@ -115,13 +115,14 @@ export const productenNl = {
     eyebrow: 'Enkel op bestelling',
     text: ['Vanaf 3 kg van hetzelfde product: ', '5 % korting', '. Vanaf 5 kg: ', '10 %', '.'],
   },
-  /** §5.19 „23.10 — the Vitrine v2” (row 22b, D-51): the entrance „Meest gevraagd” (four tiles per category) and the
+  /** §5.19 „23.10 — the Vitrine v2” (row 22b, D-51): the entrance „Meest gevraagd” (1 to 4 tiles per category; its
+   *  line count-free since row 22c) and the
    *  paper rows that replace the ink board — eyebrows, lines, the unit line per D-48 class (+ „prijs in de winkel” or the
    *  price), the „Bestel” pill, the fold „Toon alle N van …” (count live, the group's name mid-sentence); the foot
    *  sentence and its WhatsApp link stay `board.foot` / `board.wa` („as the board had them”) → /wa?src=producten-rows */
   vit: {
     eyebrow: 'Meest gevraagd',
-    line: 'De vier die het vaakst over de toog gaan. Tik voor foto en bestellen.',
+    line: 'Wat het vaakst over de toog gaat. Tik voor foto en bestellen.',
   },
   rows: {
     eyebrow: 'Alles van de toog',
@@ -291,7 +292,7 @@ export const productenRo = {
    *  („de la” = from, whatever the count) */
   vit: {
     eyebrow: 'Cele mai cerute',
-    line: 'Cele patru care trec cel mai des peste tejghea. Apasă pentru poză și comandă.',
+    line: 'Ce trece cel mai des peste tejghea. Apasă pentru poză și comandă.',
   },
   rows: {
     eyebrow: 'Tot ce avem la tejghea',
