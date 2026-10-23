@@ -7,8 +7,10 @@ import type { Locale } from '../i18n/ui';
 import { dateLabel } from './menu';
 
 export const SITE_UPDATED = '2026-10-19';
-/** /producten + /ro/produse: the whole assortment (row 18, lexicon §5.19 20.10) */
-export const ASSORTMENT_UPDATED = '2026-10-20';
+/** /producten + /ro/produse: the whole assortment (row 18, lexicon §5.19 20.10); row 21 (lexicon §5.19 „23.10”): the
+ *  owners' 22.10 lists + the volume discount — also the WebPage node's dateModified. The byline's date is the push
+ *  day: if the push is not on 23.10, this line moves to that day. */
+export const ASSORTMENT_UPDATED = '2026-10-23';
 /** /colli-vleespakketten + /ro/colli: the page is new (row 10d, lexicon §5.28) */
 export const COLLI_UPDATED = '2026-10-20';
 

@@ -6,7 +6,8 @@
 // Stage 7: ?menu=<param> shows that seasonal menu's section on top; once a row of it is chosen, the days are the menu's
 // own (menus.json `pickup`) and the WhatsApp text opens with the menu's §5.10 message.
 // Row 18: ?product=<id> (a „Bestel” card on /producten) starts that row at its minimum quantity. Row 18b: it opens the
-// board fold the row sits in; the kg / stuk steppers show their reading („300 g”, „2 stuks”, D-48).
+// board fold the row sits in; the kg / stuk steppers show their reading („300 g”, „2 stuks”, D-48). Row 21 (D-50 (2)):
+// a kg row from 3 kg shows the volume-discount note under it — words only, nothing computed, the slip unchanged.
 import { readOrder, daysFor, dayLabel, money, qtyLabel, waText, newRef, qtyRule, toMin, menuOf, menuOpen, totalLabel } from '../lib/order-core.js';
 
 type Unit = 'kg' | 'pers' | 'colli' | 'stuk' | 'liter' | 'portie';
@@ -25,6 +26,7 @@ interface Data {
     details: { required: string };
     errors: { name: string; phone: string; email: string; address: string; items: string; when: string };
   };
+  discountNote: string;
 }
 
 const form = document.querySelector<HTMLFormElement>('[data-order]');
@@ -275,8 +277,15 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
       row.classList.toggle('is-on', q > 0);
       // row 18b (D-48): the stepper's reading over the kg / stuk field — „300 g”, „1,2 kg”, „2 stuks” — while it is not
       // being typed in (CSS); the field itself stays the number in kg or pieces
+      const unit = byId.get(qtyIn.name.slice(2))!.unit;
       const reading = $('.qty__r', row);
-      if (reading) reading.textContent = q > 0 ? qtyLabel(q, byId.get(qtyIn.name.slice(2))!.unit, locale) : '';
+      if (reading) reading.textContent = q > 0 ? qtyLabel(q, unit, locale) : '';
+      // row 21 (lexicon §5.19 „23.10”): the volume-discount note under a kg row from 3 kg, made once, then shown or hidden
+      if (unit === 'kg') {
+        let note = $('.oi__disc', row);
+        if (q >= 3 && !note) row.append((note = Object.assign(document.createElement('p'), { className: 'oi__disc', textContent: d.discountNote })));
+        if (note) note.hidden = q < 3;
+      }
     }
     const rows = [
       ...order.lines.flatMap((l: { qty: number; unit: Unit; name: string; sum: number | null; inStore: boolean }) => [span(`${qtyLabel(l.qty, l.unit, locale)} ${l.name}`), span(l.inStore ? t.slip.inStore : l.sum === null ? t.slip.priceTbc : money(l.sum, locale, true))]),

@@ -58,6 +58,8 @@ export interface Category {
   id: string;
   /** the pill and the section name */
   name: L10n;
+  /** row 21: the names of its board's groups (`Product.group`); rows without a group sit under `name` */
+  groups?: { id: string; name: L10n }[];
 }
 
 /** products.json `items`: one counter tag. `price` null = not in FACTS.md yet → the tag shows [PRIJS] / [PREȚ]. */
@@ -92,8 +94,10 @@ export interface Product {
   /** row 18b (D-47): a name of the owners' counter list — on /producten in the category's „Krijtbord”, not a tag; in the
    *  bestelbon folded under „Meer rund (19)” / „Meer varken (31)” */
   board?: boolean;
-  /** row 18b: a sub-group of the board (the pork board's „organen” = Orgaanvlees / Organe) */
-  group?: 'organen';
+  /** row 18b: a sub-group of the board (the pork board's „organen” = Orgaanvlees / Organe); row 21 (D-50): the groups of
+   *  docs/data/owners-counter-list-2026-10-22.json, per category (kip · kalkoen; pane · gehakt; brochettes · varken · kip;
+   *  charcuterie · salades; lam; mezeluri) — their names are the category's `groups` */
+  group?: string;
 }
 
 export interface Products {

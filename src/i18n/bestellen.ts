@@ -34,10 +34,17 @@ export const bestellenNl = {
     more: 'Meer', // aria
     qty: 'Aantal', // the number field's label (screen readers)
     /** row 18b (D-47, lexicon §5.19 „20.10 12:5x — the counter board”): the fold's summary per category (the count is
-     *  the live number of board rows) and the organ meats' sub-heading inside the pork fold */
+     *  the live number of board rows); the sub-headings inside a fold = products.json `categories[].groups` (row 21).
+     *  Row 21: the three new folds = §5.19 „23.10”; kip, lam and roemeens = Dan 23.10 („use the proposed fold labels”,
+     *  the „Meer rund” pattern; not in the lexicon yet) */
     more_rund: 'Meer rund',
     more_varken: 'Meer varken',
-    organen: 'Orgaanvlees',
+    more_kip: 'Meer kip & kalkoen',
+    more_lam: 'Meer lam',
+    more_bereidingen: 'Meer bereidingen',
+    more_marinades: 'Meer marinades',
+    more_charcuterie: 'Meer charcuterie',
+    more_roemeens: 'Meer Roemeense specialiteiten',
   },
 
   /** stage 7: the menu section on top when the bestelbon opens with ?menu=eindejaar (lexicon §5.22 „menus.json”).
@@ -183,10 +190,15 @@ export const bestellenRo = {
     less: 'Mai puțin',
     more: 'Mai mult',
     qty: 'Cantitate',
-    /** row 18b: §6 „Produse, 20.10 — tabla” */
+    /** row 18b: §6 „Produse, 20.10 — tabla”; row 21: §6 „Produse, 23.10” (kip, lam, roemeens: Dan 23.10, not in §6 yet) */
     more_rund: 'Mai multe de vită',
     more_varken: 'Mai multe de porc',
-    organen: 'Organe',
+    more_kip: 'Mai multe de pui și curcan',
+    more_lam: 'Mai multe de miel',
+    more_bereidingen: 'Mai multe preparate',
+    more_marinades: 'Mai multe marinate',
+    more_charcuterie: 'Mai multe mezeluri',
+    more_roemeens: 'Mai multe specialități românești',
   },
 
   /** §6 „Sărbători”: the bestelbon's note and the line after the deadline */

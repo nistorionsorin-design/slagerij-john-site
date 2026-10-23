@@ -16,12 +16,13 @@ import WaIcon from './WaIcon.astro';
 import OrderSlip from './OrderSlip.astro';
 import Thumb from './Thumb.astro';
 import { thumbOf } from '../lib/thumbs';
+import { boardGroups } from '../lib/board';
 import { keepUnits } from '../lib/typo';
 import { products, priceLabel, priceUnitLabel } from '../lib/price';
 import { menus, fillMenu } from '../lib/menu';
 import { qtyRule, fromMin, waText, menuRows, menuOpen, money } from '../lib/order-core.js';
 import { bestellenT } from '../i18n/bestellen';
-import type { Locale } from '../i18n/ui';
+import { ui, type Locale } from '../i18n/ui';
 import allergens from '../data/allergens.json';
 import '../styles/board.css';
 // stage 7b / row 15b: flags ?menu=… on <html> during parsing (no shift); the file says why it is a classic script
@@ -30,9 +31,10 @@ import seasonJs from '../scripts/OrderForm.season.js?url';
 export interface Props { locale?: Locale }
 const { locale = 'nl' } = Astro.props;
 const t = bestellenT[locale];
-// the board's order: the packs and the traiteur first, then the counter by the kilo (one pill for the whole group)
+// the board's order: the packs and the traiteur first, then the counter by the kilo (one pill for the whole group;
+// row 21: the three board-only categories after lam, as on /producten)
 const packs = ['colli', 'gourmet', 'tapas', 'warm', 'dessert'];
-const counter = ['rund', 'varken', 'kip', 'lam', 'roemeens'];
+const counter = ['rund', 'varken', 'kip', 'lam', 'bereidingen', 'marinades', 'charcuterie', 'roemeens'];
 const section = (id: string) => {
   const c = products.categories.find((x) => x.id === id);
   if (!c) throw new Error(`products.json: no category "${id}"`);
@@ -67,23 +69,34 @@ const listsOf = (c: Group) =>
 // the pork fold holds two lists under their sub-headings, Varken · Orgaanvlees. The 15 tag rows and every traiteur row
 // stay as they are. A deep link (?product=<id>) opens the fold (order.ts). The summary's label and count share one span:
 // board.css lays the summary out space-between, so the bare text, the count and its „+” would spread into three columns.
+// Row 21 (D-50): a fold for every per-kg category with board rows; its sub-headings = the board's groups
+// (src/lib/board.ts, the same rule as /producten: one group → no sub-heading); a board-only category (bereidingen ·
+// marinades · charcuterie) is its fold alone.
 type List = ReturnType<typeof listsOf>[number];
-const foldLabel: Record<string, string | undefined> = { rund: t.products.more_rund, varken: t.products.more_varken };
+const foldLabel: Record<string, string | undefined> = {
+  rund: t.products.more_rund,
+  varken: t.products.more_varken,
+  kip: t.products.more_kip,
+  lam: t.products.more_lam,
+  bereidingen: t.products.more_bereidingen,
+  marinades: t.products.more_marinades,
+  charcuterie: t.products.more_charcuterie,
+  roemeens: t.products.more_roemeens,
+};
 const blocksOf = (c: Group): { fold?: { label: string; n: number }; lists: List[] }[] => {
   const lists = listsOf({ ...c, items: c.items.filter((p) => !p.board) });
   const board = c.items.filter((p) => p.board);
   if (!board.length) return [{ lists }];
   const label = foldLabel[c.id];
   if (!label) throw new Error(`bestellen.ts: no fold summary for the board rows of "${c.id}"`);
-  const main = board.filter((p) => !p.group);
-  const organen = board.filter((p) => p.group === 'organen');
-  const folded: List[] = organen.length
-    ? [
-        { id: `${c.id}-board`, sub: c.name[locale], note: undefined, lead: undefined, items: main },
-        { id: `${c.id}-organen`, sub: t.products.organen, note: undefined, lead: undefined, items: organen },
-      ]
-    : [{ id: `${c.id}-board`, sub: undefined, note: undefined, lead: undefined, items: main }];
-  return [{ lists }, { fold: { label, n: board.length }, lists: folded.filter((l) => l.items.length) }];
+  const folded: List[] = boardGroups(c.id, locale, board).map((g) => ({
+    id: `${c.id}-${g.id || 'board'}`,
+    sub: g.label,
+    note: undefined,
+    lead: undefined,
+    items: g.items,
+  }));
+  return [...(lists.some((l) => l.items.length) ? [{ lists }] : []), { fold: { label, n: board.length }, lists: folded }];
 };
 // row 15b (lexicon §5.22, 13.10): the eindejaar menu holds these groups' dishes as its own rows — under ?menu=<param>
 // they and their pills are hidden (one dish, one place); the colli and the per-kg groups follow the menu. Without ?menu=
@@ -111,6 +124,8 @@ const scriptData = {
   menus: { menus: menus.menus },
   qtyUnit,
   t: { slip: t.slip, when: t.when, send: t.send, done: t.done, details: { required: t.details.required }, errors: t.errors },
+  /** row 21 (D-50 (2), lexicon §5.19 „23.10”): the note order.ts puts under a kg row from 3 kg — words only */
+  discountNote: keepUnits(ui[locale].discountNote),
 };
 
 const waEmpty = `/wa?src=${locale === 'ro' ? 'ro-comanda' : 'bestelbon'}&text=${encodeURIComponent(t.send.msgEmpty)}`;
@@ -450,6 +465,10 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
   .oi__amount--store { font-size: 14px; font-weight: 600; letter-spacing: 0; line-height: 1.2; }
   .oi__price:has(> .oi__amount--store) { min-width: 0; white-space: normal; column-gap: 3px; }
   .oi__unit { font-size: 12px; color: var(--muted); }
+  /* row 21 (lexicon §5.19 „23.10”): the volume-discount note under a kg row from 3 kg — order.ts makes it, so the selector
+     is global; under the price and the stepper, full width in a row with a photo too */
+  .oi > :global(.oi__disc) { margin: 0; font-size: 12px; line-height: 1.35; color: var(--ox); }
+  .oi:has(> .thumb-pic) > :global(.oi__disc) { grid-column: 1 / -1; }
 
   .qty {
     display: inline-flex;

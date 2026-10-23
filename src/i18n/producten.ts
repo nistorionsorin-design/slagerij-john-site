@@ -6,13 +6,18 @@
 // §6 „Produse, 20.10” (RO): the new lead and meta description, the sticky pill row (`pills`, replaces the stage-4 filter),
 // the two part heads (`toog` · `feest`; the §5.30 note moves up into `toog.line`), the five rubrics of part 2 (`rubrics`),
 // the row action and the wheel's hint (`card`), the byline's change note. Strings only from those two blocks.
+// Row 21 (23.10, D-50): lexicon §5.19 „23.10” (NL) and §6 „Produse, 23.10” (RO): the three new pills after Lam, the
+// discount band (`discount`) and its board-foot sentence, the meta description and the byline's change note (the §5.19
+// „Gate items for row 21” line); the boards' group names live in products.json `categories[].groups`. RO percent
+// without a space throughout (§6 writes „10 %” once, in the line under the board; the 23.10 launcher: „RO percent
+// without a space”).
 
 import { updatedOn, ASSORTMENT_UPDATED } from '../lib/updated';
 
 export const productenNl = {
-  /** §5.19 meta: the title (57) stays; the description = §5.19 20.10 (154) */
+  /** §5.19 meta: the title (57) stays; the description = §5.19 „23.10” gate items (148; was §5.19 20.10) */
   title: 'Vers vlees en prijzen per kg in Zwevezele | Slagerij John',
-  description: "Vers vlees per kg zoals aan de toog en het hele feestaanbod met prijs: colli's, gourmet, tapas, warme gerechten en dessert. Bestel via WhatsApp of online.",
+  description: "Vers vlees per kg, charcuterie, marinades en bereidingen zoals aan de toog, plus colli's, gourmet en tapas met prijs. Bestel via WhatsApp of online.",
 
   /** §5.19 */
   eyebrow: 'Producten & prijzen',
@@ -48,6 +53,9 @@ export const productenNl = {
       { id: 'varken', label: 'Varken' },
       { id: 'kip', label: 'Kip & kalkoen' },
       { id: 'lam', label: 'Lam' },
+      { id: 'bereidingen', label: 'Bereidingen' },
+      { id: 'marinades', label: 'Marinades & brochettes' },
+      { id: 'charcuterie', label: 'Charcuterie' },
       { id: 'roemeens', label: 'Roemeense specialiteiten' },
       { id: 'colli', label: "Colli's" },
       { id: 'gourmet', label: 'Gourmet & fondue' },
@@ -93,13 +101,19 @@ export const productenNl = {
     count: (n: number) => `${n} producten`,
   },
   /** §5.19 „20.10 12:5x — the counter board” (row 18b, D-47): the Krijtbord under a per-kg category's tags — eyebrow,
-   *  the pork board's organ group (its first group = the category name), the line under every board + its WhatsApp link
-   *  (→ /wa?src=producten-board); the names = products.json `board` rows; the count's words = `card.count` */
+   *  the line under every board + its WhatsApp link (→ /wa?src=producten-board); the names = products.json `board` rows,
+   *  their groups = products.json `categories[].groups` (row 21); the count's words = `card.count`. Row 21: the foot
+   *  carries §5.19 „23.10”'s board-foot sentence after „Tik op een naam om te bestellen.” */
   board: {
     eyebrow: 'Alles van de toog',
-    organen: 'Orgaanvlees',
-    foot: 'Prijs per kilo aan de toog. Tik op een naam om te bestellen.',
+    foot: 'Prijs per kilo aan de toog. Tik op een naam om te bestellen. Vanaf 3 kg van hetzelfde product 5 % korting, vanaf 5 kg 10 %, enkel op bestelling.',
     wa: 'Liever via WhatsApp? Stuur ons de naam en het gewicht.',
+  },
+  /** §5.19 „23.10” the discount band, once, above the categories (FACTS „Volumekorting” [OWNER] 22.10): eyebrow + the
+   *  sentence, split where the canvas board Vitrine sets the figures in bold (odd parts = bold) */
+  discount: {
+    eyebrow: 'Enkel op bestelling',
+    text: ['Vanaf 3 kg van hetzelfde product: ', '5 % korting', '. Vanaf 5 kg: ', '10 %', '.'],
   },
 
   /** Roemeense section: eyebrow = §4 / §5.15 page name; heading = lexicon §7 GBP description
@@ -130,9 +144,9 @@ export const productenNl = {
 
   /** FAQ heading = the home's (lexicon §5.15 „Home body strings”; board: eyebrow „Veelgestelde vragen”) */
   faq: 'Wat klanten ons vragen',
-  /** §5.13 byline: the date (row 15c; row 18: this page's own date while SITE_UPDATED is older) + §5.19 20.10's
-   *  change note */
-  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl', ASSORTMENT_UPDATED)}: het hele assortiment.`,
+  /** §5.13 byline: the date (row 15c; row 18: this page's own date while SITE_UPDATED is older) + the change note of
+   *  §5.19 „23.10” gate items (row 21; was §5.19 20.10 „het hele assortiment”) */
+  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl', ASSORTMENT_UPDATED)}: charcuterie, marinades, bereidingen en de volumekorting.`,
 
   /** BreadcrumbList (lexicon §8.4: „Home” + the page's name) */
   crumbs: { home: 'Home', page: 'Producten & prijzen' },
@@ -142,9 +156,9 @@ export const productenNl = {
  *  verbatim, keys of `productenNl`. Where §6 has no line of its own the page takes a §6 string already in use (noted
  *  per key). */
 export const productenRo = {
-  /** §6 Produse meta: the title (57) stays; the description = §6 „Produse, 20.10” (149) */
+  /** §6 Produse meta: the title (57) stays; the description = §5.19 „23.10” gate items, RO (143; was §6 „Produse, 20.10”) */
   title: 'Carne proaspătă, prețuri/kg în Zwevezele | Măcelăria John',
-  description: 'Carne la kilogram, ca la tejghea, și tot pentru petrecere, cu preț: colli, gourmet, tapas, preparate calde și desert. Comandă pe WhatsApp sau online.',
+  description: 'Carne la kilogram, mezeluri, marinate și preparate de casă, ca la tejghea, plus colli, gourmet și tapas cu preț. Comandă pe WhatsApp sau online.',
 
   eyebrow: 'Produse și prețuri',
   h1: 'Carne proaspătă, prețuri la kilogram.',
@@ -177,6 +191,9 @@ export const productenRo = {
       { id: 'varken', label: 'Porc' },
       { id: 'kip', label: 'Pui și curcan' },
       { id: 'lam', label: 'Miel' },
+      { id: 'bereidingen', label: 'Preparate de casă' },
+      { id: 'marinades', label: 'Marinate și frigărui' },
+      { id: 'charcuterie', label: 'Mezeluri' },
       { id: 'roemeens', label: 'Mici și specialități' },
       { id: 'colli', label: 'Colli' },
       { id: 'gourmet', label: 'Gourmet și fondue' },
@@ -220,12 +237,17 @@ export const productenRo = {
     hint: 'Glisează pentru mai multe →',
     count: (n: number) => (n % 100 === 0 || n % 100 >= 20 ? `${n} de produse` : `${n} produse`),
   },
-  /** §6 „Produse, 20.10 — tabla” (row 18b) → /wa?src=ro-produse-board */
+  /** §6 „Produse, 20.10 — tabla” (row 18b) → /wa?src=ro-produse-board; row 21: + §6 „Produse, 23.10”'s line under the
+   *  board („10%” without the space) */
   board: {
     eyebrow: 'Tot ce avem la tejghea',
-    organen: 'Organe',
-    foot: 'Prețul pe kilogram la tejghea. Apasă pe un nume ca să comanzi.',
+    foot: 'Prețul pe kilogram la tejghea. Apasă pe un nume ca să comanzi. De la 3 kg din același produs 5% reducere, de la 5 kg 10%, doar la comandă.',
     wa: 'Preferi WhatsApp? Trimite-ne numele și cantitatea.',
+  },
+  /** §6 „Produse, 23.10” banda */
+  discount: {
+    eyebrow: 'Doar la comandă',
+    text: ['De la 3 kg din același produs: ', '5% reducere', '. De la 5 kg: ', '10%', '.'],
   },
 
   /** no §6 heading for this section: it carries the §6 category name (the pill), no eyebrow, no NL link */
@@ -255,8 +277,8 @@ export const productenRo = {
 
   /** the RO FAQ heading of §6 „Acasă” / „Catering” */
   faq: 'Ce ne întreabă clienții',
-  /** §5.13 RO, as /ro/contact, with §6 „Produse, 20.10”'s change note */
-  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro', ASSORTMENT_UPDATED)}: tot sortimentul.`,
+  /** §5.13 RO, as /ro/contact, with the RO change note of §5.19 „23.10” gate items (row 21; was „tot sortimentul”) */
+  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro', ASSORTMENT_UPDATED)}: mezeluri, marinate, preparate de casă și reducerea de la 3 kg.`,
   /** §8.4 with the §6 home crumb „Acasă” */
   crumbs: { home: 'Acasă', page: 'Produse și prețuri' },
 };
