@@ -9,7 +9,10 @@ import { fileURLToPath } from 'node:url';
 // dist/ only (it takes no Vite plugin): the build is checked there, the sends in `npm run dev`.
 // The routes mirror vercel.json (/wa → /api/wa; /api/gone, the 410 / RO 404 page of row 13 — the rewrites to it, and the
 // old-URL redirects, are Vercel's only: scripts/routes.mjs replays vercel.json against dist/ to test them locally). Production: Vercel builds api/ itself; Astro stays static (D-06).
-const apiRoutes = { '/api/order': 'api/order.js', '/api/wa': 'api/wa.js', '/wa': 'api/wa.js', '/api/gone': 'api/gone.js' };
+// Row 13b: /api/hit (the page-view beacon) too; without METRICS_URL / METRICS_KEY it prints the row it would insert.
+// The headers Vercel sets (x-forwarded-host, x-vercel-ip-country) and the Referer (/wa's locale) are passed on when a
+// request carries them, so a test can set them; a plain browser request has none of the first two → preview site_id.
+const apiRoutes = { '/api/order': 'api/order.js', '/api/wa': 'api/wa.js', '/wa': 'api/wa.js', '/api/gone': 'api/gone.js', '/api/hit': 'api/hit.js' };
 const apiMiddleware = (load) => async (req, res, next) => {
   const file = apiRoutes[(req.url ?? '').split('?')[0]];
   if (!file) return next();
@@ -18,7 +21,7 @@ const apiMiddleware = (load) => async (req, res, next) => {
     const chunks = [];
     for await (const c of req) chunks.push(c);
     const headers = {};
-    for (const k of ['content-type', 'accept', 'x-forwarded-for']) if (req.headers[k]) headers[k] = String(req.headers[k]);
+    for (const k of ['content-type', 'accept', 'x-forwarded-for', 'x-forwarded-host', 'x-vercel-ip-country', 'referer']) if (req.headers[k]) headers[k] = String(req.headers[k]);
     const body = req.method === 'GET' || req.method === 'HEAD' ? undefined : Buffer.concat(chunks);
     const response = await mod.default.fetch(new Request(`http://${req.headers.host}${req.url}`, { method: req.method, headers, body }));
     res.statusCode = response.status;

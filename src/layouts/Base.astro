@@ -1,7 +1,7 @@
 ---
 // Head, hreflang pair, canonical, JSON-LD, self-hosted fonts, and the layout frame:
 // skip link · Header (the sign) · <slot> (the page's <main>) · Menu (the no-JS list; header.ts
-// makes it the overlay) · Footer · BottomBar (mobile).
+// makes it the overlay) · Footer · BottomBar (mobile) · the page-view beacon (src/scripts/hit.ts, row 13b).
 // The `head` slot (row 16 prep, 21.10) sits right after the font preloads: a hero page puts HeroPreload.astro there, so
 // the first frame is requested from the first bytes of the document, ahead of the inline CSS; the fonts stay the first
 // requests, as since stage 7b (with the image ahead of them, 1 of 2 desktop runs of /producten showed a 0,024 shift of
@@ -164,5 +164,10 @@ const jsonld = entity.name
       navLabel={t.bar.label}
       path={path}
     />
+    {/* row 13b: one same-origin sendBeacon to /api/hit after load (docs/metrics-spine.md §4) — an external file from
+        /_astro/ like every script (CSP script-src 'self'); the gate allows it as „Base → hit.ts” */}
+    <script>
+      import '../scripts/hit.ts';
+    </script>
   </body>
 </html>
