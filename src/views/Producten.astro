@@ -39,21 +39,40 @@
 // computed, no price). JSON-LD: numberOfItems = the live count, the ListItem carries `item.@id` only (no `url`: the
 // Rich Results Test reads `item` + `url` on one ListItem as invalid, lexicon §5.19 amended 23.10), the new rows join as
 // name-only Products (S-03, D-39); the §8.2 WebPage node with dateModified = the byline's date (P-15).
+// Row 22 (23.10, D-50 (3), pulled before the switch by Dan 16:36; design/css/vitrine.css v1 ported 1:1 as
+// src/styles/vitrine.css; lexicon §5.19 „23.10 — the sheet” + §6 „Produse, 23.10”): the Vitrine — in each part-1
+// category, between its tags and its board, up to four photo tiles for the rows that have their own photo
+// (Vitrine.astro; the pick = lib/thumbs.ts vitrineOf: none today on the boards); the 28 px thumb on such a board row
+// (Board.astro); one product sheet per page (Fiche.astro + scripts/fiche.ts, a native <dialog>) that a board name or a
+// tile opens, with the D-48 stepper and „Op de bestelbon zetten” → the bestelbon row with its quantity (order.ts
+// reads `q`); the search field above the pills (AsSearch.astro + scripts/search.ts). Without script every name and tile
+// is the bestelbon link, as before. JSON-LD unchanged.
+// Row 22b (23.10, D-51; Dan 17:27 „a black list doesn't push to buy or look”; design/css/vitrine.css v2 ported 1:1;
+// lexicon §5.19 „23.10 — the Vitrine v2” + §6 „Produse, 23.10 — vitrina v2”): the ink board leaves this page (board.css
+// stays with the bestelbon fold). Per part-1 category, under its CounterTags: the entrance „Meest gevraagd” (Vitrine.astro,
+// ≤ 4 tiles — lib/thumbs.ts entranceOf: the owners' best sellers when product-photos.json has them, else the rows with a
+// photo in data order), then every name of the board as a paper row (Rows.astro: 56 px photo or the first letter, the
+// unit line, „Bestel”; 6 per group, the rest folded on the phone by scripts/rows.ts) — the same ids, links and groups,
+// so the ItemList and the Product nodes do not change. The unit line = the D-48 class („per stuk” · „per 100 g”) +
+// „prijs in de winkel”, or the row's price.
 import ProductTiles from '../components/ProductTiles.astro';
+import Vitrine from '../components/Vitrine.astro';
+import Fiche from '../components/Fiche.astro';
+import AsSearch from '../components/AsSearch.astro';
 import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import HeroPreload from '../components/HeroPreload.astro';
 import CounterTag from '../components/CounterTag.astro';
 import AsPills from '../components/AsPills.astro';
-import Board from '../components/Board.astro';
+import Rows from '../components/Rows.astro';
 import Thumb from '../components/Thumb.astro';
 import Faq from '../components/Faq.astro';
 import WaIcon from '../components/WaIcon.astro';
 import photos from '../data/photos.json';
 import type { Product } from '../data/types';
 import { products, priceLabel, priceUnitLabel } from '../lib/price';
-import { thumbOf } from '../lib/thumbs';
+import { thumbOf, entranceOf } from '../lib/thumbs';
 import { boardGroups } from '../lib/board';
 import { keepUnits } from '../lib/typo';
 import { ASSORTMENT_UPDATED } from '../lib/updated';
@@ -63,7 +82,7 @@ import { receptenT } from '../i18n/recepten';
 import recipes from '../data/recipes.json';
 import '../styles/sections.css';
 import '../styles/assortment.css';
-import '../styles/board.css';
+import '../styles/vitrine.css';
 
 export interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -86,8 +105,21 @@ const cats = part1.map((id) => {
   const c = products.categories.find((x) => x.id === id);
   if (!c) throw new Error(`products.json: no category "${id}"`);
   const board = rowsOf(id).filter((p) => p.board);
-  return { ...c, items: rowsOf(id).filter((p) => !p.board), board, boardGroups: boardGroups(id, locale) };
+  const items = rowsOf(id).filter((p) => !p.board);
+  const groups = boardGroups(id, locale);
+  // row 22b: the entrance's tiles — the owners' best sellers, else the rows with a photo in data order
+  const entrance = entranceOf(id, rowsOf(id));
+  return { ...c, items, board, boardGroups: groups, entrance };
 });
+// row 22: the rows the sheet can open — every board name and every tile
+const ficheRows = [...new Set(cats.flatMap((c) => [...c.entrance, ...c.board]))];
+// row 22b: the unit line of a row or a tile — the D-48 class + „prijs in de winkel”, or the row's price (D-39: never a
+// figure the data does not have; a row without either keeps its visible placeholder, C-04)
+const unitWord = (p: Product) => (p.unit === 'kg' ? t.rows.per100 : p.unit === 'stuk' ? t.rows.perStuk : '');
+const cap = (p: Product) =>
+  p.priceInStore
+    ? { text: [unitWord(p), priceLabel(p, locale)].filter(Boolean).join(' · '), price: false }
+    : { text: `${priceLabel(p, locale)}${priceUnitLabel(p, locale)}`, price: p.price !== null };
 const rubs = part2.map((id) => {
   const items = rowsOf(id);
   // the rubric head's print: the first `level: section` photo of the rubric (lexicon §5.19 20.10; colli: none)
@@ -223,6 +255,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 
     {/* row 18: the pill row and both parts in one parent (the row sticks inside it) */}
     <div class="container pp-as">
+      <AsSearch placeholder={t.search.placeholder} empty={t.search.empty} link={{ label: t.search.emptyLink, href: wa(t.search.waSrc) }} />
       <AsPills label={t.pills.label} items={t.pills.items} />
 
       <section class="as-part" id="toog" aria-labelledby="toog-title">
@@ -256,7 +289,8 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
                   <li><CounterTag as="h4" id={p.id} thumb={p.id} locale={locale} name={p.name[locale]} line={p.line?.[locale]} price={priceLabel(p, locale)} unit={priceUnitLabel(p, locale) || undefined} tone={p.featured ? 'ink' : 'paper'} recipe={withRecipe.has(p.id) ? { href: `${recipesPath}#${p.id}`, label: rt.tagLink } : undefined} /></li>
                 ))}
               </ul>}
-              {c.board.length > 0 && <Board id={c.id} title={c.name[locale]} eyebrow={t.board.eyebrow} groups={c.boardGroups} count={t.card.count} href={t.card.href} foot={keepUnits(t.board.foot)} wa={{ label: t.board.wa, href: wa(waSrc('board')) }} locale={locale} />}
+              <Vitrine id={c.id} label={c.name[locale]} rows={c.entrance} eyebrow={t.vit.eyebrow} line={t.vit.line} href={t.card.href} cap={cap} locale={locale} />
+              {c.board.length > 0 && <Rows id={c.id} title={c.name[locale]} heading={`${c.id}-title`} groups={c.boardGroups} eyebrow={t.rows.eyebrow} line={t.rows.line} cta={t.rows.cta} more={t.rows.more} href={t.card.href} cap={cap} foot={keepUnits(t.board.foot)} wa={{ label: t.board.wa, href: wa(t.rows.waSrc) }} locale={locale} />}
               {isRo && t.roemeens.roHref && <a class="pp-cat__more" href={t.roemeens.roHref} lang="ro" hreflang="ro">{t.roemeens.roLabel}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} /></a>}
             </div>
           </section>
@@ -329,6 +363,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
       <p>{t.byline}</p>
     </div>
   </main>
+  <Fiche rows={ficheRows} locale={locale} />
 </Base>
 
 <script>
@@ -398,6 +433,8 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
     text-decoration: none;
   }
   .pp-cat__more svg { width: 16px; height: 16px; }
+  /* row 22b: a row is an anchor too (the ItemList's #<id>) — it lands under the sign and the pill row, as the sections do */
+  .pp-cat__in :global(.row) { scroll-margin-top: calc(var(--as-head) + var(--as-row) + 8px); }
   @media (hover: hover) { .pp-cat__more:hover { color: var(--fg); } }
 
   .pp-order { padding-top: 32px; }
@@ -450,8 +487,8 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
     .pp-cat__title { font-size: 36px; line-height: 1; letter-spacing: -0.02em; }
     .pp-cat__tags { grid-area: tags; gap: 12px; }
     .pp-cat__more { grid-area: more; }
-    /* row 18b: the Krijtbord under the tags, in the tags' column */
-    .pp-cat__in > :global(.board) { grid-column: 2; }
+    /* row 22b: the entrance and the paper rows under the tags, in the tags' column (row 18b: the Krijtbord was there) */
+    .pp-cat__in > :global(.vit), .pp-cat__in > :global(.rows) { grid-column: 2; }
 
     .pp-order { padding-top: 56px; }
     .pp-card {

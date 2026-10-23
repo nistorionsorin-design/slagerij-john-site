@@ -1,0 +1,74 @@
+---
+// Rows — every name of a category's counter list as a paper row on /producten + /ro/produse (row 22b, D-51 (2)(3);
+// canvas board `VitrineV2`; Dan 23.10 17:27 „a black list doesn't push to buy or look”). Replaces the ink board
+// (Board.astro, D-47 C1a) on this page; board.css keeps the bestelbon fold. Look = design/css/vitrine.css v2 (global,
+// imported by the view); markup = its contract. The rows are the board's: the same products.json `board` rows, the same
+// groups (src/lib/board.ts), the same ids on the links (the ItemList's anchors) and the same bestelbon links — the 15
+// counter tags stay above, as they are.
+// A row = its own photo at 56 px (Thumb.astro `row`, lazy) or, without one, the name's first letter (`.row__mono`,
+// aria-hidden; never a stock or placeholder image, D-51 (2)) · the name · the unit line · the „Bestel” pill; the whole
+// row is one link (U-23) that opens the sheet with script (`data-fiche` = the unit, the id from the href — Dan 23.10
+// 17:2x). Per group the first 6 rows, the rest in a native <details class="rows__more"> „Toon alle N van …” (N = the
+// group's rows; the group's name mid-sentence; the words and the count in one span, or the summary's space-between
+// spreads them into three columns — board.css v1.1's lesson). The HTML ships every fold open — a phone without script and every
+// desktop see all rows (the CSS hides the summary from 960) — and src/scripts/rows.ts folds them on the phone.
+import Thumb from './Thumb.astro';
+import type { Product } from '../data/types';
+import type { Locale } from '../i18n/ui';
+import type { BoardGroup } from '../lib/board';
+import { ownPhoto } from '../lib/thumbs';
+import { midSentence } from '../lib/typo';
+
+export interface Props {
+  /** the category id (rows-<id>) */
+  id: string;
+  /** the category's name: the sheet's eyebrow, the fold's name for a board with one group */
+  title: string;
+  /** the id of the category's own heading: the section is named by its eyebrow + that heading */
+  heading: string;
+  groups: BoardGroup[];
+  eyebrow: string;
+  line: string;
+  cta: string;
+  /** the fold's words around the count and the group's name: „Toon alle ” · „ van ” */
+  more: readonly [string, string];
+  href: (id: string) => string;
+  cap: (p: Product) => { text: string; price: boolean };
+  foot: string;
+  wa: { label: string; href: string };
+  locale: Locale;
+}
+const { id, title, heading, groups, eyebrow, line, cta, more, href, cap, foot, wa, locale } = Astro.props;
+const OPEN = 6;
+---
+<section class="rows" id={`rows-${id}`} aria-labelledby={`rows-${id}-title ${heading}`} data-cat={title}>
+  <p class="rows__eyebrow" id={`rows-${id}-title`}>{eyebrow}</p>
+  <p class="rows__line">{line}</p>
+  {groups.map((g) => {
+    const row = (p: Product) => {
+      const c = cap(p);
+      return (
+        <li><a class="row" id={p.id} href={href(p.id)} data-fiche={p.unit}>
+          {ownPhoto(p.id) ? <span class="row__ph"><Thumb id={p.id} locale={locale} variant="row" /></span> : <span class="row__mono" aria-hidden="true">{[...p.name[locale]][0].toUpperCase()}</span>}
+          <span class="row__txt"><span class="row__name">{p.name[locale]}</span><span class:list={['row__cap', { 'row__cap--price': c.price }]}>{c.text}</span></span>
+          <span class="row__cta">{cta}</span>
+        </a></li>
+      );
+    };
+    return (<>
+      {g.label && <p class="rows__group">{g.label}</p>}
+      <ul class="rows__list">{g.items.slice(0, OPEN).map(row)}</ul>
+      {g.items.length > OPEN && (
+        <details class="rows__more" open>
+          <summary><span>{more[0]}<span>{g.items.length}</span>{more[1]}{midSentence(g.label ?? title, locale)}</span></summary>
+          <ul class="rows__list">{g.items.slice(OPEN).map(row)}</ul>
+        </details>
+      )}
+    </>);
+  })}
+  <p class="rows__foot">{foot} <a href={wa.href}>{wa.label}</a></p>
+</section>
+
+<script>
+  import '../scripts/rows.ts';
+</script>

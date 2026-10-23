@@ -1620,7 +1620,7 @@
       "step": 0.1,
       "min": 0.1
     },
-    { "id": "kaizer", "category": "roemeens", "name": { "nl": "Kaizer", "ro": "Kaizer" },
+    { "id": "kaizer", "category": "roemeens", "name": { "nl": "Gerookt buikspek", "ro": "Kaizer" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1630,7 +1630,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "sunca-de-casa", "category": "roemeens", "name": { "nl": "Șuncă de casă", "ro": "Șuncă de casă" },
+    { "id": "sunca-de-casa", "category": "roemeens", "name": { "nl": "Huisgemaakte hesp", "ro": "Șuncă de casă" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1640,7 +1640,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "afumatura", "category": "roemeens", "name": { "nl": "Afumătură", "ro": "Afumătură" },
+    { "id": "afumatura", "category": "roemeens", "name": { "nl": "Gerookt varkensvlees", "ro": "Afumătură" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1650,7 +1650,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "ciolane-afumate", "category": "roemeens", "name": { "nl": "Ciolane afumate", "ro": "Ciolane afumate" },
+    { "id": "ciolane-afumate", "category": "roemeens", "name": { "nl": "Gerookte schenkel", "ro": "Ciolane afumate" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1660,7 +1660,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "carnati-afumati-cascaval", "category": "roemeens", "name": { "nl": "Cârnați afumați cu cașcaval", "ro": "Cârnați afumați cu cașcaval" },
+    { "id": "carnati-afumati-cascaval", "category": "roemeens", "name": { "nl": "Gerookte worst met kaas", "ro": "Cârnați afumați cu cașcaval" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1670,7 +1670,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "carnati-afumati-mustar", "category": "roemeens", "name": { "nl": "Cârnați afumați cu muștar", "ro": "Cârnați afumați cu muștar" },
+    { "id": "carnati-afumati-mustar", "category": "roemeens", "name": { "nl": "Gerookte worst met mosterd", "ro": "Cârnați afumați cu muștar" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1680,7 +1680,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "caltabos", "category": "roemeens", "name": { "nl": "Caltaboș", "ro": "Caltaboș" },
+    { "id": "caltabos", "category": "roemeens", "name": { "nl": "Roemeense leverworst", "ro": "Caltaboș" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1690,7 +1690,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "crenvursti", "category": "roemeens", "name": { "nl": "Crenvurști", "ro": "Crenvurști" },
+    { "id": "crenvursti", "category": "roemeens", "name": { "nl": "Roemeense knakworsten", "ro": "Crenvurști" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1700,7 +1700,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "polonezi", "category": "roemeens", "name": { "nl": "Polonezi", "ro": "Polonezi" },
+    { "id": "polonezi", "category": "roemeens", "name": { "nl": "Poolse worst", "ro": "Polonezi" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1710,7 +1710,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "toba", "category": "roemeens", "name": { "nl": "Tobă", "ro": "Tobă" },
+    { "id": "toba", "category": "roemeens", "name": { "nl": "Roemeense zult", "ro": "Tobă" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1720,7 +1720,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "salam-de-casa", "category": "roemeens", "name": { "nl": "Salam de casă", "ro": "Salam de casă" },
+    { "id": "salam-de-casa", "category": "roemeens", "name": { "nl": "Huisgemaakte salami", "ro": "Salam de casă" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1730,7 +1730,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "salam-de-casa-sunca", "category": "roemeens", "name": { "nl": "Salam de casă cu șuncă", "ro": "Salam de casă cu șuncă" },
+    { "id": "salam-de-casa-sunca", "category": "roemeens", "name": { "nl": "Huisgemaakte salami met hesp", "ro": "Salam de casă cu șuncă" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1740,7 +1740,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "parizer-de-casa", "category": "roemeens", "name": { "nl": "Parizer de casă (porc)", "ro": "Parizer de casă (porc)" },
+    { "id": "parizer-de-casa", "category": "roemeens", "name": { "nl": "Huisgemaakte parijzer worst, varken", "ro": "Parizer de casă (porc)" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1750,7 +1750,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "parizer-ciuperci", "category": "roemeens", "name": { "nl": "Parizer cu ciuperci", "ro": "Parizer cu ciuperci" },
+    { "id": "parizer-ciuperci", "category": "roemeens", "name": { "nl": "Parijzer worst met champignons", "ro": "Parizer cu ciuperci" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1760,7 +1760,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "parizer-masline", "category": "roemeens", "name": { "nl": "Parizer cu măsline", "ro": "Parizer cu măsline" },
+    { "id": "parizer-masline", "category": "roemeens", "name": { "nl": "Parijzer worst met olijven", "ro": "Parizer cu măsline" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1770,7 +1770,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "parizer-ciuperci-masline", "category": "roemeens", "name": { "nl": "Parizer cu ciuperci și măsline", "ro": "Parizer cu ciuperci și măsline" },
+    { "id": "parizer-ciuperci-masline", "category": "roemeens", "name": { "nl": "Parijzer worst met champignons en olijven", "ro": "Parizer cu ciuperci și măsline" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1780,7 +1780,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "carne-la-garnita", "category": "roemeens", "name": { "nl": "Carne la garniță", "ro": "Carne la garniță" },
+    { "id": "carne-la-garnita", "category": "roemeens", "name": { "nl": "Varkensvlees bewaard in reuzel", "ro": "Carne la garniță" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1790,7 +1790,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "jumari", "category": "roemeens", "name": { "nl": "Jumări", "ro": "Jumări" },
+    { "id": "jumari", "category": "roemeens", "name": { "nl": "Gebakken spekjes", "ro": "Jumări" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1800,7 +1800,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "untura", "category": "roemeens", "name": { "nl": "Untură", "ro": "Untură" },
+    { "id": "untura", "category": "roemeens", "name": { "nl": "Reuzel", "ro": "Untură" },
       "line": null,
       "price": null,
       "priceInStore": true,

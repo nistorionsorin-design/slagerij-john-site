@@ -554,6 +554,7 @@ if (built) {
       if (r < 4.5) e.push(`--${a} on --${b}: ${r.toFixed(2)}:1 < 4.5`);
     }
     if (!/:focus-visible/.test(read(join(root, 'src/styles/tokens.css')))) e.push('no :focus-visible style');
+    let dialogs = 0;
     for (const p of pages) {
       const bar = p.html.match(/<nav class="bar"[\s\S]*?<\/nav>/i)?.[0];
       // four since row 8b (D-33): Bel · WhatsApp · Bestel · Route
@@ -561,8 +562,19 @@ if (built) {
       const qa = p.html.match(/<section class="qa"[\s\S]*?<\/section>/i)?.[0];
       if (qa && !/class="qa__auto"[^>]*>\s*[^<\s]/.test(qa)) e.push(`${p.file}: Q&A box lacks the automated-assistant label`);
       if (qa && !/<label[^>]*for="qa-input"/.test(qa)) e.push(`${p.file}: Q&A input has no label`);
+      // row 22: a <dialog> (the product sheet) has a name — aria-label, or aria-labelledby naming a heading inside it —
+      // and a close button inside its <form method="dialog"> that says what it does (its text or its aria-label)
+      for (const dlg of p.html.match(/<dialog\b[\s\S]*?<\/dialog>/gi) || []) {
+        dialogs++;
+        const tag = dlg.match(/<dialog\b[^>]*>/i)[0];
+        const by = attr(tag, 'aria-labelledby');
+        const heading = by && new RegExp(`<h[1-6]\\b[^>]*\\sid="${by}"`, 'i').test(dlg);
+        if (!attr(tag, 'aria-label')?.trim() && !heading) e.push(`${p.file}: <dialog> without a name (aria-label, or aria-labelledby → a heading inside it)`);
+        const close = dlg.match(/<form\b[^>]*method="dialog"[^>]*>[\s\S]*?<\/form>/i)?.[0].match(/<button\b[^>]*>[\s\S]*?<\/button>/i)?.[0];
+        if (!close || (!attr(close, 'aria-label')?.trim() && !/>\s*[^<\s]/.test(close))) e.push(`${p.file}: <dialog> without a named close button in a <form method="dialog">`);
+      }
     }
-    verdict('a11y', e, `${pairs.length} token pairs ≥ 4.5:1; focus-visible; bottom bar and Q&A markup`);
+    verdict('a11y', e, `${pairs.length} token pairs ≥ 4.5:1; focus-visible; bottom bar and Q&A markup; ${dialogs} <dialog>: named, with a close button`);
     warn('a11y-manual', 'text over the hero gradient and keyboard operation of the Q&A box: verify in the browser');
   }
 
@@ -570,8 +582,9 @@ if (built) {
   // smart-sticky, build plan stage 0b2 + the bestelbon, stage 5 + the traiteur quote form, stage 6 + the /producten
   // tiles' chip links, D-37 v5 + the /producten hero's frame 2, PageHero's loop, row 14e + the /producten pill row's
   // scroll-spy, row 18 — ≤ 1 kB, design/css/assortment.css + the page-view beacon src/scripts/hit.ts, row 13b, on
-  // every page from Base.astro — ≤ 1 kB, it posts to /api/hit on this origin and names no host): a script ships only on
-  // a page that mounts its component, from /_astro/, never inline (CSP script-src 'self').
+  // every page from Base.astro — ≤ 1 kB, it posts to /api/hit on this origin and names no host + the /producten product
+  // sheet src/scripts/fiche.ts ≤ 3 kB and its search src/scripts/search.ts ≤ 2 kB, row 22, + the paper rows' folds src/scripts/rows.ts ≤ 1 kB, row 22b, design/css/vitrine.css): a
+  // script ships only on a page that mounts its component, from /_astro/, never inline (CSP script-src 'self').
   {
     const js = walk(dist).filter((f) => /\.(js|mjs)$/.test(f));
     const inline = pages.filter((p) => /<script(?![^>]*application\/(ld\+)?json)[^>]*>[\s\S]*?\S[\s\S]*?<\/script>/i.test(p.html.replace(/<script[^>]*src=[^>]*><\/script>/gi, '')));
@@ -587,11 +600,22 @@ if (built) {
       ['Producten', /<section class="hero sh sh--loop[\s"]/],
       ['Bbq', /<section class="hero sh sh--loop[\s"]/],
       ['AsPills', /<nav class="as-pills[\s"]/],
+      ['Fiche', /<dialog class="fiche[\s"]/],
+      ['AsSearch', /<form class="as-search[\s"]/],
+      ['Rows', /<section class="rows[\s"]/],
       ['Base', /<html lang="(nl|ro)-BE"/], // Base → hit.ts, the beacon (row 13b)
     ];
     for (const f of js.filter((f) => /[\\/]AsPills\./.test(f))) {
       const size = statSync(f).size;
       if (size > 1024) e.push(`${rel(f)}: ${size} B — the pill row's scroll-spy is ≤ 1 kB (row 18)`);
+    }
+    // row 22: the sheet ≤ 3 kB, the search ≤ 2 kB, each one file (no shared chunk pulled in); row 22b: the rows' folds ≤ 1 kB
+    for (const [name, max, what] of [['Fiche', 3072, 'the product sheet (fiche.ts)'], ['AsSearch', 2048, 'the search (search.ts)'], ['Rows', 1024, 'the rows\' folds (rows.ts)']]) {
+      for (const f of js.filter((f) => new RegExp(`[\\\\/]${name}\\.`).test(f))) {
+        const size = statSync(f).size;
+        if (size > max) e.push(`${rel(f)}: ${size} B — ${what} is ≤ ${max / 1024} kB (row 22)`);
+        if (/^\s*import\b|\bimport\s*\(/m.test(read(f))) e.push(`${rel(f)}: ${what} imports a chunk — it ships as one file (row 22)`);
+      }
     }
     const beacon = js.filter((f) => /[\\/]Base\./.test(f));
     if (!beacon.length) e.push('no Base script in dist — the hit.ts beacon (row 13b) is not built');
@@ -609,7 +633,7 @@ if (built) {
         const file = src.split('/').pop();
         const m = mounts.find(([name]) => file.startsWith(name + '.'));
         if (!src.startsWith('/_astro/')) e.push(`${p.file}: ${src} not served from /_astro/`);
-        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / Header / OpenChip / QaBox / OrderForm / QuoteForm / ProductTiles / Producten / Bbq / AsPills / Base → hit.ts)`);
+        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / Header / OpenChip / QaBox / OrderForm / QuoteForm / ProductTiles / Producten / Bbq / AsPills / Fiche / AsSearch / Rows / Base → hit.ts)`);
         else if (!m[1].test(p.html)) e.push(`${p.file}: ships ${file} without its component`);
       }
     verdict('client-js', e, `${js.length} JS files in dist; no inline script; each script ships only with its component; the hit.ts beacon ${beacon.map((f) => statSync(f).size).join(' / ')} B, same-origin`);

@@ -11,6 +11,10 @@ import OrderForm from '../components/OrderForm.astro';
 import Faq from '../components/Faq.astro';
 import { bestellenT } from '../i18n/bestellen';
 import type { Locale } from '../i18n/ui';
+// board.css = the folds of OrderForm (D-47 D1). Imported here, not in OrderForm (row 22b): since /producten dropped it
+// (D-51) it is no longer a shared chunk, and from the view it keeps its old place after OrderForm's own styles — its
+// `.ocat__more .ocat__sub` (10 px) and the form's `.ocat__sub` (8 px) weigh the same, the later one wins.
+import '../styles/board.css';
 
 export interface Props { locale: Locale }
 const { locale } = Astro.props;

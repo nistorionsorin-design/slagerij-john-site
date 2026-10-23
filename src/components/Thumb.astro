@@ -11,9 +11,11 @@
 // wheel card's photo (140 px, a 280 px source, ≤ 14 kB) and `print` = the rubric head's section print (64 px, 128 px
 // source). Both bare (the box is the caller's `.card__img` / `.rub__print`) and alt="": the card is a link whose own
 // text names the product, the print sits beside the rubric's name.
+// Row 22b (D-51, design/css/vitrine.css v2): `row` = the 56 px photo of a paper row on /producten (a 112 px source, AVIF
+// only — the contract's bare <img>, alt="": the row's own text names the product; the caller's `.row__ph` is the box).
+// The source file and the crop come from src/lib/thumbs.ts (shared with the Vitrine tiles and the sheet).
 import { getImage } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
-import { thumbOf } from '../lib/thumbs';
+import { thumbOf, photoFile, gravity } from '../lib/thumbs';
 import type { Locale } from '../i18n/ui';
 
 export interface Props {
@@ -22,26 +24,21 @@ export interface Props {
   locale: Locale;
   /** rendered size of the thumb, px */
   size?: 56 | 64;
-  /** row 18: the /producten card photo or the rubric head print instead of the thumb */
-  variant?: 'thumb' | 'card' | 'print';
+  /** row 18: the /producten card photo or the rubric head print instead of the thumb; row 22b: the paper row's photo */
+  variant?: 'thumb' | 'card' | 'print' | 'row';
 }
 const { id, locale, size = 56, variant = 'thumb' } = Astro.props;
 const entry = thumbOf(id);
-const px = variant === 'card' ? 140 : variant === 'print' ? 64 : size;
+const px = variant === 'card' ? 140 : variant === 'print' ? 64 : variant === 'row' ? 56 : size;
 const source = variant === 'thumb' ? 112 : px * 2;
 
-const files = import.meta.glob<{ default: ImageMetadata }>('../assets/{products,roemeens,bbq}/*.{jpg,jpeg,png,webp}', { eager: true }); // row 14: a thumb may share a page photo's file
-const img = entry ? files[`../assets/${entry.src}`]?.default : undefined;
-if (entry && !img) throw new Error(`product-photos.json: src/assets/${entry.src} not found`);
-
-// sharp crops by keyword, not by percentage: the focal point mapped to its third of the frame
-const gravity = (x = 50, y = 50) =>
-  [y < 40 ? 'top' : y > 60 ? 'bottom' : '', x < 40 ? 'left' : x > 60 ? 'right' : ''].filter(Boolean).join(' ') || 'center';
+const img = entry ? photoFile(entry) : undefined;
 const opts = img && entry ? { src: img, width: source, height: source, fit: 'cover' as const, position: gravity(entry.focalX, entry.focalY), quality: 50 } : null;
 // the card's WebP at 44: at 50 the two busiest platters (gourmet 10 · luxe) came out 14,5 / 14,7 kB, over the 14 kB card budget
 const webpQ = variant === 'card' ? 44 : 50;
-const [avif, webp] = opts ? await Promise.all([getImage({ ...opts, format: 'avif' }), getImage({ ...opts, format: 'webp', quality: webpQ })]) : [];
+const [avif, webp] = opts ? await Promise.all([getImage({ ...opts, format: 'avif' }), variant === 'row' ? null : getImage({ ...opts, format: 'webp', quality: webpQ })]) : [];
 ---
+{entry && avif && variant === 'row' && <img src={avif.src} alt="" width={px} height={px} loading="lazy" decoding="async" />}
 {entry && avif && webp && (variant === 'thumb'
   ? <picture class="thumb-pic"><source type="image/avif" srcset={avif.src} /><img class="thumb" src={webp.src} width={px} height={px} alt={entry.alt[locale]} loading="lazy" decoding="async" /></picture>
   : <picture><source type="image/avif" srcset={avif.src} /><img src={webp.src} width={px} height={px} alt="" loading="lazy" decoding="async" /></picture>

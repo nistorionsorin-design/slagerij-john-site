@@ -1,0 +1,63 @@
+---
+// Vitrine — a category's entrance „Meest gevraagd” on /producten + /ro/produse (row 22b, D-51 (1); canvas board
+// `VitrineV2`, 23.10; row 22's tiles, renamed to the v2 contract). Look = design/css/vitrine.css v2, ported 1:1 as
+// src/styles/vitrine.css (global, imported by the view); markup = its contract: one <div class="vit"> right under the
+// category's CounterTags, its eyebrow + line, up to four tiles (2 × 2 on the phone, 4 across from 960). The pick and its
+// order = src/lib/thumbs.ts `entranceOf`, done by the view (the sheet needs the same rows): the owners' best sellers when
+// product-photos.json has them, else the rows with a photo in data order. No tile → nothing renders.
+// A tile = the photo (4:3 at the entry's focal point, AVIF + WebP 340 / 520 w, width/height set, lazy: every entrance
+// sits below the first screen) · the name · the unit line („per stuk · prijs in de winkel”, or the price). The whole
+// tile is the row's bestelbon link (U-23); with script it opens the sheet (fiche.ts reads `data-fiche` = the unit — Dan
+// 23.10 17:2x — and the id from the href). The photo's alt is empty: the tile's own text names the product (as the
+// part-2 cards). `data-cat` = the category's name, the sheet's eyebrow.
+import { getImage } from 'astro:assets';
+import type { Product } from '../data/types';
+import type { Locale } from '../i18n/ui';
+import { bigPhoto, photoFile, gravity } from '../lib/thumbs';
+
+export interface Props {
+  /** the category id (vit-<id>-title) */
+  id: string;
+  /** the category's name (the sheet's eyebrow) */
+  label: string;
+  /** the picked rows, ≤ 4 (lib/thumbs.ts entranceOf) */
+  rows: Product[];
+  eyebrow: string;
+  line: string;
+  href: (id: string) => string;
+  /** the unit line under the name; `price` = the row shows a figure */
+  cap: (p: Product) => { text: string; price: boolean };
+  locale: Locale;
+}
+const { id, label, rows, eyebrow, line, href, cap, locale } = Astro.props;
+
+const widths = [340, 520];
+const tiles = await Promise.all(
+  rows.map(async (p) => {
+    const entry = bigPhoto(p.id)!;
+    const base = { src: photoFile(entry), fit: 'cover' as const, position: gravity(entry.focalX, entry.focalY), quality: 50 };
+    const cut = (format: 'avif' | 'webp') => Promise.all(widths.map((w) => getImage({ ...base, width: w, height: (w * 3) / 4, format })));
+    const [avif, webp] = await Promise.all([cut('avif'), cut('webp')]);
+    const srcset = (xs: { src: string }[]) => xs.map((x, i) => `${x.src} ${widths[i]}w`).join(', ');
+    return { p, avif: srcset(avif), webp: srcset(webp), src: webp[0].src, cap: cap(p) };
+  }),
+);
+// the tile's rendered width: half the phone's row (390 − 2 × 16 gutter − 10 gap) / 2 ≈ 174 px; from 960 a quarter of the
+// tags' column, ≤ 180 px
+const sizes = '(min-width: 960px) 180px, calc(50vw - 21px)';
+---
+{tiles.length > 0 && (
+  <div class="vit" role="group" aria-labelledby={`vit-${id}-title`} data-cat={label}>
+    <p class="vit__eyebrow" id={`vit-${id}-title`}>{eyebrow}</p>
+    <p class="vit__line">{line}</p>
+    <div class="vit__grid">
+      {tiles.map(({ p, avif, webp, src, cap }) => (
+        <a class="vit__tile" href={href(p.id)} data-fiche={p.unit}>
+          <span class="vit__ph"><picture><source type="image/avif" srcset={avif} sizes={sizes} /><source type="image/webp" srcset={webp} sizes={sizes} /><img src={src} alt="" width="340" height="255" loading="lazy" decoding="async" /></picture></span>
+          <span class="vit__name">{p.name[locale]}</span>
+          <span class:list={['vit__cap', { 'vit__cap--price': cap.price }]}>{cap.text}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+)}

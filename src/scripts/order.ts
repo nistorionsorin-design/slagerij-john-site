@@ -8,7 +8,8 @@
 // Row 18: ?product=<id> (a „Bestel” card on /producten) starts that row at its minimum quantity. Row 18b: it opens the
 // board fold the row sits in; the kg / stuk steppers show their reading („300 g”, „2 stuks”, D-48). Row 21 (D-50 (2)):
 // a kg row from 3 kg shows the volume-discount note under it — words only, nothing computed, the slip unchanged.
-import { readOrder, daysFor, dayLabel, money, qtyLabel, waText, newRef, qtyRule, toMin, menuOf, menuOpen, totalLabel } from '../lib/order-core.js';
+// Row 22 (D-50 (3)): &q=<quantity> from the product sheet starts the row at that quantity.
+import { readOrder, daysFor, dayLabel, money, qtyLabel, waText, newRef, qtyRule, snapQty, toMin, menuOf, menuOpen, totalLabel } from '../lib/order-core.js';
 
 type Unit = 'kg' | 'pers' | 'colli' | 'stuk' | 'liter' | 'portie';
 interface Item { id: string; category: string; name: Partial<Record<'nl' | 'ro', string>>; unit: Unit; price: number | null; priceFrom?: boolean; priceInStore?: boolean; min?: number; step?: number }
@@ -424,12 +425,15 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
   // has loaded (the browser's own jump to the anchor resets the focus), the row is put in place under the sign and its
   // „+” takes the focus — a button, so no phone keyboard opens. A quantity the browser restored is kept.
   // Row 18b (D-47): a board row sits folded in „Meer rund / varken” — the fold opens first.
-  const asked = byId.get(new URLSearchParams(location.search).get('product') ?? '');
+  // Row 22 (D-50 (3)): the product sheet on /producten sends its stepper's quantity along (&q=0.3) — the row starts
+  // there, snapped to the row's rule (snapQty); no q, or one that is not a quantity = the minimum as before.
+  const params = new URLSearchParams(location.search);
+  const asked = byId.get(params.get('product') ?? '');
   const askedQty = asked && field(`q-${asked.id}`);
   const fold = askedQty ? askedQty.closest('details') : null;
   if (fold) fold.open = true;
   if (asked && askedQty && !(Number(askedQty.value) > 0)) {
-    askedQty.value = String(qtyRule(asked).min);
+    askedQty.value = String(snapQty(asked, params.get('q')) || qtyRule(asked).min);
     const land = () => setTimeout(() => {
       document.getElementById(`n-${asked.id}`)?.scrollIntoView({ block: 'start', behavior: 'instant' });
       askedQty.closest('.oi')?.querySelector<HTMLButtonElement>('.qty__b--more')?.focus({ preventScroll: true });

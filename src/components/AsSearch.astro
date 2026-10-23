@@ -1,0 +1,24 @@
+---
+// AsSearch — the search field right above the pill row of /producten + /ro/produse (row 22, D-50 (3): 247 names need
+// it, docs/qa.md §5). Look = design/css/vitrine.css v1 `.as-search` (global, imported by the view); markup = its
+// contract, the label's class = the site's `.vh` (the contract's `sr-only`). src/scripts/search.ts filters the boards'
+// names as you type — no network, no library, ≤ 2 kB. Without its script it would filter nothing, so it ships `hidden`
+// and the script shows it (below the hero on every width: no shift on the first screen). Strings: lexicon §5.19
+// „23.10 — the sheet” / §6 „Produse, 23.10” (productenT.search); the empty state's link → /wa?src=producten-zoek ·
+// ro-produse-cautare.
+export interface Props {
+  placeholder: string;
+  empty: string;
+  link: { label: string; href: string };
+}
+const { placeholder, empty, link } = Astro.props;
+---
+<form class="as-search" role="search" hidden>
+  <label class="vh" for="as-q">{placeholder}</label>
+  <input id="as-q" type="search" placeholder={placeholder} autocomplete="off" enterkeyhint="search" />
+  <p class="as-search__empty" hidden>{empty} <a href={link.href}>{link.label}</a></p>
+</form>
+
+<script>
+  import '../scripts/search.ts';
+</script>

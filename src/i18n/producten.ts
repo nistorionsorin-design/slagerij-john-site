@@ -115,6 +115,44 @@ export const productenNl = {
     eyebrow: 'Enkel op bestelling',
     text: ['Vanaf 3 kg van hetzelfde product: ', '5 % korting', '. Vanaf 5 kg: ', '10 %', '.'],
   },
+  /** §5.19 „23.10 — the Vitrine v2” (row 22b, D-51): the entrance „Meest gevraagd” (four tiles per category) and the
+   *  paper rows that replace the ink board — eyebrows, lines, the unit line per D-48 class (+ „prijs in de winkel” or the
+   *  price), the „Bestel” pill, the fold „Toon alle N van …” (count live, the group's name mid-sentence); the foot
+   *  sentence and its WhatsApp link stay `board.foot` / `board.wa` („as the board had them”) → /wa?src=producten-rows */
+  vit: {
+    eyebrow: 'Meest gevraagd',
+    line: 'De vier die het vaakst over de toog gaan. Tik voor foto en bestellen.',
+  },
+  rows: {
+    eyebrow: 'Alles van de toog',
+    line: 'Elke rij is een product. Tik erop: foto, hoe te bereiden, bestellen.',
+    perStuk: 'per stuk',
+    per100: 'per 100 g',
+    cta: 'Bestel',
+    more: ['Toon alle ', ' van '] as const,
+    waSrc: 'producten-rows',
+  },
+  /** §5.19 „23.10 — the sheet” (row 22, D-50 (3)): the product sheet <dialog class="fiche"> — close, the price line per
+   *  unit class (D-48), the short discount note, the two actions; the stepper's labels are the bestelbon's (§5.20
+   *  `less` / `more` / `qty`, bestellen.ts); the WhatsApp message = §5.10 home NL (`orderCard.msg`) + the product name.
+   *  The tile caption („prijs in de winkel”) is lib/price.ts `inStoreLabel`. */
+  fiche: {
+    close: 'Sluiten',
+    perKg: 'Prijs per kilo aan de toog',
+    perStuk: 'Prijs per stuk aan de toog',
+    note: 'Vanaf 3 kg: 5 % korting · vanaf 5 kg: 10 % · enkel op bestelling',
+    primary: 'Op de bestelbon zetten',
+    wa: 'Liever via WhatsApp',
+    waSrc: 'fiche',
+  },
+  /** §5.19 „23.10 — the sheet”, Search: the field above the pills (its label = the placeholder) and the empty state,
+   *  its link → /wa?src=producten-zoek */
+  search: {
+    placeholder: 'Zoek een product',
+    empty: 'Niets gevonden.',
+    emptyLink: 'Stuur ons de naam via WhatsApp.',
+    waSrc: 'producten-zoek',
+  },
 
   /** Roemeense section: eyebrow = §4 / §5.15 page name; heading = lexicon §7 GBP description
    *  „Roemeense specialiteiten: mici, gerookte worst, pastrami.”, the list part; the RO link = the RO page name of
@@ -248,6 +286,38 @@ export const productenRo = {
   discount: {
     eyebrow: 'Doar la comandă',
     text: ['De la 3 kg din același produs: ', '5% reducere', '. De la 5 kg: ', '10%', '.'],
+  },
+  /** §6 „Produse, 23.10 — vitrina v2” (row 22b, D-51) → /wa?src=ro-produse-rows; the fold „Arată toate cele N de la …”
+   *  („de la” = from, whatever the count) */
+  vit: {
+    eyebrow: 'Cele mai cerute',
+    line: 'Cele patru care trec cel mai des peste tejghea. Apasă pentru poză și comandă.',
+  },
+  rows: {
+    eyebrow: 'Tot ce avem la tejghea',
+    line: 'Fiecare rând e un produs. Apasă: poză, cum se gătește, comandă.',
+    perStuk: 'la bucată',
+    per100: 'la 100 g',
+    cta: 'Comandă',
+    more: ['Arată toate cele ', ' de la '] as const,
+    waSrc: 'ro-produse-rows',
+  },
+  /** §6 „Produse, 23.10” fișa (row 22) → /wa?src=ro-fiche; the message = §5.10 home RO (`orderCard.msg`) + the name */
+  fiche: {
+    close: 'Închide',
+    perKg: 'Prețul pe kilogram la tejghea',
+    perStuk: 'Prețul pe bucată la tejghea',
+    note: 'De la 3 kg: 5% reducere · de la 5 kg: 10% · doar la comandă',
+    primary: 'Pune pe bon',
+    wa: 'Mai bine pe WhatsApp',
+    waSrc: 'ro-fiche',
+  },
+  /** §6 „Produse, 23.10” căutare → /wa?src=ro-produse-cautare */
+  search: {
+    placeholder: 'Caută un produs',
+    empty: 'Nimic găsit.',
+    emptyLink: 'Trimite-ne numele pe WhatsApp.',
+    waSrc: 'ro-produse-cautare',
   },
 
   /** no §6 heading for this section: it carries the §6 category name (the pill), no eyebrow, no NL link */

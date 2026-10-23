@@ -1,7 +1,8 @@
 // The counter board's groups (row 18b, D-47; row 21, D-50): a category's `board` rows of products.json in file order,
 // split by `group` — a row without one sits under the category's own name, a named group under its name in the
 // category's `groups` (lexicon §5.19 „23.10”). A board with one group carries no label. One rule for both surfaces:
-// the Krijtbord on /producten (Board.astro) and the folds of the bestelbon (OrderForm.astro).
+// the paper rows on /producten (Rows.astro, row 22b; the Krijtbord, Board.astro, until then) and the folds of the
+// bestelbon (OrderForm.astro).
 import type { Locale } from '../i18n/ui';
 import type { Product } from '../data/types';
 import { products } from './price';

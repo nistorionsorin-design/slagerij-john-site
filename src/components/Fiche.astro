@@ -1,0 +1,146 @@
+---
+// Fiche — the product sheet of /producten + /ro/produse (row 22, D-50 (3); canvas board `VitrineSheet`, 23.10; Dan 23.10
+// 16:36: before the switch, photo-less where the row has no photo). Look = design/css/vitrine.css v1 (`.fiche`, global,
+// imported by the view): a bottom sheet on the phone, a centred card from 960; markup = its contract, one native
+// <dialog> per page after </main>. src/scripts/fiche.ts fills it from the link that opened it (a board name or a Vitrine
+// tile): the id from its href (?product=), the name and the category (`data-cat`) from the page, the unit from its
+// `data-fiche` (kg · stuk; Dan 23.10 17:2x: the unit there, not the id as in the vitrine.css contract — 2 kB less HTML).
+// A plain row (D-48 kg 0,1 / 0,1 or stuk 1 / 1, no price, no line, no photo: every board name today) needs nothing else;
+// any other row is spelled out in the JSON below, by id — [unit, step, min, price, line, photo AVIF, photo WebP, photo
+// alt], the empty tail left off: the D-48 class (the
+// bestelbon's qtyRule), the price only where the row has one (else „Prijs per kilo / per stuk aan de toog”), the line
+// only where the data has one, the 720 × 440 photo only where the row has its own, big enough (lib/thumbs.ts `bigPhoto`) — its
+// file is requested on open, never on page load, so the frame holds no <img> here and stays `hidden` without a photo.
+// The stepper = the bestelbon's markup, classes and labels (§5.20 less / more / qty, bestellen.ts) and its look
+// (OrderForm.astro's .qty rules, copied below: they are scoped there); it starts at the row's minimum. Strings:
+// lexicon §5.19 „23.10 — the sheet” / §6 „Produse, 23.10” (productenT.fiche); the WhatsApp message = §5.10 home
+// (`orderCard.msg`) + the product name, through /wa?src=fiche · ro-fiche. Without script the dialog never opens: every
+// name and tile stays the bestelbon link.
+import { getImage } from 'astro:assets';
+import WaIcon from './WaIcon.astro';
+import type { Product } from '../data/types';
+import { wa, type Locale } from '../i18n/ui';
+import { productenT } from '../i18n/producten';
+import { bestellenT } from '../i18n/bestellen';
+import { qtyRule } from '../lib/order-core.js';
+import { priceLabel, priceUnitLabel } from '../lib/price';
+import { bigPhoto, photoFile, gravity } from '../lib/thumbs';
+
+export interface Props {
+  /** every row the page can open: the board names and the Vitrine tiles */
+  rows: Product[];
+  locale: Locale;
+}
+const { rows, locale } = Astro.props;
+const t = productenT[locale];
+const q = bestellenT[locale].products;
+const ro = locale === 'ro';
+
+// a plain row is left out: its link's `data-fiche` (the unit) is all the sheet needs
+const data: Record<string, (string | number)[]> = {};
+for (const p of rows) {
+  const { step, min } = qtyRule(p);
+  const e = bigPhoto(p.id);
+  let photo: string[] = [];
+  if (e) {
+    const base = { src: photoFile(e), width: 720, height: 440, fit: 'cover' as const, position: gravity(e.focalX, e.focalY), quality: 50 };
+    const [avif, webp] = await Promise.all([getImage({ ...base, format: 'avif' }), getImage({ ...base, format: 'webp' })]);
+    photo = [avif.src, webp.src, e.alt[locale]];
+  }
+  const row = [p.unit, step, min, p.priceInStore || p.price === null ? '' : `${priceLabel(p, locale)}${priceUnitLabel(p, locale)}`, p.line?.[locale] ?? '', ...photo];
+  while (row.length > 3 && row[row.length - 1] === '') row.pop();
+  const plain = row.length === 3 && ((p.unit === 'kg' && step === 0.1 && min === 0.1) || (p.unit === 'stuk' && step === 1 && min === 1));
+  if (!plain) data[p.id] = row;
+}
+// every less-than sign of the JSON escaped (<): no closing tag can end its block early. (This comment names no
+// tag on purpose: Vite's dependency scan reads script tags out of .astro files as text, comments included.)
+const json = JSON.stringify(data).replace(/</g, '\\u003c');
+---
+<dialog class="fiche" aria-labelledby="fiche-title">
+  <form method="dialog" class="fiche__bar"><span class="fiche__grab" aria-hidden="true"></span><button class="fiche__close" aria-label={t.fiche.close}>×</button></form>
+  <div class="fiche__ph" hidden></div>
+  <p class="fiche__eyebrow"></p><h2 class="fiche__title" id="fiche-title"></h2><p class="fiche__line" hidden></p>
+  <div class="fiche__price">
+    <div><span class="fiche__price-l" data-kg={t.fiche.perKg} data-stuk={t.fiche.perStuk}></span><span class="fiche__price-s">{t.fiche.note}</span></div>
+    <div class="qty is-live" data-r>
+      <button class="qty__b" type="button" data-step="-1" data-label={q.less}>−</button>
+      <label class="vh" for="fiche-q" data-label={q.qty}></label>
+      <input class="qty__in" type="number" inputmode="decimal" id="fiche-q" value="1" min="0" />
+      <span class="qty__u" aria-hidden="true">kg</span>
+      <span class="qty__r" aria-hidden="true"></span>
+      <button class="qty__b qty__b--more" type="button" data-step="1" data-label={q.more}>+</button>
+    </div>
+  </div>
+  <div class="fiche__cta">
+    <a class="fiche__primary" href={t.onlineHref}>{t.fiche.primary}</a>
+    <a class="fiche__wa" href={`${wa(t.fiche.waSrc)}${ro ? '&lang=ro' : ''}`} data-msg={t.orderCard.msg}><WaIcon /><span>{t.fiche.wa}</span></a>
+  </div>
+</dialog>
+<script type="application/json" id="fiche-data" set:html={json} />
+
+<script>
+  import '../scripts/fiche.ts';
+</script>
+
+<style>
+  /* the price box: its text left, the stepper right (the contract's grid 1fr auto) */
+  .fiche__price > div:first-child { min-width: 0; }
+  .fiche__price-s { margin-top: 2px; }
+  /* the photo is a <picture> built by fiche.ts on open */
+  :global(.fiche__ph picture) { display: block; height: 100%; }
+
+  /* the bestelbon's stepper (OrderForm.astro, D-48), the same look: 44 px buttons, the field with its reading over it */
+  .qty {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+    border: 1px solid var(--fg);
+    border-radius: 12px;
+    background: var(--card);
+    overflow: hidden;
+  }
+  .qty__b {
+    width: var(--touch);
+    height: var(--touch);
+    border: 0;
+    background: transparent;
+    color: var(--fg);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .qty__b--more { background: var(--accent); }
+  @media (hover: hover) { .qty__b:hover { background: var(--tag); } .qty__b--more:hover { background: var(--accent-light); } }
+  .qty__in {
+    width: 64px;
+    height: var(--touch);
+    padding: 0;
+    border: 0;
+    background: transparent;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--fg);
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  .qty__in::-webkit-inner-spin-button, .qty__in::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .qty__u { padding-right: 4px; margin-left: -4px; font-size: 11px; color: var(--muted); }
+  .qty__r {
+    position: absolute;
+    inset: 0 var(--touch);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card);
+    font-size: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--fg);
+    pointer-events: none;
+  }
+  .qty__r:empty, .qty__in:focus ~ .qty__r { display: none; }
+</style>

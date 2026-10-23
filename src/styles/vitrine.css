@@ -1,0 +1,142 @@
+/* Vitrine — /producten · /ro/produse: the „Meest gevraagd” entrance (four tiles per category), the paper rows that replace the ink board,
+   the product sheet (<dialog class="fiche">) and the search field above the pills · v2 (23.10.2026 17:5x, Cowork; D-51; build-plan row 22b;
+   canvas board `VitrineV2`) — v1 17:0x (tiles + thumbs on the ink board + sheet + search; row 22, built, not committed).
+   Dan 23.10 17:27 on the row-22 build: „to each category four photos as the entrance with the most sold products … a black list doesn't push
+   to buy or look … nicer and intuitive, with little photos”; 17:33 „yes as you recommend it”: rows folded at 6 on the phone (A), all visible
+   on desktop (B). The ink board (D-47 C1a) leaves /producten; board.css keeps serving the bestelbon fold only.
+   Source of truth for Vitrine.astro (entrance + rows), Fiche.astro and the search island of views/Producten.astro. Port 1:1 into
+   site/src/styles/vitrine.css (imported by the view, global like board.css). Tokens from tokens.css (--paper --card --line --fg --muted --tag
+   --tag-line --ink --on-ink --accent --on-accent --ox --f-display --f-ui --fs-eyebrow --fs-body --fs-caption --r-frame --r-frame-lg --r-tile
+   --r-tag --r-btn --touch). Strings: lexicon §5.19 „23.10 — the sheet” + „23.10 — the Vitrine v2” (NL), §6 „Produse, 23.10” (RO).
+   No price is invented: a row or tile shows the price only when the data carries one; otherwise „prijs in de winkel” / the unit.
+
+   The idea: three ways to look at the counter, all on paper. The ENTRANCE of a category = four tiles „Meest gevraagd” — the owners' four
+   best sellers (product-photos.json `bestsellers[category]`, from the owners' form q10), their photos first; until the owners answer, the
+   rows of that category that already have a photo, in data order, up to four; a category with none shows no entrance. The ROWS = every
+   product of the category as a paper card: 56 px photo on the left, or — when the row has no photo — a monogram (the name's first letter,
+   Fraunces italic, oxblood on the tag colour; never a stock or placeholder image), the name, the unit line („per stuk” · „per 100 g” ·
+   „prijs in de winkel” or the price), a yellow „Bestel” pill on the right; grouped as the data groups the category; on the phone each
+   group shows 6 rows and folds the rest under „Toon alle 31 van varken” (a native <details>, deep links open it); on desktop every row is
+   visible in two columns. A tap on a tile, a row or „Bestel” opens the SHEET (v1, unchanged). The SEARCH field (v1, unchanged) filters rows
+   and tiles by name. The ItemList / Product JSON-LD does not change — the rows stay the same names, the same ids, the same links.
+
+   Markup — the entrance (one per category that has ≥ 1 photo, right under the category's CounterTag grid):
+   <div class="vit" aria-labelledby="vit-varken-title">
+     <p class="vit__eyebrow" id="vit-varken-title">Meest gevraagd</p><p class="vit__line">De vier die het vaakst over de toog gaan. Tik voor foto en bestellen.</p>
+     <div class="vit__grid">
+       <a class="vit__tile" href="/bestellen?product=spiering#n-spiering" data-fiche="spiering">
+         <span class="vit__ph"><picture>…AVIF/WebP 340/520, width/height, loading="lazy" below the first screen…</picture></span>
+         <span class="vit__name">Spiering</span><span class="vit__cap">per stuk · prijs in de winkel</span>
+       </a> … up to four …
+     </div>
+   </div>
+   Markup — the rows (replaces <section class="board"> on /producten; one per category, groups as before):
+   <section class="rows" id="rows-varken" aria-labelledby="rows-varken-title">
+     <p class="rows__eyebrow" id="rows-varken-title">Alles van de toog</p><p class="rows__line">Elke rij is een product. Tik erop: foto, hoe te bereiden, bestellen.</p>
+     <p class="rows__group">Varken</p>
+     <ul class="rows__list">
+       <li><a class="row" href="/bestellen?product=varkenshaasje#n-varkenshaasje" data-fiche="varkenshaasje">
+         <span class="row__ph"><img src="…56 px AVIF…" alt="" width="56" height="56" loading="lazy" decoding="async"></span>   ← or <span class="row__mono" aria-hidden="true">V</span>
+         <span class="row__txt"><span class="row__name">Varkenshaasje</span><span class="row__cap">per stuk · prijs in de winkel</span></span>
+         <span class="row__cta">Bestel</span>
+       </a></li>
+       … the first 6 rows …
+     </ul>
+     <details class="rows__more"><summary>Toon alle 31 van varken</summary><ul class="rows__list">… the rest …</ul></details>   ← phone only; on desktop the details is open and its summary hidden
+     <p class="rows__group">Orgaanvlees</p> … same …
+     <p class="rows__foot">Prijs per kilo aan de toog. Vanaf 3 kg … <a href="/wa?src=producten-rows">Liever via WhatsApp? …</a></p>
+   </section>
+   Behaviour: fiche.ts (v1) also listens on .vit__tile and .row; a ?product= deep link into a folded group opens its <details> (order.ts
+   already does this for the bestelbon fold — same helper); search.ts (v1) hides .row li, .vit__tile and a .rows__group whose rows are all
+   hidden; the fold's summary count follows the visible rows. Nothing animates except the sheet's 220 ms slide. */
+
+/* ---------- the entrance: four tiles ---------- */
+.vit{margin:0 0 14px}
+.vit__eyebrow{margin:0 0 2px;font-size:var(--fs-eyebrow,11px);letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--ox)}
+.vit__line{margin:0 0 10px;font-size:13px;line-height:1.35;color:var(--muted)}
+.vit__grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vit__tile{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:var(--r-tile,14px);overflow:hidden;color:var(--fg);text-decoration:none;min-height:var(--touch,44px)}
+.vit__ph{display:block;aspect-ratio:4/3;background:var(--tag);border-bottom:1px solid var(--tag-line)}
+.vit__ph img,.vit__ph picture{display:block;width:100%;height:100%;object-fit:cover}
+.vit__name{display:block;padding:10px 12px 0;font-family:var(--f-display);font-weight:600;font-size:17px;line-height:1.1}
+.vit__cap{display:block;padding:3px 12px 12px;font-size:var(--fs-caption,12px);color:var(--muted)}
+.vit__cap--price{color:var(--ox);font-weight:700;font-variant-numeric:tabular-nums}
+.vit__tile:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+@media (hover:hover){.vit__tile:hover .vit__name{text-decoration:underline;text-underline-offset:2px}}
+
+/* ---------- the rows: every product on paper ---------- */
+.rows{margin:4px 0 8px;padding-top:12px;border-top:1px solid var(--line)}
+.rows__eyebrow{margin:0 0 2px;font-size:var(--fs-eyebrow,11px);letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--ox)}
+.rows__line{margin:0 0 10px;font-size:13px;line-height:1.35;color:var(--muted)}
+.rows__group{margin:12px 0 6px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--muted)}
+.rows__list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.row{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;min-height:72px;box-sizing:border-box;padding:8px 12px 8px 8px;background:var(--card);border:1px solid var(--line);border-radius:12px;color:var(--fg);text-decoration:none}
+.row:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.row__ph,.row__mono{width:56px;height:56px;border-radius:10px;overflow:hidden;box-sizing:border-box;flex:none}
+.row__ph{background:var(--tag)}
+.row__ph img{display:block;width:100%;height:100%;object-fit:cover}
+.row__mono{display:flex;align-items:center;justify-content:center;background:var(--tag);border:1px solid var(--tag-line);color:var(--ox);font-family:var(--f-display);font-style:italic;font-weight:500;font-size:26px;line-height:1}
+.row__txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.row__name{font-family:var(--f-display);font-weight:600;font-size:17px;line-height:1.1}
+.row__cap{font-size:var(--fs-caption,12px);color:var(--muted)}
+.row__cap--price{color:var(--ox);font-weight:700;font-variant-numeric:tabular-nums}
+.row__cta{display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:36px;padding:0 12px;border-radius:var(--r-btn,999px);background:var(--accent);color:var(--on-accent);font-size:12px;font-weight:700;white-space:nowrap}
+@media (hover:hover){.row:hover .row__name{text-decoration:underline;text-underline-offset:2px}}
+.rows__more{margin-top:8px}
+.rows__more summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;min-height:var(--touch,44px);padding:0 14px;border-radius:var(--r-btn,999px);background:var(--tag);border:1px solid var(--tag-line);color:var(--fg);font-family:var(--f-ui);font-size:13px;font-weight:600}
+.rows__more summary::-webkit-details-marker{display:none}
+.rows__more summary::after{content:"+";font-size:18px;line-height:1}
+.rows__more[open] summary::after{content:"–"}
+.rows__more[open] summary{margin-bottom:8px}
+.rows__more summary:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.rows__foot{margin:12px 0 0;font-size:12px;line-height:1.4;color:var(--muted)}
+.rows__foot a{color:var(--ox);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+.rows[hidden],.rows__list li[hidden],.vit[hidden],.vit__tile[hidden],.rows__group[hidden]{display:none}
+
+/* ---------- the sheet ---------- */
+.fiche{position:fixed;inset:auto 0 0 0;margin:0;width:100%;max-width:none;max-height:92dvh;box-sizing:border-box;padding:10px 20px calc(20px + env(safe-area-inset-bottom,0px));border:0;border-radius:18px 18px 0 0;background:var(--card);color:var(--fg);font-family:var(--f-ui);box-shadow:0 -12px 40px rgba(21,17,13,.35);overflow:auto}
+.fiche::backdrop{background:rgba(21,17,13,.55)}
+.fiche[open]{animation:fiche-up .22s ease-out}
+@keyframes fiche-up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.fiche[open]{animation:none}}
+.fiche__bar{display:flex;align-items:center;justify-content:space-between;min-height:var(--touch,44px);margin:0}
+.fiche__grab{width:40px;height:4px;border-radius:999px;background:var(--line)}
+.fiche__close{width:44px;height:44px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--fg);font-size:22px;line-height:1;cursor:pointer}
+.fiche__close:focus-visible,.fiche__primary:focus-visible,.fiche__wa:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.fiche__ph{margin:14px 0 0;border-radius:var(--r-tile,14px);overflow:hidden;background:var(--tag);border:1px solid var(--tag-line);aspect-ratio:720/440}
+.fiche__ph img{display:block;width:100%;height:100%;object-fit:cover}
+.fiche__eyebrow{margin:14px 0 4px;font-size:var(--fs-eyebrow,11px);letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--ox)}
+.fiche__title{margin:0;font-family:var(--f-display);font-weight:600;font-size:28px;line-height:1.05;letter-spacing:-.015em}
+.fiche__line{margin:4px 0 0;font-size:14px;line-height:1.4;color:var(--muted)}
+.fiche__price{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin:14px 0 0;padding:12px 14px;background:var(--tag);border:1px solid var(--tag-line);border-radius:var(--r-tag,10px)}
+.fiche__price-l{display:block;font-size:13px;font-weight:600}
+.fiche__price-l--num{color:var(--ox);font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.fiche__price-s{display:block;font-size:12px;color:var(--muted)}
+.fiche__cta{display:flex;flex-direction:column;gap:10px;margin:14px 0 0}
+.fiche__primary{display:flex;align-items:center;justify-content:center;min-height:52px;border-radius:var(--r-btn,999px);background:var(--accent);color:var(--on-accent);font-weight:600;font-size:16px;letter-spacing:-.005em;text-decoration:none}
+.fiche__wa{display:flex;align-items:center;justify-content:center;gap:10px;min-height:48px;border-radius:var(--r-btn,999px);border:1px solid var(--ink);color:var(--fg);font-weight:600;font-size:15px;text-decoration:none}
+.fiche__wa svg{width:18px;height:18px;flex:none}
+
+/* ---------- the search field ---------- */
+.as-search{margin:0 0 10px}
+.as-search input{width:100%;min-height:44px;box-sizing:border-box;padding:0 14px;border:1px solid var(--line);border-radius:var(--r-btn,999px);background:var(--card);color:var(--fg);font:400 16px/1.3 var(--f-ui)}
+.as-search input:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.as-search__empty{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.as-search__empty a{color:var(--ox);font-weight:600}
+.board[hidden],.board__list li[hidden],.vitrine[hidden]{display:none}
+
+/* ---------- desktop (≥ 960, the view's own step) ---------- */
+@media (min-width:960px){
+  .vit__grid{grid-template-columns:repeat(4,1fr);gap:14px}
+  .vit__name{font-size:18px}
+  .rows__list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .rows__more summary{display:none}                                   /* B on desktop: every row visible, no fold */
+  .rows__more>.rows__list{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  .fiche{inset:0;margin:auto;width:min(560px,calc(100% - 48px));max-height:min(88vh,860px);border-radius:var(--r-frame-lg,18px);padding:12px 24px 24px}
+  .fiche__grab{display:none}
+  .fiche__cta{flex-direction:row}
+  .fiche__primary,.fiche__wa{flex:1}
+  .as-search{max-width:420px}
+}
+/* desktop: the view renders .rows__more with the open attribute at ≥ 960 (a small script on load, or the <details> is simply open and the summary hidden) */
+/* motion: the sheet's 220 ms slide is the only transition; nothing moves inside a tap target; reduced motion = none. */
