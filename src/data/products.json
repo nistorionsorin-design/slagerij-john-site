@@ -1740,7 +1740,7 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "parizer-de-casa", "category": "roemeens", "name": { "nl": "Huisgemaakte parijzer worst, varken", "ro": "Parizer de casă (porc)" }, "alias": { "ro": "Parizer de casă (porc)" },
+    { "id": "parizer-de-casa", "category": "roemeens", "name": { "nl": "Huisgemaakte parijzer worst, varken", "ro": "Parizer de casă (porc)" }, "alias": { "ro": "Parizer de casă" },
       "line": null,
       "price": null,
       "priceInStore": true,

@@ -1,6 +1,11 @@
 /* Vitrine — /producten · /ro/produse: the „Meest gevraagd” entrance (four tiles per category), the paper rows that replace the ink board,
    the product sheet (<dialog class="fiche">) and the search field above the pills · v2 (23.10.2026 17:5x, Cowork; D-51; build-plan row 22b;
    canvas board `VitrineV2`) — v1 17:0x (tiles + thumbs on the ink board + sheet + search; row 22, built, not committed).
+   v2.1 (27.10.2026 09:5x, Cowork; Dan's pick „a” on the 22c open „the one-tile entrance”; build-plan row 22d): a lone tile — the only product of a
+   category with a photo (today Rund's Gehakt) — spans the grid: full width on the phone, two of the four columns on desktop, its photo 2:1 instead
+   of 4:3 so one tile never stands as a tall block in an empty 2 × 2. Nothing else changes; a category with two or more tiles is as v2.
+   v2.2 (27.10.2026 10:3x, Claude Code on Dan's word in the row-22d chat): the lone tile's photo box gets min-height:0 — without it the
+   aspect-ratio box keeps min-height:auto, grows to its 340 × 255 image and stays 4:3 (measured 318 × 239,5 at 360); with it 2:1 (318 × 159).
    Dan 23.10 17:27 on the row-22 build: „to each category four photos as the entrance with the most sold products … a black list doesn't push
    to buy or look … nicer and intuitive, with little photos”; 17:33 „yes as you recommend it”: rows folded at 6 on the phone (A), all visible
    on desktop (B). The ink board (D-47 C1a) leaves /producten; board.css keeps serving the bestelbon fold only.
@@ -63,6 +68,9 @@
 .vit__cap--price{color:var(--ox);font-weight:700;font-variant-numeric:tabular-nums}
 .vit__tile:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 @media (hover:hover){.vit__tile:hover .vit__name{text-decoration:underline;text-underline-offset:2px}}
+/* v2.1 — a lone tile: spans the row, wider photo, same type (the only-child test needs the tile to be the grid's only child) */
+.vit__grid>.vit__tile:only-child{grid-column:1/-1}
+.vit__grid>.vit__tile:only-child .vit__ph{aspect-ratio:2/1;min-height:0} /* v2.2: else the box grows back to the image's 4:3 */
 
 /* ---------- the rows: every product on paper ---------- */
 .rows{margin:4px 0 8px;padding-top:12px;border-top:1px solid var(--line)}
@@ -128,6 +136,7 @@
 /* ---------- desktop (≥ 960, the view's own step) ---------- */
 @media (min-width:960px){
   .vit__grid{grid-template-columns:repeat(4,1fr);gap:14px}
+  .vit__grid>.vit__tile:only-child{grid-column:span 2}                /* v2.1: half the row, never a 1040 px banner */
   .vit__name{font-size:18px}
   .rows__list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .rows__more summary{display:none}                                   /* B on desktop: every row visible, no fold */

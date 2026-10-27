@@ -45,7 +45,12 @@ const tiles = await Promise.all(
 );
 // the tile's rendered width: half the phone's row (390 − 2 × 16 gutter − 10 gap) / 2 ≈ 174 px; from 960 a quarter of the
 // tags' column, ≤ 180 px
-const sizes = '(min-width: 960px) 180px, calc(50vw - 21px)';
+// a lone tile (vitrine.css v2.1, row 22d) spans the row: the phone's full row (100vw − 2 × 20 gutter), from 960 half the
+// tags' column — measured 224 px at 960, 317 at 1280, 364 from 1440 (the column stops growing at 742) — so a DPR-2 phone
+// and a wide desktop take the 520 w file instead of stretching the 340 w one
+const sizes = tiles.length === 1
+  ? '(min-width: 1440px) 364px, (min-width: 960px) calc(29vw - 54px), calc(100vw - 40px)'
+  : '(min-width: 960px) 180px, calc(50vw - 21px)';
 ---
 {tiles.length > 0 && (
   <div class="vit" role="group" aria-labelledby={`vit-${id}-title`} data-cat={label}>
