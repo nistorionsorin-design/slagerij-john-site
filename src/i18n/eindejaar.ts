@@ -6,7 +6,7 @@
 // The menu rows are menus.json `eindejaar-2026` — since row 15a (13.10) the owners' folder: eight sections, 51 rows.
 // /ro/sarbatori (stage 9) = `eindejaarRo`, lexicon §6 „Sărbători”, same keys.
 
-import { updatedOn } from '../lib/updated';
+import { updatedOn, EINDEJAAR_UPDATED } from '../lib/updated';
 
 export const eindejaarNl = {
   /** §5.22 meta (56 / 151, description reworded 13.10 to the owners' brochure); `title` = the part before „ | Slagerij John”, the page passes the whole */
@@ -50,9 +50,11 @@ export const eindejaarNl = {
     index: 'Rubrieken',
     /** §5.19 */
     msgLabel: 'WhatsApp-bericht',
-    /** the board's secondary, moved here; → #feestmenu until a folder file exists (§5.22) */
-    folder: 'Bekijk de feestfolder',
-    folderHref: '#feestmenu',
+    /** the board's secondary, moved here; row 22h (§5.22 „27.10 — the folder file exists”): the brochure's web pdf
+     *  (public/, byte-identical to design/pliant-sarbatori-2026/web/), opened in a new tab; `folderNote` under it */
+    folder: 'Download de feestfolder (pdf)',
+    folderHref: '/eindejaarsfolder-2026.pdf',
+    folderNote: 'Het volledige eindejaarsmenu op 8 bladzijden, om te bewaren of door te sturen. 1,6 MB.',
     deadline: 'Bestellen tot [DATUM], met een voorschot in de winkel of via overschrijving. Afhalen op 24 en 31 december.', // row 15, §5.30 deposit
     /** §5.22 13.10: the owners' line under the eight sections — the brochure's own RO sentence, rendered in NL (u-form) */
     ownersLine: 'Ook Roemeense feestgerechten op bestelling: ciorbă, sarmale, salade de boeuf, cozonac.',
@@ -86,8 +88,8 @@ export const eindejaarNl = {
 
   /** §5.15 FAQ heading; the three „Eindejaar” items of §5.11 in faq.json pages.eindejaar */
   faq: 'Wat klanten ons vragen',
-  /** §5.13 with SITE_UPDATED (the board's line; row 15c) */
-  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl')}.`,
+  /** §5.13 with SITE_UPDATED (the board's line; row 15c); row 22h: the page's own date + the §5.22 27.10 change note */
+  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl', EINDEJAAR_UPDATED)}: de feestfolder als pdf.`,
 
   /** BreadcrumbList (§8.4): Home › Eindejaar */
   crumbs: { home: 'Home', page: 'Eindejaar' },
@@ -130,8 +132,10 @@ export const eindejaarRo = {
     title: 'De la tapas la desert.',
     index: 'Rubrici',
     msgLabel: 'Mesaj WhatsApp',
-    folder: 'Vezi meniul de sărbători',
-    folderHref: '#meniu',
+    /** row 22h (§6 „Sărbători, 27.10”) */
+    folder: 'Descarcă meniul de sărbători (pdf)',
+    folderHref: '/meniu-sarbatori-2026.pdf',
+    folderNote: 'Meniul de sărbători complet, 8 pagini, de păstrat sau de trimis mai departe. 1,6 MB.',
     deadline: 'Comenzi până pe [DATA], cu avans plătit în magazin sau prin transfer bancar. Ridicare pe 24 și 31 decembrie.', // row 15, §5.30 deposit
     /** §6 Sărbători 13.10: linia proprietarilor, de pe broșura lor, verbatim */
     ownersLine: 'Preluăm și comenzi specifice românești (ciorbe, sarmale, salată de boeuf, cozonaci etc.).',
@@ -158,8 +162,8 @@ export const eindejaarRo = {
   },
 
   faq: 'Ce ne întreabă clienții',
-  /** §5.13 RO with SITE_UPDATED (row 15c) */
-  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro')}.`,
+  /** §5.13 RO with SITE_UPDATED (row 15c); row 22h: EINDEJAAR_UPDATED + the §6 27.10 change note */
+  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro', EINDEJAAR_UPDATED)}: meniul de sărbători ca pdf.`,
   crumbs: { home: 'Acasă', page: 'Sărbători' },
 };
 

@@ -103,10 +103,11 @@ export const productenNl = {
   /** §5.19 „20.10 12:5x — the counter board” (row 18b, D-47): the Krijtbord under a per-kg category's tags — eyebrow,
    *  the line under every board + its WhatsApp link (→ /wa?src=producten-board); the names = products.json `board` rows,
    *  their groups = products.json `categories[].groups` (row 21); the count's words = `card.count`. Row 21: the foot
-   *  carries §5.19 „23.10”'s board-foot sentence after „Tik op een naam om te bestellen.” */
+   *  carries §5.19 „23.10”'s board-foot sentence after „Tik op een naam om te bestellen.”; row 22g: §5.19 „27.10” (form
+   *  q9 „valabil doar la carne, pe bază de comandă”) */
   board: {
     eyebrow: 'Alles van de toog',
-    foot: 'Prijs per kilo aan de toog. Tik op een naam om te bestellen. Vanaf 3 kg van hetzelfde product 5 % korting, vanaf 5 kg 10 %, enkel op bestelling.',
+    foot: 'Prijs per kilo aan de toog. Tik op een naam om te bestellen. Vanaf 3 kg van hetzelfde product 5 % korting, vanaf 5 kg 10 %, enkel op vlees en enkel op bestelling.',
     wa: 'Liever via WhatsApp? Stuur ons de naam en het gewicht.',
   },
   /** §5.19 „23.10” the discount band, once, above the categories (FACTS „Volumekorting” [OWNER] 22.10): eyebrow + the
@@ -141,7 +142,7 @@ export const productenNl = {
     close: 'Sluiten',
     perKg: 'Prijs per kilo aan de toog',
     perStuk: 'Prijs per stuk aan de toog',
-    note: 'Vanaf 3 kg: 5 % korting · vanaf 5 kg: 10 % · enkel op bestelling',
+    note: 'Vanaf 3 kg: 5 % korting · vanaf 5 kg: 10 % · enkel op vlees, op bestelling',
     primary: 'Op de bestelbon zetten',
     wa: 'Liever via WhatsApp',
     waSrc: 'fiche',
@@ -184,8 +185,8 @@ export const productenNl = {
   /** FAQ heading = the home's (lexicon §5.15 „Home body strings”; board: eyebrow „Veelgestelde vragen”) */
   faq: 'Wat klanten ons vragen',
   /** §5.13 byline: the date (row 15c; row 18: this page's own date while SITE_UPDATED is older) + the change note of
-   *  §5.19 „23.10” gate items (row 21; was §5.19 20.10 „het hele assortiment”) */
-  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl', ASSORTMENT_UPDATED)}: charcuterie, marinades, bereidingen en de volumekorting.`,
+   *  §5.19 „27.10” (row 22g; was §5.19 „23.10” „charcuterie, marinades, bereidingen en de volumekorting”, row 21) */
+  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl', ASSORTMENT_UPDATED)}: nieuwe producten, foto's van de slager, de korting op vlees.`,
 
   /** BreadcrumbList (lexicon §8.4: „Home” + the page's name) */
   crumbs: { home: 'Home', page: 'Producten & prijzen' },
@@ -280,7 +281,7 @@ export const productenRo = {
    *  board („10%” without the space) */
   board: {
     eyebrow: 'Tot ce avem la tejghea',
-    foot: 'Prețul pe kilogram la tejghea. Apasă pe un nume ca să comanzi. De la 3 kg din același produs 5% reducere, de la 5 kg 10%, doar la comandă.',
+    foot: 'Prețul pe kilogram la tejghea. Apasă pe un nume ca să comanzi. De la 3 kg din același produs 5% reducere, de la 5 kg 10%, doar la carne și doar la comandă.',
     wa: 'Preferi WhatsApp? Trimite-ne numele și cantitatea.',
   },
   /** §6 „Produse, 23.10” banda */
@@ -308,7 +309,7 @@ export const productenRo = {
     close: 'Închide',
     perKg: 'Prețul pe kilogram la tejghea',
     perStuk: 'Prețul pe bucată la tejghea',
-    note: 'De la 3 kg: 5% reducere · de la 5 kg: 10% · doar la comandă',
+    note: 'De la 3 kg: 5% reducere · de la 5 kg: 10% · doar la carne, la comandă',
     primary: 'Pune pe bon',
     wa: 'Mai bine pe WhatsApp',
     waSrc: 'ro-fiche',
@@ -348,8 +349,9 @@ export const productenRo = {
 
   /** the RO FAQ heading of §6 „Acasă” / „Catering” */
   faq: 'Ce ne întreabă clienții',
-  /** §5.13 RO, as /ro/contact, with the RO change note of §5.19 „23.10” gate items (row 21; was „tot sortimentul”) */
-  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro', ASSORTMENT_UPDATED)}: mezeluri, marinate, preparate de casă și reducerea de la 3 kg.`,
+  /** §5.13 RO, as /ro/contact, with the RO change note of §6 „Produse, 27.10” (row 22g; was row 21's „mezeluri,
+   *  marinate, preparate de casă și reducerea de la 3 kg”) */
+  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro', ASSORTMENT_UPDATED)}: produse noi, pozele măcelarului, reducerea la carne.`,
   /** §8.4 with the §6 home crumb „Acasă” */
   crumbs: { home: 'Acasă', page: 'Produse și prețuri' },
 };

@@ -744,6 +744,16 @@
       "board": true,
       "group": "kalkoen"
     },
+    { "id": "kalkoen-bursan", "category": "kip", "name": { "nl": "Kalkoen Bursan", "ro": "Curcan Bursan" },
+      "line": null,
+      "price": null,
+      "priceInStore": true,
+      "unit": "stuk",
+      "step": 1,
+      "min": 1,
+      "board": true,
+      "group": "kalkoen"
+    },
     { "id": "kalkoen-orloff", "category": "kip", "name": { "nl": "Kalkoen Orloff", "ro": "Curcan Orloff" },
       "line": null,
       "price": null,
@@ -878,6 +888,16 @@
       "group": "lam"
     },
     { "id": "varkensschnitzel", "category": "bereidingen", "name": { "nl": "Varkensschnitzel", "ro": "Șnițel de porc" },
+      "line": null,
+      "price": null,
+      "priceInStore": true,
+      "unit": "stuk",
+      "step": 1,
+      "min": 1,
+      "board": true,
+      "group": "pane"
+    },
+    { "id": "kipschnitzel", "category": "bereidingen", "name": { "nl": "Kipschnitzel", "ro": "Șnițel de pui" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1137,6 +1157,26 @@
       "board": true,
       "group": "brochettes"
     },
+    { "id": "ardeense-brochette", "category": "marinades", "name": { "nl": "Ardeense brochette", "ro": "Frigăruie ardeneză" },
+      "line": null,
+      "price": null,
+      "priceInStore": true,
+      "unit": "stuk",
+      "step": 1,
+      "min": 1,
+      "board": true,
+      "group": "brochettes"
+    },
+    { "id": "spekbrochette", "category": "marinades", "name": { "nl": "Spekbrochette", "ro": "Frigăruie cu bacon" },
+      "line": null,
+      "price": null,
+      "priceInStore": true,
+      "unit": "stuk",
+      "step": 1,
+      "min": 1,
+      "board": true,
+      "group": "brochettes"
+    },
     { "id": "lamsbrochette", "category": "marinades", "name": { "nl": "Lamsbrochette", "ro": "Frigăruie de miel" },
       "line": null,
       "price": null,
@@ -1258,6 +1298,26 @@
       "group": "varken"
     },
     { "id": "ardeens-gemarineerd", "category": "marinades", "name": { "nl": "Ardeens gemarineerd", "ro": "Ardenez marinat" },
+      "line": null,
+      "price": null,
+      "priceInStore": true,
+      "unit": "kg",
+      "step": 0.1,
+      "min": 0.1,
+      "board": true,
+      "group": "varken"
+    },
+    { "id": "blum-ardeens", "category": "marinades", "name": { "nl": "Blum Ardeens", "ro": "Blum Ardeens, cotlet marinat tăiat floare" },
+      "line": null,
+      "price": null,
+      "priceInStore": true,
+      "unit": "kg",
+      "step": 0.1,
+      "min": 0.1,
+      "board": true,
+      "group": "varken"
+    },
+    { "id": "pizdulici-marinate", "category": "marinades", "name": { "nl": "Spenekop gemarineerd", "ro": "Pizdulici marinate" },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1447,6 +1507,16 @@
       "board": true,
       "group": "charcuterie"
     },
+    { "id": "mayaworst", "category": "charcuterie", "name": { "nl": "Mayaworst", "ro": "Mayaworst" },
+      "line": null,
+      "price": null,
+      "priceInStore": true,
+      "unit": "kg",
+      "step": 0.1,
+      "min": 0.1,
+      "board": true,
+      "group": "charcuterie"
+    },
     { "id": "charc-kipfilet", "category": "charcuterie", "name": { "nl": "Kipfilet (charcuterie)", "ro": "Piept de pui, mezel" },
       "line": null,
       "price": null,
@@ -1609,7 +1679,7 @@
       "step": 0.1,
       "min": 0.1
     },
-    { "id": "pastrami", "category": "roemeens", "name": { "nl": "Pastrami", "ro": "Pastramă" },
+    { "id": "pastrami", "category": "roemeens", "name": { "nl": "Pastrami", "ro": "Pastramă de porc" },
       "line": {
         "nl": "Dun gesneden op brood, of 1 min per kant bakken.",
         "ro": "Subțire, rece, pe pâine; sau 1 min pe parte în tigaie."
@@ -1949,12 +2019,29 @@
       "price": 45,
       "unit": "stuk"
     },
+    { "id": "platou-romanesc-festiv", "category": "tapas", "name": { "nl": "Roemeense feestschotel", "ro": "Platou românesc festiv" },
+      "line": {
+        "nl": "samenstelling en prijs: vraag het ons",
+        "ro": "conținut și preț: întreabă-ne"
+      },
+      "price": null,
+      "priceInStore": true,
+      "unit": "stuk"
+    },
     { "id": "koude-schotel", "category": "tapas", "name": { "nl": "Koude schotel", "ro": "Platou rece" },
       "line": {
         "nl": "hesp, salami, eieren en vleessalade",
         "ro": "șuncă, salam, ouă și salată de carne"
       },
       "price": 13.5,
+      "unit": "pers"
+    },
+    { "id": "koude-schotel-extra-kaas", "category": "tapas", "name": { "nl": "Koude schotel extra kaas", "ro": "Platou rece cu brânză extra" },
+      "line": {
+        "nl": "als de koude schotel, met extra kaas",
+        "ro": "ca platoul rece, cu brânză extra"
+      },
+      "price": 15,
       "unit": "pers"
     },
     { "id": "hapje-scampi-2", "category": "tapas", "name": { "nl": "Scampi", "ro": "Scampi" },

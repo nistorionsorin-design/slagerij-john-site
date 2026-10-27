@@ -33,6 +33,10 @@ const rubrics = data.rubrics as Record<string, ProductPhoto>;
 export const rubricPrint = (rubric: string, rows: Product[]): ProductPhoto | null =>
   rubrics[rubric] ?? rows.map((p) => thumbOf(p.id)).find((e) => e?.level === 'section') ?? null;
 
+/** Row 22g: a `rubrics` photo printed outside /producten (`bbq-aan-huis` → /bbq-pakketten block 1 + the /traiteur
+ *  tile 4), or null */
+export const rubric = (id: string): ProductPhoto | null => rubrics[id] ?? null;
+
 /** Row 22: the row's own photo (`level: item`), else null. */
 export const ownPhoto = (id: string): ProductPhoto | null => {
   const e = thumbOf(id);
@@ -67,7 +71,9 @@ export const bigPhoto = (id: string): ProductPhoto | null => {
  *  `rows` = the category's rows in products.json order. */
 export const entranceOf = (category: string, rows: Product[]): Product[] => {
   const withPhoto = rows.filter((p) => bigPhoto(p.id));
-  const best = (data as { bestsellers?: Record<string, string[]> }).bestsellers?.[category] ?? [];
+  // row 22g: the map also carries `_source` and `_fills` (the docs file as is) — only a category's list is read
+  const list = (data as { bestsellers?: Record<string, unknown> }).bestsellers?.[category];
+  const best = Array.isArray(list) ? (list as string[]) : [];
   const picked = best.map((id) => withPhoto.find((p) => p.id === id)).filter((p): p is Product => !!p);
   return (picked.length ? picked : withPhoto).slice(0, 4);
 };

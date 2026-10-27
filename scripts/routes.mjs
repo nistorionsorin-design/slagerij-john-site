@@ -6,22 +6,40 @@
 //
 // Vercel's order, as far as this site uses it: trailingSlash false (308) → redirects (query string passes through)
 // → filesystem (cleanUrls: /x serves x.html; api/<name>.js answers /api/<name>) → rewrites → dist/404.html with 404.
+// vercel.json `headers` (row 22h): every rule whose source matches the path adds its headers to the response.
 // The old URLs come from ../docs/data/old-urls.json (Dan's working folder, never pushed) when it is there, otherwise
 // from vercel.json itself.
 import { createServer } from 'node:http';
-import { readFileSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, extname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
 const v = JSON.parse(readFileSync(join(root, 'vercel.json'), 'utf8'));
-const TYPES = { '.html': 'text/html; charset=utf-8', '.xml': 'application/xml', '.txt': 'text/plain; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.png': 'image/png', '.avif': 'image/avif', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.json': 'application/json' };
+const TYPES = { '.html': 'text/html; charset=utf-8', '.xml': 'application/xml', '.txt': 'text/plain; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.png': 'image/png', '.avif': 'image/avif', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.json': 'application/json', '.pdf': 'application/pdf' };
 
 // path-to-regexp, the subset vercel.json uses here: literal segments, /:name, /:name* (zero or more segments)
 const matcher = (source) =>
   new RegExp('^' + source.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\/:(\w+)\*/g, '(?:/(?<$1>.*))?').replace(/\/:(\w+)/g, '/(?<$1>[^/]+)') + '$');
 const fill = (dest, groups = {}) => dest.replace(/:(\w+)\*?/g, (_, k) => groups[k] ?? '');
+// a `headers` source (path-to-regexp, the subset used there): a ( … ) group is a regex as written, a \-escape a literal
+const headerMatcher = (source) => {
+  let re = '';
+  for (let i = 0; i < source.length; i++) {
+    const c = source[i];
+    if (c === '\\') re += c + source[++i];
+    else if (c === '(') {
+      let j = i;
+      for (let depth = 0; j < source.length; j++) if (source[j] === '(') depth++; else if (source[j] === ')' && !--depth) break;
+      re += source.slice(i, j + 1);
+      i = j;
+    } else re += c.replace(/[.+?*^${}|[\]]/, '\\$&');
+  }
+  return new RegExp('^' + re + '$');
+};
+const headersFor = (p) =>
+  Object.fromEntries((v.headers ?? []).filter((h) => headerMatcher(h.source).test(p)).flatMap((h) => h.headers.map((x) => [x.key.toLowerCase(), x.value])));
 const file = (p) => {
   const f = join(dist, decodeURIComponent(p));
   return f.startsWith(dist) && existsSync(f) && statSync(f).isFile() ? f : null;
@@ -72,7 +90,7 @@ function start(port) {
   const server = createServer(async (req, res) => {
     try {
       const r = await route(req, `http://localhost:${server.address().port}`);
-      res.writeHead(r.status, r.headers);
+      res.writeHead(r.status, { ...r.headers, ...headersFor(new URL(req.url, 'http://x').pathname) });
       res.end(req.method === 'HEAD' ? undefined : r.body);
     } catch (err) {
       res.writeHead(500);
@@ -99,7 +117,10 @@ if (process.argv.includes('--serve')) {
       chain.push({ at, status: r.status });
       const loc = r.headers.get('location');
       if (r.status >= 300 && r.status < 400 && loc) at = loc;
-      else return { chain, final: r.status, body: await r.text(), type: r.headers.get('content-type') ?? '' };
+      else {
+        const buf = Buffer.from(await r.arrayBuffer());
+        return { chain, final: r.status, body: buf.toString(), bytes: buf.length, type: r.headers.get('content-type') ?? '', headers: Object.fromEntries(r.headers) };
+      }
     }
     return { chain, final: 0, body: '' };
   };
@@ -140,7 +161,22 @@ if (process.argv.includes('--serve')) {
     r.final !== 200 ? `got ${r.final}` : ['Disallow: /wa', 'Disallow: /api/', 'Disallow: /admin', 'Sitemap: https://slagerij-john.be/sitemap-index.xml'].filter((l) => !r.body.includes(l)).join(', '));
   await check('sitemap', '/sitemap-0.xml', '200, xhtml:link pairs, no /404 /wa /api', (r) =>
     r.final !== 200 ? `got ${r.final}` : !r.body.includes('<xhtml:link') ? 'no xhtml:link' : /\/404<|\/wa<|\/api\//.test(r.body) ? 'lists an excluded URL' : '');
-  const key = (await import('node:fs')).readdirSync(join(root, 'public')).find((f) => /^[0-9a-f]{32}\.txt$/.test(f));
+  // row 22h: the holiday brochure — every public/*.pdf served whole as application/pdf, noindex, a day's cache; the two
+  // Eindejaar pages stay indexable and open their pdf from the card in a new tab (no download attribute)
+  for (const pdf of readdirSync(join(root, 'public')).filter((f) => f.endsWith('.pdf'))) {
+    const size = statSync(join(root, 'public', pdf)).size;
+    await check('pdf', `/${pdf}`, `200 application/pdf, ${size} B, noindex, max-age=86400`, (r) =>
+      r.chain.length !== 1 || r.final !== 200 ? `got ${r.final}` : r.type !== 'application/pdf' ? `type ${r.type}` : r.bytes !== size ? `${r.bytes} B`
+        : r.headers['x-robots-tag'] !== 'noindex' ? `x-robots-tag ${r.headers['x-robots-tag']}` : r.headers['cache-control'] !== 'public, max-age=86400' ? `cache-control ${r.headers['cache-control']}` : '');
+  }
+  for (const [page, pdf] of [['/feestmenu-eindejaar', '/eindejaarsfolder-2026.pdf'], ['/ro/sarbatori', '/meniu-sarbatori-2026.pdf']]) {
+    await check('pdf link', page, `200, indexable, card → ${pdf} in a new tab`, (r) => {
+      const a = r.body.match(new RegExp(`<a[^>]*href="${pdf}"[^>]*>`))?.[0] ?? '';
+      return r.chain.length !== 1 || r.final !== 200 ? `got ${r.final}` : r.headers['x-robots-tag'] ? 'x-robots-tag on the page' : !a ? 'no link'
+        : !/target="_blank"/.test(a) || !/rel="noopener"/.test(a) || !/type="application\/pdf"/.test(a) || /\sdownload[\s=>]/.test(a) ? `link ${a}` : '';
+    });
+  }
+  const key = readdirSync(join(root, 'public')).find((f) => /^[0-9a-f]{32}\.txt$/.test(f));
   await check('indexnow', `/${key}`, '200, body = key', (r) => (r.final === 200 && r.body.trim() === key.slice(0, -4) ? '' : `got ${r.final}`));
 
   console.log('| | kind | old URL | want | got |\n|---|---|---|---|---|');

@@ -25,6 +25,7 @@ import photos from '../data/photos.json';
 import type { Photo } from '../data/types';
 import { item, priceLabel } from '../lib/price';
 import { heroPhoto } from '../lib/hero';
+import { rubric, photoFile } from '../lib/thumbs';
 import { traiteurT } from '../i18n/traiteur';
 import type { Locale } from '../i18n/ui';
 import '../styles/sections.css';
@@ -64,12 +65,20 @@ const shapes = [
   { m: 1.75, d: 1.43, dSizes: '30vw' },
   { m: 2.05, d: 2.9, dSizes: '60vw' },
 ];
-const tiles = (photos.traiteur as Photo[]).map((p, i) => ({
-  ...t.tiles.items[i],
-  alt: p.alt[locale],
-  mobile: { img: file(p.src), ratio: shapes[i].m, max: 1080, sizes: shapes[i].m > 1.2 ? '100vw' : '50vw', focalX: p.focalX, focalY: p.focalY },
-  desktop: { img: file(p.srcDesktop ?? p.src), ratio: shapes[i].d, max: 1600, sizes: shapes[i].dSizes, focalX: p.focalX, focalY: p.focalY },
-}));
+// row 22g: tile 4 „Barbecue aan huis met kok” = product-photos.json `rubrics.bbq-aan-huis` (John at the grill, the
+// owners' form photo of 27.10, its file a 4:3 cut that keeps his head and the grill in both wide boxes); the trailer
+// photo p08 stays in the home loop
+const aanHuis = rubric('bbq-aan-huis');
+const tiles = (photos.traiteur as Photo[]).map((p, i) => {
+  const own = i === 3 ? aanHuis : null;
+  const ph = own ? { img: photoFile(own), alt: own.alt[locale], focalX: own.focalX, focalY: own.focalY } : null;
+  return {
+    ...t.tiles.items[i],
+    alt: ph?.alt ?? p.alt[locale],
+    mobile: { img: ph?.img ?? file(p.src), ratio: shapes[i].m, max: 1080, sizes: shapes[i].m > 1.2 ? '100vw' : '50vw', focalX: ph?.focalX ?? p.focalX, focalY: ph?.focalY ?? p.focalY },
+    desktop: { img: ph?.img ?? file(p.srcDesktop ?? p.src), ratio: shapes[i].d, max: 1600, sizes: shapes[i].dSizes, focalX: ph?.focalX ?? p.focalX, focalY: ph?.focalY ?? p.focalY },
+  };
+});
 
 // per person: a row tied to a product takes that product's price (gourmet 9 = the bestelbon's), else its own string
 const rows = t.perPerson.rows.map((r) => ({ ...r, price: r.product ? priceLabel(item(r.product), locale) : r.price, unit: r.unit ?? t.perPerson.unit }));

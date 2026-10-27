@@ -1,6 +1,6 @@
 {
-  "_source": "Row 5b (Claude Code, 15.10): the site copy of docs/data/product-photos.json (Cowork owns that file; D-34). One entry per products.json id with its own photo; `src` = the file under src/assets/products/ (copied byte-identical from `from`, slugged NL names; a file that already sits elsewhere in src/assets/ under a slug gets that same name — Vite emits identical bytes once, under the first name it meets, and the photo must keep its SEO slug), focal point %, alt NL/RO as Cowork wrote them. A menu row (menus.json `ej26-<id>`) takes its product id's entry. An id not listed here renders no thumbnail (src/components/Thumb.astro). When the docs file grows (row 14), the new rows are copied here. Row 14 (16.10): the six phone-shoot rows copied (mici replaced, gehakt · spiering · braadworst · gerookte-worst · ribbetjes new); their files are the white-balanced row-14 sources, shared with the page photos where the original is the same (gerookte-worst = roemeens/…, ribbetjes = bbq/…); pastrami (pending_confirm) not built. Row 14d (19.10): ribbetjes removed (the photo is marinated pork chops, Dan 19.10; it stays on /bbq-pakketten as bbq/gemarineerde-koteletten-…), the row renders without a thumb; pastrami has no photo (#9 is costiță afumată). Row 14d (8), 19.10: the q27 photo shows tacos → hapje-taco-gehakt + hapje-taco-kip (section), file renamed wraps-kip.jpeg → tacos-met-vulling.jpeg (same bytes); hapje-wrap-kip shares the q26 wraps platter (section). The docs file's Facebook photos (tapas, gourmet, fondue, new rows) belong to row 15d and are not poured here. Row 15d (19.10): the 11 Facebook item photos of the docs file (assets/raw/2025-12-05-facebook/, post of 5 Dec 2025) — tapas-kinder · tapas-mix · tapas-john-1 · tapas-john-1-scampi · tapas-john-2 · tapas-ro · gourmet-10 · gourmet-luxe · fondue · fondue-14 · koude-schotel — replace the section shots on those rows; their files are 4:3 cuts at the focal point, ≤ 1200 px wide (thumb/card use only, never a hero), slugged NL names; tapas-2 and gourmet-9 keep the section shots. Row 18 (Claude Code, 20.10): the docs file of 20.10 poured — colli-bbq loses its thumb (p15 shows the Colli Kip, docs `removed_20_10`), its file products/bbq-gemarineerd.jpeg deleted (nothing else imported it); the `pending_confirm` rows (p15 Colli Kip, p16 Colli John) are not built. The rows of /producten part 2 show only `level: item` photos (140 px cards); a `level: section` photo is the rubric head print (lexicon §5.19 20.10). Row 22f (27.10): the docs file's top-level `rubrics` map poured as is (tapas · gourmet) — a /producten rubric head prints `rubrics[<rubric>]` (lib/thumbs.ts `rubricPrint`), else the first `level: section` photo of its rows (colli: none); products/tapasschotels-slagerij-john.jpg re-copied byte-identical from its 05.10 original (22e had deleted it with the tapas-2 entry).",
-  "date": "2026-10-20",
+  "_source": "Row 5b (Claude Code, 15.10): the site copy of docs/data/product-photos.json (Cowork owns that file; D-34). One entry per products.json id with its own photo; `src` = the file under src/assets/products/ (copied byte-identical from `from`, slugged NL names; a file that already sits elsewhere in src/assets/ under a slug gets that same name — Vite emits identical bytes once, under the first name it meets, and the photo must keep its SEO slug), focal point %, alt NL/RO as Cowork wrote them. A menu row (menus.json `ej26-<id>`) takes its product id's entry. An id not listed here renders no thumbnail (src/components/Thumb.astro). When the docs file grows (row 14), the new rows are copied here. Row 14 (16.10): the six phone-shoot rows copied (mici replaced, gehakt · spiering · braadworst · gerookte-worst · ribbetjes new); their files are the white-balanced row-14 sources, shared with the page photos where the original is the same (gerookte-worst = roemeens/…, ribbetjes = bbq/…); pastrami (pending_confirm) not built. Row 14d (19.10): ribbetjes removed (the photo is marinated pork chops, Dan 19.10; it stays on /bbq-pakketten as bbq/gemarineerde-koteletten-…), the row renders without a thumb; pastrami has no photo (#9 is costiță afumată). Row 14d (8), 19.10: the q27 photo shows tacos → hapje-taco-gehakt + hapje-taco-kip (section), file renamed wraps-kip.jpeg → tacos-met-vulling.jpeg (same bytes); hapje-wrap-kip shares the q26 wraps platter (section). The docs file's Facebook photos (tapas, gourmet, fondue, new rows) belong to row 15d and are not poured here. Row 15d (19.10): the 11 Facebook item photos of the docs file (assets/raw/2025-12-05-facebook/, post of 5 Dec 2025) — tapas-kinder · tapas-mix · tapas-john-1 · tapas-john-1-scampi · tapas-john-2 · tapas-ro · gourmet-10 · gourmet-luxe · fondue · fondue-14 · koude-schotel — replace the section shots on those rows; their files are 4:3 cuts at the focal point, ≤ 1200 px wide (thumb/card use only, never a hero), slugged NL names; tapas-2 and gourmet-9 keep the section shots. Row 18 (Claude Code, 20.10): the docs file of 20.10 poured — colli-bbq loses its thumb (p15 shows the Colli Kip, docs `removed_20_10`), its file products/bbq-gemarineerd.jpeg deleted (nothing else imported it); the `pending_confirm` rows (p15 Colli Kip, p16 Colli John) are not built. The rows of /producten part 2 show only `level: item` photos (140 px cards); a `level: section` photo is the rubric head print (lexicon §5.19 20.10). Row 22f (27.10): the docs file's top-level `rubrics` map poured as is (tapas · gourmet) — a /producten rubric head prints `rubrics[<rubric>]` (lib/thumbs.ts `rubricPrint`), else the first `level: section` photo of its rows (colli: none); products/tapasschotels-slagerij-john.jpg re-copied byte-identical from its 05.10 original (22e had deleted it with the tapas-2 entry). Row 22g (27.10): the 18 rows of the owners' form photos (assets/raw/2026-10-27-form/) poured — new: chipolata · droge-worst · kipfilet · ribbetjes · hapje-blinis-zalm · hapje-bruschetta-tomaat · hapje-bulgur-zalm · hapje-hawaii-salade · hapje-lepeltje-meloen-serrano · hapje-lepeltje-zalm · hapje-scampi-2 · koude-schotel-extra-kaas · platou-romanesc-festiv; replaced (her own photos): tapas-ro · tapas-kinder · tapas-john-1-scampi (same slugs, new bytes) · hapje-taco-gehakt + hapje-taco-kip (each its own file now, taco-kip `item`; products/tacos-met-vulling.jpeg deleted, nothing else imported it). Their files are generated, not copied: EXIF orientation applied (four phone files carry orientation 6), metadata stripped (the repo is public: no phone EXIF), long edge ≤ 2048, JPEG q86. `rubrics.bbq-aan-huis` = John at the grill (form slot braadworst), its file a 4:3 cut of the 3:4 original from 19 % of its height, so his head and the grill stay in the 4:3 print of /bbq-pakketten and in the wide box of the /traiteur tile 4. `bestsellers` = the docs file's map as is (form q10 in her order + Cowork's fills, `_fills`), read by lib/thumbs.ts `entranceOf`. `rubrics.over-ons-portret` is not poured (row 22g (g): only on Dan's „a”). Row 22h (27.10): `bestsellers.varken` + `droge-worst` (Cowork 14:2x, a fill, in `_fills` too: filetkotelet has no photo, so the varken entrance had three tiles) — ahead of the docs file, which Cowork brings level.",
+  "date": "2026-10-27",
   "products": {
     "tapas-mix": {
       "src": "products/tapas-mix-slagerij-john.jpg",
@@ -37,12 +37,12 @@
     },
     "tapas-ro": {
       "src": "products/roemeense-tapas-slagerij-john.jpg",
-      "from": "assets/raw/2025-12-05-facebook/fb_08_122186729732357023.jpg",
+      "from": "assets/raw/2026-10-27-form/tapas-ro/20261027T121404-FB_IMG_1791584052718.jpg",
       "focalX": 50,
       "focalY": 50,
       "alt": {
-        "nl": "Roemeense tapas op een houten plank",
-        "ro": "Tapas românești pe un platou de lemn"
+        "nl": "Roemeense tapas: kaas, salami, worst en ui op een houten plank",
+        "ro": "Tapas românești: brânză, salam, cârnați și ceapă pe o planșetă de lemn"
       },
       "level": "item"
     },
@@ -91,26 +91,26 @@
       "level": "item"
     },
     "hapje-taco-gehakt": {
-      "src": "products/tacos-met-vulling.jpeg",
-      "from": "assets/raw/2026-10-05-whatsapp/sandwhich.jpeg",
+      "src": "products/tacos-met-gehakt-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/hapje-taco-gehakt/20261027T122938-20240504_210418.jpg",
       "focalX": 50,
-      "focalY": 50,
+      "focalY": 45,
       "alt": {
-        "nl": "Taco's met vulling op een schotel",
-        "ro": "Taco cu umplutură, pe un platou"
+        "nl": "Taco's met gehakt, tomaat en lente-ui op een ronde schotel",
+        "ro": "Taco cu carne tocată, roșii și ceapă verde, pe un platou rotund"
       },
-      "level": "section"
+      "level": "item"
     },
     "hapje-taco-kip": {
-      "src": "products/tacos-met-vulling.jpeg",
-      "from": "assets/raw/2026-10-05-whatsapp/sandwhich.jpeg",
+      "src": "products/tacos-met-kip-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/hapje-taco-kip/20261027T123028-20260717_124036.jpg",
       "focalX": 50,
-      "focalY": 50,
+      "focalY": 45,
       "alt": {
-        "nl": "Taco's met vulling op een schotel",
-        "ro": "Taco cu umplutură, pe un platou"
+        "nl": "Taco's met kip op een ronde schotel",
+        "ro": "Taco cu pui, pe un platou rotund"
       },
-      "level": "section"
+      "level": "item"
     },
     "hapje-wrap-kip": {
       "src": "products/wraps-zalm-hesp.jpeg",
@@ -185,23 +185,23 @@
     },
     "tapas-kinder": {
       "src": "products/kindertapas-slagerij-john.jpg",
-      "from": "assets/raw/2025-12-05-facebook/fb_02_122186729474357023.jpg",
+      "from": "assets/raw/2026-10-27-form/tapas-kinder/20261027T121329-FB_IMG_1791584034561.jpg",
       "focalX": 50,
-      "focalY": 50,
+      "focalY": 55,
       "alt": {
-        "nl": "Kindertapas met hesp, worstjes en kaas",
-        "ro": "Tapas pentru copii cu șuncă, crenvurști și cașcaval"
+        "nl": "Kindertapas met hesp, kaas, druiven en Kinder-repen",
+        "ro": "Tapas pentru copii cu șuncă, brânză, struguri și batoane Kinder"
       },
       "level": "item"
     },
     "tapas-john-1-scampi": {
       "src": "products/tapas-john-1-met-scampi-slagerij-john.jpg",
-      "from": "assets/raw/2025-12-05-facebook/fb_06_122186729642357023.jpg",
-      "focalX": 50,
+      "from": "assets/raw/2026-10-27-form/tapas-john-1-scampi/20261027T121301-FB_IMG_1791584045977.jpg",
+      "focalX": 45,
       "focalY": 50,
       "alt": {
-        "nl": "Tapas John 1 met scampi, op de toog",
-        "ro": "Tapas John 1 cu creveți, pe vitrină"
+        "nl": "Tapas John 1 met scampi: wraps, hesp en salami op een houten plank in de toonbank",
+        "ro": "Tapas John 1 cu scampi: wrapuri, șuncă și salam pe o planșetă de lemn, în vitrină"
       },
       "level": "item"
     },
@@ -237,6 +237,149 @@
         "ro": "Platou rece cu șuncă, salam, ouă și salată de carne"
       },
       "level": "item"
+    },
+    "chipolata": {
+      "src": "products/chipolata-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/chipolata/20261027T100115-1000096307.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Chipolata's in spiraal op de barbecue",
+        "ro": "Chipolata în spirală, pe grătar"
+      },
+      "level": "item"
+    },
+    "droge-worst": {
+      "src": "products/droge-worst-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/droge-worst/20261027T095636-1000096283.jpg",
+      "focalX": 50,
+      "focalY": 55,
+      "alt": {
+        "nl": "Droge worsten in een mand op de toog",
+        "ro": "Cârnați uscați într-un coș, pe tejghea"
+      },
+      "level": "item"
+    },
+    "kipfilet": {
+      "src": "products/kipfilet-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/kipfilet/20261027T124359-FB_IMG_1759701469056.jpg",
+      "focalX": 50,
+      "focalY": 45,
+      "alt": {
+        "nl": "Verse kipfilets op de toog",
+        "ro": "Piept de pui proaspăt, pe tejghea"
+      },
+      "level": "item"
+    },
+    "ribbetjes": {
+      "src": "products/gemarineerde-ribbetjes-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/ribbetjes/20261027T095715-1000096309.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Gemarineerde ribbetjes op de barbecue",
+        "ro": "Coaste marinate, pe grătar"
+      },
+      "level": "item"
+    },
+    "hapje-blinis-zalm": {
+      "src": "products/blinis-gerookte-zalm-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/hapje-blinis-zalm/20261027T124131-IMG-20260105-WA0003.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Blini's met gerookte zalm en rode ui, in papieren vormpjes",
+        "ro": "Blinis cu somon afumat și ceapă roșie, în forme de hârtie"
+      },
+      "level": "item"
+    },
+    "hapje-bruschetta-tomaat": {
+      "src": "products/bruschetta-tomaat-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/hapje-bruschetta-tomaat/20261027T124055-IMG-20260105-WA0006.jpg",
+      "focalX": 40,
+      "focalY": 50,
+      "alt": {
+        "nl": "Bruschetta's met tomaat en rode ui",
+        "ro": "Bruschette cu roșii și ceapă roșie"
+      },
+      "level": "item"
+    },
+    "hapje-bulgur-zalm": {
+      "src": "products/bulgursalade-zalm-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/hapje-bulgur-zalm/20261027T123640-20240504_193624.jpg",
+      "focalX": 50,
+      "focalY": 60,
+      "alt": {
+        "nl": "Bulgursalade met gerookte zalm en bieslook",
+        "ro": "Salată de bulgur cu somon afumat și arpagic"
+      },
+      "level": "item"
+    },
+    "hapje-hawaii-salade": {
+      "src": "products/hawaii-salade-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/hapje-hawaii-salade/20261027T123841-IMG-20240224-WA0039.jpg",
+      "focalX": 50,
+      "focalY": 65,
+      "alt": {
+        "nl": "Hawaii-salade in schaaltjes, op een feestschotel met taco's",
+        "ro": "Salată Hawaii în boluri mici, pe un platou de petrecere cu taco"
+      },
+      "level": "item"
+    },
+    "hapje-lepeltje-meloen-serrano": {
+      "src": "products/lepeltjes-meloen-serrano-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/hapje-lepeltje-meloen-serrano/20261027T122551-20260702_160514.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Lepeltjes met meloen en serrano, naast gevulde eitjes, op een ronde schotel",
+        "ro": "Lingurițe cu pepene și serrano, lângă ouă umplute, pe un platou rotund"
+      },
+      "level": "item"
+    },
+    "hapje-lepeltje-zalm": {
+      "src": "products/lepeltjes-zalmtartaar-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/hapje-lepeltje-zalm/20261027T122816-IMG-20260201-WA0005.jpg",
+      "focalX": 50,
+      "focalY": 45,
+      "alt": {
+        "nl": "Lepeltjes met zalmtartaar op een ronde schotel",
+        "ro": "Lingurițe cu tartar de somon, pe un platou rotund"
+      },
+      "level": "item"
+    },
+    "hapje-scampi-2": {
+      "src": "products/scampi-bootjes-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/hapje-scampi-2/20261027T121237-IMG-20260421-WA0003.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Scampi met tomaat en bieslook in bootjes",
+        "ro": "Scampi cu roșii și arpagic, în bărcuțe"
+      },
+      "level": "item"
+    },
+    "koude-schotel-extra-kaas": {
+      "src": "products/koude-schotel-extra-kaas-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/koude-schotel-nou/20261027T121853-20261025_091038.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Koude schotel met extra kaas: fijne vleeswaren, kaas, eitjes en tomaat",
+        "ro": "Platou rece cu brânză extra: mezeluri, brânză, ouă și roșii"
+      },
+      "level": "item"
+    },
+    "platou-romanesc-festiv": {
+      "src": "products/roemeense-feestschotel-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/platou-romanesc/20261027T121922-20261003_161327.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Roemeense feestschotel: gevulde eitjes, salami, kaas, roulade en groenten",
+        "ro": "Platou românesc festiv: ouă umplute, salam, brânză, ruladă și legume"
+      },
+      "level": "item"
     }
   },
   "rubrics": {
@@ -261,6 +404,104 @@
         "ro": "Platou gourmet cu 10 feluri de carne"
       },
       "level": "section"
+    },
+    "bbq-aan-huis": {
+      "src": "bbq/barbecue-aan-huis-met-kok-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/braadworst/20261027T095736-1000097680.jpg",
+      "focalX": 45,
+      "focalY": 55,
+      "alt": {
+        "nl": "John aan de barbecue met braadworsten, bij een feest buiten",
+        "ro": "John la grătar cu cârnați, la o petrecere în aer liber"
+      },
+      "level": "section"
+    }
+  },
+  "bestsellers": {
+    "_source": "form q10 (Georgiana 27.10 09:35 UTC) in her order; the ids she did not give are Cowork's fills (27.10 13:5x, Dan 13:45 „for the others pick from the list … so all are the same”) — marked in _fills",
+    "rund": [
+      "biefstuk",
+      "chateaubriand",
+      "cote-a-los-rund",
+      "gehakt"
+    ],
+    "varken": [
+      "spiering",
+      "filetkotelet",
+      "braadworst",
+      "ribbetjes",
+      "droge-worst"
+    ],
+    "kip": [
+      "kipfilet",
+      "kalkoenfilet",
+      "kippenboutjes",
+      "kippenbil"
+    ],
+    "lam": [
+      "lamspastrami",
+      "lamskotelet",
+      "lamsbout",
+      "lamsschouder"
+    ],
+    "bereidingen": [
+      "kipschnitzel",
+      "natuurburger",
+      "cordon-bleu",
+      "varkensschnitzel"
+    ],
+    "marinades": [
+      "kipbrochette",
+      "kipgyros",
+      "kalkoen-gemarineerd",
+      "varkensbrochette"
+    ],
+    "charcuterie": [
+      "hespenworst",
+      "parijzer-worst",
+      "pate-maison",
+      "boerenhesp"
+    ],
+    "roemeens": [
+      "mici",
+      "gerookte-worst",
+      "pastrami",
+      "salam-de-casa"
+    ],
+    "_fills": {
+      "rund": [
+        "gehakt"
+      ],
+      "varken": [
+        "ribbetjes",
+        "droge-worst"
+      ],
+      "kip": [
+        "kippenboutjes",
+        "kippenbil"
+      ],
+      "lam": [
+        "lamsschouder"
+      ],
+      "bereidingen": [
+        "natuurburger",
+        "cordon-bleu",
+        "varkensschnitzel"
+      ],
+      "marinades": [
+        "varkensbrochette"
+      ],
+      "charcuterie": [
+        "hespenworst",
+        "parijzer-worst",
+        "pate-maison",
+        "boerenhesp"
+      ],
+      "roemeens": [
+        "gerookte-worst",
+        "pastrami",
+        "salam-de-casa"
+      ]
     }
   }
 }

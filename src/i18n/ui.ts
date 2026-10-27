@@ -84,8 +84,9 @@ export const ui = {
     /** canvas footer */
     footer: { nl: 'Nederlands', ro: 'Română' },
     /** lexicon §5.19 „23.10” (row 21, D-50 (2)): the bestelbon's note under a kg row from 3 kg (FACTS „Volumekorting”
-     *  [OWNER] 22.10; the last sentence = Cowork's wording, the owners confirm in form q9) */
-    discountNote: 'Vanaf 3 kg van hetzelfde product 5 % korting, vanaf 5 kg 10 %. De korting wordt bij het afhalen verrekend.',
+     *  [OWNER] 22.10; the last sentence = Cowork's wording, the owners confirm in form q9); row 22g: „enkel op vlees”
+     *  (q9 27.10, §5.19 „27.10”) */
+    discountNote: 'Vanaf 3 kg van hetzelfde product 5 % korting, vanaf 5 kg 10 %, enkel op vlees. De korting wordt bij het afhalen verrekend.',
   },
   ro: {
     /** lexicon §6 interface strings (06.10) */
@@ -100,7 +101,7 @@ export const ui = {
     bar: { tel: 'Sună', wa: 'WhatsApp', order: 'Comandă', orderHref: '/ro/comanda', route: 'Drum', label: 'Sună · WhatsApp · Comandă · Drum' },
     footer: { nl: 'Nederlands', ro: 'Română' },
     /** §6 „Produse, 23.10” nota din bon (row 21) */
-    discountNote: 'De la 3 kg din același produs 5% reducere, de la 5 kg 10%. Reducerea se face la ridicare.',
+    discountNote: 'De la 3 kg din același produs 5% reducere, de la 5 kg 10%, doar la carne. Reducerea se face la ridicare.',
   },
 } satisfies Record<Locale, unknown>;
 

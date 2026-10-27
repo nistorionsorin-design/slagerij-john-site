@@ -103,7 +103,8 @@ export const traiteurNl = {
     /** §5.3 */
     submit: 'Vraag een offerte',
     call: 'Bel ons',
-    promise: 'U krijgt van ons een voorstel met de prijs per persoon, via WhatsApp of telefoon.',
+    /** row 22g: „binnen 24 uur” now that the owners confirmed it (form section 2 `quote24` = da, 27.10; lexicon §5.19 „27.10”) */
+    promise: 'U krijgt van ons binnen 24 uur een voorstel met de prijs per persoon, via WhatsApp of telefoon.',
     /** one per field (§5.21; phone = §5.20) */
     errors: {
       feest: 'Kies het soort feest.',
@@ -211,7 +212,7 @@ export const traiteurRo: typeof traiteurNl = {
     fields: { feest: 'eveniment', datum: 'data', aantal: 'număr', plaats: 'localitate', telefoon: 'telefon' },
     submit: 'Cere o ofertă',
     call: 'Sună-ne',
-    promise: 'Primești de la noi o propunere cu prețul de persoană, pe WhatsApp sau la telefon.',
+    promise: 'Primești de la noi în 24 de ore o propunere cu prețul de persoană, pe WhatsApp sau la telefon.',
     errors: {
       feest: 'Alege tipul de eveniment.',
       datum: 'Alege data.',

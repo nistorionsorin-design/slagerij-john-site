@@ -43,7 +43,8 @@ export const roemeensNl = {
       },
       {
         product: 'pastrami',
-        line: 'Gezouten en gekruid vlees, gerookt en gegaard; dun gesneden voor op de boterham.',
+        // row 22g (lexicon §5.19 „27.10”, form q7): pork pastrami
+        line: 'Gezouten en gekruid varkensvlees, gerookt en gegaard; dun gesneden voor op de boterham.',
         cook: 'Klaar om te eten.',
       },
     ],
@@ -96,7 +97,7 @@ export const roemeensRo: typeof roemeensNl = {
     items: [
       { product: 'mici', line: 'de vită și porc, condimentați în casă, fără membrană', cook: 'Opt minute pe grătar încins, întorși o singură dată.' },
       { product: 'gerookte-worst', line: 'de porc, condimentați și afumați în atelierul propriu', cook: 'Reci, la o gustare, sau calzi, din tigaie ori din cuptor.' },
-      { product: 'pastrami', line: 'sărată, condimentată, afumată și gătită; feliată subțire', cook: 'Gata de mâncat.' },
+      { product: 'pastrami', line: 'Carne de porc sărată și condimentată, afumată și gătită; feliată subțire, pentru sandviș.', cook: 'Gata de mâncat.' },
     ],
     more: 'Și clasice belgiene: tocăniță flamandă, vol-au-vent, carne tocată proaspătă zilnic.',
     moreLink: 'Toate produsele și prețurile',

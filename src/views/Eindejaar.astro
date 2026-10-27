@@ -162,7 +162,8 @@ const jsonld = [
           <p class="em__msg-label">{t.card.msgLabel}</p>
           <p class="em__msg-text">{t.waMessage}</p>
         </div>
-        <a class="btn btn--light em__folder" href={t.card.folderHref}>{t.card.folder}</a>
+        <a class="btn btn--light em__folder" href={t.card.folderHref} target="_blank" rel="noopener" type="application/pdf">{t.card.folder}</a>
+        <p class="em__note">{t.card.folderNote}</p>
         <p class="em__deadline">{fill(t.card.deadline)}</p>
       </section>
 
@@ -197,6 +198,8 @@ const jsonld = [
   /* row 5b (D-34): a card row with its dish's photo — the 56 px square opens the row, the name beside it, the dotted
      leader and the price on the photo's middle line. Rows without a photo keep menu-card.css as it is. */
   .em__row--thumb { align-items: center; }
+  /* row 22h: the pdf's line under the folder button — the card's muted tint at the row-line size, pulled up to the button */
+  .em__note { margin: -4px 0 0; font-size: 12px; line-height: 1.45; color: var(--ox-tint); }
   .em__row--thumb::before { top: 50%; }
   .em__row--thumb dt { display: flex; align-items: center; gap: 10px; }
   .em__dish { min-width: 0; }
@@ -262,6 +265,7 @@ const jsonld = [
     .es { grid-area: steps; gap: 18px; padding: 0; }
     .es__step { font-size: var(--fs-body); }
     .em { grid-area: menu; }
+    .em__note { margin-top: -6px; font-size: 13px; }
     .er { grid-area: ro; padding-top: 32px; }
     .eo { grid-area: hours; margin-top: 24px; padding: 22px 24px; }
     .eo__rows { font-size: 14px; gap: 8px; }
