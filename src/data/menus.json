@@ -1,90 +1,988 @@
 {
-  "_source": "Stage 7 (Claude Code, 08.10): the shape of lexicon §5.22 „menus.json”. One menu `eindejaar-2026`, opened in the bestelbon by `?menu=` + its `param`; `deadline` ISO date or null → [DATUM]; `pickup` = the two days the plan assumes (24 and 31 December, build plan row 7 — B 3 / B 11 confirm them), `from`/`to` null → [UUR] and the day's opening hours in the bestelbon; `items` = the board's seven stand-in rows (§5.22 table), `price` null → [PRIJS] (Gourmet 9's €10 on the board is the old site's price, FACTS — not used), `unit` kg | pers | stuk (gourmet 9 and luxe: min 2 persons, as gourmet-9 in products.json); `message` = lexicon §5.10 eindejaar without its dots — the bestelbon puts the order after it (§5.22 „the bestelbon fills the dots”); `pickupOnly` = the line the bestelbon shows when a menu row is chosen (menu orders are pickup only — §5.22 „Answers to Claude Code's stage-7 report”, 08.10 17:50; RO kept for stage 9); `mail` = the menu's word in the shop's mail (subject NL „Bestelling {REF} · Eindejaarsmenu · afhalen …”, first line RO „… · meniul de sărbători · ridicare …”, same source). The rows have the products.json shape so the bestelbon lists them under „Eindejaarsmenu 2026” (/bestellen?menu=eindejaar). The owners' folder replaces the rows wholesale (B 11); Cowork fills this file at stage 15. Row 15a (Claude Code, 13.10): the owners' folder is in — `sections` = the brochure's eight sections in its order (docs/data/price-list.json `menu_eindejaar.section_order`, names NL / RO from that file; the vleeshoofdgerechten carry the note „per portie van 200 g” / „porție de 200 g” on their section, not on each row); `items` = its 51 rows, ids `ej26-` + the products.json id, each with its `section`, name, line (persons, contents), price and unit as in products.json ([OWNER] 13.10, FACTS); the seven stand-in rows are gone. `deadline` and the pickup hours stay null → [DATUM] / [UUR] (B 11 / B 3). Row 15 (Claude Code, 19.10, lexicon §5.30): `deadline` 2026-12-20 (inclusive) and pickup 24 + 31 December 08:00–18:00 [OWNER] 19.10 (docs/data/owners-answers-2026-10-19.json `eindejaar`); ej26-ro-sarmale and ej26-ro-piftie per kg (Georgiana 19.10 16:35, §5.30).",
+  "_source": "Stage 7 (Claude Code, 08.10): the shape of lexicon §5.22 „menus.json”. One menu `eindejaar-2026`, opened in the bestelbon by `?menu=` + its `param`; `deadline` ISO date or null → [DATUM]; `pickup` = the two days the plan assumes (24 and 31 December, build plan row 7 — B 3 / B 11 confirm them), `from`/`to` null → [UUR] and the day's opening hours in the bestelbon; `items` = the board's seven stand-in rows (§5.22 table), `price` null → [PRIJS] (Gourmet 9's €10 on the board is the old site's price, FACTS — not used), `unit` kg | pers | stuk (gourmet 9 and luxe: min 2 persons, as gourmet-9 in products.json); `message` = lexicon §5.10 eindejaar without its dots — the bestelbon puts the order after it (§5.22 „the bestelbon fills the dots”); `pickupOnly` = the line the bestelbon shows when a menu row is chosen (menu orders are pickup only — §5.22 „Answers to Claude Code's stage-7 report”, 08.10 17:50; RO kept for stage 9); `mail` = the menu's word in the shop's mail (subject NL „Bestelling {REF} · Eindejaarsmenu · afhalen …”, first line RO „… · meniul de sărbători · ridicare …”, same source). The rows have the products.json shape so the bestelbon lists them under „Eindejaarsmenu 2026” (/bestellen?menu=eindejaar). The owners' folder replaces the rows wholesale (B 11); Cowork fills this file at stage 15. Row 15a (Claude Code, 13.10): the owners' folder is in — `sections` = the brochure's eight sections in its order (docs/data/price-list.json `menu_eindejaar.section_order`, names NL / RO from that file; the vleeshoofdgerechten carry the note „per portie van 200 g” / „porție de 200 g” on their section, not on each row); `items` = its 51 rows, ids `ej26-` + the products.json id, each with its `section`, name, line (persons, contents), price and unit as in products.json ([OWNER] 13.10, FACTS); the seven stand-in rows are gone. `deadline` and the pickup hours stay null → [DATUM] / [UUR] (B 11 / B 3). Row 15 (Claude Code, 19.10, lexicon §5.30): `deadline` 2026-12-20 (inclusive) and pickup 24 + 31 December 08:00–18:00 [OWNER] 19.10 (docs/data/owners-answers-2026-10-19.json `eindejaar`); ej26-ro-sarmale and ej26-ro-piftie per kg (Georgiana 19.10 16:35, §5.30). · 27.10 14:5x (Cowork): the Tapas section of the holiday menu also lists Koude schotel 13,50, Koude schotel extra kaas 15 and the Roemeense feestschotel (prijs in de winkel, q12 open) — Georgiana 14:46–14:47 on the brochure PDF; the three rows mirror docs/data/price-list.json tapas.",
   "menus": [
     {
       "id": "eindejaar-2026",
       "param": "eindejaar",
-      "name": { "nl": "Eindejaarsmenu 2026", "ro": "Meniul de sărbători 2026" },
-      "message": { "nl": "Dag, ik wil bestellen uit het eindejaarsmenu:", "ro": "Bună, vreau să comand din meniul de sărbători:" },
-      "pickupOnly": { "nl": "Het eindejaarsmenu haalt u af in de winkel, op 24 of 31 december.", "ro": "Meniul de sărbători se ridică din magazin, pe 24 sau 31 decembrie." },
-      "mail": { "nl": "Eindejaarsmenu", "ro": "meniul de sărbători" },
+      "name": {
+        "nl": "Eindejaarsmenu 2026",
+        "ro": "Meniul de sărbători 2026"
+      },
+      "message": {
+        "nl": "Dag, ik wil bestellen uit het eindejaarsmenu:",
+        "ro": "Bună, vreau să comand din meniul de sărbători:"
+      },
+      "pickupOnly": {
+        "nl": "Het eindejaarsmenu haalt u af in de winkel, op 24 of 31 december.",
+        "ro": "Meniul de sărbători se ridică din magazin, pe 24 sau 31 decembrie."
+      },
+      "mail": {
+        "nl": "Eindejaarsmenu",
+        "ro": "meniul de sărbători"
+      },
       "deadline": "2026-12-20",
       "pickup": [
-        { "date": "2026-12-24", "from": "08:00", "to": "18:00" },
-        { "date": "2026-12-31", "from": "08:00", "to": "18:00" }
+        {
+          "date": "2026-12-24",
+          "from": "08:00",
+          "to": "18:00"
+        },
+        {
+          "date": "2026-12-31",
+          "from": "08:00",
+          "to": "18:00"
+        }
       ],
       "sections": [
-        { "id": "tapas", "name": { "nl": "Tapas", "ro": "Tapas" } },
-        { "id": "gourmet", "name": { "nl": "Fondue & gourmet", "ro": "Fondue și gourmet" } },
-        { "id": "hapjes", "name": { "nl": "Hapjes", "ro": "Aperitive" } },
-        { "id": "warm", "name": { "nl": "Vleeshoofdgerechten", "ro": "Feluri principale" }, "note": { "nl": "per portie van 200 g", "ro": "porție de 200 g" } },
-        { "id": "groenten", "name": { "nl": "Warme groenten", "ro": "Legume calde" } },
-        { "id": "soep", "name": { "nl": "Soep", "ro": "Supe" } },
-        { "id": "broodjes", "name": { "nl": "Mini belegde broodjes", "ro": "Mini sandvișuri" } },
-        { "id": "dessert", "name": { "nl": "Dessert & fruit", "ro": "Desert și fructe" } },
-        { "id": "ro-feest", "name": { "nl": "Roemeense feestgerechten", "ro": "Preparate românești de sărbători" }, "lead": { "nl": "Prijs in de winkel. Bestel vooraf; wij bevestigen de prijs bij uw bestelling.", "ro": "Prețul îl afli în magazin. Comandă din timp, iar noi îți confirmăm prețul." } }
+        {
+          "id": "tapas",
+          "name": {
+            "nl": "Tapas",
+            "ro": "Tapas"
+          }
+        },
+        {
+          "id": "gourmet",
+          "name": {
+            "nl": "Fondue & gourmet",
+            "ro": "Fondue și gourmet"
+          }
+        },
+        {
+          "id": "hapjes",
+          "name": {
+            "nl": "Hapjes",
+            "ro": "Aperitive"
+          }
+        },
+        {
+          "id": "warm",
+          "name": {
+            "nl": "Vleeshoofdgerechten",
+            "ro": "Feluri principale"
+          },
+          "note": {
+            "nl": "per portie van 200 g",
+            "ro": "porție de 200 g"
+          }
+        },
+        {
+          "id": "groenten",
+          "name": {
+            "nl": "Warme groenten",
+            "ro": "Legume calde"
+          }
+        },
+        {
+          "id": "soep",
+          "name": {
+            "nl": "Soep",
+            "ro": "Supe"
+          }
+        },
+        {
+          "id": "broodjes",
+          "name": {
+            "nl": "Mini belegde broodjes",
+            "ro": "Mini sandvișuri"
+          }
+        },
+        {
+          "id": "dessert",
+          "name": {
+            "nl": "Dessert & fruit",
+            "ro": "Desert și fructe"
+          }
+        },
+        {
+          "id": "ro-feest",
+          "name": {
+            "nl": "Roemeense feestgerechten",
+            "ro": "Preparate românești de sărbători"
+          },
+          "lead": {
+            "nl": "Prijs in de winkel. Bestel vooraf; wij bevestigen de prijs bij uw bestelling.",
+            "ro": "Prețul îl afli în magazin. Comandă din timp, iar noi îți confirmăm prețul."
+          }
+        }
       ],
       "items": [
-        { "id": "ej26-tapas-kinder", "section": "tapas", "name": { "nl": "Kinder tapas", "ro": "Tapas pentru copii" }, "line": { "nl": "", "ro": "" }, "price": 9, "unit": "pers" },
-        { "id": "ej26-tapas-mix", "section": "tapas", "name": { "nl": "Tapas mix", "ro": "Tapas mix" }, "line": { "nl": "5–6 pers.", "ro": "5-6 persoane" }, "price": 45, "unit": "stuk" },
-        { "id": "ej26-tapas-john-1", "section": "tapas", "name": { "nl": "Tapas John 1", "ro": "Tapas John 1" }, "line": { "nl": "5–6 pers.", "ro": "5-6 persoane" }, "price": 50, "unit": "stuk" },
-        { "id": "ej26-tapas-john-1-scampi", "section": "tapas", "name": { "nl": "Tapas John 1 met scampi", "ro": "Tapas John 1 cu creveți" }, "line": { "nl": "5–6 pers.", "ro": "5-6 persoane" }, "price": 50, "unit": "stuk" },
-        { "id": "ej26-tapas-john-2", "section": "tapas", "name": { "nl": "Tapas John 2", "ro": "Tapas John 2" }, "line": { "nl": "7–9 pers.", "ro": "7-9 persoane" }, "price": 60, "unit": "stuk" },
-        { "id": "ej26-tapas-ro", "section": "tapas", "name": { "nl": "Roemeense Tapas", "ro": "Tapas românești" }, "line": { "nl": "5–6 pers.", "ro": "5-6 persoane" }, "price": 45, "unit": "stuk" },
-        { "id": "ej26-fondue", "section": "gourmet", "name": { "nl": "Fondue", "ro": "Fondue" }, "line": { "nl": "10 soorten", "ro": "10 feluri" }, "price": 10, "unit": "pers", "priceFrom": true, "min": 2 },
-        { "id": "ej26-fondue-14", "section": "gourmet", "name": { "nl": "Fondue 14 soorten", "ro": "Fondue, 14 feluri" }, "line": { "nl": "", "ro": "" }, "price": 13, "unit": "pers", "min": 2 },
-        { "id": "ej26-gourmet-9", "section": "gourmet", "name": { "nl": "Gourmet 9 soorten", "ro": "Platou gourmet, 9 feluri" }, "line": { "nl": "", "ro": "" }, "price": 10, "unit": "pers", "min": 2 },
-        { "id": "ej26-gourmet-10", "section": "gourmet", "name": { "nl": "Gourmet 10 soorten", "ro": "Platou gourmet, 10 feluri" }, "line": { "nl": "", "ro": "" }, "price": 11, "unit": "pers", "min": 2 },
-        { "id": "ej26-gourmet-luxe", "section": "gourmet", "name": { "nl": "Gourmet Luxe", "ro": "Gourmet de lux" }, "line": { "nl": "10 soorten", "ro": "10 feluri" }, "price": 15, "unit": "pers", "min": 2 },
-        { "id": "ej26-hapje-scampi-2", "section": "hapjes", "name": { "nl": "Scampi", "ro": "Scampi" }, "line": { "nl": "2 st.", "ro": "2 bucăți" }, "price": 4, "unit": "stuk" },
-        { "id": "ej26-hapje-lepeltje-scampi", "section": "hapjes", "name": { "nl": "Lepeltje scampi", "ro": "Linguriță cu scampi" }, "line": { "nl": "", "ro": "" }, "price": 2, "unit": "stuk" },
-        { "id": "ej26-hapje-lepeltje-meloen-serrano", "section": "hapjes", "name": { "nl": "Lepeltje meloen & serrano", "ro": "Linguriță cu pepene și serrano" }, "line": { "nl": "", "ro": "" }, "price": 2, "unit": "stuk" },
-        { "id": "ej26-hapje-lepeltje-pate", "section": "hapjes", "name": { "nl": "Lepeltje paté", "ro": "Linguriță cu pateu" }, "line": { "nl": "", "ro": "" }, "price": 1.5, "unit": "stuk" },
-        { "id": "ej26-hapje-lepeltje-geitenkaas", "section": "hapjes", "name": { "nl": "Lepeltje geitenkaas", "ro": "Linguriță cu brânză de capră" }, "line": { "nl": "", "ro": "" }, "price": 2, "unit": "stuk" },
-        { "id": "ej26-hapje-lepeltje-zalm", "section": "hapjes", "name": { "nl": "Lepeltje zalm", "ro": "Linguriță cu somon" }, "line": { "nl": "", "ro": "" }, "price": 2.5, "unit": "stuk" },
-        { "id": "ej26-hapje-taco-gehakt", "section": "hapjes", "name": { "nl": "Taco gehakt", "ro": "Taco cu carne tocată" }, "line": { "nl": "", "ro": "" }, "price": 2.5, "unit": "stuk" },
-        { "id": "ej26-hapje-taco-kip", "section": "hapjes", "name": { "nl": "Taco kip", "ro": "Taco cu pui" }, "line": { "nl": "", "ro": "" }, "price": 2.5, "unit": "stuk" },
-        { "id": "ej26-hapje-blinis-zalm", "section": "hapjes", "name": { "nl": "Blinis met gerookte zalm", "ro": "Blinis cu somon afumat" }, "line": { "nl": "", "ro": "" }, "price": 2.5, "unit": "stuk" },
-        { "id": "ej26-hapje-bruschetta", "section": "hapjes", "name": { "nl": "Bruschetta geitenkaas", "ro": "Bruschetta cu brânză de capră" }, "line": { "nl": "", "ro": "" }, "price": 2.5, "unit": "stuk" },
-        { "id": "ej26-hapje-bruschetta-zalm", "section": "hapjes", "name": { "nl": "Bruschetta zalm", "ro": "Bruschetta cu somon" }, "line": { "nl": "", "ro": "" }, "price": 2, "unit": "stuk" },
-        { "id": "ej26-hapje-bruschetta-tomaat", "section": "hapjes", "name": { "nl": "Bruschetta tomaat", "ro": "Bruschetta cu roșii" }, "line": { "nl": "", "ro": "" }, "price": 1.5, "unit": "stuk" },
-        { "id": "ej26-hapje-wrap-zalm", "section": "hapjes", "name": { "nl": "Wraps zalm", "ro": "Wrap cu somon" }, "line": { "nl": "", "ro": "" }, "price": 2, "unit": "stuk" },
-        { "id": "ej26-hapje-wrap-hesp", "section": "hapjes", "name": { "nl": "Wraps hesp", "ro": "Wrap cu șuncă" }, "line": { "nl": "", "ro": "" }, "price": 2, "unit": "stuk" },
-        { "id": "ej26-hapje-wrap-kip", "section": "hapjes", "name": { "nl": "Wraps kip", "ro": "Wrap cu pui" }, "line": { "nl": "", "ro": "" }, "price": 2, "unit": "stuk" },
-        { "id": "ej26-hapje-bulgur-feta", "section": "hapjes", "name": { "nl": "Bulgur feta", "ro": "Bulgur cu feta" }, "line": { "nl": "", "ro": "" }, "price": 3, "unit": "stuk" },
-        { "id": "ej26-hapje-bulgur-feta-meloen", "section": "hapjes", "name": { "nl": "Bulgur feta & meloen", "ro": "Bulgur cu feta și pepene" }, "line": { "nl": "", "ro": "" }, "price": 3, "unit": "stuk" },
-        { "id": "ej26-hapje-bulgur-zalm", "section": "hapjes", "name": { "nl": "Bulgur zalm", "ro": "Bulgur cu somon" }, "line": { "nl": "", "ro": "" }, "price": 3, "unit": "stuk" },
-        { "id": "ej26-hapje-bulgur-garnaal", "section": "hapjes", "name": { "nl": "Bulgur garnaal", "ro": "Bulgur cu creveți" }, "line": { "nl": "", "ro": "" }, "price": 3.5, "unit": "stuk" },
-        { "id": "ej26-hapje-hawaii-salade", "section": "hapjes", "name": { "nl": "Hawaii salade", "ro": "Salată Hawaii" }, "line": { "nl": "", "ro": "" }, "price": 3, "unit": "stuk" },
-        { "id": "ej26-warm-ardeens", "section": "warm", "name": { "nl": "Ardeens gebraad in champignonsaus", "ro": "Friptură ardeneză în sos de ciuperci" }, "price": 8, "unit": "portie" },
-        { "id": "ej26-warm-varkenshaasje", "section": "warm", "name": { "nl": "Varkenshaasje in sausje met spek", "ro": "Mușchiuleț de porc în sos cu bacon" }, "price": 9, "unit": "portie" },
-        { "id": "ej26-warm-orloff", "section": "warm", "name": { "nl": "Orloffgebraad in kaassaus", "ro": "Friptură Orloff în sos de brânză" }, "price": 8.5, "unit": "portie" },
-        { "id": "ej26-warm-kalkoen", "section": "warm", "name": { "nl": "Kalkoen in champignonsaus", "ro": "Curcan în sos de ciuperci" }, "price": 10, "unit": "portie" },
-        { "id": "ej26-warm-hamrol", "section": "warm", "name": { "nl": "Hamrol met witloof in kaassaus", "ro": "Rulou de șuncă cu andive în sos de brânză" }, "price": 10, "unit": "portie" },
-        { "id": "ej26-warm-kipfilet-curry", "section": "warm", "name": { "nl": "Kipfilet in currysaus", "ro": "Piept de pui în sos curry" }, "price": 9.5, "unit": "portie" },
-        { "id": "ej26-warm-zalm", "section": "warm", "name": { "nl": "Zalm in bearnaisesaus", "ro": "Somon în sos bearnez" }, "price": 12, "unit": "portie" },
-        { "id": "ej26-warm-groenten", "section": "groenten", "name": { "nl": "Warme groenten", "ro": "Legume calde" }, "line": { "nl": "bloemkool · boontjes · wortel · witloof met spek · 200 g per persoon", "ro": "conopidă · fasole verde · morcovi · andive cu bacon · 200 g de persoană" }, "price": 6, "unit": "pers" },
-        { "id": "ej26-soep-tomaat", "section": "soep", "name": { "nl": "Tomatensoep", "ro": "Supă de roșii" }, "line": { "nl": "", "ro": "" }, "price": 5.2, "unit": "liter" },
-        { "id": "ej26-soep-tomaat-balletjes", "section": "soep", "name": { "nl": "Tomatensoep met balletjes", "ro": "Supă de roșii cu perișoare" }, "line": { "nl": "", "ro": "" }, "price": 5.6, "unit": "liter" },
-        { "id": "ej26-soep-pompoen", "section": "soep", "name": { "nl": "Pompoensoep", "ro": "Supă de dovleac" }, "line": { "nl": "", "ro": "" }, "price": 6, "unit": "liter" },
-        { "id": "ej26-soep-broccoli", "section": "soep", "name": { "nl": "Broccolisoep", "ro": "Supă de broccoli" }, "line": { "nl": "", "ro": "" }, "price": 5.5, "unit": "liter" },
-        { "id": "ej26-broodjes-mini", "section": "broodjes", "name": { "nl": "Mini belegde broodjes", "ro": "Mini sandvișuri" }, "line": { "nl": "kipcurry / vleessalade · hesp / salami / kaas · tonijn / préparé", "ro": "pui curry / salată de carne · șuncă / salam / brânză · ton / préparé" }, "price": 1.7, "unit": "stuk" },
-        { "id": "ej26-dessert-buffet-1", "section": "dessert", "name": { "nl": "Dessertbuffet 1", "ro": "Bufet de deserturi 1" }, "line": { "nl": "3 soorten", "ro": "3 feluri" }, "price": 7, "unit": "pers" },
-        { "id": "ej26-dessert-buffet-2", "section": "dessert", "name": { "nl": "Dessertbuffet 2", "ro": "Bufet de deserturi 2" }, "line": { "nl": "5 soorten", "ro": "5 feluri" }, "price": 12, "unit": "pers" },
-        { "id": "ej26-fruit-buffet", "section": "dessert", "name": { "nl": "Fruitbuffet", "ro": "Bufet de fructe" }, "line": { "nl": "6 soorten: meloen, druiven, ananas, kiwi, mandarijn, kaki", "ro": "6 feluri: pepene, struguri, ananas, kiwi, mandarine, kaki" }, "price": 4, "unit": "pers" },
-        { "id": "ej26-dessert-vanille", "section": "dessert", "name": { "nl": "Vanillepudding", "ro": "Budincă de vanilie" }, "line": { "nl": "", "ro": "" }, "price": 2, "unit": "stuk" },
-        { "id": "ej26-dessert-tiramisu", "section": "dessert", "name": { "nl": "Tiramisu", "ro": "Tiramisu" }, "line": { "nl": "", "ro": "" }, "price": 2.5, "unit": "stuk" },
-        { "id": "ej26-dessert-donut", "section": "dessert", "name": { "nl": "Donut", "ro": "Gogoașă (donut)" }, "line": { "nl": "", "ro": "" }, "price": 2, "unit": "stuk" },
-        { "id": "ej26-dessert-mini-donut", "section": "dessert", "name": { "nl": "Mini donut", "ro": "Mini donut" }, "line": { "nl": "", "ro": "" }, "price": 1, "unit": "stuk" },
-        { "id": "ej26-dessert-macarons", "section": "dessert", "name": { "nl": "Macarons", "ro": "Macarons" }, "line": { "nl": "", "ro": "" }, "price": 2, "unit": "stuk" },
-        { "id": "ej26-ro-ciorba-perisoare", "section": "ro-feest", "name": { "nl": "Ciorbă de perișoare", "ro": "Ciorbă de perișoare" }, "nameLang": "ro", "line": { "nl": "zure soep met gehaktballetjes", "ro": "" }, "price": null, "priceInStore": true, "unit": "liter" },
-        { "id": "ej26-ro-ciorba-vacuta", "section": "ro-feest", "name": { "nl": "Ciorbă de văcuță", "ro": "Ciorbă de văcuță" }, "nameLang": "ro", "line": { "nl": "zure soep met rundvlees en groenten", "ro": "" }, "price": null, "priceInStore": true, "unit": "liter" },
-        { "id": "ej26-ro-carne-garnita", "section": "ro-feest", "name": { "nl": "Carne la garniță", "ro": "Carne la garniță" }, "nameLang": "ro", "line": { "nl": "varkensvlees, gebakken en bewaard in reuzel", "ro": "" }, "price": null, "priceInStore": true, "unit": "kg" },
-        { "id": "ej26-ro-piftie", "section": "ro-feest", "name": { "nl": "Piftie", "ro": "Piftie" }, "nameLang": "ro", "line": { "nl": "varkensvlees in gelei, met look", "ro": "" }, "price": null, "priceInStore": true, "unit": "kg" },
-        { "id": "ej26-ro-toba", "section": "ro-feest", "name": { "nl": "Tobă", "ro": "Tobă" }, "nameLang": "ro", "line": { "nl": "Roemeense zult", "ro": "" }, "price": null, "priceInStore": true, "unit": "kg" },
-        { "id": "ej26-ro-caltabos", "section": "ro-feest", "name": { "nl": "Caltaboș", "ro": "Caltaboș" }, "nameLang": "ro", "line": { "nl": "Roemeense leverworst", "ro": "" }, "price": null, "priceInStore": true, "unit": "kg" },
-        { "id": "ej26-ro-salata-boeuf", "section": "ro-feest", "name": { "nl": "Salată de boeuf", "ro": "Salată de boeuf" }, "nameLang": "ro", "line": { "nl": "vleessalade met groenten en mayonaise", "ro": "" }, "price": null, "priceInStore": true, "unit": "kg" },
-        { "id": "ej26-ro-sarmale", "section": "ro-feest", "name": { "nl": "Sarmale", "ro": "Sarmale" }, "nameLang": "ro", "line": { "nl": "koolrolletjes met gehakt en rijst", "ro": "" }, "price": null, "priceInStore": true, "unit": "kg" }
+        {
+          "id": "ej26-tapas-kinder",
+          "section": "tapas",
+          "name": {
+            "nl": "Kinder tapas",
+            "ro": "Tapas pentru copii"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 9,
+          "unit": "pers"
+        },
+        {
+          "id": "ej26-tapas-mix",
+          "section": "tapas",
+          "name": {
+            "nl": "Tapas mix",
+            "ro": "Tapas mix"
+          },
+          "line": {
+            "nl": "5–6 pers.",
+            "ro": "5-6 persoane"
+          },
+          "price": 45,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-tapas-john-1",
+          "section": "tapas",
+          "name": {
+            "nl": "Tapas John 1",
+            "ro": "Tapas John 1"
+          },
+          "line": {
+            "nl": "5–6 pers.",
+            "ro": "5-6 persoane"
+          },
+          "price": 50,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-tapas-john-1-scampi",
+          "section": "tapas",
+          "name": {
+            "nl": "Tapas John 1 met scampi",
+            "ro": "Tapas John 1 cu creveți"
+          },
+          "line": {
+            "nl": "5–6 pers.",
+            "ro": "5-6 persoane"
+          },
+          "price": 50,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-tapas-john-2",
+          "section": "tapas",
+          "name": {
+            "nl": "Tapas John 2",
+            "ro": "Tapas John 2"
+          },
+          "line": {
+            "nl": "7–9 pers.",
+            "ro": "7-9 persoane"
+          },
+          "price": 60,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-koude-schotel",
+          "section": "tapas",
+          "name": {
+            "nl": "Koude schotel",
+            "ro": "Platou rece"
+          },
+          "line": {
+            "nl": "hesp, salami, eieren en vleessalade",
+            "ro": "șuncă, salam, ouă și salată de carne"
+          },
+          "price": 13.5,
+          "unit": "pers"
+        },
+        {
+          "id": "ej26-koude-schotel-extra-kaas",
+          "section": "tapas",
+          "name": {
+            "nl": "Koude schotel extra kaas",
+            "ro": "Platou rece cu brânză extra"
+          },
+          "line": {
+            "nl": "als de koude schotel, met extra kaas",
+            "ro": "ca platoul rece, cu brânză extra"
+          },
+          "price": 15,
+          "unit": "pers"
+        },
+        {
+          "id": "ej26-tapas-ro",
+          "section": "tapas",
+          "name": {
+            "nl": "Roemeense Tapas",
+            "ro": "Tapas românești"
+          },
+          "line": {
+            "nl": "5–6 pers.",
+            "ro": "5-6 persoane"
+          },
+          "price": 45,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-platou-romanesc-festiv",
+          "section": "tapas",
+          "name": {
+            "nl": "Roemeense feestschotel",
+            "ro": "Platou românesc festiv"
+          },
+          "line": {
+            "nl": "6 pers.",
+            "ro": "6 persoane"
+          },
+          "price": 65,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-fondue",
+          "section": "gourmet",
+          "name": {
+            "nl": "Fondue",
+            "ro": "Fondue"
+          },
+          "line": {
+            "nl": "10 soorten",
+            "ro": "10 feluri"
+          },
+          "price": 10,
+          "unit": "pers",
+          "priceFrom": true,
+          "min": 2
+        },
+        {
+          "id": "ej26-fondue-14",
+          "section": "gourmet",
+          "name": {
+            "nl": "Fondue 14 soorten",
+            "ro": "Fondue, 14 feluri"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 13,
+          "unit": "pers",
+          "min": 2
+        },
+        {
+          "id": "ej26-gourmet-9",
+          "section": "gourmet",
+          "name": {
+            "nl": "Gourmet 9 soorten",
+            "ro": "Platou gourmet, 9 feluri"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 10,
+          "unit": "pers",
+          "min": 2
+        },
+        {
+          "id": "ej26-gourmet-10",
+          "section": "gourmet",
+          "name": {
+            "nl": "Gourmet 10 soorten",
+            "ro": "Platou gourmet, 10 feluri"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 11,
+          "unit": "pers",
+          "min": 2
+        },
+        {
+          "id": "ej26-gourmet-luxe",
+          "section": "gourmet",
+          "name": {
+            "nl": "Gourmet Luxe",
+            "ro": "Gourmet de lux"
+          },
+          "line": {
+            "nl": "10 soorten",
+            "ro": "10 feluri"
+          },
+          "price": 15,
+          "unit": "pers",
+          "min": 2
+        },
+        {
+          "id": "ej26-hapje-scampi-2",
+          "section": "hapjes",
+          "name": {
+            "nl": "Scampi",
+            "ro": "Scampi"
+          },
+          "line": {
+            "nl": "2 st.",
+            "ro": "2 bucăți"
+          },
+          "price": 4,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-lepeltje-scampi",
+          "section": "hapjes",
+          "name": {
+            "nl": "Lepeltje scampi",
+            "ro": "Linguriță cu scampi"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 2,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-lepeltje-meloen-serrano",
+          "section": "hapjes",
+          "name": {
+            "nl": "Lepeltje meloen & serrano",
+            "ro": "Linguriță cu pepene și serrano"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 2,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-lepeltje-pate",
+          "section": "hapjes",
+          "name": {
+            "nl": "Lepeltje paté",
+            "ro": "Linguriță cu pateu"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 1.5,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-lepeltje-geitenkaas",
+          "section": "hapjes",
+          "name": {
+            "nl": "Lepeltje geitenkaas",
+            "ro": "Linguriță cu brânză de capră"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 2,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-lepeltje-zalm",
+          "section": "hapjes",
+          "name": {
+            "nl": "Lepeltje zalm",
+            "ro": "Linguriță cu somon"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 2.5,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-taco-gehakt",
+          "section": "hapjes",
+          "name": {
+            "nl": "Taco gehakt",
+            "ro": "Taco cu carne tocată"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 2.5,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-taco-kip",
+          "section": "hapjes",
+          "name": {
+            "nl": "Taco kip",
+            "ro": "Taco cu pui"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 2.5,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-blinis-zalm",
+          "section": "hapjes",
+          "name": {
+            "nl": "Blinis met gerookte zalm",
+            "ro": "Blinis cu somon afumat"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 2.5,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-bruschetta",
+          "section": "hapjes",
+          "name": {
+            "nl": "Bruschetta geitenkaas",
+            "ro": "Bruschetta cu brânză de capră"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 2.5,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-bruschetta-zalm",
+          "section": "hapjes",
+          "name": {
+            "nl": "Bruschetta zalm",
+            "ro": "Bruschetta cu somon"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 2,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-bruschetta-tomaat",
+          "section": "hapjes",
+          "name": {
+            "nl": "Bruschetta tomaat",
+            "ro": "Bruschetta cu roșii"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 1.5,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-wrap-zalm",
+          "section": "hapjes",
+          "name": {
+            "nl": "Wraps zalm",
+            "ro": "Wrap cu somon"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 2,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-wrap-hesp",
+          "section": "hapjes",
+          "name": {
+            "nl": "Wraps hesp",
+            "ro": "Wrap cu șuncă"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 2,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-wrap-kip",
+          "section": "hapjes",
+          "name": {
+            "nl": "Wraps kip",
+            "ro": "Wrap cu pui"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 2,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-bulgur-feta",
+          "section": "hapjes",
+          "name": {
+            "nl": "Bulgur feta",
+            "ro": "Bulgur cu feta"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 3,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-bulgur-feta-meloen",
+          "section": "hapjes",
+          "name": {
+            "nl": "Bulgur feta & meloen",
+            "ro": "Bulgur cu feta și pepene"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 3,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-bulgur-zalm",
+          "section": "hapjes",
+          "name": {
+            "nl": "Bulgur zalm",
+            "ro": "Bulgur cu somon"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 3,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-bulgur-garnaal",
+          "section": "hapjes",
+          "name": {
+            "nl": "Bulgur garnaal",
+            "ro": "Bulgur cu creveți"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 3.5,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-hapje-hawaii-salade",
+          "section": "hapjes",
+          "name": {
+            "nl": "Hawaii salade",
+            "ro": "Salată Hawaii"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 3,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-warm-ardeens",
+          "section": "warm",
+          "name": {
+            "nl": "Ardeens gebraad in champignonsaus",
+            "ro": "Friptură ardeneză în sos de ciuperci"
+          },
+          "price": 8,
+          "unit": "portie"
+        },
+        {
+          "id": "ej26-warm-varkenshaasje",
+          "section": "warm",
+          "name": {
+            "nl": "Varkenshaasje in sausje met spek",
+            "ro": "Mușchiuleț de porc în sos cu bacon"
+          },
+          "price": 9,
+          "unit": "portie"
+        },
+        {
+          "id": "ej26-warm-orloff",
+          "section": "warm",
+          "name": {
+            "nl": "Orloffgebraad in kaassaus",
+            "ro": "Friptură Orloff în sos de brânză"
+          },
+          "price": 8.5,
+          "unit": "portie"
+        },
+        {
+          "id": "ej26-warm-kalkoen",
+          "section": "warm",
+          "name": {
+            "nl": "Kalkoen in champignonsaus",
+            "ro": "Curcan în sos de ciuperci"
+          },
+          "price": 10,
+          "unit": "portie"
+        },
+        {
+          "id": "ej26-warm-hamrol",
+          "section": "warm",
+          "name": {
+            "nl": "Hamrol met witloof in kaassaus",
+            "ro": "Rulou de șuncă cu andive în sos de brânză"
+          },
+          "price": 10,
+          "unit": "portie"
+        },
+        {
+          "id": "ej26-warm-kipfilet-curry",
+          "section": "warm",
+          "name": {
+            "nl": "Kipfilet in currysaus",
+            "ro": "Piept de pui în sos curry"
+          },
+          "price": 9.5,
+          "unit": "portie"
+        },
+        {
+          "id": "ej26-warm-zalm",
+          "section": "warm",
+          "name": {
+            "nl": "Zalm in bearnaisesaus",
+            "ro": "Somon în sos bearnez"
+          },
+          "price": 12,
+          "unit": "portie"
+        },
+        {
+          "id": "ej26-warm-groenten",
+          "section": "groenten",
+          "name": {
+            "nl": "Warme groenten",
+            "ro": "Legume calde"
+          },
+          "line": {
+            "nl": "bloemkool · boontjes · wortel · witloof met spek · 200 g per persoon",
+            "ro": "conopidă · fasole verde · morcovi · andive cu bacon · 200 g de persoană"
+          },
+          "price": 6,
+          "unit": "pers"
+        },
+        {
+          "id": "ej26-soep-tomaat",
+          "section": "soep",
+          "name": {
+            "nl": "Tomatensoep",
+            "ro": "Supă de roșii"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 5.2,
+          "unit": "liter"
+        },
+        {
+          "id": "ej26-soep-tomaat-balletjes",
+          "section": "soep",
+          "name": {
+            "nl": "Tomatensoep met balletjes",
+            "ro": "Supă de roșii cu perișoare"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 5.6,
+          "unit": "liter"
+        },
+        {
+          "id": "ej26-soep-pompoen",
+          "section": "soep",
+          "name": {
+            "nl": "Pompoensoep",
+            "ro": "Supă de dovleac"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 6,
+          "unit": "liter"
+        },
+        {
+          "id": "ej26-soep-broccoli",
+          "section": "soep",
+          "name": {
+            "nl": "Broccolisoep",
+            "ro": "Supă de broccoli"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 5.5,
+          "unit": "liter"
+        },
+        {
+          "id": "ej26-broodjes-mini",
+          "section": "broodjes",
+          "name": {
+            "nl": "Mini belegde broodjes",
+            "ro": "Mini sandvișuri"
+          },
+          "line": {
+            "nl": "kipcurry / vleessalade · hesp / salami / kaas · tonijn / préparé",
+            "ro": "pui curry / salată de carne · șuncă / salam / brânză · ton / préparé"
+          },
+          "price": 1.7,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-dessert-buffet-1",
+          "section": "dessert",
+          "name": {
+            "nl": "Dessertbuffet 1",
+            "ro": "Bufet de deserturi 1"
+          },
+          "line": {
+            "nl": "3 soorten",
+            "ro": "3 feluri"
+          },
+          "price": 7,
+          "unit": "pers"
+        },
+        {
+          "id": "ej26-dessert-buffet-2",
+          "section": "dessert",
+          "name": {
+            "nl": "Dessertbuffet 2",
+            "ro": "Bufet de deserturi 2"
+          },
+          "line": {
+            "nl": "5 soorten",
+            "ro": "5 feluri"
+          },
+          "price": 12,
+          "unit": "pers"
+        },
+        {
+          "id": "ej26-fruit-buffet",
+          "section": "dessert",
+          "name": {
+            "nl": "Fruitbuffet",
+            "ro": "Bufet de fructe"
+          },
+          "line": {
+            "nl": "6 soorten: meloen, druiven, ananas, kiwi, mandarijn, kaki",
+            "ro": "6 feluri: pepene, struguri, ananas, kiwi, mandarine, kaki"
+          },
+          "price": 4,
+          "unit": "pers"
+        },
+        {
+          "id": "ej26-dessert-vanille",
+          "section": "dessert",
+          "name": {
+            "nl": "Vanillepudding",
+            "ro": "Budincă de vanilie"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 2,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-dessert-tiramisu",
+          "section": "dessert",
+          "name": {
+            "nl": "Tiramisu",
+            "ro": "Tiramisu"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 2.5,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-dessert-donut",
+          "section": "dessert",
+          "name": {
+            "nl": "Donut",
+            "ro": "Gogoașă (donut)"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 2,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-dessert-mini-donut",
+          "section": "dessert",
+          "name": {
+            "nl": "Mini donut",
+            "ro": "Mini donut"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 1,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-dessert-macarons",
+          "section": "dessert",
+          "name": {
+            "nl": "Macarons",
+            "ro": "Macarons"
+          },
+          "line": {
+            "nl": "",
+            "ro": ""
+          },
+          "price": 2,
+          "unit": "stuk"
+        },
+        {
+          "id": "ej26-ro-ciorba-perisoare",
+          "section": "ro-feest",
+          "name": {
+            "nl": "Ciorbă de perișoare",
+            "ro": "Ciorbă de perișoare"
+          },
+          "nameLang": "ro",
+          "line": {
+            "nl": "zure soep met gehaktballetjes",
+            "ro": ""
+          },
+          "price": null,
+          "priceInStore": true,
+          "unit": "liter"
+        },
+        {
+          "id": "ej26-ro-ciorba-vacuta",
+          "section": "ro-feest",
+          "name": {
+            "nl": "Ciorbă de văcuță",
+            "ro": "Ciorbă de văcuță"
+          },
+          "nameLang": "ro",
+          "line": {
+            "nl": "zure soep met rundvlees en groenten",
+            "ro": ""
+          },
+          "price": null,
+          "priceInStore": true,
+          "unit": "liter"
+        },
+        {
+          "id": "ej26-ro-carne-garnita",
+          "section": "ro-feest",
+          "name": {
+            "nl": "Carne la garniță",
+            "ro": "Carne la garniță"
+          },
+          "nameLang": "ro",
+          "line": {
+            "nl": "varkensvlees, gebakken en bewaard in reuzel",
+            "ro": ""
+          },
+          "price": null,
+          "priceInStore": true,
+          "unit": "kg"
+        },
+        {
+          "id": "ej26-ro-piftie",
+          "section": "ro-feest",
+          "name": {
+            "nl": "Piftie",
+            "ro": "Piftie"
+          },
+          "nameLang": "ro",
+          "line": {
+            "nl": "varkensvlees in gelei, met look",
+            "ro": ""
+          },
+          "price": null,
+          "priceInStore": true,
+          "unit": "kg"
+        },
+        {
+          "id": "ej26-ro-toba",
+          "section": "ro-feest",
+          "name": {
+            "nl": "Tobă",
+            "ro": "Tobă"
+          },
+          "nameLang": "ro",
+          "line": {
+            "nl": "Roemeense zult",
+            "ro": ""
+          },
+          "price": null,
+          "priceInStore": true,
+          "unit": "kg"
+        },
+        {
+          "id": "ej26-ro-caltabos",
+          "section": "ro-feest",
+          "name": {
+            "nl": "Caltaboș",
+            "ro": "Caltaboș"
+          },
+          "nameLang": "ro",
+          "line": {
+            "nl": "Roemeense leverworst",
+            "ro": ""
+          },
+          "price": null,
+          "priceInStore": true,
+          "unit": "kg"
+        },
+        {
+          "id": "ej26-ro-salata-boeuf",
+          "section": "ro-feest",
+          "name": {
+            "nl": "Salată de boeuf",
+            "ro": "Salată de boeuf"
+          },
+          "nameLang": "ro",
+          "line": {
+            "nl": "vleessalade met groenten en mayonaise",
+            "ro": ""
+          },
+          "price": null,
+          "priceInStore": true,
+          "unit": "kg"
+        },
+        {
+          "id": "ej26-ro-sarmale",
+          "section": "ro-feest",
+          "name": {
+            "nl": "Sarmale",
+            "ro": "Sarmale"
+          },
+          "nameLang": "ro",
+          "line": {
+            "nl": "koolrolletjes met gehakt en rijst",
+            "ro": ""
+          },
+          "price": null,
+          "priceInStore": true,
+          "unit": "kg"
+        }
       ]
     }
   ]

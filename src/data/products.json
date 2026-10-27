@@ -1,41 +1,195 @@
 {
   "_source": "Stage 4 (Claude Code, 07.10; revised 07.10 after lexicon §5.19 + §6 „Product names RO”): the shape for /producten, the home's „Deze week op de toog” and the bestelbon (stage 5). `categories` = the sections of the canvas board Producten + BBQ & gourmet (D-13; the home's gourmet tag lives there, its page is a later stage); NL names = lexicon §2.2 / §4 / §5.15, RO = §6 „Product names RO” categories. `items` = the board's tags; NL names from the word bank §2.2 / §2.4 (search demand — NOT the confirmed assortment: Cowork replaces them from the owners' price list, stage 15), RO names = the §6 table verbatim. Colli Varken 1's line = its contents (§5.11 NL, §6 table RO; the old site's colli, [OBSERVED], to check with John). Mici's line = the lexicon's (§2.4 gloss NL, §6 product-card example RO — §5.19: „every cooking line [KOOKLIJN] except Mici”). price null = not in FACTS.md → the tag shows [PRIJS] / [PREȚ]; the old site's €45 / €10 stay out until the owners confirm them (FACTS „Known prices”). `week` = ids into `items`. Units: kg · pers · colli · stuk · liter. Stage 5 (Claude Code, 07.10, the bestelbon): the old site's other priced lines added from docs/data/old-site-catalogue.json [OBSERVED] 06.10 — NL names as the old site printed them (a „(…)” part becomes the line; colli lines = their contents), prices null (FACTS: the old prices wait for the owners), RO names/lines = lexicon §6 table verbatim (stage 5 revision, 07.10); three categories from the catalogue (tapas · warm · dessert, its NL/RO names). `min` = smallest order (gourmet/fondue „vanaf 2 personen”, docs/order-flow.md §4); `step` (optional) overrides the unit default of src/lib/order-core.js; `orderOnly` = sold through the bestelbon, not shown on /producten (the five other colli wait for /colli-vleespakketten, stage 10). Stage 9 revision (13.10): the RO cooking-line placeholder is [GĂTIRE] (lexicon §5.19 / §6), the NL one stays [KOOKLIJN]. Row 15a (Claude Code, 13.10): docs/data/price-list.json ([OWNER] 13.10, FACTS) poured in — prices and units of the 31 traiteur ids it shares with this file, the 20 new ids (NL / RO names as the file gives them) under tapas · warm · dessert, the traiteur rows in the brochure's order (tapas · hapjes · vleeshoofdgerechten · warme groenten · soep · broodjes · dessert); hapjes now per stuk; the seven vleeshoofdgerechten per portie (unit `portie`, the line „per portie van 200 g” / „porție de 200 g”); tapas schotels keep their persons as the line (RO with a hyphen). Still null → [PRIJS] / [PREȚ]: every per-kg row, mici, the six colli (not in the owners' list). Row 15 (Claude Code, 19.10, lexicon §5.30): the 15 per-kg rows keep `price` null with `priceInStore: true` (Dan 19.10 16:25: „prijs in de winkel”, no Offer); the six colli take the old site's prices, confirmed unchanged by the owners [OWNER] 19.10 (docs/data/owners-answers-2026-10-19.json `colli`). Row 15c (Claude Code, 19.10, lexicon §5.31): the 15 per-kg `line`s = the §5.19 cooking-line table, NL and RO 1:1 (approved by Dan 19.10 17:44, standard methods [PRACTITIONER] until the owners replace them); mici: the table line replaces the NL gloss on the tag (the gloss stays in faq.json and on /roemeense-specialiteiten). Row 18 (Claude Code, 20.10, D-41 · D-44): /producten shows every row of this file — the 15 per-kg rows as counter tags, the 60 others (colli · gourmet · tapas · warm · dessert, `orderOnly` included) as the cards of part 2 „Feest & traiteur”; `orderOnly` now only means „no counter tag” (its own page is row 10d). Pastrami's NL line shortened (lexicon §5.19 20.10); RO „burgeri” → „hamburgeri” in the Colli Porc 2 and Colli John lines (Dan 20.10). Row 18b (Claude Code, 20.10, D-47 · D-48): docs/data/owners-counter-list-2026-10-20.json poured as it is — 50 board rows (rund 19 · varken 23 · organ meats 8, `group` „organen”), each `priceInStore`, `board: true`, no line, `unit` · `step` · `min` per item (stuk 1/1 or kg 0,1/0,1); the five names merged with existing tags are not added; the 15 live tags take their class from `existing_tags_qty` (six per stuk). Row 21 (Claude Code, 23.10, D-50 (1)): docs/data/owners-counter-list-2026-10-22.json [OWNER] 22.10 poured as it is — 115 board rows (kip 14 · lam 11 · bereidingen 20 · marinades 25 · charcuterie 26 · roemeens 19), each `priceInStore`, `board: true`, no line, the file's `group`, `unit` · `step` · `min`, `orderOnly` where set (lam-half, lam-heel); the three new categories bereidingen · marinades · charcuterie after lam (NL/RO = lexicon §5.19 „23.10”); not added: the 5 rows whose `existing` names a live tag (kipfilet, kippenboutjes, kalkoengebraad, lamsbout, gerookte-worst) and the 7 `flag` rows (UNVERIFIED until Georgiana answers, form section 8); added: caltabos · toba · carne-la-garnita, which also stand in price-list.json ro-feest (two surfaces, one product). 125 + 115 = 240 rows. `categories[].groups` = the names of a board's groups (`items[].group`), NL/RO = lexicon §5.19 „23.10” (varken's organen: §5.19 „20.10 12:5x”); rows without a `group` sit under the category's own name; a board with one group shows no group label.",
   "categories": [
-    { "id": "rund", "name": { "nl": "Rund", "ro": "Vită" }
+    {
+      "id": "rund",
+      "name": {
+        "nl": "Rund",
+        "ro": "Vită"
+      }
     },
-    { "id": "varken", "name": { "nl": "Varken", "ro": "Porc" },
-      "groups": [{ "id": "organen", "name": { "nl": "Orgaanvlees", "ro": "Organe" } }]
+    {
+      "id": "varken",
+      "name": {
+        "nl": "Varken",
+        "ro": "Porc"
+      },
+      "groups": [
+        {
+          "id": "organen",
+          "name": {
+            "nl": "Orgaanvlees",
+            "ro": "Organe"
+          }
+        }
+      ]
     },
-    { "id": "kip", "name": { "nl": "Kip & kalkoen", "ro": "Pui și curcan" },
-      "groups": [{ "id": "kip", "name": { "nl": "Kip", "ro": "Pui" } }, { "id": "kalkoen", "name": { "nl": "Kalkoen", "ro": "Curcan" } }]
+    {
+      "id": "kip",
+      "name": {
+        "nl": "Kip & kalkoen",
+        "ro": "Pui și curcan"
+      },
+      "groups": [
+        {
+          "id": "kip",
+          "name": {
+            "nl": "Kip",
+            "ro": "Pui"
+          }
+        },
+        {
+          "id": "kalkoen",
+          "name": {
+            "nl": "Kalkoen",
+            "ro": "Curcan"
+          }
+        }
+      ]
     },
-    { "id": "lam", "name": { "nl": "Lam", "ro": "Miel" }
+    {
+      "id": "lam",
+      "name": {
+        "nl": "Lam",
+        "ro": "Miel"
+      }
     },
-    { "id": "bereidingen", "name": { "nl": "Bereidingen", "ro": "Preparate de casă" },
-      "groups": [{ "id": "pane", "name": { "nl": "Burgers & gepaneerd", "ro": "Burgeri și pane" } }, { "id": "gehakt", "name": { "nl": "Gehaktbereidingen", "ro": "Din carne tocată" } }]
+    {
+      "id": "bereidingen",
+      "name": {
+        "nl": "Bereidingen",
+        "ro": "Preparate de casă"
+      },
+      "groups": [
+        {
+          "id": "pane",
+          "name": {
+            "nl": "Burgers & gepaneerd",
+            "ro": "Burgeri și pane"
+          }
+        },
+        {
+          "id": "gehakt",
+          "name": {
+            "nl": "Gehaktbereidingen",
+            "ro": "Din carne tocată"
+          }
+        }
+      ]
     },
-    { "id": "marinades", "name": { "nl": "Marinades & brochettes", "ro": "Marinate și frigărui" },
-      "groups": [{ "id": "brochettes", "name": { "nl": "Brochettes", "ro": "Frigărui" } }, { "id": "varken", "name": { "nl": "Varken gemarineerd", "ro": "Porc marinat" } }, { "id": "kip", "name": { "nl": "Kip & kalkoen gemarineerd", "ro": "Pui și curcan marinat" } }]
+    {
+      "id": "marinades",
+      "name": {
+        "nl": "Marinades & brochettes",
+        "ro": "Marinate și frigărui"
+      },
+      "groups": [
+        {
+          "id": "brochettes",
+          "name": {
+            "nl": "Brochettes",
+            "ro": "Frigărui"
+          }
+        },
+        {
+          "id": "varken",
+          "name": {
+            "nl": "Varken gemarineerd",
+            "ro": "Porc marinat"
+          }
+        },
+        {
+          "id": "kip",
+          "name": {
+            "nl": "Kip & kalkoen gemarineerd",
+            "ro": "Pui și curcan marinat"
+          }
+        }
+      ]
     },
-    { "id": "charcuterie", "name": { "nl": "Charcuterie", "ro": "Mezeluri" },
-      "groups": [{ "id": "charcuterie", "name": { "nl": "Charcuterie", "ro": "Mezeluri" } }, { "id": "salades", "name": { "nl": "Salades", "ro": "Salate" } }]
+    {
+      "id": "charcuterie",
+      "name": {
+        "nl": "Charcuterie",
+        "ro": "Mezeluri"
+      },
+      "groups": [
+        {
+          "id": "charcuterie",
+          "name": {
+            "nl": "Charcuterie",
+            "ro": "Mezeluri"
+          }
+        },
+        {
+          "id": "salades",
+          "name": {
+            "nl": "Salades",
+            "ro": "Salate"
+          }
+        }
+      ]
     },
-    { "id": "roemeens", "name": { "nl": "Roemeense specialiteiten", "ro": "Mici și specialități" },
-      "groups": [{ "id": "mezeluri", "name": { "nl": "Roemeense charcuterie", "ro": "Mezeluri românești" } }]
+    {
+      "id": "roemeens",
+      "name": {
+        "nl": "Roemeense specialiteiten",
+        "ro": "Mici și specialități"
+      },
+      "groups": [
+        {
+          "id": "mezeluri",
+          "name": {
+            "nl": "Roemeense charcuterie",
+            "ro": "Mezeluri românești"
+          }
+        }
+      ]
     },
-    { "id": "colli", "name": { "nl": "Colli's", "ro": "Colli" }
+    {
+      "id": "colli",
+      "name": {
+        "nl": "Colli's",
+        "ro": "Colli"
+      }
     },
-    { "id": "gourmet", "name": { "nl": "BBQ & gourmet", "ro": "BBQ și gourmet" }
+    {
+      "id": "gourmet",
+      "name": {
+        "nl": "BBQ & gourmet",
+        "ro": "BBQ și gourmet"
+      }
     },
-    { "id": "tapas", "name": { "nl": "Tapas & Hapjes", "ro": "Tapas și aperitive" }
+    {
+      "id": "tapas",
+      "name": {
+        "nl": "Tapas & Hapjes",
+        "ro": "Tapas și aperitive"
+      }
     },
-    { "id": "warm", "name": { "nl": "Warme gerechten & Soepen", "ro": "Preparate calde și supe" }
+    {
+      "id": "warm",
+      "name": {
+        "nl": "Warme gerechten & Soepen",
+        "ro": "Preparate calde și supe"
+      }
     },
-    { "id": "dessert", "name": { "nl": "Dessert & Extra's", "ro": "Desert și extra" }
+    {
+      "id": "dessert",
+      "name": {
+        "nl": "Dessert & Extra's",
+        "ro": "Desert și extra"
+      }
     }
   ],
   "items": [
-    { "id": "rundsgebraad", "category": "rund", "name": { "nl": "Rundsgebraad", "ro": "Friptură de vită" },
+    {
+      "id": "rundsgebraad",
+      "category": "rund",
+      "name": {
+        "nl": "Rundsgebraad",
+        "ro": "Friptură de vită"
+      },
       "line": {
         "nl": "Rondom aanbraden, 45 min per kg op 180 °C, 10 min rusten.",
         "ro": "Rumenit, 45 de min pe kg la 180 °C, 10 min repaus."
@@ -46,7 +200,13 @@
       "step": 0.1,
       "min": 0.1
     },
-    { "id": "entrecote", "category": "rund", "name": { "nl": "Entrecote", "ro": "Antricot de vită" },
+    {
+      "id": "entrecote",
+      "category": "rund",
+      "name": {
+        "nl": "Entrecote",
+        "ro": "Antricot de vită"
+      },
       "line": {
         "nl": "Kort en heet bakken, 3 min per kant, 3 min rusten.",
         "ro": "Prăjit iute, 3 min pe parte, apoi 3 min repaus."
@@ -57,7 +217,13 @@
       "step": 1,
       "min": 1
     },
-    { "id": "stoofvlees", "category": "rund", "name": { "nl": "Stoofvlees", "ro": "Carne de vită pentru tocăniță" },
+    {
+      "id": "stoofvlees",
+      "category": "rund",
+      "name": {
+        "nl": "Stoofvlees",
+        "ro": "Carne de vită pentru tocăniță"
+      },
       "line": {
         "nl": "Zachtjes stoven, 2,5 tot 3 u, met bruin bier.",
         "ro": "Fiert înăbușit, 2,5 până la 3 ore, cu bere brună."
@@ -68,7 +234,13 @@
       "step": 0.1,
       "min": 0.1
     },
-    { "id": "gehakt", "category": "rund", "name": { "nl": "Gehakt", "ro": "Carne tocată" },
+    {
+      "id": "gehakt",
+      "category": "rund",
+      "name": {
+        "nl": "Gehakt",
+        "ro": "Carne tocată"
+      },
       "line": {
         "nl": "Balletjes 12 min in de pan, gehaktbrood 50 min op 180 °C.",
         "ro": "Chiftele 12 min în tigaie, ruladă 50 de min la 180 °C."
@@ -79,7 +251,13 @@
       "step": 0.1,
       "min": 0.1
     },
-    { "id": "biefstuk", "category": "rund", "name": { "nl": "Biefstuk", "ro": "Biftec de vită" },
+    {
+      "id": "biefstuk",
+      "category": "rund",
+      "name": {
+        "nl": "Biefstuk",
+        "ro": "Biftec de vită"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -88,7 +266,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "chateaubriand", "category": "rund", "name": { "nl": "Chateaubriand", "ro": "Chateaubriand (mușchi de vită)" },
+    {
+      "id": "chateaubriand",
+      "category": "rund",
+      "name": {
+        "nl": "Chateaubriand",
+        "ro": "Chateaubriand (mușchi de vită)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -97,7 +281,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "filet-pur", "category": "rund", "name": { "nl": "Filet pur", "ro": "Mușchiuleț de vită (filet pur)" },
+    {
+      "id": "filet-pur",
+      "category": "rund",
+      "name": {
+        "nl": "Filet pur",
+        "ro": "Mușchiuleț de vită (filet pur)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -106,7 +296,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "rumsteak", "category": "rund", "name": { "nl": "Rumsteak", "ro": "Rumsteak (pulpă de vită)" },
+    {
+      "id": "rumsteak",
+      "category": "rund",
+      "name": {
+        "nl": "Rumsteak",
+        "ro": "Rumsteak (pulpă de vită)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -115,7 +311,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "rosbief", "category": "rund", "name": { "nl": "Rosbief", "ro": "Rosbif" },
+    {
+      "id": "rosbief",
+      "category": "rund",
+      "name": {
+        "nl": "Rosbief",
+        "ro": "Rosbif"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -124,7 +326,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "filet-entrecote", "category": "rund", "name": { "nl": "Filet entrecote", "ro": "Antricot de vită, filet" },
+    {
+      "id": "filet-entrecote",
+      "category": "rund",
+      "name": {
+        "nl": "Filet entrecote",
+        "ro": "Antricot de vită, filet"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -133,7 +341,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "zesrib-entrecote", "category": "rund", "name": { "nl": "Zesrib entrecote", "ro": "Antricot de vită, zesrib" },
+    {
+      "id": "zesrib-entrecote",
+      "category": "rund",
+      "name": {
+        "nl": "Zesrib entrecote",
+        "ro": "Antricot de vită, zesrib"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -142,7 +356,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "kraaibiefstuk", "category": "rund", "name": { "nl": "Kraaibiefstuk", "ro": "Fleică de vită (kraaibiefstuk)" },
+    {
+      "id": "kraaibiefstuk",
+      "category": "rund",
+      "name": {
+        "nl": "Kraaibiefstuk",
+        "ro": "Fleică de vită (kraaibiefstuk)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -151,7 +371,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "filet-mignon", "category": "rund", "name": { "nl": "Filet mignon", "ro": "Filet mignon de vită" },
+    {
+      "id": "filet-mignon",
+      "category": "rund",
+      "name": {
+        "nl": "Filet mignon",
+        "ro": "Filet mignon de vită"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -160,7 +386,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "cote-a-los-rund", "category": "rund", "name": { "nl": "Côte à l'os", "ro": "Cotlet de vită cu os (côte à l'os)" },
+    {
+      "id": "cote-a-los-rund",
+      "category": "rund",
+      "name": {
+        "nl": "Côte à l'os",
+        "ro": "Cotlet de vită cu os (côte à l'os)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -169,7 +401,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "tomahawk", "category": "rund", "name": { "nl": "Tomahawk", "ro": "Tomahawk" },
+    {
+      "id": "tomahawk",
+      "category": "rund",
+      "name": {
+        "nl": "Tomahawk",
+        "ro": "Tomahawk"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -178,7 +416,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "osso-buco", "category": "rund", "name": { "nl": "Osso buco", "ro": "Osso buco (rasol de vită cu os)" },
+    {
+      "id": "osso-buco",
+      "category": "rund",
+      "name": {
+        "nl": "Osso buco",
+        "ro": "Osso buco (rasol de vită cu os)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -187,7 +431,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "picanha-rozemarijn", "category": "rund", "name": { "nl": "Picanha met rozemarijn", "ro": "Picanha cu rozmarin" },
+    {
+      "id": "picanha-rozemarijn",
+      "category": "rund",
+      "name": {
+        "nl": "Picanha met rozemarijn",
+        "ro": "Picanha cu rozmarin"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -196,7 +446,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "rundscarpaccio", "category": "rund", "name": { "nl": "Rundscarpaccio", "ro": "Carpaccio de vită" },
+    {
+      "id": "rundscarpaccio",
+      "category": "rund",
+      "name": {
+        "nl": "Rundscarpaccio",
+        "ro": "Carpaccio de vită"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -205,7 +461,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "soepvlees", "category": "rund", "name": { "nl": "Soepvlees", "ro": "Carne de vită pentru supă" },
+    {
+      "id": "soepvlees",
+      "category": "rund",
+      "name": {
+        "nl": "Soepvlees",
+        "ro": "Carne de vită pentru supă"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -214,7 +476,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "mergpijpjes", "category": "rund", "name": { "nl": "Mergpijpjes", "ro": "Oase cu măduvă" },
+    {
+      "id": "mergpijpjes",
+      "category": "rund",
+      "name": {
+        "nl": "Mergpijpjes",
+        "ro": "Oase cu măduvă"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -223,7 +491,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "blinde-vink", "category": "rund", "name": { "nl": "Blinde vink", "ro": "Blinde vink (rulou de vită umplut)" },
+    {
+      "id": "blinde-vink",
+      "category": "rund",
+      "name": {
+        "nl": "Blinde vink",
+        "ro": "Blinde vink (rulou de vită umplut)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -232,7 +506,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "americain", "category": "rund", "name": { "nl": "Américain", "ro": "Américain (tartar de vită)" },
+    {
+      "id": "americain",
+      "category": "rund",
+      "name": {
+        "nl": "Américain",
+        "ro": "Américain (tartar de vită)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -241,7 +521,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "kalfsgehakt", "category": "rund", "name": { "nl": "Kalfsgehakt", "ro": "Carne tocată de vițel" },
+    {
+      "id": "kalfsgehakt",
+      "category": "rund",
+      "name": {
+        "nl": "Kalfsgehakt",
+        "ro": "Carne tocată de vițel"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -250,7 +536,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "varkenshaasje", "category": "varken", "name": { "nl": "Varkenshaasje", "ro": "Mușchiuleț de porc" },
+    {
+      "id": "varkenshaasje",
+      "category": "varken",
+      "name": {
+        "nl": "Varkenshaasje",
+        "ro": "Mușchiuleț de porc"
+      },
       "line": {
         "nl": "Rondom aanbraden, 15 min in de oven op 180 °C, 5 min rusten.",
         "ro": "Rumenit, 15 min la cuptor la 180 °C, 5 min repaus."
@@ -261,7 +553,13 @@
       "step": 1,
       "min": 1
     },
-    { "id": "spiering", "category": "varken", "name": { "nl": "Spiering", "ro": "Ceafă de porc" },
+    {
+      "id": "spiering",
+      "category": "varken",
+      "name": {
+        "nl": "Spiering",
+        "ro": "Ceafă de porc"
+      },
       "line": {
         "nl": "Op de BBQ of in de pan, 5 min per kant, matig vuur.",
         "ro": "Pe grătar sau în tigaie, 5 min pe parte, foc mediu."
@@ -272,7 +570,13 @@
       "step": 1,
       "min": 1
     },
-    { "id": "ribbetjes", "category": "varken", "name": { "nl": "Ribbetjes", "ro": "Coaste de porc" },
+    {
+      "id": "ribbetjes",
+      "category": "varken",
+      "name": {
+        "nl": "Ribbetjes",
+        "ro": "Coaste de porc"
+      },
       "line": {
         "nl": "1 u voorgaren in de oven op 150 °C, dan 10 min op de BBQ.",
         "ro": "O oră la cuptor la 150 °C, apoi 10 min pe grătar."
@@ -283,7 +587,13 @@
       "step": 0.1,
       "min": 0.1
     },
-    { "id": "braadworst", "category": "varken", "name": { "nl": "Braadworst", "ro": "Cârnați proaspeți de porc" },
+    {
+      "id": "braadworst",
+      "category": "varken",
+      "name": {
+        "nl": "Braadworst",
+        "ro": "Cârnați proaspeți de porc"
+      },
       "line": {
         "nl": "In de pan op matig vuur, 12 tot 15 min, regelmatig draaien.",
         "ro": "În tigaie la foc mediu, 12 până la 15 min, întorși des."
@@ -294,7 +604,13 @@
       "step": 1,
       "min": 1
     },
-    { "id": "varkensgehakt", "category": "varken", "name": { "nl": "Varkensgehakt", "ro": "Carne tocată de porc" },
+    {
+      "id": "varkensgehakt",
+      "category": "varken",
+      "name": {
+        "nl": "Varkensgehakt",
+        "ro": "Carne tocată de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -303,7 +619,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "gemengd-gehakt", "category": "varken", "name": { "nl": "Gemengd gehakt", "ro": "Carne tocată amestec" },
+    {
+      "id": "gemengd-gehakt",
+      "category": "varken",
+      "name": {
+        "nl": "Gemengd gehakt",
+        "ro": "Carne tocată amestec"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -312,7 +634,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "droge-worst", "category": "varken", "name": { "nl": "Droge worst", "ro": "Cârnați uscați" },
+    {
+      "id": "droge-worst",
+      "category": "varken",
+      "name": {
+        "nl": "Droge worst",
+        "ro": "Cârnați uscați"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -321,7 +649,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "chipolata", "category": "varken", "name": { "nl": "Chipolata", "ro": "Chipolata" },
+    {
+      "id": "chipolata",
+      "category": "varken",
+      "name": {
+        "nl": "Chipolata",
+        "ro": "Chipolata"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -330,7 +664,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "merguez", "category": "varken", "name": { "nl": "Merguez", "ro": "Merguez" },
+    {
+      "id": "merguez",
+      "category": "varken",
+      "name": {
+        "nl": "Merguez",
+        "ro": "Merguez"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -339,7 +679,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "witte-pens", "category": "varken", "name": { "nl": "Witte pens", "ro": "Caltaboș alb" },
+    {
+      "id": "witte-pens",
+      "category": "varken",
+      "name": {
+        "nl": "Witte pens",
+        "ro": "Caltaboș alb"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -348,7 +694,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "gevulde-witte-pens", "category": "varken", "name": { "nl": "Gevulde witte pens", "ro": "Caltaboș alb umplut" },
+    {
+      "id": "gevulde-witte-pens",
+      "category": "varken",
+      "name": {
+        "nl": "Gevulde witte pens",
+        "ro": "Caltaboș alb umplut"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -357,7 +709,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "filetkotelet", "category": "varken", "name": { "nl": "Filetkotelet", "ro": "Cotlet de porc, file" },
+    {
+      "id": "filetkotelet",
+      "category": "varken",
+      "name": {
+        "nl": "Filetkotelet",
+        "ro": "Cotlet de porc, file"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -366,7 +724,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "spieringgebraad", "category": "varken", "name": { "nl": "Spieringgebraad", "ro": "Friptură de ceafă de porc" },
+    {
+      "id": "spieringgebraad",
+      "category": "varken",
+      "name": {
+        "nl": "Spieringgebraad",
+        "ro": "Friptură de ceafă de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -375,7 +739,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "ardens-gebraad", "category": "varken", "name": { "nl": "Ardens gebraad", "ro": "Friptură ardeneză" },
+    {
+      "id": "ardens-gebraad",
+      "category": "varken",
+      "name": {
+        "nl": "Ardens gebraad",
+        "ro": "Friptură ardeneză"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -384,7 +754,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "hespengebraad", "category": "varken", "name": { "nl": "Hespengebraad", "ro": "Friptură de pulpă de porc" },
+    {
+      "id": "hespengebraad",
+      "category": "varken",
+      "name": {
+        "nl": "Hespengebraad",
+        "ro": "Friptură de pulpă de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -393,7 +769,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "carregebraad", "category": "varken", "name": { "nl": "Carrégebraad", "ro": "Friptură de cotlet (carré)" },
+    {
+      "id": "carregebraad",
+      "category": "varken",
+      "name": {
+        "nl": "Carrégebraad",
+        "ro": "Friptură de cotlet (carré)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -402,7 +784,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "mignonette-rozemarijn", "category": "varken", "name": { "nl": "Mignonette met rozemarijn", "ro": "Mignonette cu rozmarin" },
+    {
+      "id": "mignonette-rozemarijn",
+      "category": "varken",
+      "name": {
+        "nl": "Mignonette met rozemarijn",
+        "ro": "Mignonette cu rozmarin"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -411,7 +799,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "buikribben", "category": "varken", "name": { "nl": "Buikribben", "ro": "Coaste din piept de porc" },
+    {
+      "id": "buikribben",
+      "category": "varken",
+      "name": {
+        "nl": "Buikribben",
+        "ro": "Coaste din piept de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -420,7 +814,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "buikrollade", "category": "varken", "name": { "nl": "Buikrollade", "ro": "Rulou din piept de porc" },
+    {
+      "id": "buikrollade",
+      "category": "varken",
+      "name": {
+        "nl": "Buikrollade",
+        "ro": "Rulou din piept de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -429,7 +829,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "spek", "category": "varken", "name": { "nl": "Spek", "ro": "Piept de porc (slănină)" },
+    {
+      "id": "spek",
+      "category": "varken",
+      "name": {
+        "nl": "Spek",
+        "ro": "Piept de porc (slănină)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -438,7 +844,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "carre", "category": "varken", "name": { "nl": "Carré", "ro": "Carré de porc" },
+    {
+      "id": "carre",
+      "category": "varken",
+      "name": {
+        "nl": "Carré",
+        "ro": "Carré de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -447,7 +859,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "orloffgebraad", "category": "varken", "name": { "nl": "Orloffgebraad", "ro": "Friptură Orloff" },
+    {
+      "id": "orloffgebraad",
+      "category": "varken",
+      "name": {
+        "nl": "Orloffgebraad",
+        "ro": "Friptură Orloff"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -456,7 +874,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "ardeense-steak", "category": "varken", "name": { "nl": "Ardeense steak", "ro": "Steak ardenez" },
+    {
+      "id": "ardeense-steak",
+      "category": "varken",
+      "name": {
+        "nl": "Ardeense steak",
+        "ro": "Steak ardenez"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -465,7 +889,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "varkenscote-a-los", "category": "varken", "name": { "nl": "Varkenscôte à l'os", "ro": "Cotlet de porc cu os (côte à l'os)" },
+    {
+      "id": "varkenscote-a-los",
+      "category": "varken",
+      "name": {
+        "nl": "Varkenscôte à l'os",
+        "ro": "Cotlet de porc cu os (côte à l'os)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -474,7 +904,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "varkenskroontje", "category": "varken", "name": { "nl": "Varkenskroontje", "ro": "Coroană de porc" },
+    {
+      "id": "varkenskroontje",
+      "category": "varken",
+      "name": {
+        "nl": "Varkenskroontje",
+        "ro": "Coroană de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -483,7 +919,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "varkensstoofvlees", "category": "varken", "name": { "nl": "Varkensstoofvlees", "ro": "Carne de porc pentru tocăniță" },
+    {
+      "id": "varkensstoofvlees",
+      "category": "varken",
+      "name": {
+        "nl": "Varkensstoofvlees",
+        "ro": "Carne de porc pentru tocăniță"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -492,7 +934,13 @@
       "min": 0.1,
       "board": true
     },
-    { "id": "schenkel", "category": "varken", "name": { "nl": "Schenkel", "ro": "Rasol de porc" },
+    {
+      "id": "schenkel",
+      "category": "varken",
+      "name": {
+        "nl": "Schenkel",
+        "ro": "Rasol de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -501,7 +949,13 @@
       "min": 1,
       "board": true
     },
-    { "id": "varkenswangetjes", "category": "varken", "name": { "nl": "Varkenswangetjes", "ro": "Obrăjori de porc" },
+    {
+      "id": "varkenswangetjes",
+      "category": "varken",
+      "name": {
+        "nl": "Varkenswangetjes",
+        "ro": "Obrăjori de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -511,7 +965,13 @@
       "board": true,
       "group": "organen"
     },
-    { "id": "varkensniertjes", "category": "varken", "name": { "nl": "Varkensniertjes", "ro": "Rinichi de porc" },
+    {
+      "id": "varkensniertjes",
+      "category": "varken",
+      "name": {
+        "nl": "Varkensniertjes",
+        "ro": "Rinichi de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -521,7 +981,13 @@
       "board": true,
       "group": "organen"
     },
-    { "id": "varkensstaart", "category": "varken", "name": { "nl": "Varkensstaart", "ro": "Coadă de porc" },
+    {
+      "id": "varkensstaart",
+      "category": "varken",
+      "name": {
+        "nl": "Varkensstaart",
+        "ro": "Coadă de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -531,7 +997,13 @@
       "board": true,
       "group": "organen"
     },
-    { "id": "varkenspoot", "category": "varken", "name": { "nl": "Varkenspoot", "ro": "Picior de porc" },
+    {
+      "id": "varkenspoot",
+      "category": "varken",
+      "name": {
+        "nl": "Varkenspoot",
+        "ro": "Picior de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -541,7 +1013,13 @@
       "board": true,
       "group": "organen"
     },
-    { "id": "varkensoren", "category": "varken", "name": { "nl": "Varkensoren", "ro": "Urechi de porc" },
+    {
+      "id": "varkensoren",
+      "category": "varken",
+      "name": {
+        "nl": "Varkensoren",
+        "ro": "Urechi de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -551,7 +1029,13 @@
       "board": true,
       "group": "organen"
     },
-    { "id": "varkenslever", "category": "varken", "name": { "nl": "Varkenslever", "ro": "Ficat de porc" },
+    {
+      "id": "varkenslever",
+      "category": "varken",
+      "name": {
+        "nl": "Varkenslever",
+        "ro": "Ficat de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -561,7 +1045,13 @@
       "board": true,
       "group": "organen"
     },
-    { "id": "varkenstong", "category": "varken", "name": { "nl": "Varkenstong", "ro": "Limbă de porc" },
+    {
+      "id": "varkenstong",
+      "category": "varken",
+      "name": {
+        "nl": "Varkenstong",
+        "ro": "Limbă de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -571,7 +1061,13 @@
       "board": true,
       "group": "organen"
     },
-    { "id": "hersenen", "category": "varken", "name": { "nl": "Hersenen", "ro": "Creier de porc" },
+    {
+      "id": "hersenen",
+      "category": "varken",
+      "name": {
+        "nl": "Hersenen",
+        "ro": "Creier de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -581,7 +1077,13 @@
       "board": true,
       "group": "organen"
     },
-    { "id": "kipfilet", "category": "kip", "name": { "nl": "Kipfilet", "ro": "Piept de pui" },
+    {
+      "id": "kipfilet",
+      "category": "kip",
+      "name": {
+        "nl": "Kipfilet",
+        "ro": "Piept de pui"
+      },
       "line": {
         "nl": "In de pan 6 min per kant, of 25 min in de oven op 180 °C.",
         "ro": "În tigaie 6 min pe parte sau 25 de min la cuptor, 180 °C."
@@ -592,7 +1094,13 @@
       "step": 1,
       "min": 1
     },
-    { "id": "kippenboutjes", "category": "kip", "name": { "nl": "Kippenboutjes", "ro": "Pulpe de pui" },
+    {
+      "id": "kippenboutjes",
+      "category": "kip",
+      "name": {
+        "nl": "Kippenboutjes",
+        "ro": "Pulpe de pui"
+      },
       "line": {
         "nl": "45 min in de oven op 200 °C, krokant en gaar tot op het been.",
         "ro": "45 de min la cuptor la 200 °C, crocante, pătrunse la os."
@@ -603,7 +1111,13 @@
       "step": 1,
       "min": 1
     },
-    { "id": "kalkoengebraad", "category": "kip", "name": { "nl": "Kalkoengebraad", "ro": "Friptură de curcan" },
+    {
+      "id": "kalkoengebraad",
+      "category": "kip",
+      "name": {
+        "nl": "Kalkoengebraad",
+        "ro": "Friptură de curcan"
+      },
       "line": {
         "nl": "Aanbraden, dan 1 u per kg in de oven op 160 °C, afgedekt.",
         "ro": "Rumenit, apoi o oră pe kg la cuptor la 160 °C, acoperit."
@@ -614,7 +1128,13 @@
       "step": 0.1,
       "min": 0.1
     },
-    { "id": "hoeve-kip", "category": "kip", "name": { "nl": "Hoeve kip", "ro": "Pui de fermă, întreg" },
+    {
+      "id": "hoeve-kip",
+      "category": "kip",
+      "name": {
+        "nl": "Hoeve kip",
+        "ro": "Pui de fermă, întreg"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -624,7 +1144,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "kippenbil", "category": "kip", "name": { "nl": "Kippenbil", "ro": "Pulpă superioară de pui" },
+    {
+      "id": "kippenbil",
+      "category": "kip",
+      "name": {
+        "nl": "Kippenbil",
+        "ro": "Pulpă superioară de pui"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -634,7 +1160,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "kippenvleugel", "category": "kip", "name": { "nl": "Kippenvleugel", "ro": "Aripioare de pui" },
+    {
+      "id": "kippenvleugel",
+      "category": "kip",
+      "name": {
+        "nl": "Kippenvleugel",
+        "ro": "Aripioare de pui"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -644,7 +1176,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "kippenhaasje", "category": "kip", "name": { "nl": "Kippenhaasje", "ro": "Mușchiuleț de pui" },
+    {
+      "id": "kippenhaasje",
+      "category": "kip",
+      "name": {
+        "nl": "Kippenhaasje",
+        "ro": "Mușchiuleț de pui"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -654,7 +1192,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "kip-orloff", "category": "kip", "name": { "nl": "Kip Orloff", "ro": "Pui Orloff" },
+    {
+      "id": "kip-orloff",
+      "category": "kip",
+      "name": {
+        "nl": "Kip Orloff",
+        "ro": "Pui Orloff"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -664,7 +1208,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "italiaanse-kipfilet", "category": "kip", "name": { "nl": "Italiaanse kipfilet", "ro": "Piept de pui italian" },
+    {
+      "id": "italiaanse-kipfilet",
+      "category": "kip",
+      "name": {
+        "nl": "Italiaanse kipfilet",
+        "ro": "Piept de pui italian"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -674,7 +1224,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "kippenhartjes", "category": "kip", "name": { "nl": "Kippenhartjes", "ro": "Inimi de pui" },
+    {
+      "id": "kippenhartjes",
+      "category": "kip",
+      "name": {
+        "nl": "Kippenhartjes",
+        "ro": "Inimi de pui"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -684,7 +1240,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "kippenlever", "category": "kip", "name": { "nl": "Kippenlever", "ro": "Ficat de pui" },
+    {
+      "id": "kippenlever",
+      "category": "kip",
+      "name": {
+        "nl": "Kippenlever",
+        "ro": "Ficat de pui"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -694,7 +1256,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "kippenmagen", "category": "kip", "name": { "nl": "Kippenmagen", "ro": "Pipote de pui" },
+    {
+      "id": "kippenmagen",
+      "category": "kip",
+      "name": {
+        "nl": "Kippenmagen",
+        "ro": "Pipote de pui"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -704,7 +1272,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "kippenworst", "category": "kip", "name": { "nl": "Kippenworst", "ro": "Cârnați de pui" },
+    {
+      "id": "kippenworst",
+      "category": "kip",
+      "name": {
+        "nl": "Kippenworst",
+        "ro": "Cârnați de pui"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -714,7 +1288,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "kippenchipolata", "category": "kip", "name": { "nl": "Kippenchipolata", "ro": "Chipolata de pui" },
+    {
+      "id": "kippenchipolata",
+      "category": "kip",
+      "name": {
+        "nl": "Kippenchipolata",
+        "ro": "Chipolata de pui"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -724,7 +1304,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "kipgehakt", "category": "kip", "name": { "nl": "Kipgehakt", "ro": "Carne tocată de pui" },
+    {
+      "id": "kipgehakt",
+      "category": "kip",
+      "name": {
+        "nl": "Kipgehakt",
+        "ro": "Carne tocată de pui"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -734,7 +1320,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "kalkoenfilet", "category": "kip", "name": { "nl": "Kalkoenfilet", "ro": "Piept de curcan" },
+    {
+      "id": "kalkoenfilet",
+      "category": "kip",
+      "name": {
+        "nl": "Kalkoenfilet",
+        "ro": "Piept de curcan"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -744,7 +1336,13 @@
       "board": true,
       "group": "kalkoen"
     },
-    { "id": "kalkoen-bursan", "category": "kip", "name": { "nl": "Kalkoen Bursan", "ro": "Curcan Bursan" },
+    {
+      "id": "kalkoen-bursan",
+      "category": "kip",
+      "name": {
+        "nl": "Kalkoen Bursan",
+        "ro": "Curcan Bursan"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -754,7 +1352,13 @@
       "board": true,
       "group": "kalkoen"
     },
-    { "id": "kalkoen-orloff", "category": "kip", "name": { "nl": "Kalkoen Orloff", "ro": "Curcan Orloff" },
+    {
+      "id": "kalkoen-orloff",
+      "category": "kip",
+      "name": {
+        "nl": "Kalkoen Orloff",
+        "ro": "Curcan Orloff"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -764,7 +1368,13 @@
       "board": true,
       "group": "kalkoen"
     },
-    { "id": "lamsbout", "category": "lam", "name": { "nl": "Lamsbout", "ro": "Pulpă de miel" },
+    {
+      "id": "lamsbout",
+      "category": "lam",
+      "name": {
+        "nl": "Lamsbout",
+        "ro": "Pulpă de miel"
+      },
       "line": {
         "nl": "In de oven op 170 °C, 1 u per kg voor rosé, 15 min rusten.",
         "ro": "La 170 °C, o oră pe kg pentru rozé, 15 min repaus."
@@ -775,7 +1385,13 @@
       "step": 0.1,
       "min": 0.1
     },
-    { "id": "lam-half", "category": "lam", "name": { "nl": "Lam 1/2", "ro": "Miel, jumătate" },
+    {
+      "id": "lam-half",
+      "category": "lam",
+      "name": {
+        "nl": "Lam 1/2",
+        "ro": "Miel, jumătate"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -786,7 +1402,13 @@
       "board": true,
       "group": "lam"
     },
-    { "id": "lam-heel", "category": "lam", "name": { "nl": "Lam", "ro": "Miel întreg" },
+    {
+      "id": "lam-heel",
+      "category": "lam",
+      "name": {
+        "nl": "Lam",
+        "ro": "Miel întreg"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -797,7 +1419,13 @@
       "board": true,
       "group": "lam"
     },
-    { "id": "lamskotelet", "category": "lam", "name": { "nl": "Lamskotelet", "ro": "Cotlete de miel" },
+    {
+      "id": "lamskotelet",
+      "category": "lam",
+      "name": {
+        "nl": "Lamskotelet",
+        "ro": "Cotlete de miel"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -807,7 +1435,13 @@
       "board": true,
       "group": "lam"
     },
-    { "id": "lamskotelet-zonder-been", "category": "lam", "name": { "nl": "Lamskotelet zonder been", "ro": "Cotlet de miel fără os" },
+    {
+      "id": "lamskotelet-zonder-been",
+      "category": "lam",
+      "name": {
+        "nl": "Lamskotelet zonder been",
+        "ro": "Cotlet de miel fără os"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -817,7 +1451,13 @@
       "board": true,
       "group": "lam"
     },
-    { "id": "lamspastrami", "category": "lam", "name": { "nl": "Lamspastrami", "ro": "Pastramă de miel" },
+    {
+      "id": "lamspastrami",
+      "category": "lam",
+      "name": {
+        "nl": "Lamspastrami",
+        "ro": "Pastramă de miel"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -827,7 +1467,13 @@
       "board": true,
       "group": "lam"
     },
-    { "id": "lamsrib", "category": "lam", "name": { "nl": "Lamsrib", "ro": "Coaste de miel" },
+    {
+      "id": "lamsrib",
+      "category": "lam",
+      "name": {
+        "nl": "Lamsrib",
+        "ro": "Coaste de miel"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -837,7 +1483,13 @@
       "board": true,
       "group": "lam"
     },
-    { "id": "lamsschenkel", "category": "lam", "name": { "nl": "Lamsschenkel", "ro": "Rasol de miel" },
+    {
+      "id": "lamsschenkel",
+      "category": "lam",
+      "name": {
+        "nl": "Lamsschenkel",
+        "ro": "Rasol de miel"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -847,7 +1499,13 @@
       "board": true,
       "group": "lam"
     },
-    { "id": "lamsstoofvlees", "category": "lam", "name": { "nl": "Lamsstoofvlees", "ro": "Carne de miel pentru tocăniță" },
+    {
+      "id": "lamsstoofvlees",
+      "category": "lam",
+      "name": {
+        "nl": "Lamsstoofvlees",
+        "ro": "Carne de miel pentru tocăniță"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -857,7 +1515,13 @@
       "board": true,
       "group": "lam"
     },
-    { "id": "lamsschouder", "category": "lam", "name": { "nl": "Lamsschouder", "ro": "Spată de miel" },
+    {
+      "id": "lamsschouder",
+      "category": "lam",
+      "name": {
+        "nl": "Lamsschouder",
+        "ro": "Spată de miel"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -867,7 +1531,13 @@
       "board": true,
       "group": "lam"
     },
-    { "id": "lamsnek", "category": "lam", "name": { "nl": "Lamsnek", "ro": "Gât de miel" },
+    {
+      "id": "lamsnek",
+      "category": "lam",
+      "name": {
+        "nl": "Lamsnek",
+        "ro": "Gât de miel"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -877,7 +1547,13 @@
       "board": true,
       "group": "lam"
     },
-    { "id": "lamsgehakt", "category": "lam", "name": { "nl": "Lamsgehakt", "ro": "Carne tocată de miel" },
+    {
+      "id": "lamsgehakt",
+      "category": "lam",
+      "name": {
+        "nl": "Lamsgehakt",
+        "ro": "Carne tocată de miel"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -887,7 +1563,13 @@
       "board": true,
       "group": "lam"
     },
-    { "id": "varkensschnitzel", "category": "bereidingen", "name": { "nl": "Varkensschnitzel", "ro": "Șnițel de porc" },
+    {
+      "id": "varkensschnitzel",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Varkensschnitzel",
+        "ro": "Șnițel de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -897,7 +1579,13 @@
       "board": true,
       "group": "pane"
     },
-    { "id": "kipschnitzel", "category": "bereidingen", "name": { "nl": "Kipschnitzel", "ro": "Șnițel de pui" },
+    {
+      "id": "kipschnitzel",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Kipschnitzel",
+        "ro": "Șnițel de pui"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -907,7 +1595,13 @@
       "board": true,
       "group": "pane"
     },
-    { "id": "natuurburger", "category": "bereidingen", "name": { "nl": "Natuurburger", "ro": "Burger natur" },
+    {
+      "id": "natuurburger",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Natuurburger",
+        "ro": "Burger natur"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -917,7 +1611,13 @@
       "board": true,
       "group": "pane"
     },
-    { "id": "kaasburger", "category": "bereidingen", "name": { "nl": "Kaasburger", "ro": "Burger cu brânză" },
+    {
+      "id": "kaasburger",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Kaasburger",
+        "ro": "Burger cu brânză"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -927,7 +1627,13 @@
       "board": true,
       "group": "pane"
     },
-    { "id": "valentineburger", "category": "bereidingen", "name": { "nl": "Valentineburger", "ro": "Burger Valentine" },
+    {
+      "id": "valentineburger",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Valentineburger",
+        "ro": "Burger Valentine"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -937,7 +1643,13 @@
       "board": true,
       "group": "pane"
     },
-    { "id": "boerburger", "category": "bereidingen", "name": { "nl": "Boerburger", "ro": "Burger țărănesc" },
+    {
+      "id": "boerburger",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Boerburger",
+        "ro": "Burger țărănesc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -947,7 +1659,13 @@
       "board": true,
       "group": "pane"
     },
-    { "id": "special-burger", "category": "bereidingen", "name": { "nl": "Special burger", "ro": "Burger special" },
+    {
+      "id": "special-burger",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Special burger",
+        "ro": "Burger special"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -957,7 +1675,13 @@
       "board": true,
       "group": "pane"
     },
-    { "id": "ajuinburger", "category": "bereidingen", "name": { "nl": "Ajuinburger", "ro": "Burger cu ceapă" },
+    {
+      "id": "ajuinburger",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Ajuinburger",
+        "ro": "Burger cu ceapă"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -967,7 +1691,13 @@
       "board": true,
       "group": "pane"
     },
-    { "id": "hawaiburger", "category": "bereidingen", "name": { "nl": "Hawaïburger", "ro": "Burger Hawaii" },
+    {
+      "id": "hawaiburger",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Hawaïburger",
+        "ro": "Burger Hawaii"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -977,7 +1707,13 @@
       "board": true,
       "group": "pane"
     },
-    { "id": "dubaiburger", "category": "bereidingen", "name": { "nl": "Dubaiburger", "ro": "Burger Dubai" },
+    {
+      "id": "dubaiburger",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Dubaiburger",
+        "ro": "Burger Dubai"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -987,7 +1723,13 @@
       "board": true,
       "group": "pane"
     },
-    { "id": "beefburger", "category": "bereidingen", "name": { "nl": "Beefburger", "ro": "Burger de vită" },
+    {
+      "id": "beefburger",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Beefburger",
+        "ro": "Burger de vită"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -997,7 +1739,13 @@
       "board": true,
       "group": "pane"
     },
-    { "id": "kipburger", "category": "bereidingen", "name": { "nl": "Kipburger", "ro": "Burger de pui" },
+    {
+      "id": "kipburger",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Kipburger",
+        "ro": "Burger de pui"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1007,7 +1755,13 @@
       "board": true,
       "group": "pane"
     },
-    { "id": "spies-mini-burger", "category": "bereidingen", "name": { "nl": "Spies mini burger", "ro": "Frigăruie cu mini burgeri" },
+    {
+      "id": "spies-mini-burger",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Spies mini burger",
+        "ro": "Frigăruie cu mini burgeri"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1017,7 +1771,13 @@
       "board": true,
       "group": "pane"
     },
-    { "id": "cordon-bleu", "category": "bereidingen", "name": { "nl": "Cordon bleu", "ro": "Cordon bleu" },
+    {
+      "id": "cordon-bleu",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Cordon bleu",
+        "ro": "Cordon bleu"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1027,7 +1787,13 @@
       "board": true,
       "group": "pane"
     },
-    { "id": "special-cordon-bleu", "category": "bereidingen", "name": { "nl": "Special cordon bleu", "ro": "Cordon bleu special" },
+    {
+      "id": "special-cordon-bleu",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Special cordon bleu",
+        "ro": "Cordon bleu special"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1037,7 +1803,13 @@
       "board": true,
       "group": "pane"
     },
-    { "id": "vogelnestjes", "category": "bereidingen", "name": { "nl": "Vogelnestjes", "ro": "Vogelnestje (ou fiert învelit în carne tocată)" },
+    {
+      "id": "vogelnestjes",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Vogelnestjes",
+        "ro": "Vogelnestje (ou fiert învelit în carne tocată)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1047,7 +1819,13 @@
       "board": true,
       "group": "pane"
     },
-    { "id": "boomstammetje-spek", "category": "bereidingen", "name": { "nl": "Boomstammetje spek", "ro": "Boomstammetje cu bacon (rulou de carne tocată)" },
+    {
+      "id": "boomstammetje-spek",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Boomstammetje spek",
+        "ro": "Boomstammetje cu bacon (rulou de carne tocată)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1057,7 +1835,13 @@
       "board": true,
       "group": "gehakt"
     },
-    { "id": "boomstammetje-varken", "category": "bereidingen", "name": { "nl": "Boomstammetje varken", "ro": "Boomstammetje de porc (rulou de carne tocată)" },
+    {
+      "id": "boomstammetje-varken",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Boomstammetje varken",
+        "ro": "Boomstammetje de porc (rulou de carne tocată)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1067,7 +1851,13 @@
       "board": true,
       "group": "gehakt"
     },
-    { "id": "gehaktbrood-varken", "category": "bereidingen", "name": { "nl": "Gehaktbrood varken", "ro": "Gehaktbrood de porc (carne tocată la cuptor)" },
+    {
+      "id": "gehaktbrood-varken",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Gehaktbrood varken",
+        "ro": "Gehaktbrood de porc (carne tocată la cuptor)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1077,7 +1867,13 @@
       "board": true,
       "group": "gehakt"
     },
-    { "id": "gehaktbrood-kaas", "category": "bereidingen", "name": { "nl": "Gehaktbrood met kaas", "ro": "Gehaktbrood cu brânză" },
+    {
+      "id": "gehaktbrood-kaas",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Gehaktbrood met kaas",
+        "ro": "Gehaktbrood cu brânză"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1087,7 +1883,13 @@
       "board": true,
       "group": "gehakt"
     },
-    { "id": "rulade-gehakt", "category": "bereidingen", "name": { "nl": "Rulade gehakt", "ro": "Ruladă de carne tocată" },
+    {
+      "id": "rulade-gehakt",
+      "category": "bereidingen",
+      "name": {
+        "nl": "Rulade gehakt",
+        "ro": "Ruladă de carne tocată"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1097,7 +1899,13 @@
       "board": true,
       "group": "gehakt"
     },
-    { "id": "varkensbrochette", "category": "marinades", "name": { "nl": "Varkensbrochette", "ro": "Frigăruie de porc" },
+    {
+      "id": "varkensbrochette",
+      "category": "marinades",
+      "name": {
+        "nl": "Varkensbrochette",
+        "ro": "Frigăruie de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1107,7 +1915,13 @@
       "board": true,
       "group": "brochettes"
     },
-    { "id": "balletjesbrochette", "category": "marinades", "name": { "nl": "Balletjesbrochette", "ro": "Frigăruie cu chifteluțe" },
+    {
+      "id": "balletjesbrochette",
+      "category": "marinades",
+      "name": {
+        "nl": "Balletjesbrochette",
+        "ro": "Frigăruie cu chifteluțe"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1117,7 +1931,13 @@
       "board": true,
       "group": "brochettes"
     },
-    { "id": "grillworstbrochette", "category": "marinades", "name": { "nl": "Grillworstbrochette", "ro": "Frigăruie cu cârnăcior de grătar" },
+    {
+      "id": "grillworstbrochette",
+      "category": "marinades",
+      "name": {
+        "nl": "Grillworstbrochette",
+        "ro": "Frigăruie cu cârnăcior de grătar"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1127,7 +1947,13 @@
       "board": true,
       "group": "brochettes"
     },
-    { "id": "kipbrochette", "category": "marinades", "name": { "nl": "Kipbrochette", "ro": "Frigăruie de pui" },
+    {
+      "id": "kipbrochette",
+      "category": "marinades",
+      "name": {
+        "nl": "Kipbrochette",
+        "ro": "Frigăruie de pui"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1137,7 +1963,13 @@
       "board": true,
       "group": "brochettes"
     },
-    { "id": "kalkoenbrochette", "category": "marinades", "name": { "nl": "Kalkoenbrochette", "ro": "Frigăruie de curcan" },
+    {
+      "id": "kalkoenbrochette",
+      "category": "marinades",
+      "name": {
+        "nl": "Kalkoenbrochette",
+        "ro": "Frigăruie de curcan"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1147,7 +1979,13 @@
       "board": true,
       "group": "brochettes"
     },
-    { "id": "rundsbrochette", "category": "marinades", "name": { "nl": "Rundsbrochette", "ro": "Frigăruie de vită" },
+    {
+      "id": "rundsbrochette",
+      "category": "marinades",
+      "name": {
+        "nl": "Rundsbrochette",
+        "ro": "Frigăruie de vită"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1157,7 +1995,13 @@
       "board": true,
       "group": "brochettes"
     },
-    { "id": "ardeense-brochette", "category": "marinades", "name": { "nl": "Ardeense brochette", "ro": "Frigăruie ardeneză" },
+    {
+      "id": "ardeense-brochette",
+      "category": "marinades",
+      "name": {
+        "nl": "Ardeense brochette",
+        "ro": "Frigăruie ardeneză"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1167,7 +2011,13 @@
       "board": true,
       "group": "brochettes"
     },
-    { "id": "spekbrochette", "category": "marinades", "name": { "nl": "Spekbrochette", "ro": "Frigăruie cu bacon" },
+    {
+      "id": "spekbrochette",
+      "category": "marinades",
+      "name": {
+        "nl": "Spekbrochette",
+        "ro": "Frigăruie cu bacon"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1177,7 +2027,13 @@
       "board": true,
       "group": "brochettes"
     },
-    { "id": "lamsbrochette", "category": "marinades", "name": { "nl": "Lamsbrochette", "ro": "Frigăruie de miel" },
+    {
+      "id": "lamsbrochette",
+      "category": "marinades",
+      "name": {
+        "nl": "Lamsbrochette",
+        "ro": "Frigăruie de miel"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1187,7 +2043,13 @@
       "board": true,
       "group": "brochettes"
     },
-    { "id": "special-brochette", "category": "marinades", "name": { "nl": "Special brochette", "ro": "Frigăruie specială" },
+    {
+      "id": "special-brochette",
+      "category": "marinades",
+      "name": {
+        "nl": "Special brochette",
+        "ro": "Frigăruie specială"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1197,7 +2059,13 @@
       "board": true,
       "group": "brochettes"
     },
-    { "id": "spekfakkels", "category": "marinades", "name": { "nl": "Spekfakkels", "ro": "Spekfakkels (frigărui învelite în bacon)" },
+    {
+      "id": "spekfakkels",
+      "category": "marinades",
+      "name": {
+        "nl": "Spekfakkels",
+        "ro": "Spekfakkels (frigărui învelite în bacon)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1207,7 +2075,13 @@
       "board": true,
       "group": "brochettes"
     },
-    { "id": "varkenscote-gemarineerd", "category": "marinades", "name": { "nl": "Varkenscôte à l'os gemarineerd", "ro": "Cotlet de porc cu os, marinat" },
+    {
+      "id": "varkenscote-gemarineerd",
+      "category": "marinades",
+      "name": {
+        "nl": "Varkenscôte à l'os gemarineerd",
+        "ro": "Cotlet de porc cu os, marinat"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1217,7 +2091,13 @@
       "board": true,
       "group": "varken"
     },
-    { "id": "spieringkotelet-gemarineerd", "category": "marinades", "name": { "nl": "Spieringkotelet gemarineerd", "ro": "Cotlet de ceafă de porc, marinat" },
+    {
+      "id": "spieringkotelet-gemarineerd",
+      "category": "marinades",
+      "name": {
+        "nl": "Spieringkotelet gemarineerd",
+        "ro": "Cotlet de ceafă de porc, marinat"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1227,7 +2107,13 @@
       "board": true,
       "group": "varken"
     },
-    { "id": "filetkotelet-gemarineerd", "category": "marinades", "name": { "nl": "Filetkotelet gemarineerd", "ro": "Cotlet de porc file, marinat" },
+    {
+      "id": "filetkotelet-gemarineerd",
+      "category": "marinades",
+      "name": {
+        "nl": "Filetkotelet gemarineerd",
+        "ro": "Cotlet de porc file, marinat"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1237,7 +2123,13 @@
       "board": true,
       "group": "varken"
     },
-    { "id": "spek-gemarineerd", "category": "marinades", "name": { "nl": "Spek gemarineerd", "ro": "Piept de porc marinat" },
+    {
+      "id": "spek-gemarineerd",
+      "category": "marinades",
+      "name": {
+        "nl": "Spek gemarineerd",
+        "ro": "Piept de porc marinat"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1247,7 +2139,13 @@
       "board": true,
       "group": "varken"
     },
-    { "id": "varkenshaasje-gemarineerd", "category": "marinades", "name": { "nl": "Varkenshaasje gemarineerd", "ro": "Mușchiuleț de porc marinat" },
+    {
+      "id": "varkenshaasje-gemarineerd",
+      "category": "marinades",
+      "name": {
+        "nl": "Varkenshaasje gemarineerd",
+        "ro": "Mușchiuleț de porc marinat"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1257,7 +2155,13 @@
       "board": true,
       "group": "varken"
     },
-    { "id": "varkensmedaillon", "category": "marinades", "name": { "nl": "Varkensmedaillon", "ro": "Medalion de porc" },
+    {
+      "id": "varkensmedaillon",
+      "category": "marinades",
+      "name": {
+        "nl": "Varkensmedaillon",
+        "ro": "Medalion de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1267,7 +2171,13 @@
       "board": true,
       "group": "varken"
     },
-    { "id": "varkensgyros", "category": "marinades", "name": { "nl": "Varkensgyros", "ro": "Gyros de porc" },
+    {
+      "id": "varkensgyros",
+      "category": "marinades",
+      "name": {
+        "nl": "Varkensgyros",
+        "ro": "Gyros de porc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1277,7 +2187,13 @@
       "board": true,
       "group": "varken"
     },
-    { "id": "wokvlees-varken", "category": "marinades", "name": { "nl": "Wok", "ro": "Carne de porc pentru wok" },
+    {
+      "id": "wokvlees-varken",
+      "category": "marinades",
+      "name": {
+        "nl": "Wok",
+        "ro": "Carne de porc pentru wok"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1287,7 +2203,13 @@
       "board": true,
       "group": "varken"
     },
-    { "id": "pitavlees-varken", "category": "marinades", "name": { "nl": "Pitavlees varken", "ro": "Carne de porc pentru pita" },
+    {
+      "id": "pitavlees-varken",
+      "category": "marinades",
+      "name": {
+        "nl": "Pitavlees varken",
+        "ro": "Carne de porc pentru pita"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1297,7 +2219,13 @@
       "board": true,
       "group": "varken"
     },
-    { "id": "ardeens-gemarineerd", "category": "marinades", "name": { "nl": "Ardeens gemarineerd", "ro": "Ardenez marinat" },
+    {
+      "id": "ardeens-gemarineerd",
+      "category": "marinades",
+      "name": {
+        "nl": "Ardeens gemarineerd",
+        "ro": "Ardenez marinat"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1307,7 +2235,13 @@
       "board": true,
       "group": "varken"
     },
-    { "id": "blum-ardeens", "category": "marinades", "name": { "nl": "Blum Ardeens", "ro": "Blum Ardeens, cotlet marinat tăiat floare" },
+    {
+      "id": "blum-ardeens",
+      "category": "marinades",
+      "name": {
+        "nl": "Blum Ardeens",
+        "ro": "Blum Ardeens, cotlet marinat tăiat floare"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1317,7 +2251,13 @@
       "board": true,
       "group": "varken"
     },
-    { "id": "pizdulici-marinate", "category": "marinades", "name": { "nl": "Spenekop gemarineerd", "ro": "Pizdulici marinate" },
+    {
+      "id": "pizdulici-marinate",
+      "category": "marinades",
+      "name": {
+        "nl": "Spenekop gemarineerd",
+        "ro": "Pizdulici marinate"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1327,7 +2267,13 @@
       "board": true,
       "group": "varken"
     },
-    { "id": "kipfilet-gemarineerd", "category": "marinades", "name": { "nl": "Kipfilet gemarineerd", "ro": "Piept de pui marinat" },
+    {
+      "id": "kipfilet-gemarineerd",
+      "category": "marinades",
+      "name": {
+        "nl": "Kipfilet gemarineerd",
+        "ro": "Piept de pui marinat"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1337,7 +2283,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "kippenbil-gemarineerd", "category": "marinades", "name": { "nl": "Kippenbil gemarineerd", "ro": "Pulpă superioară de pui, marinată" },
+    {
+      "id": "kippenbil-gemarineerd",
+      "category": "marinades",
+      "name": {
+        "nl": "Kippenbil gemarineerd",
+        "ro": "Pulpă superioară de pui, marinată"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1347,7 +2299,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "kippenbout-gemarineerd", "category": "marinades", "name": { "nl": "Kippenbout gemarineerd", "ro": "Pulpe de pui marinate" },
+    {
+      "id": "kippenbout-gemarineerd",
+      "category": "marinades",
+      "name": {
+        "nl": "Kippenbout gemarineerd",
+        "ro": "Pulpe de pui marinate"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1357,7 +2315,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "kippenhaasje-gemarineerd", "category": "marinades", "name": { "nl": "Kippenhaasje gemarineerd", "ro": "Mușchiuleț de pui marinat" },
+    {
+      "id": "kippenhaasje-gemarineerd",
+      "category": "marinades",
+      "name": {
+        "nl": "Kippenhaasje gemarineerd",
+        "ro": "Mușchiuleț de pui marinat"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1367,7 +2331,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "kipgyros", "category": "marinades", "name": { "nl": "Kipgyros", "ro": "Gyros de pui" },
+    {
+      "id": "kipgyros",
+      "category": "marinades",
+      "name": {
+        "nl": "Kipgyros",
+        "ro": "Gyros de pui"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1377,7 +2347,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "kalkoen-gemarineerd", "category": "marinades", "name": { "nl": "Kalkoen gemarineerd", "ro": "Curcan marinat" },
+    {
+      "id": "kalkoen-gemarineerd",
+      "category": "marinades",
+      "name": {
+        "nl": "Kalkoen gemarineerd",
+        "ro": "Curcan marinat"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1387,7 +2363,13 @@
       "board": true,
       "group": "kip"
     },
-    { "id": "hespenworst", "category": "charcuterie", "name": { "nl": "Hespenworst", "ro": "Hespenworst (cârnat fiert cu șuncă)" },
+    {
+      "id": "hespenworst",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Hespenworst",
+        "ro": "Hespenworst (cârnat fiert cu șuncă)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1397,7 +2379,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "kalfsworst", "category": "charcuterie", "name": { "nl": "Kalfsworst", "ro": "Kalfsworst (cârnat de vițel)" },
+    {
+      "id": "kalfsworst",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Kalfsworst",
+        "ro": "Kalfsworst (cârnat de vițel)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1407,7 +2395,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "parijzer-worst", "category": "charcuterie", "name": { "nl": "Parijzer worst", "ro": "Parizer" },
+    {
+      "id": "parijzer-worst",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Parijzer worst",
+        "ro": "Parizer"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1417,7 +2411,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "champignonworst", "category": "charcuterie", "name": { "nl": "Champignonworst", "ro": "Champignonworst (parizer cu ciuperci)" },
+    {
+      "id": "champignonworst",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Champignonworst",
+        "ro": "Champignonworst (parizer cu ciuperci)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1427,7 +2427,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "mosterdspek", "category": "charcuterie", "name": { "nl": "Mosterdspek", "ro": "Mosterdspek (slănină cu muștar)" },
+    {
+      "id": "mosterdspek",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Mosterdspek",
+        "ro": "Mosterdspek (slănină cu muștar)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1437,7 +2443,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "blokpate", "category": "charcuterie", "name": { "nl": "Blokpaté", "ro": "Pateu bloc" },
+    {
+      "id": "blokpate",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Blokpaté",
+        "ro": "Pateu bloc"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1447,7 +2459,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "pate-maison", "category": "charcuterie", "name": { "nl": "Paté maison", "ro": "Pateu de casă" },
+    {
+      "id": "pate-maison",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Paté maison",
+        "ro": "Pateu de casă"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1457,7 +2475,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "fijnkostsalami", "category": "charcuterie", "name": { "nl": "Fijnkostsalami", "ro": "Salam fijnkost" },
+    {
+      "id": "fijnkostsalami",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Fijnkostsalami",
+        "ro": "Salam fijnkost"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1467,7 +2491,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "pepersalami", "category": "charcuterie", "name": { "nl": "Pepersalami", "ro": "Salam cu piper" },
+    {
+      "id": "pepersalami",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Pepersalami",
+        "ro": "Salam cu piper"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1477,7 +2507,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "kruidensalami", "category": "charcuterie", "name": { "nl": "Kruidensalami", "ro": "Salam cu ierburi" },
+    {
+      "id": "kruidensalami",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Kruidensalami",
+        "ro": "Salam cu ierburi"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1487,7 +2523,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "kalkoensalami", "category": "charcuterie", "name": { "nl": "Kalkoensalami", "ro": "Salam de curcan" },
+    {
+      "id": "kalkoensalami",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Kalkoensalami",
+        "ro": "Salam de curcan"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1497,7 +2539,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "chorizo", "category": "charcuterie", "name": { "nl": "Chorizo", "ro": "Chorizo" },
+    {
+      "id": "chorizo",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Chorizo",
+        "ro": "Chorizo"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1507,7 +2555,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "mayaworst", "category": "charcuterie", "name": { "nl": "Mayaworst", "ro": "Mayaworst" },
+    {
+      "id": "mayaworst",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Mayaworst",
+        "ro": "Mayaworst"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1517,7 +2571,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "charc-kipfilet", "category": "charcuterie", "name": { "nl": "Kipfilet (charcuterie)", "ro": "Piept de pui, mezel" },
+    {
+      "id": "charc-kipfilet",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Kipfilet (charcuterie)",
+        "ro": "Piept de pui, mezel"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1527,7 +2587,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "charc-kalkoenfilet", "category": "charcuterie", "name": { "nl": "Kalkoenfilet (charcuterie)", "ro": "Piept de curcan, mezel" },
+    {
+      "id": "charc-kalkoenfilet",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Kalkoenfilet (charcuterie)",
+        "ro": "Piept de curcan, mezel"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1537,7 +2603,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "lookworst-rood", "category": "charcuterie", "name": { "nl": "Lookworst rood", "ro": "Lookworst roșu (cârnat cu usturoi)" },
+    {
+      "id": "lookworst-rood",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Lookworst rood",
+        "ro": "Lookworst roșu (cârnat cu usturoi)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1547,7 +2619,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "boerenhesp", "category": "charcuterie", "name": { "nl": "Boerenhesp", "ro": "Șuncă țărănească" },
+    {
+      "id": "boerenhesp",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Boerenhesp",
+        "ro": "Șuncă țărănească"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1557,7 +2635,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "serrano", "category": "charcuterie", "name": { "nl": "Serrano", "ro": "Jambon serrano" },
+    {
+      "id": "serrano",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Serrano",
+        "ro": "Jambon serrano"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1567,7 +2651,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "gerookte-ham", "category": "charcuterie", "name": { "nl": "Gerookte ham", "ro": "Șuncă afumată" },
+    {
+      "id": "gerookte-ham",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Gerookte ham",
+        "ro": "Șuncă afumată"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1577,7 +2667,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "gezouten-spek", "category": "charcuterie", "name": { "nl": "Gezouten spek", "ro": "Slănină sărată" },
+    {
+      "id": "gezouten-spek",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Gezouten spek",
+        "ro": "Slănină sărată"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1587,7 +2683,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "copa", "category": "charcuterie", "name": { "nl": "Copa", "ro": "Copa (coppa)" },
+    {
+      "id": "copa",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Copa",
+        "ro": "Copa (coppa)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1597,7 +2699,13 @@
       "board": true,
       "group": "charcuterie"
     },
-    { "id": "prepare-van-de-chef", "category": "charcuterie", "name": { "nl": "Préparé van de chef", "ro": "Préparé al bucătarului (tartar de vită preparat)" },
+    {
+      "id": "prepare-van-de-chef",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Préparé van de chef",
+        "ro": "Préparé al bucătarului (tartar de vită preparat)"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1607,7 +2715,13 @@
       "board": true,
       "group": "salades"
     },
-    { "id": "vleessalade", "category": "charcuterie", "name": { "nl": "Vleessalade", "ro": "Salată de carne" },
+    {
+      "id": "vleessalade",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Vleessalade",
+        "ro": "Salată de carne"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1617,7 +2731,13 @@
       "board": true,
       "group": "salades"
     },
-    { "id": "krabsalade", "category": "charcuterie", "name": { "nl": "Krabsalade", "ro": "Salată de crab" },
+    {
+      "id": "krabsalade",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Krabsalade",
+        "ro": "Salată de crab"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1627,7 +2747,13 @@
       "board": true,
       "group": "salades"
     },
-    { "id": "kip-tartaar", "category": "charcuterie", "name": { "nl": "Kip tartaar", "ro": "Tartar de pui" },
+    {
+      "id": "kip-tartaar",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Kip tartaar",
+        "ro": "Tartar de pui"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1637,7 +2763,13 @@
       "board": true,
       "group": "salades"
     },
-    { "id": "kip-van-de-chef", "category": "charcuterie", "name": { "nl": "Kip van de chef", "ro": "Pui al bucătarului" },
+    {
+      "id": "kip-van-de-chef",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Kip van de chef",
+        "ro": "Pui al bucătarului"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1647,7 +2779,13 @@
       "board": true,
       "group": "salades"
     },
-    { "id": "bereid-gehakt", "category": "charcuterie", "name": { "nl": "Bereid gehakt", "ro": "Carne tocată condimentată" },
+    {
+      "id": "bereid-gehakt",
+      "category": "charcuterie",
+      "name": {
+        "nl": "Bereid gehakt",
+        "ro": "Carne tocată condimentată"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1657,7 +2795,13 @@
       "board": true,
       "group": "salades"
     },
-    { "id": "mici", "category": "roemeens", "name": { "nl": "Mici", "ro": "Mici" },
+    {
+      "id": "mici",
+      "category": "roemeens",
+      "name": {
+        "nl": "Mici",
+        "ro": "Mici"
+      },
       "line": {
         "nl": "8 min op een hete grill, één keer draaien.",
         "ro": "8 minute pe grătar încins, întorși o singură dată."
@@ -1668,7 +2812,13 @@
       "step": 0.1,
       "min": 0.1
     },
-    { "id": "gerookte-worst", "category": "roemeens", "name": { "nl": "Gerookte worst", "ro": "Cârnați afumați" },
+    {
+      "id": "gerookte-worst",
+      "category": "roemeens",
+      "name": {
+        "nl": "Gerookte worst",
+        "ro": "Cârnați afumați"
+      },
       "line": {
         "nl": "10 min opwarmen in heet water, niet koken, of kort grillen.",
         "ro": "10 min în apă fierbinte, fără clocot, sau scurt pe grătar."
@@ -1679,7 +2829,13 @@
       "step": 0.1,
       "min": 0.1
     },
-    { "id": "pastrami", "category": "roemeens", "name": { "nl": "Pastrami", "ro": "Pastramă de porc" },
+    {
+      "id": "pastrami",
+      "category": "roemeens",
+      "name": {
+        "nl": "Pastrami",
+        "ro": "Pastramă de porc"
+      },
       "line": {
         "nl": "Dun gesneden op brood, of 1 min per kant bakken.",
         "ro": "Subțire, rece, pe pâine; sau 1 min pe parte în tigaie."
@@ -1690,7 +2846,16 @@
       "step": 0.1,
       "min": 0.1
     },
-    { "id": "kaizer", "category": "roemeens", "name": { "nl": "Gerookt buikspek", "ro": "Kaizer" }, "alias": { "ro": "Kaizer" },
+    {
+      "id": "kaizer",
+      "category": "roemeens",
+      "name": {
+        "nl": "Gerookt buikspek",
+        "ro": "Kaizer"
+      },
+      "alias": {
+        "ro": "Kaizer"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1700,7 +2865,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "sunca-de-casa", "category": "roemeens", "name": { "nl": "Huisgemaakte hesp", "ro": "Șuncă de casă" }, "alias": { "ro": "Șuncă de casă" },
+    {
+      "id": "sunca-de-casa",
+      "category": "roemeens",
+      "name": {
+        "nl": "Huisgemaakte hesp",
+        "ro": "Șuncă de casă"
+      },
+      "alias": {
+        "ro": "Șuncă de casă"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1710,7 +2884,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "afumatura", "category": "roemeens", "name": { "nl": "Gerookt varkensvlees", "ro": "Afumătură" }, "alias": { "ro": "Afumătură" },
+    {
+      "id": "afumatura",
+      "category": "roemeens",
+      "name": {
+        "nl": "Gerookt varkensvlees",
+        "ro": "Afumătură"
+      },
+      "alias": {
+        "ro": "Afumătură"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1720,7 +2903,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "ciolane-afumate", "category": "roemeens", "name": { "nl": "Gerookte schenkel", "ro": "Ciolane afumate" }, "alias": { "ro": "Ciolane afumate" },
+    {
+      "id": "ciolane-afumate",
+      "category": "roemeens",
+      "name": {
+        "nl": "Gerookte schenkel",
+        "ro": "Ciolane afumate"
+      },
+      "alias": {
+        "ro": "Ciolane afumate"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1730,7 +2922,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "carnati-afumati-cascaval", "category": "roemeens", "name": { "nl": "Gerookte worst met kaas", "ro": "Cârnați afumați cu cașcaval" }, "alias": { "ro": "Cârnați afumați cu cașcaval" },
+    {
+      "id": "carnati-afumati-cascaval",
+      "category": "roemeens",
+      "name": {
+        "nl": "Gerookte worst met kaas",
+        "ro": "Cârnați afumați cu cașcaval"
+      },
+      "alias": {
+        "ro": "Cârnați afumați cu cașcaval"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1740,7 +2941,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "carnati-afumati-mustar", "category": "roemeens", "name": { "nl": "Gerookte worst met mosterd", "ro": "Cârnați afumați cu muștar" }, "alias": { "ro": "Cârnați afumați cu muștar" },
+    {
+      "id": "carnati-afumati-mustar",
+      "category": "roemeens",
+      "name": {
+        "nl": "Gerookte worst met mosterd",
+        "ro": "Cârnați afumați cu muștar"
+      },
+      "alias": {
+        "ro": "Cârnați afumați cu muștar"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1750,7 +2960,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "caltabos", "category": "roemeens", "name": { "nl": "Roemeense leverworst", "ro": "Caltaboș" }, "alias": { "ro": "Caltaboș" },
+    {
+      "id": "caltabos",
+      "category": "roemeens",
+      "name": {
+        "nl": "Roemeense leverworst",
+        "ro": "Caltaboș"
+      },
+      "alias": {
+        "ro": "Caltaboș"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1760,7 +2979,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "crenvursti", "category": "roemeens", "name": { "nl": "Roemeense knakworsten", "ro": "Crenvurști" }, "alias": { "ro": "Crenvurști" },
+    {
+      "id": "crenvursti",
+      "category": "roemeens",
+      "name": {
+        "nl": "Roemeense knakworsten",
+        "ro": "Crenvurști"
+      },
+      "alias": {
+        "ro": "Crenvurști"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1770,7 +2998,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "polonezi", "category": "roemeens", "name": { "nl": "Poolse worst", "ro": "Polonezi" }, "alias": { "ro": "Polonezi" },
+    {
+      "id": "polonezi",
+      "category": "roemeens",
+      "name": {
+        "nl": "Poolse worst",
+        "ro": "Polonezi"
+      },
+      "alias": {
+        "ro": "Polonezi"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1780,7 +3017,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "toba", "category": "roemeens", "name": { "nl": "Roemeense zult", "ro": "Tobă" }, "alias": { "ro": "Tobă" },
+    {
+      "id": "toba",
+      "category": "roemeens",
+      "name": {
+        "nl": "Roemeense zult",
+        "ro": "Tobă"
+      },
+      "alias": {
+        "ro": "Tobă"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1790,7 +3036,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "salam-de-casa", "category": "roemeens", "name": { "nl": "Huisgemaakte salami", "ro": "Salam de casă" }, "alias": { "ro": "Salam de casă" },
+    {
+      "id": "salam-de-casa",
+      "category": "roemeens",
+      "name": {
+        "nl": "Huisgemaakte salami",
+        "ro": "Salam de casă"
+      },
+      "alias": {
+        "ro": "Salam de casă"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1800,7 +3055,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "salam-de-casa-sunca", "category": "roemeens", "name": { "nl": "Huisgemaakte salami met hesp", "ro": "Salam de casă cu șuncă" }, "alias": { "ro": "Salam de casă cu șuncă" },
+    {
+      "id": "salam-de-casa-sunca",
+      "category": "roemeens",
+      "name": {
+        "nl": "Huisgemaakte salami met hesp",
+        "ro": "Salam de casă cu șuncă"
+      },
+      "alias": {
+        "ro": "Salam de casă cu șuncă"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1810,7 +3074,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "parizer-de-casa", "category": "roemeens", "name": { "nl": "Huisgemaakte parijzer worst, varken", "ro": "Parizer de casă (porc)" }, "alias": { "ro": "Parizer de casă" },
+    {
+      "id": "parizer-de-casa",
+      "category": "roemeens",
+      "name": {
+        "nl": "Huisgemaakte parijzer worst, varken",
+        "ro": "Parizer de casă (porc)"
+      },
+      "alias": {
+        "ro": "Parizer de casă"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1820,7 +3093,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "parizer-ciuperci", "category": "roemeens", "name": { "nl": "Parijzer worst met champignons", "ro": "Parizer cu ciuperci" }, "alias": { "ro": "Parizer cu ciuperci" },
+    {
+      "id": "parizer-ciuperci",
+      "category": "roemeens",
+      "name": {
+        "nl": "Parijzer worst met champignons",
+        "ro": "Parizer cu ciuperci"
+      },
+      "alias": {
+        "ro": "Parizer cu ciuperci"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1830,7 +3112,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "parizer-masline", "category": "roemeens", "name": { "nl": "Parijzer worst met olijven", "ro": "Parizer cu măsline" }, "alias": { "ro": "Parizer cu măsline" },
+    {
+      "id": "parizer-masline",
+      "category": "roemeens",
+      "name": {
+        "nl": "Parijzer worst met olijven",
+        "ro": "Parizer cu măsline"
+      },
+      "alias": {
+        "ro": "Parizer cu măsline"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1840,7 +3131,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "parizer-ciuperci-masline", "category": "roemeens", "name": { "nl": "Parijzer worst met champignons en olijven", "ro": "Parizer cu ciuperci și măsline" }, "alias": { "ro": "Parizer cu ciuperci și măsline" },
+    {
+      "id": "parizer-ciuperci-masline",
+      "category": "roemeens",
+      "name": {
+        "nl": "Parijzer worst met champignons en olijven",
+        "ro": "Parizer cu ciuperci și măsline"
+      },
+      "alias": {
+        "ro": "Parizer cu ciuperci și măsline"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1850,7 +3150,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "carne-la-garnita", "category": "roemeens", "name": { "nl": "Varkensvlees bewaard in reuzel", "ro": "Carne la garniță" }, "alias": { "ro": "Carne la garniță" },
+    {
+      "id": "carne-la-garnita",
+      "category": "roemeens",
+      "name": {
+        "nl": "Varkensvlees bewaard in reuzel",
+        "ro": "Carne la garniță"
+      },
+      "alias": {
+        "ro": "Carne la garniță"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1860,7 +3169,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "jumari", "category": "roemeens", "name": { "nl": "Gebakken spekjes", "ro": "Jumări" }, "alias": { "ro": "Jumări" },
+    {
+      "id": "jumari",
+      "category": "roemeens",
+      "name": {
+        "nl": "Gebakken spekjes",
+        "ro": "Jumări"
+      },
+      "alias": {
+        "ro": "Jumări"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1870,7 +3188,16 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "untura", "category": "roemeens", "name": { "nl": "Reuzel", "ro": "Untură" }, "alias": { "ro": "Untură" },
+    {
+      "id": "untura",
+      "category": "roemeens",
+      "name": {
+        "nl": "Reuzel",
+        "ro": "Untură"
+      },
+      "alias": {
+        "ro": "Untură"
+      },
       "line": null,
       "price": null,
       "priceInStore": true,
@@ -1880,7 +3207,13 @@
       "board": true,
       "group": "mezeluri"
     },
-    { "id": "colli-varken-1", "category": "colli", "name": { "nl": "Colli Varken 1", "ro": "Colli Porc 1" },
+    {
+      "id": "colli-varken-1",
+      "category": "colli",
+      "name": {
+        "nl": "Colli Varken 1",
+        "ro": "Colli Porc 1"
+      },
       "line": {
         "nl": "5 kg: spiering, filet kotelet, spek, worst, gehakt",
         "ro": "5 kg: ceafă, cotlet, piept de porc, cârnați, carne tocată"
@@ -1889,13 +3222,25 @@
       "unit": "colli",
       "featured": true
     },
-    { "id": "gourmet-9", "category": "gourmet", "name": { "nl": "Gourmet 9 soorten", "ro": "Platou gourmet, 9 feluri" },
+    {
+      "id": "gourmet-9",
+      "category": "gourmet",
+      "name": {
+        "nl": "Gourmet 9 soorten",
+        "ro": "Platou gourmet, 9 feluri"
+      },
       "line": null,
       "price": 10,
       "unit": "pers",
       "min": 2
     },
-    { "id": "colli-varken-2", "category": "colli", "name": { "nl": "Colli Varken 2", "ro": "Colli Porc 2" },
+    {
+      "id": "colli-varken-2",
+      "category": "colli",
+      "name": {
+        "nl": "Colli Varken 2",
+        "ro": "Colli Porc 2"
+      },
       "line": {
         "nl": "6 kg: spiering, filet kotelet, spek, worst, burger, gehakt",
         "ro": "6 kg: ceafă, cotlet, piept de porc, cârnați, hamburgeri, carne tocată"
@@ -1904,7 +3249,13 @@
       "unit": "colli",
       "orderOnly": true
     },
-    { "id": "colli-kip", "category": "colli", "name": { "nl": "Colli Kip", "ro": "Colli Pui" },
+    {
+      "id": "colli-kip",
+      "category": "colli",
+      "name": {
+        "nl": "Colli Kip",
+        "ro": "Colli Pui"
+      },
       "line": {
         "nl": "5 kg: kipfilet, kip schnitzel, kip gyros, kip brochette, kippenboutjes",
         "ro": "5 kg: piept de pui, șnițel de pui, gyros de pui, frigărui de pui, pulpe de pui"
@@ -1913,7 +3264,13 @@
       "unit": "colli",
       "orderOnly": true
     },
-    { "id": "colli-kip-varken", "category": "colli", "name": { "nl": "Colli Kip-Varken", "ro": "Colli Pui și Porc" },
+    {
+      "id": "colli-kip-varken",
+      "category": "colli",
+      "name": {
+        "nl": "Colli Kip-Varken",
+        "ro": "Colli Pui și Porc"
+      },
       "line": {
         "nl": "6 kg: kipfilet, kip schnitzel, varkensgehakt, filet kotelet, spiering, spek",
         "ro": "6 kg: piept de pui, șnițel de pui, carne tocată de porc, cotlet, ceafă, piept de porc"
@@ -1922,7 +3279,13 @@
       "unit": "colli",
       "orderOnly": true
     },
-    { "id": "colli-bbq", "category": "colli", "name": { "nl": "BBQ Colli", "ro": "Colli BBQ" },
+    {
+      "id": "colli-bbq",
+      "category": "colli",
+      "name": {
+        "nl": "BBQ Colli",
+        "ro": "Colli BBQ"
+      },
       "line": {
         "nl": "5 kg: kip brochette, braadworst, mici, gemarineerd spek, gemarineerde ribbetjes",
         "ro": "5 kg: frigărui de pui, cârnați proaspeți, mici, piept de porc marinat, coaste marinate"
@@ -1931,7 +3294,13 @@
       "unit": "colli",
       "orderOnly": true
     },
-    { "id": "colli-john", "category": "colli", "name": { "nl": "Colli John", "ro": "Colli John" },
+    {
+      "id": "colli-john",
+      "category": "colli",
+      "name": {
+        "nl": "Colli John",
+        "ro": "Colli John"
+      },
       "line": {
         "nl": "10 kg: braadworst, varkensgehakt, burger, boomstammetjes, filet kotelet, kip gyros, kip brochette, kippenboutjes, kip schnitzel, kipfilet",
         "ro": "10 kg: cârnați proaspeți, carne tocată de porc, hamburgeri, rulouri de carne tocată (boomstammetjes), cotlet, gyros de pui, frigărui de pui, pulpe de pui, șnițel de pui, piept de pui"
@@ -1940,7 +3309,13 @@
       "unit": "colli",
       "orderOnly": true
     },
-    { "id": "fondue", "category": "gourmet", "name": { "nl": "Fondue", "ro": "Fondue" },
+    {
+      "id": "fondue",
+      "category": "gourmet",
+      "name": {
+        "nl": "Fondue",
+        "ro": "Fondue"
+      },
       "line": {
         "nl": "10 soorten",
         "ro": "10 feluri"
@@ -1950,19 +3325,37 @@
       "priceFrom": true,
       "min": 2
     },
-    { "id": "fondue-14", "category": "gourmet", "name": { "nl": "Fondue 14 soorten", "ro": "Fondue, 14 feluri" },
+    {
+      "id": "fondue-14",
+      "category": "gourmet",
+      "name": {
+        "nl": "Fondue 14 soorten",
+        "ro": "Fondue, 14 feluri"
+      },
       "line": null,
       "price": 13,
       "unit": "pers",
       "min": 2
     },
-    { "id": "gourmet-10", "category": "gourmet", "name": { "nl": "Gourmet 10 soorten", "ro": "Platou gourmet, 10 feluri" },
+    {
+      "id": "gourmet-10",
+      "category": "gourmet",
+      "name": {
+        "nl": "Gourmet 10 soorten",
+        "ro": "Platou gourmet, 10 feluri"
+      },
       "line": null,
       "price": 11,
       "unit": "pers",
       "min": 2
     },
-    { "id": "gourmet-luxe", "category": "gourmet", "name": { "nl": "Gourmet Luxe", "ro": "Gourmet de lux" },
+    {
+      "id": "gourmet-luxe",
+      "category": "gourmet",
+      "name": {
+        "nl": "Gourmet Luxe",
+        "ro": "Gourmet de lux"
+      },
       "line": {
         "nl": "10 soorten",
         "ro": "10 feluri"
@@ -1971,7 +3364,13 @@
       "unit": "pers",
       "min": 2
     },
-    { "id": "tapas-kinder", "category": "tapas", "name": { "nl": "Kinder tapas", "ro": "Tapas pentru copii" },
+    {
+      "id": "tapas-kinder",
+      "category": "tapas",
+      "name": {
+        "nl": "Kinder tapas",
+        "ro": "Tapas pentru copii"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -1979,7 +3378,13 @@
       "price": 9,
       "unit": "pers"
     },
-    { "id": "tapas-mix", "category": "tapas", "name": { "nl": "Tapas mix", "ro": "Tapas mix" },
+    {
+      "id": "tapas-mix",
+      "category": "tapas",
+      "name": {
+        "nl": "Tapas mix",
+        "ro": "Tapas mix"
+      },
       "line": {
         "nl": "5–6 pers.",
         "ro": "5-6 persoane"
@@ -1987,7 +3392,13 @@
       "price": 45,
       "unit": "stuk"
     },
-    { "id": "tapas-john-1", "category": "tapas", "name": { "nl": "Tapas John 1", "ro": "Tapas John 1" },
+    {
+      "id": "tapas-john-1",
+      "category": "tapas",
+      "name": {
+        "nl": "Tapas John 1",
+        "ro": "Tapas John 1"
+      },
       "line": {
         "nl": "5–6 pers.",
         "ro": "5-6 persoane"
@@ -1995,7 +3406,13 @@
       "price": 50,
       "unit": "stuk"
     },
-    { "id": "tapas-john-1-scampi", "category": "tapas", "name": { "nl": "Tapas John 1 met scampi", "ro": "Tapas John 1 cu creveți" },
+    {
+      "id": "tapas-john-1-scampi",
+      "category": "tapas",
+      "name": {
+        "nl": "Tapas John 1 met scampi",
+        "ro": "Tapas John 1 cu creveți"
+      },
       "line": {
         "nl": "5–6 pers.",
         "ro": "5-6 persoane"
@@ -2003,7 +3420,13 @@
       "price": 50,
       "unit": "stuk"
     },
-    { "id": "tapas-john-2", "category": "tapas", "name": { "nl": "Tapas John 2", "ro": "Tapas John 2" },
+    {
+      "id": "tapas-john-2",
+      "category": "tapas",
+      "name": {
+        "nl": "Tapas John 2",
+        "ro": "Tapas John 2"
+      },
       "line": {
         "nl": "7–9 pers.",
         "ro": "7-9 persoane"
@@ -2011,7 +3434,13 @@
       "price": 60,
       "unit": "stuk"
     },
-    { "id": "tapas-ro", "category": "tapas", "name": { "nl": "Roemeense Tapas", "ro": "Tapas românești" },
+    {
+      "id": "tapas-ro",
+      "category": "tapas",
+      "name": {
+        "nl": "Roemeense Tapas",
+        "ro": "Tapas românești"
+      },
       "line": {
         "nl": "5–6 pers.",
         "ro": "5-6 persoane"
@@ -2019,16 +3448,27 @@
       "price": 45,
       "unit": "stuk"
     },
-    { "id": "platou-romanesc-festiv", "category": "tapas", "name": { "nl": "Roemeense feestschotel", "ro": "Platou românesc festiv" },
-      "line": {
-        "nl": "samenstelling en prijs: vraag het ons",
-        "ro": "conținut și preț: întreabă-ne"
+    {
+      "id": "platou-romanesc-festiv",
+      "category": "tapas",
+      "name": {
+        "nl": "Roemeense feestschotel",
+        "ro": "Platou românesc festiv"
       },
-      "price": null,
-      "priceInStore": true,
+      "line": {
+        "nl": "6 pers.",
+        "ro": "6 persoane"
+      },
+      "price": 65,
       "unit": "stuk"
     },
-    { "id": "koude-schotel", "category": "tapas", "name": { "nl": "Koude schotel", "ro": "Platou rece" },
+    {
+      "id": "koude-schotel",
+      "category": "tapas",
+      "name": {
+        "nl": "Koude schotel",
+        "ro": "Platou rece"
+      },
       "line": {
         "nl": "hesp, salami, eieren en vleessalade",
         "ro": "șuncă, salam, ouă și salată de carne"
@@ -2036,7 +3476,13 @@
       "price": 13.5,
       "unit": "pers"
     },
-    { "id": "koude-schotel-extra-kaas", "category": "tapas", "name": { "nl": "Koude schotel extra kaas", "ro": "Platou rece cu brânză extra" },
+    {
+      "id": "koude-schotel-extra-kaas",
+      "category": "tapas",
+      "name": {
+        "nl": "Koude schotel extra kaas",
+        "ro": "Platou rece cu brânză extra"
+      },
       "line": {
         "nl": "als de koude schotel, met extra kaas",
         "ro": "ca platoul rece, cu brânză extra"
@@ -2044,7 +3490,13 @@
       "price": 15,
       "unit": "pers"
     },
-    { "id": "hapje-scampi-2", "category": "tapas", "name": { "nl": "Scampi", "ro": "Scampi" },
+    {
+      "id": "hapje-scampi-2",
+      "category": "tapas",
+      "name": {
+        "nl": "Scampi",
+        "ro": "Scampi"
+      },
       "line": {
         "nl": "2 st.",
         "ro": "2 bucăți"
@@ -2052,7 +3504,13 @@
       "price": 4,
       "unit": "stuk"
     },
-    { "id": "hapje-lepeltje-scampi", "category": "tapas", "name": { "nl": "Lepeltje scampi", "ro": "Linguriță cu scampi" },
+    {
+      "id": "hapje-lepeltje-scampi",
+      "category": "tapas",
+      "name": {
+        "nl": "Lepeltje scampi",
+        "ro": "Linguriță cu scampi"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2060,7 +3518,13 @@
       "price": 2,
       "unit": "stuk"
     },
-    { "id": "hapje-lepeltje-meloen-serrano", "category": "tapas", "name": { "nl": "Lepeltje meloen & serrano", "ro": "Linguriță cu pepene și serrano" },
+    {
+      "id": "hapje-lepeltje-meloen-serrano",
+      "category": "tapas",
+      "name": {
+        "nl": "Lepeltje meloen & serrano",
+        "ro": "Linguriță cu pepene și serrano"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2068,7 +3532,13 @@
       "price": 2,
       "unit": "stuk"
     },
-    { "id": "hapje-lepeltje-pate", "category": "tapas", "name": { "nl": "Lepeltje paté", "ro": "Linguriță cu pateu" },
+    {
+      "id": "hapje-lepeltje-pate",
+      "category": "tapas",
+      "name": {
+        "nl": "Lepeltje paté",
+        "ro": "Linguriță cu pateu"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2076,7 +3546,13 @@
       "price": 1.5,
       "unit": "stuk"
     },
-    { "id": "hapje-lepeltje-geitenkaas", "category": "tapas", "name": { "nl": "Lepeltje geitenkaas", "ro": "Linguriță cu brânză de capră" },
+    {
+      "id": "hapje-lepeltje-geitenkaas",
+      "category": "tapas",
+      "name": {
+        "nl": "Lepeltje geitenkaas",
+        "ro": "Linguriță cu brânză de capră"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2084,7 +3560,13 @@
       "price": 2,
       "unit": "stuk"
     },
-    { "id": "hapje-lepeltje-zalm", "category": "tapas", "name": { "nl": "Lepeltje zalm", "ro": "Linguriță cu somon" },
+    {
+      "id": "hapje-lepeltje-zalm",
+      "category": "tapas",
+      "name": {
+        "nl": "Lepeltje zalm",
+        "ro": "Linguriță cu somon"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2092,7 +3574,13 @@
       "price": 2.5,
       "unit": "stuk"
     },
-    { "id": "hapje-taco-gehakt", "category": "tapas", "name": { "nl": "Taco gehakt", "ro": "Taco cu carne tocată" },
+    {
+      "id": "hapje-taco-gehakt",
+      "category": "tapas",
+      "name": {
+        "nl": "Taco gehakt",
+        "ro": "Taco cu carne tocată"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2100,7 +3588,13 @@
       "price": 2.5,
       "unit": "stuk"
     },
-    { "id": "hapje-taco-kip", "category": "tapas", "name": { "nl": "Taco kip", "ro": "Taco cu pui" },
+    {
+      "id": "hapje-taco-kip",
+      "category": "tapas",
+      "name": {
+        "nl": "Taco kip",
+        "ro": "Taco cu pui"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2108,7 +3602,13 @@
       "price": 2.5,
       "unit": "stuk"
     },
-    { "id": "hapje-blinis-zalm", "category": "tapas", "name": { "nl": "Blinis met gerookte zalm", "ro": "Blinis cu somon afumat" },
+    {
+      "id": "hapje-blinis-zalm",
+      "category": "tapas",
+      "name": {
+        "nl": "Blinis met gerookte zalm",
+        "ro": "Blinis cu somon afumat"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2116,7 +3616,13 @@
       "price": 2.5,
       "unit": "stuk"
     },
-    { "id": "hapje-bruschetta", "category": "tapas", "name": { "nl": "Bruschetta geitenkaas", "ro": "Bruschetta cu brânză de capră" },
+    {
+      "id": "hapje-bruschetta",
+      "category": "tapas",
+      "name": {
+        "nl": "Bruschetta geitenkaas",
+        "ro": "Bruschetta cu brânză de capră"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2124,7 +3630,13 @@
       "price": 2.5,
       "unit": "stuk"
     },
-    { "id": "hapje-bruschetta-zalm", "category": "tapas", "name": { "nl": "Bruschetta zalm", "ro": "Bruschetta cu somon" },
+    {
+      "id": "hapje-bruschetta-zalm",
+      "category": "tapas",
+      "name": {
+        "nl": "Bruschetta zalm",
+        "ro": "Bruschetta cu somon"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2132,7 +3644,13 @@
       "price": 2,
       "unit": "stuk"
     },
-    { "id": "hapje-bruschetta-tomaat", "category": "tapas", "name": { "nl": "Bruschetta tomaat", "ro": "Bruschetta cu roșii" },
+    {
+      "id": "hapje-bruschetta-tomaat",
+      "category": "tapas",
+      "name": {
+        "nl": "Bruschetta tomaat",
+        "ro": "Bruschetta cu roșii"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2140,7 +3658,13 @@
       "price": 1.5,
       "unit": "stuk"
     },
-    { "id": "hapje-wrap-zalm", "category": "tapas", "name": { "nl": "Wraps zalm", "ro": "Wrap cu somon" },
+    {
+      "id": "hapje-wrap-zalm",
+      "category": "tapas",
+      "name": {
+        "nl": "Wraps zalm",
+        "ro": "Wrap cu somon"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2148,7 +3672,13 @@
       "price": 2,
       "unit": "stuk"
     },
-    { "id": "hapje-wrap-hesp", "category": "tapas", "name": { "nl": "Wraps hesp", "ro": "Wrap cu șuncă" },
+    {
+      "id": "hapje-wrap-hesp",
+      "category": "tapas",
+      "name": {
+        "nl": "Wraps hesp",
+        "ro": "Wrap cu șuncă"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2156,7 +3686,13 @@
       "price": 2,
       "unit": "stuk"
     },
-    { "id": "hapje-wrap-kip", "category": "tapas", "name": { "nl": "Wraps kip", "ro": "Wrap cu pui" },
+    {
+      "id": "hapje-wrap-kip",
+      "category": "tapas",
+      "name": {
+        "nl": "Wraps kip",
+        "ro": "Wrap cu pui"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2164,7 +3700,13 @@
       "price": 2,
       "unit": "stuk"
     },
-    { "id": "hapje-bulgur-feta", "category": "tapas", "name": { "nl": "Bulgur feta", "ro": "Bulgur cu feta" },
+    {
+      "id": "hapje-bulgur-feta",
+      "category": "tapas",
+      "name": {
+        "nl": "Bulgur feta",
+        "ro": "Bulgur cu feta"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2172,7 +3714,13 @@
       "price": 3,
       "unit": "stuk"
     },
-    { "id": "hapje-bulgur-feta-meloen", "category": "tapas", "name": { "nl": "Bulgur feta & meloen", "ro": "Bulgur cu feta și pepene" },
+    {
+      "id": "hapje-bulgur-feta-meloen",
+      "category": "tapas",
+      "name": {
+        "nl": "Bulgur feta & meloen",
+        "ro": "Bulgur cu feta și pepene"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2180,7 +3728,13 @@
       "price": 3,
       "unit": "stuk"
     },
-    { "id": "hapje-bulgur-zalm", "category": "tapas", "name": { "nl": "Bulgur zalm", "ro": "Bulgur cu somon" },
+    {
+      "id": "hapje-bulgur-zalm",
+      "category": "tapas",
+      "name": {
+        "nl": "Bulgur zalm",
+        "ro": "Bulgur cu somon"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2188,7 +3742,13 @@
       "price": 3,
       "unit": "stuk"
     },
-    { "id": "hapje-bulgur-garnaal", "category": "tapas", "name": { "nl": "Bulgur garnaal", "ro": "Bulgur cu creveți" },
+    {
+      "id": "hapje-bulgur-garnaal",
+      "category": "tapas",
+      "name": {
+        "nl": "Bulgur garnaal",
+        "ro": "Bulgur cu creveți"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2196,7 +3756,13 @@
       "price": 3.5,
       "unit": "stuk"
     },
-    { "id": "hapje-hawaii-salade", "category": "tapas", "name": { "nl": "Hawaii salade", "ro": "Salată Hawaii" },
+    {
+      "id": "hapje-hawaii-salade",
+      "category": "tapas",
+      "name": {
+        "nl": "Hawaii salade",
+        "ro": "Salată Hawaii"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2204,7 +3770,13 @@
       "price": 3,
       "unit": "stuk"
     },
-    { "id": "warm-ardeens", "category": "warm", "name": { "nl": "Ardeens gebraad in champignonsaus", "ro": "Friptură ardeneză în sos de ciuperci" },
+    {
+      "id": "warm-ardeens",
+      "category": "warm",
+      "name": {
+        "nl": "Ardeens gebraad in champignonsaus",
+        "ro": "Friptură ardeneză în sos de ciuperci"
+      },
       "line": {
         "nl": "per portie van 200 g",
         "ro": "porție de 200 g"
@@ -2212,7 +3784,13 @@
       "price": 8,
       "unit": "portie"
     },
-    { "id": "warm-varkenshaasje", "category": "warm", "name": { "nl": "Varkenshaasje in sausje met spek", "ro": "Mușchiuleț de porc în sos cu bacon" },
+    {
+      "id": "warm-varkenshaasje",
+      "category": "warm",
+      "name": {
+        "nl": "Varkenshaasje in sausje met spek",
+        "ro": "Mușchiuleț de porc în sos cu bacon"
+      },
       "line": {
         "nl": "per portie van 200 g",
         "ro": "porție de 200 g"
@@ -2220,7 +3798,13 @@
       "price": 9,
       "unit": "portie"
     },
-    { "id": "warm-orloff", "category": "warm", "name": { "nl": "Orloffgebraad in kaassaus", "ro": "Friptură Orloff în sos de brânză" },
+    {
+      "id": "warm-orloff",
+      "category": "warm",
+      "name": {
+        "nl": "Orloffgebraad in kaassaus",
+        "ro": "Friptură Orloff în sos de brânză"
+      },
       "line": {
         "nl": "per portie van 200 g",
         "ro": "porție de 200 g"
@@ -2228,7 +3812,13 @@
       "price": 8.5,
       "unit": "portie"
     },
-    { "id": "warm-kalkoen", "category": "warm", "name": { "nl": "Kalkoen in champignonsaus", "ro": "Curcan în sos de ciuperci" },
+    {
+      "id": "warm-kalkoen",
+      "category": "warm",
+      "name": {
+        "nl": "Kalkoen in champignonsaus",
+        "ro": "Curcan în sos de ciuperci"
+      },
       "line": {
         "nl": "per portie van 200 g",
         "ro": "porție de 200 g"
@@ -2236,7 +3826,13 @@
       "price": 10,
       "unit": "portie"
     },
-    { "id": "warm-hamrol", "category": "warm", "name": { "nl": "Hamrol met witloof in kaassaus", "ro": "Rulou de șuncă cu andive în sos de brânză" },
+    {
+      "id": "warm-hamrol",
+      "category": "warm",
+      "name": {
+        "nl": "Hamrol met witloof in kaassaus",
+        "ro": "Rulou de șuncă cu andive în sos de brânză"
+      },
       "line": {
         "nl": "per portie van 200 g",
         "ro": "porție de 200 g"
@@ -2244,7 +3840,13 @@
       "price": 10,
       "unit": "portie"
     },
-    { "id": "warm-kipfilet-curry", "category": "warm", "name": { "nl": "Kipfilet in currysaus", "ro": "Piept de pui în sos curry" },
+    {
+      "id": "warm-kipfilet-curry",
+      "category": "warm",
+      "name": {
+        "nl": "Kipfilet in currysaus",
+        "ro": "Piept de pui în sos curry"
+      },
       "line": {
         "nl": "per portie van 200 g",
         "ro": "porție de 200 g"
@@ -2252,7 +3854,13 @@
       "price": 9.5,
       "unit": "portie"
     },
-    { "id": "warm-zalm", "category": "warm", "name": { "nl": "Zalm in bearnaisesaus", "ro": "Somon în sos bearnez" },
+    {
+      "id": "warm-zalm",
+      "category": "warm",
+      "name": {
+        "nl": "Zalm in bearnaisesaus",
+        "ro": "Somon în sos bearnez"
+      },
       "line": {
         "nl": "per portie van 200 g",
         "ro": "porție de 200 g"
@@ -2260,7 +3868,13 @@
       "price": 12,
       "unit": "portie"
     },
-    { "id": "warm-groenten", "category": "warm", "name": { "nl": "Warme groenten", "ro": "Legume calde" },
+    {
+      "id": "warm-groenten",
+      "category": "warm",
+      "name": {
+        "nl": "Warme groenten",
+        "ro": "Legume calde"
+      },
       "line": {
         "nl": "bloemkool · boontjes · wortel · witloof met spek · 200 g per persoon",
         "ro": "conopidă · fasole verde · morcovi · andive cu bacon · 200 g de persoană"
@@ -2268,7 +3882,13 @@
       "price": 6,
       "unit": "pers"
     },
-    { "id": "soep-tomaat", "category": "warm", "name": { "nl": "Tomatensoep", "ro": "Supă de roșii" },
+    {
+      "id": "soep-tomaat",
+      "category": "warm",
+      "name": {
+        "nl": "Tomatensoep",
+        "ro": "Supă de roșii"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2276,7 +3896,13 @@
       "price": 5.2,
       "unit": "liter"
     },
-    { "id": "soep-tomaat-balletjes", "category": "warm", "name": { "nl": "Tomatensoep met balletjes", "ro": "Supă de roșii cu perișoare" },
+    {
+      "id": "soep-tomaat-balletjes",
+      "category": "warm",
+      "name": {
+        "nl": "Tomatensoep met balletjes",
+        "ro": "Supă de roșii cu perișoare"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2284,7 +3910,13 @@
       "price": 5.6,
       "unit": "liter"
     },
-    { "id": "soep-pompoen", "category": "warm", "name": { "nl": "Pompoensoep", "ro": "Supă de dovleac" },
+    {
+      "id": "soep-pompoen",
+      "category": "warm",
+      "name": {
+        "nl": "Pompoensoep",
+        "ro": "Supă de dovleac"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2292,7 +3924,13 @@
       "price": 6,
       "unit": "liter"
     },
-    { "id": "soep-broccoli", "category": "warm", "name": { "nl": "Broccolisoep", "ro": "Supă de broccoli" },
+    {
+      "id": "soep-broccoli",
+      "category": "warm",
+      "name": {
+        "nl": "Broccolisoep",
+        "ro": "Supă de broccoli"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2300,7 +3938,13 @@
       "price": 5.5,
       "unit": "liter"
     },
-    { "id": "broodjes-mini", "category": "dessert", "name": { "nl": "Mini belegde broodjes", "ro": "Mini sandvișuri" },
+    {
+      "id": "broodjes-mini",
+      "category": "dessert",
+      "name": {
+        "nl": "Mini belegde broodjes",
+        "ro": "Mini sandvișuri"
+      },
       "line": {
         "nl": "kipcurry / vleessalade · hesp / salami / kaas · tonijn / préparé",
         "ro": "pui curry / salată de carne · șuncă / salam / brânză · ton / préparé"
@@ -2308,7 +3952,13 @@
       "price": 1.7,
       "unit": "stuk"
     },
-    { "id": "dessert-buffet-1", "category": "dessert", "name": { "nl": "Dessertbuffet 1", "ro": "Bufet de deserturi 1" },
+    {
+      "id": "dessert-buffet-1",
+      "category": "dessert",
+      "name": {
+        "nl": "Dessertbuffet 1",
+        "ro": "Bufet de deserturi 1"
+      },
       "line": {
         "nl": "3 soorten",
         "ro": "3 feluri"
@@ -2316,7 +3966,13 @@
       "price": 7,
       "unit": "pers"
     },
-    { "id": "dessert-buffet-2", "category": "dessert", "name": { "nl": "Dessertbuffet 2", "ro": "Bufet de deserturi 2" },
+    {
+      "id": "dessert-buffet-2",
+      "category": "dessert",
+      "name": {
+        "nl": "Dessertbuffet 2",
+        "ro": "Bufet de deserturi 2"
+      },
       "line": {
         "nl": "5 soorten",
         "ro": "5 feluri"
@@ -2324,7 +3980,13 @@
       "price": 12,
       "unit": "pers"
     },
-    { "id": "fruit-buffet", "category": "dessert", "name": { "nl": "Fruitbuffet", "ro": "Bufet de fructe" },
+    {
+      "id": "fruit-buffet",
+      "category": "dessert",
+      "name": {
+        "nl": "Fruitbuffet",
+        "ro": "Bufet de fructe"
+      },
       "line": {
         "nl": "6 soorten: meloen, druiven, ananas, kiwi, mandarijn, kaki",
         "ro": "6 feluri: pepene, struguri, ananas, kiwi, mandarine, kaki"
@@ -2332,7 +3994,13 @@
       "price": 4,
       "unit": "pers"
     },
-    { "id": "dessert-vanille", "category": "dessert", "name": { "nl": "Vanillepudding", "ro": "Budincă de vanilie" },
+    {
+      "id": "dessert-vanille",
+      "category": "dessert",
+      "name": {
+        "nl": "Vanillepudding",
+        "ro": "Budincă de vanilie"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2340,7 +4008,13 @@
       "price": 2,
       "unit": "stuk"
     },
-    { "id": "dessert-tiramisu", "category": "dessert", "name": { "nl": "Tiramisu", "ro": "Tiramisu" },
+    {
+      "id": "dessert-tiramisu",
+      "category": "dessert",
+      "name": {
+        "nl": "Tiramisu",
+        "ro": "Tiramisu"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2348,7 +4022,13 @@
       "price": 2.5,
       "unit": "stuk"
     },
-    { "id": "dessert-donut", "category": "dessert", "name": { "nl": "Donut", "ro": "Gogoașă (donut)" },
+    {
+      "id": "dessert-donut",
+      "category": "dessert",
+      "name": {
+        "nl": "Donut",
+        "ro": "Gogoașă (donut)"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2356,7 +4036,13 @@
       "price": 2,
       "unit": "stuk"
     },
-    { "id": "dessert-mini-donut", "category": "dessert", "name": { "nl": "Mini donut", "ro": "Mini donut" },
+    {
+      "id": "dessert-mini-donut",
+      "category": "dessert",
+      "name": {
+        "nl": "Mini donut",
+        "ro": "Mini donut"
+      },
       "line": {
         "nl": "",
         "ro": ""
@@ -2364,7 +4050,13 @@
       "price": 1,
       "unit": "stuk"
     },
-    { "id": "dessert-macarons", "category": "dessert", "name": { "nl": "Macarons", "ro": "Macarons" },
+    {
+      "id": "dessert-macarons",
+      "category": "dessert",
+      "name": {
+        "nl": "Macarons",
+        "ro": "Macarons"
+      },
       "line": {
         "nl": "",
         "ro": ""

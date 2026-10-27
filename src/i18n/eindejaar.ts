@@ -54,7 +54,7 @@ export const eindejaarNl = {
      *  (public/, byte-identical to design/pliant-sarbatori-2026/web/), opened in a new tab; `folderNote` under it */
     folder: 'Download de feestfolder (pdf)',
     folderHref: '/eindejaarsfolder-2026.pdf',
-    folderNote: 'Het volledige eindejaarsmenu op 8 bladzijden, om te bewaren of door te sturen. 1,6 MB.',
+    folderNote: 'Het volledige eindejaarsmenu op 8 bladzijden, om te bewaren of door te sturen. 1,7 MB.',
     deadline: 'Bestellen tot [DATUM], met een voorschot in de winkel of via overschrijving. Afhalen op 24 en 31 december.', // row 15, §5.30 deposit
     /** §5.22 13.10: the owners' line under the eight sections — the brochure's own RO sentence, rendered in NL (u-form) */
     ownersLine: 'Ook Roemeense feestgerechten op bestelling: ciorbă, sarmale, salade de boeuf, cozonac.',
@@ -135,7 +135,7 @@ export const eindejaarRo = {
     /** row 22h (§6 „Sărbători, 27.10”) */
     folder: 'Descarcă meniul de sărbători (pdf)',
     folderHref: '/meniu-sarbatori-2026.pdf',
-    folderNote: 'Meniul de sărbători complet, 8 pagini, de păstrat sau de trimis mai departe. 1,6 MB.',
+    folderNote: 'Meniul de sărbători complet, 8 pagini, de păstrat sau de trimis mai departe. 1,7 MB.',
     deadline: 'Comenzi până pe [DATA], cu avans plătit în magazin sau prin transfer bancar. Ridicare pe 24 și 31 decembrie.', // row 15, §5.30 deposit
     /** §6 Sărbători 13.10: linia proprietarilor, de pe broșura lor, verbatim */
     ownersLine: 'Preluăm și comenzi specifice românești (ciorbe, sarmale, salată de boeuf, cozonaci etc.).',
