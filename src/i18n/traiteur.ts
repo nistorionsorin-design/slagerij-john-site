@@ -17,8 +17,9 @@ export const traiteurNl = {
   eyebrow: 'Traiteur',
   h1: 'Traiteur in de regio Wingene, Tielt en Lichtervelde.',
   accent: 'Ook barbecue aan huis, met kok.',
-  /** §5.21 lead; its last sentence „— en verder, tot 200 km” = 20.10, D-46 (owners' form `home_bbq.max_km` 200) */
-  lead: 'Traiteur voor uw feest: koude schotels, hapjes en buffetten, gourmet- en BBQ-pakketten, af te halen in Zwevezele of geleverd aan huis. En barbecue aan huis met kok, in de regio Wingene, Tielt, Lichtervelde en Roeselare — en verder, tot 200 km.',
+  /** §5.21 lead (27.10: „traiteur aan huis” + the Belgian / Romanian styles, Georgiana WhatsApp 11:29); its last sentence
+   *  „— en verder, tot 200 km” = 20.10, D-46 (owners' form `home_bbq.max_km` 200) */
+  lead: 'Traiteur aan huis voor uw feest, op uw manier: Belgisch met buffet, hamburgers en barbecue ter plaatse, of Roemeens, per persoon op het bord geserveerd. Koude schotels, hapjes en buffetten, gourmet- en BBQ-pakketten, af te halen in Zwevezele of geleverd aan huis. En barbecue aan huis met kok, in de regio Wingene, Tielt, Lichtervelde en Roeselare — en verder, tot 200 km.',
   /** §5.3 primary (traiteur) → the form on this page; §5.3 secondary → tel: */
   primary: 'Vraag een offerte',
   call: 'Bel ons',
@@ -143,7 +144,7 @@ export const traiteurRo: typeof traiteurNl = {
   eyebrow: 'Catering',
   h1: 'Catering românesc în Flandra de Vest.',
   accent: 'Botez, nuntă, aniversare sau un grătar cu bucătar, la tine acasă.',
-  lead: 'Traiteur, cum se spune aici, adică mâncare gătită la comandă pentru petreceri: platouri reci, aperitive și bufete, pachete gourmet și BBQ cu mici și cârnați de casă, de ridicat din Zwevezele sau livrate acasă. Și grătar la domiciliu cu bucătar, în zona Wingene, Tielt, Lichtervelde și Roeselare, și mai departe, până la 200 de km.', // 20.10, D-46 (§6 Catering)
+  lead: 'Traiteur, cum se spune aici, adică mâncare gătită la comandă pentru petrecerea ta. O facem pentru orice preferință: în stil belgian, cu bufet, hamburgeri și grătar la fața locului, sau în stil românesc, cu farfurii individuale. Platouri reci, aperitive și bufete, pachete gourmet și BBQ cu mici și cârnați de casă, de ridicat din Zwevezele sau livrate acasă. Și grătar la domiciliu cu bucătar, în zona Wingene, Tielt, Lichtervelde și Roeselare, și mai departe, până la 200 de km.', // 27.10 (§6 Catering lead, Georgiana 11:29); „până la 200 de km” 20.10, D-46
   primary: 'Cere o ofertă',
   call: 'Sună-ne',
 

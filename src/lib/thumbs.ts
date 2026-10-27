@@ -20,7 +20,7 @@ export interface ProductPhoto {
 
 const entries = data.products as Record<string, ProductPhoto>;
 
-/** A menu row (menus.json `ej26-tapas-2`) is its product's row (`tapas-2`): the folder's year prefix comes off. */
+/** A menu row (menus.json `ej26-tapas-mix`) is its product's row (`tapas-mix`): the folder's year prefix comes off. */
 const productId = (id: string) => id.replace(/^ej\d{2}-/, '');
 
 export const thumbOf = (id: string | undefined): ProductPhoto | null => (id ? (entries[id] ?? entries[productId(id)] ?? null) : null);

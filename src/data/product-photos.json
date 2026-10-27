@@ -2,17 +2,6 @@
   "_source": "Row 5b (Claude Code, 15.10): the site copy of docs/data/product-photos.json (Cowork owns that file; D-34). One entry per products.json id with its own photo; `src` = the file under src/assets/products/ (copied byte-identical from `from`, slugged NL names; a file that already sits elsewhere in src/assets/ under a slug gets that same name — Vite emits identical bytes once, under the first name it meets, and the photo must keep its SEO slug), focal point %, alt NL/RO as Cowork wrote them. A menu row (menus.json `ej26-<id>`) takes its product id's entry. An id not listed here renders no thumbnail (src/components/Thumb.astro). When the docs file grows (row 14), the new rows are copied here. Row 14 (16.10): the six phone-shoot rows copied (mici replaced, gehakt · spiering · braadworst · gerookte-worst · ribbetjes new); their files are the white-balanced row-14 sources, shared with the page photos where the original is the same (gerookte-worst = roemeens/…, ribbetjes = bbq/…); pastrami (pending_confirm) not built. Row 14d (19.10): ribbetjes removed (the photo is marinated pork chops, Dan 19.10; it stays on /bbq-pakketten as bbq/gemarineerde-koteletten-…), the row renders without a thumb; pastrami has no photo (#9 is costiță afumată). Row 14d (8), 19.10: the q27 photo shows tacos → hapje-taco-gehakt + hapje-taco-kip (section), file renamed wraps-kip.jpeg → tacos-met-vulling.jpeg (same bytes); hapje-wrap-kip shares the q26 wraps platter (section). The docs file's Facebook photos (tapas, gourmet, fondue, new rows) belong to row 15d and are not poured here. Row 15d (19.10): the 11 Facebook item photos of the docs file (assets/raw/2025-12-05-facebook/, post of 5 Dec 2025) — tapas-kinder · tapas-mix · tapas-john-1 · tapas-john-1-scampi · tapas-john-2 · tapas-ro · gourmet-10 · gourmet-luxe · fondue · fondue-14 · koude-schotel — replace the section shots on those rows; their files are 4:3 cuts at the focal point, ≤ 1200 px wide (thumb/card use only, never a hero), slugged NL names; tapas-2 and gourmet-9 keep the section shots. Row 18 (Claude Code, 20.10): the docs file of 20.10 poured — colli-bbq loses its thumb (p15 shows the Colli Kip, docs `removed_20_10`), its file products/bbq-gemarineerd.jpeg deleted (nothing else imported it); the `pending_confirm` rows (p15 Colli Kip, p16 Colli John) are not built. The rows of /producten part 2 show only `level: item` photos (140 px cards); a `level: section` photo is the rubric head print (lexicon §5.19 20.10).",
   "date": "2026-10-20",
   "products": {
-    "tapas-2": {
-      "src": "products/tapasschotels-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 5.jpeg",
-      "focalX": 50,
-      "focalY": 55,
-      "alt": {
-        "nl": "Tapasschotels van Slagerij John op de toog",
-        "ro": "Platouri de tapas de la Măcelăria John, pe vitrină"
-      },
-      "level": "section"
-    },
     "tapas-mix": {
       "src": "products/tapas-mix-slagerij-john.jpg",
       "from": "assets/raw/2025-12-05-facebook/fb_03_122186729516357023.jpg",
@@ -56,17 +45,6 @@
         "ro": "Tapas românești pe un platou de lemn"
       },
       "level": "item"
-    },
-    "gourmet-9": {
-      "src": "products/gourmetschotel-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.13 13.jpeg",
-      "focalX": 50,
-      "focalY": 50,
-      "alt": {
-        "nl": "Gourmetschotel van Slagerij John",
-        "ro": "Platou gourmet de la Măcelăria John"
-      },
-      "level": "section"
     },
     "gourmet-10": {
       "src": "products/gourmet-10-soorten-slagerij-john.jpg",
@@ -240,7 +218,7 @@
     },
     "fondue-14": {
       "src": "products/fondue-14-soorten-slagerij-john.jpg",
-      "from": "assets/raw/2025-12-05-facebook/fb_11_122186729852357023.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.13 13.jpeg",
       "focalX": 50,
       "focalY": 50,
       "alt": {

@@ -26,7 +26,6 @@
       ],
       "items": [
         { "id": "ej26-tapas-kinder", "section": "tapas", "name": { "nl": "Kinder tapas", "ro": "Tapas pentru copii" }, "line": { "nl": "", "ro": "" }, "price": 9, "unit": "pers" },
-        { "id": "ej26-tapas-2", "section": "tapas", "name": { "nl": "Tapas 2", "ro": "Tapas 2" }, "line": { "nl": "4–5 pers.", "ro": "4-5 persoane" }, "price": 30, "unit": "stuk" },
         { "id": "ej26-tapas-mix", "section": "tapas", "name": { "nl": "Tapas mix", "ro": "Tapas mix" }, "line": { "nl": "5–6 pers.", "ro": "5-6 persoane" }, "price": 45, "unit": "stuk" },
         { "id": "ej26-tapas-john-1", "section": "tapas", "name": { "nl": "Tapas John 1", "ro": "Tapas John 1" }, "line": { "nl": "5–6 pers.", "ro": "5-6 persoane" }, "price": 50, "unit": "stuk" },
         { "id": "ej26-tapas-john-1-scampi", "section": "tapas", "name": { "nl": "Tapas John 1 met scampi", "ro": "Tapas John 1 cu creveți" }, "line": { "nl": "5–6 pers.", "ro": "5-6 persoane" }, "price": 50, "unit": "stuk" },

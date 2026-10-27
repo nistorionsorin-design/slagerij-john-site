@@ -1909,14 +1909,6 @@
       "price": 9,
       "unit": "pers"
     },
-    { "id": "tapas-2", "category": "tapas", "name": { "nl": "Tapas 2", "ro": "Tapas 2" },
-      "line": {
-        "nl": "4–5 pers.",
-        "ro": "4-5 persoane"
-      },
-      "price": 30,
-      "unit": "stuk"
-    },
     { "id": "tapas-mix", "category": "tapas", "name": { "nl": "Tapas mix", "ro": "Tapas mix" },
       "line": {
         "nl": "5–6 pers.",
