@@ -14,13 +14,16 @@
 // Row 22b (D-51, design/css/vitrine.css v2): `row` = the 56 px photo of a paper row on /producten (a 112 px source, AVIF
 // only — the contract's bare <img>, alt="": the row's own text names the product; the caller's `.row__ph` is the box).
 // The source file and the crop come from src/lib/thumbs.ts (shared with the Vitrine tiles and the sheet).
+// Row 22f: the rubric print is keyed by rubric, not by product — the caller hands the entry (thumbs.ts `rubricPrint`).
 import { getImage } from 'astro:assets';
-import { thumbOf, photoFile, gravity } from '../lib/thumbs';
+import { thumbOf, photoFile, gravity, type ProductPhoto } from '../lib/thumbs';
 import type { Locale } from '../i18n/ui';
 
 export interface Props {
   /** products.json id, or a menu row's id (ej26-…) */
-  id: string;
+  id?: string;
+  /** row 22f: the photo itself, in place of an id's (the rubric print) */
+  entry?: ProductPhoto | null;
   locale: Locale;
   /** rendered size of the thumb, px */
   size?: 56 | 64;
@@ -28,7 +31,7 @@ export interface Props {
   variant?: 'thumb' | 'card' | 'print' | 'row';
 }
 const { id, locale, size = 56, variant = 'thumb' } = Astro.props;
-const entry = thumbOf(id);
+const entry = Astro.props.entry ?? thumbOf(id);
 const px = variant === 'card' ? 140 : variant === 'print' ? 64 : variant === 'row' ? 56 : size;
 const source = variant === 'thumb' ? 112 : px * 2;
 

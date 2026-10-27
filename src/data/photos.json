@@ -345,7 +345,7 @@
       }
     }
   ],
-  "_categories_source": "Category grid (D-13, stage 3): Vers vlees · BBQ & gourmet · Traiteur · Roemeense specialiteiten = q20 · q12 · q05 · q07 per docs/build-plan.md §3b; files byte-identical in src/assets/home/; alts NL/RO = lexicon §5.14 „Home photos” verbatim. Claude Code, stage 3 (revised 07.10).",
+  "_categories_source": "Category grid (D-13, stage 3): Vers vlees · BBQ & gourmet · Traiteur · Roemeense specialiteiten = q20 · q12 · q05 · q07 per docs/build-plan.md §3b; files byte-identical in src/assets/home/; alts NL/RO = lexicon §5.14 „Home photos” verbatim. Claude Code, stage 3 (revised 07.10). Row 22f (27.10): BBQ & gourmet = fb-09 (the owners' Facebook „Gourmet 10 soort”, 5 Dec 2025) — the 05.10 q12 shot was their „Fondue 14 soort” photo (Georgiana 27.10); a 4:3 cut at the focal point, 1600 px wide (the original is 2040 × 1530), alts = lexicon §5.14 grid row (27.10). The same entry serves /bbq-pakketten block 2.",
   "categories": [
     {
       "src": "home/huisgemaakte-burgers-slagerij-john.jpg",
@@ -358,13 +358,13 @@
       }
     },
     {
-      "src": "home/gourmetschotel-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.13 13.jpeg",
+      "src": "home/gourmetschotel-10-soorten-slagerij-john.jpg",
+      "from": "assets/raw/2025-12-05-facebook/fb_09_122186729774357023.jpg",
       "focalX": 50,
       "focalY": 50,
       "alt": {
-        "nl": "Gourmetschotel: gepaneerde lapjes, worstjes, gemarineerde kip",
-        "ro": "Platou gourmet: șnițele, cârnăciori, pui marinat"
+        "nl": "Gourmetschotel met 10 soorten vlees",
+        "ro": "Platou gourmet cu 10 feluri de carne"
       }
     },
     {

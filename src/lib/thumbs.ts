@@ -25,6 +25,14 @@ const productId = (id: string) => id.replace(/^ej\d{2}-/, '');
 
 export const thumbOf = (id: string | undefined): ProductPhoto | null => (id ? (entries[id] ?? entries[productId(id)] ?? null) : null);
 
+const rubrics = data.rubrics as Record<string, ProductPhoto>;
+
+/** Row 22f: a /producten rubric head's print — the rubric's own photo (product-photos.json `rubrics`, keyed by rubric,
+ *  so it stays when a product leaves), else the first `level: section` photo of its rows (lexicon §5.19 20.10); colli
+ *  has neither: no print. */
+export const rubricPrint = (rubric: string, rows: Product[]): ProductPhoto | null =>
+  rubrics[rubric] ?? rows.map((p) => thumbOf(p.id)).find((e) => e?.level === 'section') ?? null;
+
 /** Row 22: the row's own photo (`level: item`), else null. */
 export const ownPhoto = (id: string): ProductPhoto | null => {
   const e = thumbOf(id);

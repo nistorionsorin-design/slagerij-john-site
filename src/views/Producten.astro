@@ -72,7 +72,7 @@ import WaIcon from '../components/WaIcon.astro';
 import photos from '../data/photos.json';
 import type { Product } from '../data/types';
 import { products, priceLabel, priceUnitLabel } from '../lib/price';
-import { thumbOf, entranceOf } from '../lib/thumbs';
+import { thumbOf, entranceOf, rubricPrint } from '../lib/thumbs';
 import { boardGroups } from '../lib/board';
 import { keepUnits } from '../lib/typo';
 import { aliasLabel } from '../lib/order-core.js';
@@ -127,8 +127,9 @@ const cap = (p: Product) => ({
 });
 const rubs = part2.map((id) => {
   const items = rowsOf(id);
-  // the rubric head's print: the first `level: section` photo of the rubric (lexicon §5.19 20.10; colli: none)
-  const print = items.find((p) => thumbOf(p.id)?.level === 'section')?.id;
+  // the rubric head's print: product-photos.json `rubrics[id]`, else the first `level: section` photo of the rubric
+  // (lexicon §5.19 20.10; colli: none) — row 22f
+  const print = rubricPrint(id, items);
   return { id, ...t.rubrics[id], items, print };
 });
 // every row of products.json is on the page, once
@@ -312,7 +313,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
         {rubs.map((r) => (
           <section class="rub" id={r.id} aria-labelledby={`rub-${r.id}`}>
             <div class="rub__head">
-              {r.print && <span class="rub__print"><Thumb id={r.print} locale={locale} variant="print" /></span>}
+              {r.print && <span class="rub__print"><Thumb entry={r.print} locale={locale} variant="print" /></span>}
               <h3 class="rub__title" id={`rub-${r.id}`}><span class="rub__name">{r.name}</span><span class="rub__note">{r.note}</span></h3>
               <span class="rub__count"><span aria-hidden="true">{r.items.length}</span><span class="vh">{t.card.count(r.items.length)}</span></span>
             </div>
