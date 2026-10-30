@@ -10,8 +10,9 @@ export const SITE_UPDATED = '2026-10-19';
 /** /producten + /ro/produse: the whole assortment (row 18, lexicon §5.19 20.10); row 21 (lexicon §5.19 „23.10”): the
  *  owners' 22.10 lists + the volume discount — also the WebPage node's dateModified. The byline's date is the push
  *  day: if the push is not on 23.10, this line moves to that day. Row 22g (lexicon §5.19 „27.10”): the owners' form
- *  answers — new rows, the butcher's photos, the discount on meat; pushed on another day than 27.10 → that day. */
-export const ASSORTMENT_UPDATED = '2026-10-27';
+ *  answers — new rows, the butcher's photos, the discount on meat; pushed on another day than 27.10 → that day.
+ *  Row 22p: Georgiana's two photos + „Kaizer de casă”, live 30.10 (Dan's yes, same day). */
+export const ASSORTMENT_UPDATED = '2026-10-30';
 /** /colli-vleespakketten + /ro/colli: the page is new (row 10d, lexicon §5.28) */
 export const COLLI_UPDATED = '2026-10-20';
 /** /feestmenu-eindejaar + /ro/sarbatori: the holiday brochure as a pdf under the menu card (row 22h, lexicon §5.22
