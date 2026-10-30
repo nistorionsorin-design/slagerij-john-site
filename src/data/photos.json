@@ -923,5 +923,19 @@
       }
     ]
   },
+  "_contact_source": "Row 22n (Dan 30.10 12:20 + 12:23): the /contact + /ro/contact hero, one frame — the shop front, Georgiana's form 19.10, 1080 × 875, the only façade photo; EXIF honoured, metadata stripped, no cut (drawn whole, PageHero `whole` + backdrop). Alts lexicon §5.23 „30.10” / §6 „Contact, 30.10” verbatim.",
+  "contact": [
+    {
+      "src": "contact/winkel-slagerij-john-zwevezele.jpg",
+      "from": "assets/raw/2026-10-19-form/fatada-1000095654.jpg",
+      "role": "hero",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "De winkel van Slagerij John in Zwevezele, met het uithangbord",
+        "ro": "Magazinul Măcelăriei John din Zwevezele, cu firma deasupra"
+      }
+    }
+  ],
   "gallery": []
 }

@@ -19,6 +19,8 @@ import HeroPreload from '../components/HeroPreload.astro';
 import CounterTag from '../components/CounterTag.astro';
 import QuoteForm from '../components/QuoteForm.astro';
 import Gallery from '../components/Gallery.astro';
+import gallery from '../data/gallery-traiteur.json';
+import '../styles/gallery.css';
 import Faq from '../components/Faq.astro';
 import entity from '../data/entity.json';
 import photos from '../data/photos.json';
@@ -131,7 +133,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
     {/* row 19 (D-45): the gallery, under „Wat u bij ons bestelt”, above „Per persoon”; the wrapper keeps the page's
         container (gallery.css sets the block's own vertical margin) */}
     <div class="container">
-      <Gallery locale={locale} />
+      <Gallery locale={locale} items={gallery.items} strings={t.gallery} folder="traiteur" id={t.gallery.anchor} />
     </div>
 
     <section class="container tp" aria-labelledby="tp-title">

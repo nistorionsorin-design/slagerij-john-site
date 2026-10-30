@@ -5,7 +5,7 @@
 // products.json's (`[OWNER]` 13.10), not strings here.
 // /ro/gratar = `bbqRo`, lexicon §6 „Grătar” (15.10), same keys.
 
-import { updatedOn } from '../lib/updated';
+import { updatedOn, BBQ_UPDATED } from '../lib/updated';
 
 export const bbqNl = {
   /** §5.24 meta (57 / 143); `title` = the part before „ | Slagerij John”, as §5.24 says — the page passes the whole */
@@ -24,6 +24,15 @@ export const bbqNl = {
   secondaryHref: '/bestellen#cat-gourmet',
   /** §5.10 bbq (one message for both WhatsApp links of the page) */
   waMessage: 'Dag, ik zoek een BBQ-pakket voor [aantal] personen op [datum].',
+
+  /** §5.24 „30.10 — the gallery” (row 22l): between block 1 and block 2; the six tiles = src/data/gallery-bbq.json */
+  gallery: {
+    eyebrow: 'Van onze barbecues',
+    title: 'Van de schaal tot op het vuur.',
+    intro: "Op clubs, op feesten en thuis in de tuin: wij aan de grill. Eigen foto's, geen stockbeelden.",
+    /** the section's anchor */
+    anchor: 'galerij',
+  },
 
   /** §5.24 block 1 — BBQ. `product` = the products.json item whose price the row shows (null → [PRIJS]); `price`
    *  where the row has no product; the ink row splits „offerte op aanvraag” as /traiteur does (price · unit). */
@@ -95,7 +104,7 @@ export const bbqNl = {
   /** §5.15 FAQ heading; the four §5.24 items in faq.json pages.bbq */
   faq: 'Wat klanten ons vragen',
   /** §5.13 with SITE_UPDATED (row 15c) */
-  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl')}.`,
+  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl', BBQ_UPDATED)}.`,
 
   /** BreadcrumbList (§8.4): Home › BBQ & gourmet */
   crumbs: { home: 'Home', page: 'BBQ & gourmet' },
@@ -117,6 +126,14 @@ export const bbqRo: typeof bbqNl = {
   secondaryHref: '/ro/comanda#cat-gourmet',
   /** §6 messages, bbq (15.10); ≥ 20 persons → „[număr] de persoane” (api/wa.js fillQuote) */
   waMessage: 'Bună, caut un pachet BBQ pentru [număr] persoane pe [data].',
+
+  /** §6 „Grătar, 30.10” (row 22l) */
+  gallery: {
+    eyebrow: 'De la grătarele noastre',
+    title: 'De la tavă până pe foc.',
+    intro: 'La cluburi, la petreceri și acasă, în curte: noi la grătar. Fotografii proprii, nu de stoc.',
+    anchor: 'galerie',
+  },
 
   bbq: {
     eyebrow: 'Pentru grătar',
@@ -183,7 +200,7 @@ export const bbqRo: typeof bbqNl = {
   /** §6 „Acasă” FAQ heading */
   faq: 'Ce ne întreabă clienții',
   /** §5.13 RO with SITE_UPDATED (row 15c) */
-  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro')}.`,
+  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro', BBQ_UPDATED)}.`,
   crumbs: { home: 'Acasă', page: 'Grătar și gourmet' },
 };
 

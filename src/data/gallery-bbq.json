@@ -1,0 +1,125 @@
+{
+  "_source": "Cowork 30.10 12:2x — Dan 12:05 („in the gratar page i want more fotos from bbq events or bbq very nice presented so it takes the view”) + 12:14 picks A F C E H + the event photo he sent („and really nice promo lines with our nice writting”). The /traiteur gallery's treatment B2 Mozaïek (D-45, gallery.css v1.1): tiles 1 and 6 wide 16:9, 2–5 square; each source cut to its tile at the focal point (item 3: the crop box first). Strings = lexicon §5.24 „30.10 — the gallery” + §6 „Grătar, 30.10” (RO lint 0). Preview: design/contact-sheets/review-2026-10-30/gallery-bbq-preview.jpg.",
+  "items": [
+    {
+      "id": "bbq-schaal-gemarineerd",
+      "src": "bbq/galerij-bbq-schaal-klaar-voor-het-rooster-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.16 18.jpeg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "BBQ-schaal met gemarineerde kip, burgers, worsten en brochettes",
+        "ro": "Tavă BBQ cu pui marinat, burgeri, cârnați și frigărui"
+      },
+      "caption": {
+        "nl": "Klaar voor het rooster",
+        "ro": "Gata de grătar"
+      },
+      "text": {
+        "nl": "Kip, burgers, worst en brochettes, gemarineerd op één schaal.",
+        "ro": "Pui, burgeri, cârnați și frigărui, marinate pe aceeași tavă."
+      },
+      "note": "tile 1, wide 16:9 (2040×942 → 1675×942)"
+    },
+    {
+      "id": "john-aan-de-grill",
+      "src": "bbq/galerij-john-aan-de-grill-met-brochettes-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 2.jpeg",
+      "focalX": 50,
+      "focalY": 62,
+      "alt": {
+        "nl": "John aan de grill met brochettes, buiten",
+        "ro": "John la grătar cu frigărui, în aer liber"
+      },
+      "caption": {
+        "nl": "John aan de grill",
+        "ro": "John la grătar"
+      },
+      "text": {
+        "nl": "Brochettes op het vuur, ter plaatse gebakken.",
+        "ro": "Frigărui pe foc, făcute pe loc."
+      },
+      "note": "square from the 942×2040 portrait, focal y 62 (John + the grill)"
+    },
+    {
+      "id": "buffet-in-de-tuin",
+      "src": "bbq/galerij-warm-van-de-grill-buffet-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-30-chat/georgiana-bbq-buffet-event.jpg",
+      "focalX": 50,
+      "focalY": 80,
+      "alt": {
+        "nl": "Georgiana schept vlees van de grill op aan een buffet onder een tent, gasten met borden",
+        "ro": "Georgiana servește carne de pe grătar la un bufet sub cort, invitații cu farfuriile"
+      },
+      "caption": {
+        "nl": "Warm van de grill",
+        "ro": "Cald de pe grătar"
+      },
+      "text": {
+        "nl": "Rechtstreeks op het bord, aan het buffet in de tuin.",
+        "ro": "Direct în farfurie, la bufetul din grădină."
+      },
+      "note": "The whole photo (Dan 12:17: „just put all the photo with focus on her”): square = the full 1500 px width, y 400–1900 of the 1500×2000 original (focal y 80) — the tent, Georgiana at the trays, the guests. Guests' faces (children too) show: Dan's decision 12:17."
+    },
+    {
+      "id": "georgiana-en-john-clubfeest",
+      "src": "bbq/galerij-wij-komen-met-de-grill-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-17-hero/WhatsApp Image 2026-10-05 at 22.48.13.jpeg",
+      "focalX": 50,
+      "focalY": 55,
+      "alt": {
+        "nl": "Georgiana vooraan, John aan de grill op een clubfeest",
+        "ro": "Georgiana în față, John la grătar, la o petrecere de club"
+      },
+      "caption": {
+        "nl": "Wij komen met de grill",
+        "ro": "Venim noi cu grătarul"
+      },
+      "text": {
+        "nl": "U zorgt voor de gasten, wij voor het vlees.",
+        "ro": "Tu te ocupi de invitați, noi de carne."
+      },
+      "note": "square from 1200×1600, focal y 55; Georgiana (owner) in the foreground"
+    },
+    {
+      "id": "varken-aan-het-spit",
+      "src": "bbq/galerij-varken-aan-het-spit-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at1.jpeg",
+      "focalX": 50,
+      "focalY": 42,
+      "alt": {
+        "nl": "Een varken aan het spit boven de open grill, voor de barbecuetrailer",
+        "ro": "Un porc la proțap deasupra grătarului deschis, în fața remorcii de grătar"
+      },
+      "caption": {
+        "nl": "Varken aan het spit",
+        "ro": "Porc la proțap"
+      },
+      "text": {
+        "nl": "Voor een groot gezelschap, met onze barbecuetrailer.",
+        "ro": "Pentru o petrecere mare, cu remorca noastră de grătar."
+      },
+      "note": "square from the 942×2040 portrait, focal y 42 (the pig + the trailer sign); same event as p08 (home loop) from another angle"
+    },
+    {
+      "id": "bbq-schaal-per-persoon",
+      "src": "bbq/galerij-bbq-schaal-per-persoon-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/belgian.jpeg",
+      "focalX": 50,
+      "focalY": 55,
+      "alt": {
+        "nl": "BBQ-schaal met burgers, worsten, gemarineerd vlees en kip",
+        "ro": "Tavă BBQ cu burgeri, cârnați, carne marinată și pui"
+      },
+      "caption": {
+        "nl": "Per persoon samengesteld",
+        "ro": "Pe numărul tău de persoane"
+      },
+      "text": {
+        "nl": "Zeg ons het aantal, wij vullen de schaal.",
+        "ro": "Spune-ne numărul, noi umplem tava."
+      },
+      "note": "tile 6, wide 16:9 (1600×1200 → 1600×900, focal y 55)"
+    }
+  ]
+}

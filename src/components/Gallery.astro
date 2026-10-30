@@ -1,30 +1,45 @@
 ---
 // Gallery — /traiteur · /ro/catering, „Van onze feesten” / „De la petrecerile noastre” (build-plan row 19, D-45; Dan
-// 20.10 10:54: B2 Mozaïek). Markup = the contract in the header of src/styles/gallery.css (design/css/gallery.css v1.1,
-// ported 1:1 on 21.10 — v1.1 = the sizes for the 1328 px container + the two retina widths): section · eyebrow · H2 · intro · ten <figure> with a <figcaption> = title (gal__t) + one line (gal__d).
-// Data: src/data/gallery-traiteur.json (poured from docs/data/gallery-traiteur.json, ten items in order); the head's
-// strings: src/i18n/traiteur.ts `gallery` (lexicon §5.21 „20.10 — the gallery” / §6 „Catering, 20.10”).
+// 20.10 10:54: B2 Mozaïek), and since row 22l /bbq-pakketten · /ro/gratar, „Van onze barbecues” / „De la grătarele noastre”.
+// Markup = the contract in the header of src/styles/gallery.css (design/css/gallery.css v1.1, ported 1:1 on 21.10 — v1.1 =
+// the sizes for the 1328 px container + the two retina widths): section · eyebrow · H2 · intro · the <figure>s with a
+// <figcaption> = title (gal__t) + one line (gal__d).
+// The page passes everything (row 22l): `items` (src/data/gallery-traiteur.json · gallery-bbq.json, poured from docs/data/,
+// in order), `strings` (eyebrow · title · intro: i18n/traiteur.ts · bbq.ts `gallery`, lexicon §5.21 „20.10 — the gallery”
+// · §5.24 „30.10 — the gallery”), `folder` (where the page's cut files live) and `id` (the section's anchor).
 // Images: each source file is the photo already cut to its tile's shape at the data's focal point (tiles 1 and 6 =
 // 16:9, the rest 1:1 — the CSS's nth-child(1), nth-child(6)), so object-position (kept, as the contract asks) has
 // nothing left to move. Sizes as the CSS header states: squares 340 / 520 / 660 px, the two wide tiles 720 / 1040 /
 // 1316 px (never upscaled: the tacos photo is 942 px wide, so its sizes are 720 / 942 — one 942, not two); AVIF + WebP
-// <source>s, the JPEG as the <img> fallback; width/height = the largest size (CLS 0), lazy + async on all ten (the
-// block sits under the fold), no script, no lightbox, nothing moves (U-21). No JSON-LD (§5.21: no ImageGallery).
+// <source>s, the JPEG as the <img> fallback; width/height = the largest size (CLS 0), lazy + async on all (the block
+// sits under the fold), no script, no lightbox, nothing moves (U-21). No JSON-LD (§5.21: no ImageGallery).
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import gallery from '../data/gallery-traiteur.json';
-import { traiteurT } from '../i18n/traiteur';
+import type { L10n } from '../data/types';
 import type { Locale } from '../i18n/ui';
-import '../styles/gallery.css';
 
-export interface Props { locale: Locale }
-const { locale } = Astro.props;
-const t = traiteurT[locale].gallery;
+// gallery.css is imported by the view, not here (row 22l): imported from a component on two pages it becomes a shared chunk,
+// inlined after the page's own CSS, and /traiteur's bytes change; the two views each hold their own module of the one file
+export interface Props {
+  locale: Locale;
+  items: { src: string; focalX: number; focalY: number; alt: L10n; caption: L10n; text: L10n }[];
+  strings: { eyebrow: string; title: string; intro: string };
+  /** src/assets/<folder>/galerij-*.jpg */
+  folder: 'traiteur' | 'bbq';
+  /** the section's anchor */
+  id: string;
+}
+const { locale, items, strings: t, folder, id } = Astro.props;
 
-const files = import.meta.glob<{ default: ImageMetadata }>('../assets/traiteur/galerij-*.jpg', { eager: true });
+// one glob per folder: import.meta.glob takes a literal only
+const folders = {
+  traiteur: import.meta.glob<{ default: ImageMetadata }>('../assets/traiteur/galerij-*.jpg', { eager: true }),
+  bbq: import.meta.glob<{ default: ImageMetadata }>('../assets/bbq/galerij-*.jpg', { eager: true }),
+};
+const files = folders[folder];
 const file = (src: string) => {
   const m = files[`../assets/${src}`];
-  if (!m) throw new Error(`gallery-traiteur.json: src/assets/${src} not found`);
+  if (!m) throw new Error(`Gallery (${folder}): src/assets/${src} not found`);
   return m.default;
 };
 
@@ -40,7 +55,7 @@ const WIDTHS = { wide: [720, 1040, 1316], square: [340, 520, 660] };
 const Q = { avif: 45, webp: 60, jpg: 70 };
 
 const figs = await Promise.all(
-  gallery.items.map(async (it, i) => {
+  items.map(async (it, i) => {
     const img = file(it.src);
     const wide = i === 0 || i === 5;
     const ratio = wide ? 16 / 9 : 1;
@@ -69,7 +84,7 @@ const figs = await Promise.all(
   }),
 );
 ---
-<section class="gal" id={t.anchor} aria-labelledby="gal-title">
+<section class="gal" id={id} aria-labelledby="gal-title">
   <p class="gal__eyebrow">{t.eyebrow}</p>
   <h2 class="gal__title" id="gal-title">{t.title}</h2>
   <p class="gal__intro">{t.intro}</p>

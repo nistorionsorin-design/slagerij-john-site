@@ -332,10 +332,11 @@ if (built) {
         }
       }
     }
-    for (const ph of [...photos.hero, ...photos.loop, ...photos.gallery, ...(photos.traiteur ?? [])])
+    for (const ph of [...photos.hero, ...photos.loop, ...photos.gallery, ...(photos.traiteur ?? []), ...(photos.contact ?? [])])
       if (!ph.alt?.nl?.trim() || !ph.alt?.ro?.trim()) e.push(`photos.json: ${ph.src} lacks alt NL/RO`);
-    for (const g of json('gallery-traiteur.json').items)
-      if (!g.alt?.nl?.trim() || !g.alt?.ro?.trim()) e.push(`gallery-traiteur.json: ${g.src} lacks alt NL/RO`);
+    for (const file of ['gallery-traiteur.json', 'gallery-bbq.json'])
+      for (const g of json(file).items)
+        if (!g.alt?.nl?.trim() || !g.alt?.ro?.trim()) e.push(`${file}: ${g.src} lacks alt NL/RO`);
     verdict('images', e, `${n} <img>: width/height, alt, lazy, AVIF/WebP`);
     if (!n) warn('images-empty', 'no images built yet → hero ≤ 90 kB mobile is not exercised');
     else warn('hero-weight', 'hero frame ≤ 90 kB mobile: check the served variant in the browser, not automated here');

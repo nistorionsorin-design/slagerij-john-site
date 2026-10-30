@@ -1,9 +1,13 @@
 ---
 // /contact — Openingsuren, adres en contact (stage 8). Canvas board Contact (mobile 390) is the concept (D-30), its
-// sections in order: the paper head (eyebrow · H1 · accent · open chip · Bestel via WhatsApp · Bel ons) · the three
-// contact rows · the hours card + the Monday line · the special days card · the map with the address box · Afhalen en
-// levering · FAQ · byline. Desktop derived (D-30): the head left and the contact rows right; below, the hours and the
-// special days left, the map right; then pickup/delivery and the FAQ in the FAQ's 5 / 7 columns.
+// sections in order: the head · the three contact rows · the hours card + the Monday line · the special days card · the
+// map with the address box · Afhalen en levering · FAQ · byline. Desktop derived (D-30): the head, the contact rows across
+// under it; below, the hours and the special days left, the map right; then pickup/delivery and the FAQ in the FAQ's
+// 5 / 7 columns.
+// Row 22n (Dan 30.10 12:20 + 12:23): the paper head became the showcase hero (PageHero.astro) with the shop front — the
+// one façade photo, 1080 × 875, too small for the 1 : 2 and 2 : 1 cuts, so a whole frame with the backdrop (the /recepten
+// head): the file drawn whole, its blurred copy behind it. Same strings, the chip in the hero's row, the two buttons at
+// its foot (no lead); the file is photos.json `contact`, its alt lexicon §5.23 „30.10” / §6 „Contact, 30.10”.
 // Strings: src/i18n/contact.ts (lexicon §5.23). Hours: hours.json (Hours.astro — this page carries #openingsuren, the
 // target of both chips); special days: every hours.json `special` entry from today on, the board's four [UREN] rows
 // while it is empty. FAQ: the four §5.11 „Contact” items (faq.json pages.contact). No contact form (§5.23).
@@ -13,15 +17,18 @@
 // WebPage typed ContactPage (§8.2), BreadcrumbList (§8.4). Nothing else.
 // RO (/ro/contact, stage 9): lexicon §6 „Contact” + the D-33 RO line (contact.ts `ro`); one view, two pages:
 // src/pages/contact.astro and src/pages/ro/contact.astro.
+import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import ArtPicture from '../components/ArtPicture.astro';
+import PageHero from '../components/PageHero.astro';
+import HeroPreload from '../components/HeroPreload.astro';
 import Hours from '../components/Hours.astro';
-import OpenChip from '../components/OpenChip.astro';
 import WaIcon from '../components/WaIcon.astro';
 import Faq from '../components/Faq.astro';
 import entity from '../data/entity.json';
 import hours from '../data/hours.json';
-import type { SpecialDay } from '../data/types';
+import photos from '../data/photos.json';
+import type { Photo, SpecialDay } from '../data/types';
 import { brussels } from '../lib/open-state';
 import { mapsProfile } from '../lib/social';
 import { wa, routeHref, type Locale } from '../i18n/ui';
@@ -38,6 +45,15 @@ const origin = 'https://slagerij-john.be';
 const alternates = { nl: '/contact', ro: '/ro/contact' };
 const path = alternates[locale];
 const homePath = ro ? '/ro' : '/';
+
+// the hero (row 22n): on the phone the width of the screen. `top` 3, not the row's starting 8: the hero is 100svh, so under
+// a real browser's toolbars ≈ 664 px on a 390 × 844 iPhone, where 8 put the shop's sign behind the chip row (measured
+// 30.10 at 360–430 px wide; at 844 px tall it would not have shown)
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/contact/*.jpg', { eager: true });
+const front = (photos.contact as Photo[])[0];
+const frontFile = files[`../assets/${front.src}`]?.default;
+if (!frontFile) throw new Error(`photos.json contact: src/assets/${front.src} not found`);
+const heroFrames = [{ img: frontFile, alt: front.alt[locale], focalX: front.focalX, focalY: front.focalY, whole: { width: 100, top: 3, backdrop: true } }];
 
 const tel = `tel:${entity.telephone}`;
 // RO: §6 „Contact” → /wa?src=contact-head&lang=ro (the rows the same way)
@@ -115,20 +131,16 @@ const jsonld = [
   },
 ];
 ---
-<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} shop={shop} hoursCard>
+<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} shop={shop} navVariant="hero" hoursCard>
+  <HeroPreload slot="head" frame={heroFrames[0]} />
   <main id="main" class="ct">
-    <div class="container ct-top">
-      <section class="ch" aria-labelledby="ch-title">
-        <p class="eyebrow ch__eyebrow">{t.eyebrow}</p>
-        <h1 class="ch__h1" id="ch-title">{t.h1} <span class="accent ch__accent">{t.accent}</span></h1>
-        <OpenChip locale={locale} variant="p" class="ch__chip" />
-        <div class="ch__buttons">
-          <a class="btn btn--primary btn--lg" href={waHead} rel="nofollow"><WaIcon size={20} /><span>{t.whatsapp}</span></a>
-          {/* row 8b (D-33): Bestel online replaces Bel ons — the phone is the first row underneath */}
-          <a class="btn btn--secondary btn--lg" href={t.onlineHref}>{t.online}</a>
-        </div>
-      </section>
+    <PageHero locale={locale} id="ch-title" eyebrow={t.eyebrow} h1={t.h1} accent={t.accent} chip frames={heroFrames}>
+      <a class="btn btn--primary btn--lg" href={waHead} rel="nofollow"><WaIcon size={20} /><span>{t.whatsapp}</span></a>
+      {/* row 8b (D-33): Bestel online replaces Bel ons — the phone is the first row underneath */}
+      <a class="btn btn--secondary btn--lg" href={t.onlineHref}>{t.online}</a>
+    </PageHero>
 
+    <div class="container ct-top">
       <ul class="cr" role="list">
         {rows.map((r) => (
           <li>
@@ -195,19 +207,10 @@ const jsonld = [
 </Base>
 
 <style>
-  /* ── phone = board Contact (390) ── */
-  /* the head (board: padding 24 20, gap 14, H1 Fraunces 500 38/1.02, accent italic 26 ox, chip, two full-width
-     buttons) */
-  .ch { display: flex; flex-direction: column; gap: 14px; padding: 24px 0; }
-  .ch__eyebrow { margin: 0; }
-  .ch__h1 { margin: 0; font-size: 38px; line-height: 1.02; letter-spacing: -0.02em; }
-  .ch__accent { display: block; margin-top: 14px; font-size: var(--fs-accent); line-height: var(--lh-accent); }
-  .ch :global(.ch__chip) { align-self: flex-start; }
-  .ch__buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 2px; }
-  .ch__buttons .btn { width: 100%; }
-
-  /* the three contact rows (board: one card, padding 4 18, rows 56 px under hairlines, icon · label 12 muted over the
-     value 15/600 tabular · arrow) */
+  /* ── phone = board Contact (390); the head: PageHero.astro (row 22n) ── */
+  /* the three contact rows, right under the hero (board: one card, padding 4 18, rows 56 px under hairlines, icon · label
+     12 muted over the value 15/600 tabular · arrow) */
+  .ct-top { padding-top: 20px; }
   .cr { list-style: none; margin: 0; padding: 4px 18px; border: 1px solid var(--line); border-radius: var(--r-tile); background: var(--card); }
   .cr li + li { border-top: 1px solid var(--line); }
   .cr__row { display: grid; grid-template-columns: 20px minmax(0, 1fr) 18px; gap: 12px; align-items: center; min-height: 56px; color: var(--fg); text-decoration: none; }
@@ -271,14 +274,10 @@ const jsonld = [
 
   /* ── desktop (derived, D-30) ── */
   @media (min-width: 960px) {
-    /* the head left, the contact rows right, bottoms aligned */
-    .ct-top { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 56px; align-items: end; padding-top: 56px; }
-    .ch { gap: 20px; padding: 0; }
-    .ch__h1 { font-size: clamp(48px, 4.4vw, 68px); line-height: 1; letter-spacing: -0.025em; max-width: 14em; }
-    .ch__accent { margin-top: 16px; }
-    .ch__buttons { flex-direction: row; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
-    .ch__buttons .btn { width: auto; }
-    .cr { padding: 8px 28px; border-radius: var(--r-frame); }
+    /* under the hero, the three rows across: a stacked card would run 1328 px wide with its arrows at the far edge */
+    .ct-top { padding-top: 24px; }
+    .cr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 8px 28px; border-radius: var(--r-frame); }
+    .cr li + li { padding-left: 28px; margin-left: 28px; border-top: 0; border-left: 1px solid var(--line); }
     .cr__row { grid-template-columns: 22px minmax(0, 1fr) 18px; gap: 16px; min-height: 72px; }
     .cr__label { font-size: 13px; }
     .cr__value { font-size: 18px; }

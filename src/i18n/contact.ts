@@ -5,7 +5,7 @@
 // (Dan's question), [WHATSAPP-ANTWOORD] (B 5, in faq.json); the byline's date = SITE_UPDATED (row 15c). No contact form (§5.23).
 // `ro` = lexicon §6 „Contact” + the D-33 RO line (13.10), same keys: the full /ro/contact since stage 9.
 
-import { updatedOn } from '../lib/updated';
+import { updatedOn, CONTACT_UPDATED } from '../lib/updated';
 
 export const contact = {
   nl: {
@@ -13,7 +13,7 @@ export const contact = {
     title: 'Openingsuren, adres en contact in Zwevezele | Slagerij John',
     description: 'Slagerij John in Zwevezele (Wingene): zondag open van 08:00 tot 13:00, maandag vanaf 13:00. Bruggestraat 146A. Bel, stuur een WhatsApp of plan uw route.',
 
-    /** §5.23 head (paper) */
+    /** §5.23 head (PageHero since row 22n, the same strings) */
     eyebrow: 'Contact',
     h1: 'Openingsuren en adres van Slagerij John in Zwevezele.',
     accent: 'Zondag open van 08:00 tot 13:00.',
@@ -73,7 +73,7 @@ export const contact = {
     /** §5.23 FAQ eyebrow; the four „Contact” items of §5.11 in faq.json pages.contact */
     faq: 'Veelgestelde vragen',
     /** §5.13 with SITE_UPDATED (row 15c) */
-    byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl')}.`,
+    byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl', CONTACT_UPDATED)}.`,
     /** BreadcrumbList (§8.4): Home › Contact */
     crumbs: { home: 'Home', page: 'Contact' },
   },
@@ -123,7 +123,7 @@ export const contact = {
       parking: 'Parcare: gratuită, în fața magazinului (2 locuri) și pe stradă',
     },
     faq: 'Întrebări frecvente',
-    byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro')}.`,
+    byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro', CONTACT_UPDATED)}.`,
     crumbs: { home: 'Acasă', page: 'Contact' },
   },
 };
