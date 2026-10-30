@@ -109,7 +109,6 @@ const sizes = '(min-width: 960px) 60vw, 100vw';
   @media (prefers-reduced-motion: reduce) {
     .pl :global(img) { animation: none; }
     .pl :global(img.home) { opacity: 1; }
-    .loop__ctl { display: none; }
   }
   /* the label says what a tap will do (lexicon §5.15) */
   .loop__say-play { display: none; }
@@ -151,5 +150,11 @@ const sizes = '(min-width: 960px) 60vw, 100vw';
     .pl { height: auto; border-radius: var(--r-frame); }
     .pl:nth-child(1) { grid-row: span 2; }
     .pl:nth-child(3) { grid-column: auto; height: auto; }
+  }
+
+  /* row 22m: nothing moves, so nothing to pause and no hint. Last on purpose: above the base `.loop__ctl` rule it loses on
+     equal specificity (the control stayed visible and did nothing) */
+  @media (prefers-reduced-motion: reduce) {
+    .loop__ctl { display: none; }
   }
 </style>
