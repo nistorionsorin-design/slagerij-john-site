@@ -247,7 +247,7 @@ const recipesPath = ro ? '/ro/retete' : '/recepten';
 
 const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 ---
-<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero">
+<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero" ogImage={heroFrames[0]} ogAlt={heroFrames[0].alt}>
   <HeroPreload slot="head" frame={heroFrames[0]} quality={40} />
   <main id="main" class="pp">
     <PageHero locale={locale} id="pp-title" eyebrow={t.eyebrow} h1={t.h1} accent={t.accent} lead={t.lead} leadBelow={LEAD_BELOW} chip frames={heroFrames} quality={40}>

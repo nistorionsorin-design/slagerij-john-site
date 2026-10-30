@@ -156,7 +156,7 @@ const jsonld = [
 
 const clock = '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
 ---
-<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero">
+<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero" ogImage={heroFrames[0]} ogAlt={heroFrames[0].alt}>
   <HeroPreload slot="head" frame={heroFrames[0]} />
   <main id="main" class="rp">
     <PageHero locale={locale} id="rh-title" eyebrow={t.eyebrow} h1={t.h1} accent={t.accent} lead={t.lead} leadBelow={LEAD_BELOW} frames={heroFrames} />

@@ -50,9 +50,10 @@ const file = (src: string) => {
 
 // the hero (row 14e, PageHero.astro) = the hero's John at the grill, id john-bbq (the board's photo; picked by id,
 // D-38), AVIF quality 40 as the head before it; the 2:1 desktop crop keeps the top of the frame: John's face sits in
-// its top fifth (the 50 % centre would cut it)
+// its top fifth (the 50 % centre would cut it). 0, not the 20 it was: the hero's cut reads anything under 40 as `top`, the
+// link preview (row 22o) reads the number itself and at 20 lost the top of his head
 const head = heroPhoto('john-bbq');
-const heroFrames = [{ img: file(head.src), alt: head.alt[locale], focalX: head.focalX, focalY: head.focalY, zoomX: head.zoomX, zoomY: head.zoomY, desktopFocalY: 20 }];
+const heroFrames = [{ img: file(head.src), alt: head.alt[locale], focalX: head.focalX, focalY: head.focalY, zoomX: head.zoomX, zoomY: head.zoomY, desktopFocalY: 0 }];
 // spec §4: the lead goes under the hero when the text block covers more of it than the home's own (64,6 % at 390 × 844,
 // measured from the block's top to the hero's foot) — here 75,2 % NL / 78,3 % RO with the lead in (row 14e
 // [MEASURED-OURS] local 19.10)
@@ -107,7 +108,7 @@ const jsonld = [
 
 const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 ---
-<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero">
+<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero" ogImage={heroFrames[0]} ogAlt={heroFrames[0].alt}>
   <HeroPreload slot="head" frame={heroFrames[0]} quality={40} />
   <main id="main" class="tr">
     <PageHero locale={locale} id="th-title" eyebrow={t.eyebrow} h1={t.h1} accent={t.accent} lead={t.lead} leadBelow={LEAD_BELOW} frames={heroFrames} quality={40}>

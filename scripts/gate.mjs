@@ -88,6 +88,18 @@ function woff2Cmap(buf) {
   return cps;
 }
 
+// A JPEG's frame header, with no dependency: the markers from SOI on, each with its length, up to the first SOF
+// (0xFFC0 = baseline, 0xFFC2 = progressive; C4, C8 and CC share the range and are not frames).
+function jpegFrame(buf) {
+  if (buf.readUInt16BE(0) !== 0xffd8) return null;
+  for (let p = 2; p + 9 <= buf.length; p += 2 + buf.readUInt16BE(p + 2)) {
+    if (buf[p] !== 0xff) return null;
+    const m = buf[p + 1];
+    if (m >= 0xc0 && m <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(m)) return { baseline: m === 0xc0, height: buf.readUInt16BE(p + 5), width: buf.readUInt16BE(p + 7) };
+  }
+  return null;
+}
+
 // 1 — astro check + astro build
 function run(id, args) {
   const r = spawnSync('npx', ['astro', ...args], { cwd: root, shell: true, encoding: 'utf8' });
@@ -340,6 +352,50 @@ if (built) {
     verdict('images', e, `${n} <img>: width/height, alt, lazy, AVIF/WebP`);
     if (!n) warn('images-empty', 'no images built yet → hero ≤ 90 kB mobile is not exercised');
     else warn('hero-weight', 'hero frame ≤ 90 kB mobile: check the served variant in the browser, not automated here');
+  }
+
+  // 6b — link previews (row 22o): every page, the 404s too, has exactly one og:image, absolute on this host, its file in
+  // dist/ a baseline JPEG of 1200 × 630, ≤ 300 kB (WhatsApp drops heavier previews, [PRACTITIONER]); the size, type and
+  // alt tags and twitter:image agree with it; an NL page and its RO twin share the file, each with its own alt.
+  {
+    const e = [];
+    const MAX = 300_000;
+    const meta = (html, key) => (html.match(new RegExp(`<meta\\s+(?:property|name)="${key}"[^>]*>`, 'gi')) || []).map((t) => decode(attr(t, 'content') ?? ''));
+    const sizes = new Map();
+    for (const p of pages) {
+      const urls = meta(p.html, 'og:image');
+      if (urls.length !== 1) {
+        e.push(`${p.file}: ${urls.length} og:image`);
+        continue;
+      }
+      const [url] = urls;
+      for (const [key, want] of [['og:image:width', '1200'], ['og:image:height', '630'], ['og:image:type', 'image/jpeg'], ['twitter:card', 'summary_large_image'], ['twitter:image', url]])
+        if (meta(p.html, key).join() !== want) e.push(`${p.file}: ${key} = ${meta(p.html, key).join() || 'missing'}, want ${want}`);
+      const alts = meta(p.html, 'og:image:alt');
+      if (alts.length !== 1 || !alts[0].trim()) e.push(`${p.file}: og:image:alt missing or empty`);
+      if (!url.startsWith(`https://${OWN_HOST}/`)) e.push(`${p.file}: og:image ${url} is not absolute on ${OWN_HOST}`);
+      else if (!sizes.has(url)) {
+        const file = join(dist, new URL(url).pathname);
+        if (!existsSync(file)) {
+          e.push(`${p.file}: ${url} is not in dist/`);
+          continue;
+        }
+        const buf = readFileSync(file);
+        const frame = jpegFrame(buf);
+        sizes.set(url, buf.length);
+        if (!frame) e.push(`${rel(file)}: not a JPEG`);
+        else if (!frame.baseline) e.push(`${rel(file)}: progressive, not baseline`);
+        else if (frame.width !== 1200 || frame.height !== 630) e.push(`${rel(file)}: ${frame.width} × ${frame.height}, not 1200 × 630`);
+        if (buf.length > MAX) e.push(`${rel(file)}: ${buf.length} B > ${MAX} B`);
+      }
+    }
+    for (const p of content) {
+      const twin = byUrl.get(attr(p.html.match(/<link\s+rel="alternate"\s+hreflang="ro-BE"[^>]*>/i)?.[0] ?? '', 'href'));
+      if (!twin || twin === p) continue;
+      if (meta(p.html, 'og:image').join() !== meta(twin.html, 'og:image').join()) e.push(`${p.file} and ${twin.file}: not the same og:image`);
+      if (meta(p.html, 'og:image:alt').join() === meta(twin.html, 'og:image:alt').join()) e.push(`${p.file} and ${twin.file}: the same og:image:alt in both languages`);
+    }
+    verdict('og-image', e, `${pages.length} pages: one og:image each, ${sizes.size} files, baseline 1200 × 630, largest ${Math.max(0, ...sizes.values())} B ≤ ${MAX} B; NL and RO twins share the file, each with its own alt`);
   }
 
   // 7 — placeholders (C-04). Any [UPPER-CASE] token ([PRIJS], [KOOKLIJN], RO [GĂTIRE], [ALT RO], …),

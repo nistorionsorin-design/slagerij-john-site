@@ -115,7 +115,7 @@ const jsonld = [
   },
 ];
 ---
-<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero">
+<Base title={t.title} description={t.description} locale={locale} path={path} alternates={alternates} jsonld={jsonld} navVariant="hero" ogImage={heroFrames[0]} ogAlt={heroFrames[0].alt}>
   <HeroPreload slot="head" frame={heroFrames[0]} />
   <main id="main" class="ej">
     <PageHero locale={locale} id="eh-title" eyebrow={t.eyebrow} h1={t.h1} accent={fill(t.accent)} lead={fill(t.lead)} leadBelow={LEAD_BELOW} frames={heroFrames}>
