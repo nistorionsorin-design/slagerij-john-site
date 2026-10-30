@@ -49,6 +49,7 @@ const T = {
     pay: 'Betalen bij afhaling: cash, Bancontact, Payconiq, Visa of Mastercard',
     payDelivery: 'Betalen bij levering: cash, Bancontact, Payconiq, Visa of Mastercard',
     hours: 'Openingsuren',
+    madeBy: 'Website en online bestellen van Slagerij John: gemaakt door DanGabriel Advisory.', // row 22q, §5.20 „30.10”
   },
   ro: {
     // RO orders (stage 9): the menu's word as in the shop's first line below
@@ -74,6 +75,7 @@ const T = {
     pay: 'Plata la ridicare: numerar, Bancontact, Payconiq, Visa sau Mastercard',
     payDelivery: 'Plata la livrare: numerar, Bancontact, Payconiq, Visa sau Mastercard',
     hours: 'Program',
+    madeBy: 'Site-ul și comenzile online ale Măcelăriei John: făcute de DanGabriel Advisory.', // also the shop mail's foot, whatever the order's language
   },
 };
 
@@ -145,13 +147,13 @@ const hoursText = (hours, locale) =>
 // the page's bottom with room to spare. If the foot lands alone on a second sheet, this number is too high.
 const SHEET_PX = 820;
 const shopLogo = `<img src="${entity.url}/mail/slagerij-john@3x.png" width="76" height="76" alt="${esc(entity.name)}" style="display:block;border:0">`;
-// the shop's mail only, small, under a thin rule (row 22k (e), Dan 30.10 11:55; D-54's block, mail-sized): a mail client
-// needs an absolute URL and a PNG
-const MADE_BY = 'Site-ul și comenzile online ale Măcelăriei John: făcute de DanGabriel Advisory.';
-const madeBy =
+// the foot of both mails, small, under a thin rule (row 22k (e), Dan 30.10 11:55; row 22q, 14:2x: the customer's too, credit
+// and link only; D-54's block, mail-sized): a mail client needs an absolute URL and a PNG. Row 22s: the PNG is the mark
+// on a white plate, 4 px around it, so a phone in dark mode still shows it; on a white mail the plate is invisible.
+const madeByBlock = (line) =>
   `<table role="presentation" style="border-collapse:collapse;width:100%;max-width:640px;margin:24px 0 0;border-top:1px solid #D9CDB8"><tr>` +
-  `<td style="width:78px;padding:12px 14px 0 0;vertical-align:middle"><img src="${entity.url}/mail/dga-advisory@3x.png" width="78" height="56" alt="DanGabriel Advisory" style="display:block;border:0"></td>` +
-  `<td style="padding:12px 0 0;vertical-align:middle;font-size:12px;line-height:1.4;color:#6B5E52">${esc(MADE_BY)}<br><a href="https://dg-advisory.net" style="color:#6B5E52">dg-advisory.net</a></td></tr></table>`;
+  `<td style="width:86px;padding:12px 14px 0 0;vertical-align:middle"><img src="${entity.url}/mail/dga-advisory@3x.png" width="86" height="62" alt="DanGabriel Advisory" style="display:block;border:0"></td>` +
+  `<td style="padding:12px 0 0;vertical-align:middle;font-size:12px;line-height:1.4;color:#6B5E52">${esc(line)}<br><a href="https://dg-advisory.net" style="color:#6B5E52">dg-advisory.net</a></td></tr></table>`;
 
 function mails(o, hours) {
   const t = T[o.locale];
@@ -166,7 +168,7 @@ function mails(o, hours) {
   const shop = {
     subject: t.subjectShop(o),
     replyTo: o.email,
-    text: [header, '', o.name, p.text, '', ...who, remarks, '', `${t.call}: tel:${o.phone.replace(/[^\d+]/g, '')}`, `${t.whatsapp}: https://wa.me/${intl(o.phone)}`, '', MADE_BY, 'dg-advisory.net'].filter((x) => x !== '').join('\n'),
+    text: [header, '', o.name, p.text, '', ...who, remarks, '', `${t.call}: tel:${o.phone.replace(/[^\d+]/g, '')}`, `${t.whatsapp}: https://wa.me/${intl(o.phone)}`, '', T.ro.madeBy, 'dg-advisory.net'].filter((x) => x !== '').join('\n'),
     html:
       `<div style="font-family:Arial,sans-serif;color:#1A1511">` +
       `<table role="presentation" height="${SHEET_PX}" style="border-collapse:collapse;width:100%;max-width:640px;height:${SHEET_PX}px"><tr><td style="padding:0;vertical-align:top">` +
@@ -177,18 +179,18 @@ function mails(o, hours) {
       `<p style="margin:16px 0 0;font-size:16px;line-height:1.5">${who.map(esc).join('<br>')}${remarks ? `<br>${esc(remarks).replace(/\n/g, '<br>')}` : ''}</p>` +
       `<p style="margin:20px 0 0"><a href="tel:${esc(o.phone.replace(/[^\d+]/g, ''))}" style="display:inline-block;padding:12px 20px;border-radius:999px;background:#F2C12E;color:#1A1511;font-weight:700;text-decoration:none">${esc(t.call)}</a> ` +
       `<a href="https://wa.me/${intl(o.phone)}" style="display:inline-block;padding:12px 20px;border-radius:999px;border:1px solid #1A1511;color:#1A1511;font-weight:700;text-decoration:none">${esc(t.whatsapp)}</a></p>` +
-      `</td></tr><tr><td style="height:1px;padding:0;vertical-align:bottom">${madeBy}</td></tr></table></div>`,
+      `</td></tr><tr><td style="height:1px;padding:0;vertical-align:bottom">${madeByBlock(T.ro.madeBy)}</td></tr></table></div>`,
   };
   const foot = [o.method === 'delivery' ? t.payDelivery : t.pay, t.legal, `${entity.name} · ${entity.address.streetAddress}, ${entity.address.postalCode} ${entity.address.addressLocality} · ${entity.telephoneDisplay}`, `${t.hours}: ${hoursText(hours, o.locale)}`];
   const customer = {
     subject: t.subjectCustomer(o),
     replyTo: entity.email,
-    text: [o.ref, '', s.text, '', t.confirm, '', ...foot].join('\n'),
+    text: [o.ref, '', s.text, '', t.confirm, '', ...foot, '', t.madeBy, 'dg-advisory.net'].join('\n'),
     html:
       `<div style="font-family:Arial,sans-serif;color:#1A1511">` +
       `<p style="margin:0 0 16px;font-size:17px;font-weight:700">${esc(o.ref)}</p>${s.html}` +
       `<p style="margin:16px 0 0">${esc(t.confirm)}</p>` +
-      `<p style="margin:16px 0 0;font-size:13px;line-height:1.5;color:#5E534A">${foot.map(esc).join('<br>')}</p></div>`,
+      `<p style="margin:16px 0 0;font-size:13px;line-height:1.5;color:#5E534A">${foot.map(esc).join('<br>')}</p>${madeByBlock(t.madeBy)}</div>`,
   };
   return { shop, customer };
 }
