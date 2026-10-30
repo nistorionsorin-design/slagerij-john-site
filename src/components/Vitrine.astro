@@ -4,7 +4,7 @@
 // src/styles/vitrine.css (global, imported by the view); markup = its contract: one <div class="vit"> right under the
 // category's CounterTags, its eyebrow + line, up to four tiles (2 × 2 on the phone, 4 across from 960). The pick and its
 // order = src/lib/thumbs.ts `entranceOf`, done by the view (the sheet needs the same rows): the owners' best sellers when
-// product-photos.json has them, else the rows with a photo in data order. No tile → nothing renders.
+// product-photos.json has them, then the rows with a photo in data order. No tile → nothing renders.
 // A tile = the photo (4:3 at the entry's focal point, AVIF + WebP 340 / 520 w, width/height set, lazy: every entrance
 // sits below the first screen) · the name · the unit line („per stuk · prijs in de winkel”, or the price). The whole
 // tile is the row's bestelbon link (U-23); with script it opens the sheet (fiche.ts reads `data-fiche` = the unit — Dan

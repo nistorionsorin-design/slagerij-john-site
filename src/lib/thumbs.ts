@@ -66,8 +66,8 @@ export const bigPhoto = (id: string): ProductPhoto | null => {
 
 /** Row 22b (D-51 (1), build-plan row 22b (b)): a category's entrance „Meest gevraagd” — up to four of its rows with
  *  their own photo (big enough, `bigPhoto`): the owners' best sellers, product-photos.json `bestsellers.<category>` (a
- *  list of ids, form q10), in that order, those with a photo; until the file has them (or none of them has a photo),
- *  the category's rows with a photo in data order (products.json). No photo in the category = no entrance.
+ *  list of ids, form q10), in that order, those with a photo; then, row 22p (Dan 30.10), the category's other rows with
+ *  a photo in data order (products.json) until there are four. No photo in the category = no entrance.
  *  `rows` = the category's rows in products.json order. */
 export const entranceOf = (category: string, rows: Product[]): Product[] => {
   const withPhoto = rows.filter((p) => bigPhoto(p.id));
@@ -75,5 +75,5 @@ export const entranceOf = (category: string, rows: Product[]): Product[] => {
   const list = (data as { bestsellers?: Record<string, unknown> }).bestsellers?.[category];
   const best = Array.isArray(list) ? (list as string[]) : [];
   const picked = best.map((id) => withPhoto.find((p) => p.id === id)).filter((p): p is Product => !!p);
-  return (picked.length ? picked : withPhoto).slice(0, 4);
+  return [...new Set([...picked, ...withPhoto])].slice(0, 4);
 };

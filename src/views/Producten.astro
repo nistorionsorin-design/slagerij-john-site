@@ -50,7 +50,7 @@
 // Row 22b (23.10, D-51; Dan 17:27 „a black list doesn't push to buy or look”; design/css/vitrine.css v2 ported 1:1;
 // lexicon §5.19 „23.10 — the Vitrine v2” + §6 „Produse, 23.10 — vitrina v2”): the ink board leaves this page (board.css
 // stays with the bestelbon fold). Per part-1 category, under its CounterTags: the entrance „Meest gevraagd” (Vitrine.astro,
-// ≤ 4 tiles — lib/thumbs.ts entranceOf: the owners' best sellers when product-photos.json has them, else the rows with a
+// ≤ 4 tiles — lib/thumbs.ts entranceOf: the owners' best sellers when product-photos.json has them, then the rows with a
 // photo in data order), then every name of the board as a paper row (Rows.astro: 56 px photo or the first letter, the
 // unit line, „Bestel”; 6 per group, the rest folded on the phone by scripts/rows.ts) — the same ids, links and groups,
 // so the ItemList and the Product nodes do not change. The unit line = the D-48 class („per stuk” · „per 100 g”) +
@@ -108,7 +108,7 @@ const cats = part1.map((id) => {
   const board = rowsOf(id).filter((p) => p.board);
   const items = rowsOf(id).filter((p) => !p.board);
   const groups = boardGroups(id, locale);
-  // row 22b: the entrance's tiles — the owners' best sellers, else the rows with a photo in data order
+  // row 22b: the entrance's tiles — the owners' best sellers, then the rows with a photo in data order
   const entrance = entranceOf(id, rowsOf(id));
   return { ...c, items, board, boardGroups: groups, entrance };
 });
