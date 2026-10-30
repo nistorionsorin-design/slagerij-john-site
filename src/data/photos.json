@@ -281,24 +281,26 @@
       }
     },
     {
-      "src": "home/charcuterieschotel-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at11.jpeg",
-      "focalX": 50,
-      "focalY": 50,
+      "src": "home/kaasschotels-op-een-feest-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05  4.jpeg",
+      "focalX": 40,
+      "focalY": 60,
       "alt": {
-        "nl": "Charcuterieschotel op een feest, borden klaar",
-        "ro": "Platou de mezeluri la o petrecere, cu farfuriile pregătite"
-      }
+        "nl": "Kaasschotels met druiven, passievrucht en walnoten op een feesttafel",
+        "ro": "Platouri cu brânzeturi, struguri, fructul pasiunii și nuci, pe o masă de petrecere"
+      },
+      "note": "30.10 Dan's site review (pick D): replaces home/charcuterieschotel-slagerij-john.jpg (at11.jpeg — basket and plates, the platter only at the bottom). 2040×942 wide; focal 40/60 keeps both boards in the tall desktop tile."
     },
     {
-      "src": "home/slaatjes-in-kommetjes-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-05-whatsapp/plate 2.jpeg",
+      "src": "home/charcuterieplanken-op-de-toog-slagerij-john.jpg",
+      "from": "assets/raw/2025-12-05-facebook/fb_06_122186729642357023.jpg",
       "focalX": 50,
-      "focalY": 50,
+      "focalY": 60,
       "alt": {
-        "nl": "Slaatjes in kleine kommetjes voor een buffet",
-        "ro": "Salate în boluri mici, pentru bufet"
-      }
+        "nl": "Charcuterieplanken met hesp, wraps, salami en scampi op de toog",
+        "ro": "Platouri cu șuncă, wrapuri, salam și creveți, pe tejgheaua magazinului"
+      },
+      "note": "30.10 Dan's site review (pick G): replaces home/slaatjes-in-kommetjes-slagerij-john.jpg; the loop stays at 10 (Dan 11:3x). The same picture as Georgiana's 27.10 form upload for tapas-john-1-scampi (product-photos) — her own shop photo."
     },
     {
       "src": "roemeens/gerookte-worst-aan-haken-slagerij-john.jpg",
@@ -323,15 +325,16 @@
       }
     },
     {
-      "src": "overons/vleesmolen-atelier-slagerij-john.jpg",
+      "src": "home/vleesmolen-gehakt-dichtbij-slagerij-john.jpg",
       "from": "assets/raw/2026-10-13-phone/20261009_174044.jpg",
       "wb": "atelier",
       "focalX": 50,
-      "focalY": 40,
+      "focalY": 45,
       "alt": {
-        "nl": "De vleesmolen in het atelier, gehakt komt eruit",
-        "ro": "Mașina de tocat din atelier, carnea tocată iese"
-      }
+        "nl": "Gehakt komt uit de vleesmolen, van dichtbij",
+        "ro": "Carnea tocată iese din mașina de tocat, de aproape"
+      },
+      "note": "30.10 Dan's site review (pick Z1): a zoom on the outlet plate — crop x 450–1950, y 1000–2500 of the EXIF-transposed 3000×4000 raw (1500×1500), then the same atelier white balance as overons/vleesmolen-atelier-slagerij-john.jpg. /over-ons keeps the full shot (its entry unchanged)."
     },
     {
       "src": "roemeens/mici-in-de-toog-slagerij-john.jpg",
