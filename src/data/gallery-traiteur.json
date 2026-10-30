@@ -1,5 +1,5 @@
 {
-  "_source": "Poured from docs/data/gallery-traiteur.json (Cowork, 2026-10-20) for build-plan row 19 (D-45): the ten tiles in order. src = the photo cut to its tile's shape (tiles 1 and 6: 16:9, the rest 1:1) at focalX/focalY, full resolution, from `from`. Strings = lexicon §5.21 „20.10 — the gallery” / §6 „Catering, 20.10”. Cowork owns the source file; re-pour, do not edit here.",
+  "_source": "Poured from docs/data/gallery-traiteur.json (Cowork, 2026-10-20) for build-plan row 19 (D-45): the ten tiles in order. src = the photo cut to its tile's shape (tiles 1 and 6: 16:9, the rest 1:1) at focalX/focalY, full resolution, from `from`. Strings = lexicon §5.21 „20.10 — the gallery” / §6 „Catering, 20.10”. Cowork owns the source file; re-pour, do not edit here. Row 22r (30.10): tiles 4 and 9 re-poured, square masters capped at 1500 px.",
   "items": [
     {
       "id": "vleesschotel-feest",
@@ -62,23 +62,23 @@
       }
     },
     {
-      "id": "slaatjes-kommetjes",
-      "src": "traiteur/galerij-slaatjes-per-kommetje-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-05-whatsapp/plate 2.jpeg",
-      "inventory": "q25",
+      "id": "roemeense-feestschotel",
+      "src": "traiteur/galerij-roemeense-feestschotel-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/platou-romanesc/20261027T121922-20261003_161327.jpg",
+      "inventory": "form 27.10 · platou-romanesc",
       "focalX": 50,
       "focalY": 50,
       "alt": {
-        "nl": "Slaatjes in kleine kommetjes voor een buffet",
-        "ro": "Salate în boluri mici, pentru bufet"
+        "nl": "Roemeense feestschotel met hamrolletjes, eitjes, rolade, olijven en verse groenten",
+        "ro": "Platou românesc festiv cu rulouri de șuncă, ouă, ruladă, măsline și legume proaspete"
       },
       "caption": {
-        "nl": "Slaatjes, per kommetje",
-        "ro": "Salate, în boluri mici"
+        "nl": "Roemeense feestschotel",
+        "ro": "Platou românesc festiv"
       },
       "text": {
-        "nl": "Fris en kleurrijk, één kommetje per gast.",
-        "ro": "Proaspete și colorate, un bol pentru fiecare oaspete."
+        "nl": "Hamrolletjes, eitjes, rolade en verse groenten, op één schotel.",
+        "ro": "Rulouri de șuncă, ouă, ruladă și legume proaspete, pe un singur platou."
       }
     },
     {
@@ -162,23 +162,23 @@
       }
     },
     {
-      "id": "koude-schotel",
-      "src": "traiteur/galerij-koude-schotel-slagerij-john.jpg",
-      "from": "assets/raw/2025-12-05-facebook/fb_01_122186729426357023.jpg",
-      "inventory": "fb-01",
+      "id": "koude-schotel-extra-kaas",
+      "src": "traiteur/galerij-koude-schotel-extra-kaas-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/koude-schotel-nou/20261027T121853-20261025_091038.jpg",
+      "inventory": "form 27.10 · koude-schotel-nou",
       "focalX": 50,
-      "focalY": 45,
+      "focalY": 50,
       "alt": {
-        "nl": "Koude schotel met hesp, salami, eieren en vleessalade",
-        "ro": "Platou rece cu șuncă, salam, ouă și salată de carne"
+        "nl": "Koude schotel met kaas, hamrolletjes, eitjes en charcuterie, met het kaartje van de winkel",
+        "ro": "Platou rece cu brânză, rulouri de șuncă, ouă și mezeluri, cu eticheta magazinului"
       },
       "caption": {
-        "nl": "Koude schotel",
-        "ro": "Platou rece"
+        "nl": "Koude schotel met extra kaas",
+        "ro": "Platou rece cu brânză extra"
       },
       "text": {
-        "nl": "Hesp, salami, eieren en vleessalade, per persoon.",
-        "ro": "Șuncă, salam, ouă și salată de carne, de persoană."
+        "nl": "Kaas, hesp en charcuterie, per persoon.",
+        "ro": "Brânză, șuncă și mezeluri, de persoană."
       }
     },
     {

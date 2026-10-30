@@ -1,0 +1,96 @@
+---
+// GalleryStrip — /traiteur · /ro/catering, the „Hapjes” / „Aperitive” strip under the mosaic, above „Per persoon” (build-plan
+// row 22r; Dan 30.10 14:35 + 14:4x on design/contact-sheets/review-2026-10-30/catering-ab-preview.jpg). Six squares, each with
+// its caption (the product's name) under it, no line of text: phone two columns × three rows, ≥ 768 px three × two, ≥ 1100 px
+// six in one row. No script, no carousel, no horizontal scroll, nothing moves (U-21).
+// A sibling of Gallery.astro, not a layout of it: no wide tiles, no second line, its own folder glob and sizes. The head and the
+// caption keep gallery.css's classes (the view imports that file); the grid is scoped here, so /bbq-pakketten keeps its bytes.
+// `items` = src/data/gallery-hapjes.json, poured from docs/data/; `strings` = i18n/traiteur.ts `hapjes` (lexicon §5.21 + §6
+// „Catering, 30.10”). Each source file is the photo already cut 1:1 at the data's focal point. AVIF + WebP <source>s at
+// 340 / 520 capped at the source, the JPEG as the <img> fallback; width/height = the largest size (CLS 0), lazy + async on
+// all (the block sits under the fold). No JSON-LD (§5.21: no ImageGallery).
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import type { L10n } from '../data/types';
+import type { Locale } from '../i18n/ui';
+
+export interface Props {
+  locale: Locale;
+  items: { src: string; focalX: number; focalY: number; alt: L10n; caption: L10n }[];
+  strings: { eyebrow: string; title: string; intro: string; anchor: string };
+}
+const { locale, items, strings: t } = Astro.props;
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/traiteur/hapjes-*.jpg', { eager: true });
+const file = (src: string) => {
+  const m = files[`../assets/${src}`];
+  if (!m) throw new Error(`GalleryStrip: src/assets/${src} not found`);
+  return m.default;
+};
+
+// a tile: 6 in the 1328 px container from 1440 (211,3 px), 6 in between, 3 at 56 px gutters (960–1099), 3 at 20 px (768–959),
+// 2 on the phone (the mosaic's square)
+const SIZES = '(min-width:1440px) 212px, (min-width:1100px) calc(16.67vw - 29px), (min-width:960px) calc(33.33vw - 45px), (min-width:768px) calc(33.33vw - 20px), calc(50vw - 25px)';
+const WIDTHS = [340, 520];
+// the mosaic's quality (Gallery.astro); the budget is the row's: ≤ 200 kB AVIF over the phone scroll at DPR 3
+const Q = { avif: 45, webp: 60, jpg: 70 };
+
+const figs = await Promise.all(
+  items.map(async (it) => {
+    const img = file(it.src);
+    const widths = [...new Set(WIDTHS.map((w) => Math.min(w, img.width)))];
+    const width = widths[widths.length - 1];
+    const opts = { src: img, width, height: width, widths, fit: 'cover' as const };
+    const [avif, webp, jpg] = await Promise.all([
+      getImage({ ...opts, format: 'avif', quality: Q.avif }),
+      getImage({ ...opts, format: 'webp', quality: Q.webp }),
+      getImage({ ...opts, format: 'jpg', quality: Q.jpg }),
+    ]);
+    return {
+      avif: avif.srcSet.attribute,
+      webp: webp.srcSet.attribute,
+      jpg: jpg.srcSet.attribute,
+      src: jpg.srcSet.values[0]?.url ?? jpg.src,
+      width,
+      alt: it.alt[locale as 'nl' | 'ro'],
+      pos: `object-position:${it.focalX}% ${it.focalY}%`,
+      title: it.caption[locale as 'nl' | 'ro'],
+    };
+  }),
+);
+---
+<section class="gal" id={t.anchor} aria-labelledby="gals-title">
+  <p class="gal__eyebrow">{t.eyebrow}</p>
+  <h2 class="gal__title" id="gals-title">{t.title}</h2>
+  <p class="gal__intro">{t.intro}</p>
+  <div class="gals">
+    {figs.map((f) => (
+      <figure class="gals__fig">
+        <picture>
+          <source type="image/avif" srcset={f.avif} sizes={SIZES} />
+          <source type="image/webp" srcset={f.webp} sizes={SIZES} />
+          <img src={f.src} srcset={f.jpg} sizes={SIZES} width={f.width} height={f.width} alt={f.alt} loading="lazy" decoding="async" style={f.pos} />
+        </picture>
+        <figcaption class="gal__t">{f.title}</figcaption>
+      </figure>
+    ))}
+  </div>
+</section>
+
+<style>
+  /* gallery.css's grid, its nth-child wide tiles left out: every tile a square */
+  .gals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .gals__fig { margin: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .gals__fig picture, .gals__fig img { display: block; width: 100%; }
+  .gals__fig img { aspect-ratio: 1; object-fit: cover; border-radius: var(--r-tile, 14px); background: var(--tag); }
+  .gals__fig figcaption { padding: 0 2px; }
+  @media (min-width: 768px) {
+    .gals { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (min-width: 960px) {
+    .gals { gap: 12px; }
+  }
+  @media (min-width: 1100px) {
+    .gals { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  }
+</style>

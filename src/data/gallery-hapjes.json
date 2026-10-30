@@ -1,0 +1,101 @@
+{
+  "_source": "Poured from docs/data/gallery-hapjes.json (Cowork, 2026-10-30) for build-plan row 22r (b): six of Georgiana's own photos (form 27.10), in order. src = the photo cut 1:1 at focalX/focalY, long edge capped at 1500 px, from `from`. caption = the product's name (`product` = its products.json id). Strings = lexicon §5.21 „30.10 — the gallery swaps + the Hapjes strip” / §6 „Catering, 30.10”. Cowork owns the source file; re-pour, do not edit here.",
+  "items": [
+    {
+      "id": "scampi-2",
+      "product": "hapje-scampi-2",
+      "src": "traiteur/hapjes-scampi-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/hapje-scampi-2/20261027T121237-IMG-20260421-WA0003.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Scampi met tomaat en bieslook in kleine bakjes",
+        "ro": "Scampi cu roșii și arpagic în bărcuțe mici"
+      },
+      "caption": {
+        "nl": "Scampi",
+        "ro": "Scampi"
+      }
+    },
+    {
+      "id": "lepeltje-scampi",
+      "product": "hapje-lepeltje-scampi",
+      "src": "traiteur/hapjes-lepeltjes-scampi-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/hapje-lepeltje-scampi/20261027T122234-20260702_160513.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Een ronde plank vol lepeltjes met scampi, met het kaartje van de winkel",
+        "ro": "Un platou rotund plin de lingurițe cu scampi, cu eticheta magazinului"
+      },
+      "caption": {
+        "nl": "Lepeltje scampi",
+        "ro": "Linguriță cu scampi"
+      }
+    },
+    {
+      "id": "taco-gehakt",
+      "product": "hapje-taco-gehakt",
+      "src": "traiteur/hapjes-tacos-gehakt-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/hapje-taco-gehakt/20261027T122938-20240504_210418.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Taco's met gehakt in een kring rond een kommetje salsa",
+        "ro": "Taco cu carne tocată, așezate în cerc în jurul unui bol cu salsa"
+      },
+      "caption": {
+        "nl": "Taco gehakt",
+        "ro": "Taco cu carne tocată"
+      }
+    },
+    {
+      "id": "bulgur-zalm",
+      "product": "hapje-bulgur-zalm",
+      "src": "traiteur/hapjes-bulgur-zalm-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/hapje-bulgur-zalm/20261027T123640-20240504_193624.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Bulgur met gerookte zalm, maïs en erwtjes in een kommetje",
+        "ro": "Bulgur cu somon afumat, porumb și mazăre, într-un bol"
+      },
+      "caption": {
+        "nl": "Bulgur zalm",
+        "ro": "Bulgur cu somon"
+      }
+    },
+    {
+      "id": "bruschetta-tomaat",
+      "product": "hapje-bruschetta-tomaat",
+      "src": "traiteur/hapjes-bruschetta-tomaat-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/hapje-bruschetta-tomaat/20261027T124055-IMG-20260105-WA0006.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Bruschetta's met tomaat en rode ui, met het kaartje van de winkel",
+        "ro": "Bruschette cu roșii și ceapă roșie, cu eticheta magazinului"
+      },
+      "caption": {
+        "nl": "Bruschetta tomaat",
+        "ro": "Bruschetta cu roșii"
+      }
+    },
+    {
+      "id": "lepeltje-zalm",
+      "product": "hapje-lepeltje-zalm",
+      "src": "traiteur/hapjes-lepeltjes-zalm-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-27-form/hapje-lepeltje-zalm/20261027T122816-IMG-20260201-WA0005.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Lepeltjes met zalm op een ronde plank",
+        "ro": "Lingurițe cu somon pe un platou rotund"
+      },
+      "caption": {
+        "nl": "Lepeltje zalm",
+        "ro": "Linguriță cu somon"
+      }
+    }
+  ]
+}

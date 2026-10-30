@@ -13,8 +13,6 @@ import { parse } from 'node:path';
 import { outDir } from 'astro:config/server';
 import type { ImageMetadata } from 'astro';
 import sharp from 'sharp';
-import photos from '../data/photos.json';
-import type { HeroPhoto } from '../data/types';
 import type { Locale } from '../i18n/ui';
 import type { Frame } from './hero-image';
 
@@ -51,11 +49,8 @@ export async function ogFile(f: Frame) {
   return { src: `/og/${file}`, width: WIDTH, height: HEIGHT };
 }
 
-const heroFiles = import.meta.glob<{ default: ImageMetadata }>('../assets/hero/*.{jpg,jpeg,png,webp}', { eager: true });
-/** the home's hero frame 1 (photos.json `hero`): the home's preview, and the fallback of every page without a hero */
-export function homeFrame(locale: Locale): Frame {
-  const p = (photos.hero as HeroPhoto[])[0];
-  const img = heroFiles[`../assets/${p.src}`]?.default;
-  if (!img) throw new Error(`photos.json hero ${p.id}: src/assets/${p.src} not found`);
-  return { img, alt: p.alt[locale], focalX: p.focalX, focalY: p.focalY };
-}
+// Row 22t (Dan 30.10 14:52 + 15:0x): a page that passes no hero frame shows the brand card, John at the grill with the shop's
+// name in the site's own type. public/og/, the files of design/og/ as they are (no re-encode, so the text stays sharp).
+const CARD: Record<Locale, string> = { nl: '/og/slagerij-john.jpg', ro: '/og/macelaria-john.jpg' };
+/** the locale's brand card, in ogFile's shape: the preview of every page without a hero frame of its own */
+export const brandCard = (locale: Locale) => ({ src: CARD[locale], width: WIDTH, height: HEIGHT });

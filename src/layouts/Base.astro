@@ -7,7 +7,7 @@
 // requests, as since stage 7b (with the image ahead of them, 1 of 2 desktop runs of /producten showed a 0,024 shift of
 // the hero text, 21.10).
 // Row 22o: every page has a link preview photo (src/lib/og-image.ts) — the view passes its hero frame 1 as ogImage and
-// the frame's alt as ogAlt; no ogImage = the home's. Outside the noindex branch: a 404 link previews too.
+// the frame's alt as ogAlt; no ogImage = the locale's brand card (row 22t). Outside the noindex branch: a 404 link previews too.
 // No facts here: entity.json and hours.json carry the values.
 import '../styles/fonts.css';
 import '../styles/tokens.css';
@@ -20,7 +20,7 @@ import Menu from '../components/Menu.astro';
 import Footer from '../components/Footer.astro';
 import BottomBar from '../components/BottomBar.astro';
 import { ui, home, wa, routeHref, type Locale } from '../i18n/ui';
-import { homeFrame, ogFile } from '../lib/og-image';
+import { brandCard, ogFile } from '../lib/og-image';
 import type { Frame } from '../lib/hero-image';
 // Stage 7b: the woff2 files the first screen uses, preloaded. The same files fonts.css references (Vite emits one
 // /_astro/ copy each), so the preload is the request the @font-face uses. Without it the fonts are found only after
@@ -62,15 +62,15 @@ export interface Props {
   /** extra properties of the shop's own node (stage 8, /contact: hasMap, specialOpeningHoursSpecification) — the same
       @id, so the page extends the entity instead of declaring a second one (lexicon §8.1) */
   shop?: Record<string, unknown>;
-  /** the page's link preview photo (row 22o): its hero frame 1; none = the home's */
+  /** the page's link preview photo (row 22o): its hero frame 1; none = the brand card (row 22t) */
   ogImage?: Frame;
   /** that photo's alt in the page's locale; none = the frame's own */
   ogAlt?: string;
 }
 
-const { title, description, locale, path, alternates, noindex = false, navVariant = 'paper', hoursCard = false, jsonld: pageLd, fonts = ['display', 'italic', 'ui'], shop, ogImage = homeFrame(locale), ogAlt = ogImage.alt } = Astro.props;
+const { title, description, locale, path, alternates, noindex = false, navVariant = 'paper', hoursCard = false, jsonld: pageLd, fonts = ['display', 'italic', 'ui'], shop, ogImage, ogAlt = ogImage?.alt ?? ui[locale].ogCard } = Astro.props;
 const preloads = fonts.map((k) => (locale === 'ro' ? fontFiles[k] : fontFiles[k].slice(0, 1))).flat();
-const og = await ogFile(ogImage);
+const og = ogImage ? await ogFile(ogImage) : brandCard(locale);
 
 const origin = 'https://slagerij-john.be';
 const abs = (p: string) => `${origin}${p === '/' ? '/' : p}`;

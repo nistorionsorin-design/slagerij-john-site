@@ -6,7 +6,7 @@
 // that changes (accent, meta, lead, tile 4, price row 5, two FAQ answers).
 // /ro/catering (stage 9) = `traiteurRo`, lexicon §6 „Catering”, same keys.
 
-import { updatedOn } from '../lib/updated';
+import { TRAITEUR_UPDATED, updatedOn } from '../lib/updated';
 
 export const traiteurNl = {
   /** §5.21 meta (59 / 150); `title` = the part before „ | Slagerij John”, as §5.21 says — the page passes the whole */
@@ -43,6 +43,15 @@ export const traiteurNl = {
     intro: "Schotels, buffetten en barbecues die wij maakten. Eigen foto's, geen stockbeelden.",
     /** the section's anchor */
     anchor: 'galerij',
+  },
+
+  /** §5.21 „30.10 — the gallery swaps + the Hapjes strip” (row 22r): the strip's head; the six tiles (alt · caption) are
+   *  src/data/gallery-hapjes.json, poured from docs/data/gallery-hapjes.json */
+  hapjes: {
+    eyebrow: 'Hapjes',
+    title: 'Per stuk, voor uw feest.',
+    intro: "Scampi, lepeltjes, taco's, bulgur en bruschetta's. U kiest per stuk, wij leggen ze klaar.",
+    anchor: 'hapjes',
   },
 
   /** §5.21 „Per persoon” (the board's price block). `product` = the products.json item whose price the row shows
@@ -130,7 +139,7 @@ export const traiteurNl = {
   /** §5.15 FAQ heading; the five „Traiteur” items of §5.11 in faq.json pages.traiteur */
   faq: 'Wat klanten ons vragen',
   /** §5.13 with SITE_UPDATED (the board's line; row 15c) */
-  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl')}.`,
+  byline: `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl', TRAITEUR_UPDATED)}.`,
 
   /** BreadcrumbList (§8.4): Home › Traiteur */
   crumbs: { home: 'Home', page: 'Traiteur' },
@@ -165,6 +174,14 @@ export const traiteurRo: typeof traiteurNl = {
     title: 'Așa arată.',
     intro: 'Platouri, bufete și grătare făcute de noi. Fotografii proprii, nu de stoc.',
     anchor: 'galerie',
+  },
+
+  /** §6 „Catering, 30.10” */
+  hapjes: {
+    eyebrow: 'Aperitive',
+    title: 'La bucată, pentru petrecerea ta.',
+    intro: 'Scampi, lingurițe, taco, bulgur și bruschette. Alegi la bucată, noi le pregătim.',
+    anchor: 'aperitive',
   },
 
   /** row 5 split as on NL: „ofertă” in the price place, „la cerere” in the unit place */
@@ -234,7 +251,7 @@ export const traiteurRo: typeof traiteurNl = {
 
   faq: 'Ce ne întreabă clienții',
   /** §5.13 RO with SITE_UPDATED (row 15c) */
-  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro')}.`,
+  byline: `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro', TRAITEUR_UPDATED)}.`,
   crumbs: { home: 'Acasă', page: 'Catering' },
 };
 

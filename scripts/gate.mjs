@@ -346,7 +346,7 @@ if (built) {
     }
     for (const ph of [...photos.hero, ...photos.loop, ...photos.gallery, ...(photos.traiteur ?? []), ...(photos.contact ?? [])])
       if (!ph.alt?.nl?.trim() || !ph.alt?.ro?.trim()) e.push(`photos.json: ${ph.src} lacks alt NL/RO`);
-    for (const file of ['gallery-traiteur.json', 'gallery-bbq.json'])
+    for (const file of ['gallery-traiteur.json', 'gallery-bbq.json', 'gallery-hapjes.json'])
       for (const g of json(file).items)
         if (!g.alt?.nl?.trim() || !g.alt?.ro?.trim()) e.push(`${file}: ${g.src} lacks alt NL/RO`);
     verdict('images', e, `${n} <img>: width/height, alt, lazy, AVIF/WebP`);
@@ -356,10 +356,12 @@ if (built) {
 
   // 6b — link previews (row 22o): every page, the 404s too, has exactly one og:image, absolute on this host, its file in
   // dist/ a baseline JPEG of 1200 × 630, ≤ 300 kB (WhatsApp drops heavier previews, [PRACTITIONER]); the size, type and
-  // alt tags and twitter:image agree with it; an NL page and its RO twin share the file, each with its own alt.
+  // alt tags and twitter:image agree with it; an NL page and its RO twin share the file, each with its own alt, or (row 22t)
+  // show the brand card of their own language.
   {
     const e = [];
     const MAX = 300_000;
+    const CARD = { nl: `https://${OWN_HOST}/og/slagerij-john.jpg`, ro: `https://${OWN_HOST}/og/macelaria-john.jpg` };
     const meta = (html, key) => (html.match(new RegExp(`<meta\\s+(?:property|name)="${key}"[^>]*>`, 'gi')) || []).map((t) => decode(attr(t, 'content') ?? ''));
     const sizes = new Map();
     for (const p of pages) {
@@ -392,10 +394,11 @@ if (built) {
     for (const p of content) {
       const twin = byUrl.get(attr(p.html.match(/<link\s+rel="alternate"\s+hreflang="ro-BE"[^>]*>/i)?.[0] ?? '', 'href'));
       if (!twin || twin === p) continue;
-      if (meta(p.html, 'og:image').join() !== meta(twin.html, 'og:image').join()) e.push(`${p.file} and ${twin.file}: not the same og:image`);
+      const [nl, ro] = [meta(p.html, 'og:image').join(), meta(twin.html, 'og:image').join()];
+      if (nl === CARD.nl ? ro !== CARD.ro : nl !== ro) e.push(`${p.file} and ${twin.file}: not the same og:image`);
       if (meta(p.html, 'og:image:alt').join() === meta(twin.html, 'og:image:alt').join()) e.push(`${p.file} and ${twin.file}: the same og:image:alt in both languages`);
     }
-    verdict('og-image', e, `${pages.length} pages: one og:image each, ${sizes.size} files, baseline 1200 × 630, largest ${Math.max(0, ...sizes.values())} B ≤ ${MAX} B; NL and RO twins share the file, each with its own alt`);
+    verdict('og-image', e, `${pages.length} pages: one og:image each, ${sizes.size} files, baseline 1200 × 630, largest ${Math.max(0, ...sizes.values())} B ≤ ${MAX} B; NL and RO twins share the file or their language's card, each with its own alt`);
   }
 
   // 7 — placeholders (C-04). Any [UPPER-CASE] token ([PRIJS], [KOOKLIJN], RO [GĂTIRE], [ALT RO], …),

@@ -22,6 +22,9 @@ export const EINDEJAAR_UPDATED = '2026-10-27';
  *  push day: pushed on another day than 30.10 → that day */
 export const BBQ_UPDATED = '2026-10-30';
 export const CONTACT_UPDATED = '2026-10-30';
+/** /traiteur + /ro/catering: Georgiana's photos in the mosaic + the Hapjes strip (row 22r). The date is the push day: pushed on
+ *  another day than 30.10 → that day */
+export const TRAITEUR_UPDATED = '2026-10-30';
 
 /** „19 oktober 2026” / „19 octombrie 2026” — or `since`'s date when it is later than SITE_UPDATED (ISO dates compare as text) */
 export const updatedOn = (locale: Locale, since?: string) => {

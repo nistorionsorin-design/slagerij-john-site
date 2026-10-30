@@ -87,6 +87,8 @@ export const ui = {
      *  [OWNER] 22.10; the last sentence = Cowork's wording, the owners confirm in form q9); row 22g: „enkel op vlees”
      *  (q9 27.10, §5.19 „27.10”) */
     discountNote: 'Vanaf 3 kg van hetzelfde product 5 % korting, vanaf 5 kg 10 %, enkel op vlees. De korting wordt bij het afhalen verrekend.',
+    /** lexicon §5.14 „30.10 — the link-preview card” (row 22t): the brand card's alt */
+    ogCard: 'Slagerij John: John aan de barbecue, worsten op de grill',
   },
   ro: {
     /** lexicon §6 interface strings (06.10) */
@@ -102,6 +104,8 @@ export const ui = {
     footer: { nl: 'Nederlands', ro: 'Română' },
     /** §6 „Produse, 23.10” nota din bon (row 21) */
     discountNote: 'De la 3 kg din același produs 5% reducere, de la 5 kg 10%, doar la carne. Reducerea se face la ridicare.',
+    /** lexicon §5.14 „30.10 — the link-preview card” (row 22t) */
+    ogCard: 'Măcelăria John: John la barbecue, cu cârnați pe grătar',
   },
 } satisfies Record<Locale, unknown>;
 
