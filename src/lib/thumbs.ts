@@ -52,16 +52,36 @@ export const photoFile = (entry: ProductPhoto): ImageMetadata => {
   return img;
 };
 
+/** Row 22v: the source's pixel size, read from the proxy's own copy (`clone`): any other property read on Astro's image
+ *  proxy marks the original as used and the build ships it whole in /_astro/ (the eight orphan JPEGs that rows 22b–22p's
+ *  `photoFile(e).width` left in dist/). */
+const sourceSize = (entry: ProductPhoto): { width: number; height: number } => {
+  const img = photoFile(entry) as ImageMetadata & { clone?: ImageMetadata };
+  const { width, height } = img.clone ?? img;
+  return { width, height };
+};
+
+/** Row 22v: the width of a cut of shape `aspect` (w / h) — `want`, or the widest such cut the source holds when it is
+ *  smaller. sharp never enlarges and clamps width and height apart, so a 447 × 447 source asked for 520 × 390 came out
+ *  447 × 390 and its Vitrine tile stood taller than its neighbours; cut at 447 × 335 it keeps the tile's 4:3. A source
+ *  big enough returns `want` itself, so every existing photo gets the same transform as before. */
+export const cutWidth = (entry: ProductPhoto, want: number, aspect: number): number => {
+  const s = sourceSize(entry);
+  return Math.min(want, Math.floor(Math.min(s.width, s.height * aspect)));
+};
+
 /** sharp crops by keyword, not by percentage: the focal point mapped to its third of the frame */
 export const gravity = (x = 50, y = 50) =>
   [y < 40 ? 'top' : y > 60 ? 'bottom' : '', x < 40 ? 'left' : x > 60 ? 'right' : ''].filter(Boolean).join(' ') || 'center';
 
-/** Row 22: the row's own photo when its file is big enough for the Vitrine tile (520 w) and the sheet (720 × 440) — the
- *  build never enlarges, so a smaller file would show soft. Every entry is ≥ 1 554 px wide since row 22c (gehakt's
- *  128 × 171 thumb cut of row 14 replaced by a 1558 × 2077 cut from the same original, the same white balance). */
+/** Row 22: the row's own photo for the Vitrine tile (520 w) and the sheet (720 × 440). Until row 22v it also asked for a
+ *  file ≥ 720 px wide (the build never enlarges, so a smaller file shows soft); row 22v (05.11) puts nine downloaded
+ *  stand-ins of 440–700 px in the tiles and sheets on purpose (build-plan 22v (c)), so every own photo counts now and
+ *  photoFile still stops the build on a missing file. A file under its drawn width is drawn larger by the browser —
+ *  the row's report measures it per file. */
 export const bigPhoto = (id: string): ProductPhoto | null => {
   const e = ownPhoto(id);
-  return e && photoFile(e).width >= 720 ? e : null;
+  return e && photoFile(e) ? e : null;
 };
 
 /** Row 22b (D-51 (1), build-plan row 22b (b)): a category's entrance „Meest gevraagd” — up to four of its rows with

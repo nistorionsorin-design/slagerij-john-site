@@ -13,7 +13,7 @@
 import { getImage } from 'astro:assets';
 import type { Product } from '../data/types';
 import type { Locale } from '../i18n/ui';
-import { bigPhoto, photoFile, gravity } from '../lib/thumbs';
+import { bigPhoto, photoFile, gravity, cutWidth } from '../lib/thumbs';
 
 export interface Props {
   /** the category id (vit-<id>-title) */
@@ -37,9 +37,12 @@ const tiles = await Promise.all(
   rows.map(async (p) => {
     const entry = bigPhoto(p.id)!;
     const base = { src: photoFile(entry), fit: 'cover' as const, position: gravity(entry.focalX, entry.focalY), quality: 50 };
-    const cut = (format: 'avif' | 'webp') => Promise.all(widths.map((w) => getImage({ ...base, width: w, height: (w * 3) / 4, format })));
+    // row 22v: a source narrower than a cut gets the widest 4:3 cut it holds (lib/thumbs.ts cutWidth), named by its real
+    // width in the srcset; two equal widths become one
+    const ws = [...new Set(widths.map((w) => cutWidth(entry, w, 4 / 3)))];
+    const cut = (format: 'avif' | 'webp') => Promise.all(ws.map((w) => getImage({ ...base, width: w, height: Math.round((w * 3) / 4), format })));
     const [avif, webp] = await Promise.all([cut('avif'), cut('webp')]);
-    const srcset = (xs: { src: string }[]) => xs.map((x, i) => `${x.src} ${widths[i]}w`).join(', ');
+    const srcset = (xs: { src: string }[]) => xs.map((x, i) => `${x.src} ${ws[i]}w`).join(', ');
     return { p, avif: srcset(avif), webp: srcset(webp), src: webp[0].src, cap: cap(p) };
   }),
 );

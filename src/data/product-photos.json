@@ -1,5 +1,5 @@
 {
-  "_source": "Row 5b (Claude Code, 15.10): the site copy of docs/data/product-photos.json (Cowork owns that file; D-34). One entry per products.json id with its own photo; `src` = the file under src/assets/products/ (copied byte-identical from `from`, slugged NL names; a file that already sits elsewhere in src/assets/ under a slug gets that same name — Vite emits identical bytes once, under the first name it meets, and the photo must keep its SEO slug), focal point %, alt NL/RO as Cowork wrote them. A menu row (menus.json `ej26-<id>`) takes its product id's entry. An id not listed here renders no thumbnail (src/components/Thumb.astro). When the docs file grows (row 14), the new rows are copied here. Row 14 (16.10): the six phone-shoot rows copied (mici replaced, gehakt · spiering · braadworst · gerookte-worst · ribbetjes new); their files are the white-balanced row-14 sources, shared with the page photos where the original is the same (gerookte-worst = roemeens/…, ribbetjes = bbq/…); pastrami (pending_confirm) not built. Row 14d (19.10): ribbetjes removed (the photo is marinated pork chops, Dan 19.10; it stays on /bbq-pakketten as bbq/gemarineerde-koteletten-…), the row renders without a thumb; pastrami has no photo (#9 is costiță afumată). Row 14d (8), 19.10: the q27 photo shows tacos → hapje-taco-gehakt + hapje-taco-kip (section), file renamed wraps-kip.jpeg → tacos-met-vulling.jpeg (same bytes); hapje-wrap-kip shares the q26 wraps platter (section). The docs file's Facebook photos (tapas, gourmet, fondue, new rows) belong to row 15d and are not poured here. Row 15d (19.10): the 11 Facebook item photos of the docs file (assets/raw/2025-12-05-facebook/, post of 5 Dec 2025) — tapas-kinder · tapas-mix · tapas-john-1 · tapas-john-1-scampi · tapas-john-2 · tapas-ro · gourmet-10 · gourmet-luxe · fondue · fondue-14 · koude-schotel — replace the section shots on those rows; their files are 4:3 cuts at the focal point, ≤ 1200 px wide (thumb/card use only, never a hero), slugged NL names; tapas-2 and gourmet-9 keep the section shots. Row 18 (Claude Code, 20.10): the docs file of 20.10 poured — colli-bbq loses its thumb (p15 shows the Colli Kip, docs `removed_20_10`), its file products/bbq-gemarineerd.jpeg deleted (nothing else imported it); the `pending_confirm` rows (p15 Colli Kip, p16 Colli John) are not built. The rows of /producten part 2 show only `level: item` photos (140 px cards); a `level: section` photo is the rubric head print (lexicon §5.19 20.10). Row 22f (27.10): the docs file's top-level `rubrics` map poured as is (tapas · gourmet) — a /producten rubric head prints `rubrics[<rubric>]` (lib/thumbs.ts `rubricPrint`), else the first `level: section` photo of its rows (colli: none); products/tapasschotels-slagerij-john.jpg re-copied byte-identical from its 05.10 original (22e had deleted it with the tapas-2 entry). Row 22g (27.10): the 18 rows of the owners' form photos (assets/raw/2026-10-27-form/) poured — new: chipolata · droge-worst · kipfilet · ribbetjes · hapje-blinis-zalm · hapje-bruschetta-tomaat · hapje-bulgur-zalm · hapje-hawaii-salade · hapje-lepeltje-meloen-serrano · hapje-lepeltje-zalm · hapje-scampi-2 · koude-schotel-extra-kaas · platou-romanesc-festiv; replaced (her own photos): tapas-ro · tapas-kinder · tapas-john-1-scampi (same slugs, new bytes) · hapje-taco-gehakt + hapje-taco-kip (each its own file now, taco-kip `item`; products/tacos-met-vulling.jpeg deleted, nothing else imported it). Their files are generated, not copied: EXIF orientation applied (four phone files carry orientation 6), metadata stripped (the repo is public: no phone EXIF), long edge ≤ 2048, JPEG q86. `rubrics.bbq-aan-huis` = John at the grill (form slot braadworst), its file a 4:3 cut of the 3:4 original from 19 % of its height, so his head and the grill stay in the 4:3 print of /bbq-pakketten and in the wide box of the /traiteur tile 4. `bestsellers` = the docs file's map as is (form q10 in her order + Cowork's fills, `_fills`), read by lib/thumbs.ts `entranceOf`. `rubrics.over-ons-portret` is not poured (row 22g (g): only on Dan's „a”). Row 22h (27.10): `bestsellers.varken` + `droge-worst` (Cowork 14:2x, a fill, in `_fills` too: filetkotelet has no photo, so the varken entrance had three tiles) — ahead of the docs file, which Cowork brings level. Row 22p (30.10): Georgiana's two shop photos (assets/raw/2026-10-30-chat/, WhatsApp via Dan 13:47) poured — new: kaizer (products/gerookt-buikspek-…) · ciolane-afumate (products/gerookte-schenkel-…); the same recipe as 22g, written out: sharp .rotate(), metadata stripped, long edge ≤ 2048, mozjpeg q86 (reproduces the 22g files byte-identical). kaizer = the whole photo, 2048 × 946. ciolane-afumate = a 1190 × 1190 cut of the 1190 × 2576 portrait from y 362: sharp's keyword gravity reads focal y 45 as the centre, which slices the JOHN card at the top edge of the tile and the sheet; the cut's centre (37 % of the portrait) holds the whole card and the knuckles in the tile, the row photo and the sheet (the bbq-aan-huis way, focal kept as in the docs file).",
+  "_source": "Row 5b (Claude Code, 15.10): the site copy of docs/data/product-photos.json (Cowork owns that file; D-34). One entry per products.json id with its own photo; `src` = the file under src/assets/products/ (copied byte-identical from `from`, slugged NL names; a file that already sits elsewhere in src/assets/ under a slug gets that same name — Vite emits identical bytes once, under the first name it meets, and the photo must keep its SEO slug), focal point %, alt NL/RO as Cowork wrote them. A menu row (menus.json `ej26-<id>`) takes its product id's entry. An id not listed here renders no thumbnail (src/components/Thumb.astro). When the docs file grows (row 14), the new rows are copied here. Row 14 (16.10): the six phone-shoot rows copied (mici replaced, gehakt · spiering · braadworst · gerookte-worst · ribbetjes new); their files are the white-balanced row-14 sources, shared with the page photos where the original is the same (gerookte-worst = roemeens/…, ribbetjes = bbq/…); pastrami (pending_confirm) not built. Row 14d (19.10): ribbetjes removed (the photo is marinated pork chops, Dan 19.10; it stays on /bbq-pakketten as bbq/gemarineerde-koteletten-…), the row renders without a thumb; pastrami has no photo (#9 is costiță afumată). Row 14d (8), 19.10: the q27 photo shows tacos → hapje-taco-gehakt + hapje-taco-kip (section), file renamed wraps-kip.jpeg → tacos-met-vulling.jpeg (same bytes); hapje-wrap-kip shares the q26 wraps platter (section). The docs file's Facebook photos (tapas, gourmet, fondue, new rows) belong to row 15d and are not poured here. Row 15d (19.10): the 11 Facebook item photos of the docs file (assets/raw/2025-12-05-facebook/, post of 5 Dec 2025) — tapas-kinder · tapas-mix · tapas-john-1 · tapas-john-1-scampi · tapas-john-2 · tapas-ro · gourmet-10 · gourmet-luxe · fondue · fondue-14 · koude-schotel — replace the section shots on those rows; their files are 4:3 cuts at the focal point, ≤ 1200 px wide (thumb/card use only, never a hero), slugged NL names; tapas-2 and gourmet-9 keep the section shots. Row 18 (Claude Code, 20.10): the docs file of 20.10 poured — colli-bbq loses its thumb (p15 shows the Colli Kip, docs `removed_20_10`), its file products/bbq-gemarineerd.jpeg deleted (nothing else imported it); the `pending_confirm` rows (p15 Colli Kip, p16 Colli John) are not built. The rows of /producten part 2 show only `level: item` photos (140 px cards); a `level: section` photo is the rubric head print (lexicon §5.19 20.10). Row 22f (27.10): the docs file's top-level `rubrics` map poured as is (tapas · gourmet) — a /producten rubric head prints `rubrics[<rubric>]` (lib/thumbs.ts `rubricPrint`), else the first `level: section` photo of its rows (colli: none); products/tapasschotels-slagerij-john.jpg re-copied byte-identical from its 05.10 original (22e had deleted it with the tapas-2 entry). Row 22g (27.10): the 18 rows of the owners' form photos (assets/raw/2026-10-27-form/) poured — new: chipolata · droge-worst · kipfilet · ribbetjes · hapje-blinis-zalm · hapje-bruschetta-tomaat · hapje-bulgur-zalm · hapje-hawaii-salade · hapje-lepeltje-meloen-serrano · hapje-lepeltje-zalm · hapje-scampi-2 · koude-schotel-extra-kaas · platou-romanesc-festiv; replaced (her own photos): tapas-ro · tapas-kinder · tapas-john-1-scampi (same slugs, new bytes) · hapje-taco-gehakt + hapje-taco-kip (each its own file now, taco-kip `item`; products/tacos-met-vulling.jpeg deleted, nothing else imported it). Their files are generated, not copied: EXIF orientation applied (four phone files carry orientation 6), metadata stripped (the repo is public: no phone EXIF), long edge ≤ 2048, JPEG q86. `rubrics.bbq-aan-huis` = John at the grill (form slot braadworst), its file a 4:3 cut of the 3:4 original from 19 % of its height, so his head and the grill stay in the 4:3 print of /bbq-pakketten and in the wide box of the /traiteur tile 4. `bestsellers` = the docs file's map as is (form q10 in her order + Cowork's fills, `_fills`), read by lib/thumbs.ts `entranceOf`. `rubrics.over-ons-portret` is not poured (row 22g (g): only on Dan's „a”). Row 22h (27.10): `bestsellers.varken` + `droge-worst` (Cowork 14:2x, a fill, in `_fills` too: filetkotelet has no photo, so the varken entrance had three tiles) — ahead of the docs file, which Cowork brings level. Row 22p (30.10): Georgiana's two shop photos (assets/raw/2026-10-30-chat/, WhatsApp via Dan 13:47) poured — new: kaizer (products/gerookt-buikspek-…) · ciolane-afumate (products/gerookte-schenkel-…); the same recipe as 22g, written out: sharp .rotate(), metadata stripped, long edge ≤ 2048, mozjpeg q86 (reproduces the 22g files byte-identical). kaizer = the whole photo, 2048 × 946. ciolane-afumate = a 1190 × 1190 cut of the 1190 × 2576 portrait from y 362: sharp's keyword gravity reads focal y 45 as the centre, which slices the JOHN card at the top edge of the tile and the sheet; the cut's centre (37 % of the portrait) holds the whole card and the knuckles in the tile, the row photo and the sheet (the bbq-aan-huis way, focal kept as in the docs file). Row 22v (05.11): eighteen downloaded stand-ins (Dan 05.11 15:45 + 15:57, assets/raw/2026-11-05-downloads/, origin and licence UNVERIFIED — sources.md; each one is replaced the day Georgiana's own photo lands, or the same day on a takedown) poured as nineteen entries — pastrami · lamspastrami · lamskotelet · lamsbout · lamsschouder · toba + ro-toba (one file; the Eindejaar row ej26-ro-toba takes ro-toba) · biefstuk · filetkotelet · varkenscote-a-los (the raw named „cotlet de vita cu os” shows pork) · kalkoenfilet · kippenbil · kippenboutjes · salam-de-casa · boerenhesp · hespenworst · varkensschnitzel · cordon-bleu · kipschnitzel; their files are copied byte-identical (no re-encode, no wb; a .webp raw stays .webp; no GPS in any of them, three carry EXIF orientation 1), focal 50/50, `level: item`. Nine of them are under 720 px wide (toba 440 · kalkoenfilet 447 · boerenhesp 480 · lamspastrami 620 · lamsschouder 640 · filetkotelet 640 · varkensschnitzel 680 · kippenbil 700 · kippenboutjes 700): lib/thumbs.ts `bigPhoto` no longer asks for 720 px, so they show in the tile and the sheet too (the build never enlarges: the browser draws them larger than their file, measured per file in the row's report). Left out: the piftie (a food blogger's watermark). `bestsellers.roemeens` (Dan 05.11 16:2x „Georgiana's first”, on the row's report): the shop's own kaizer + ciolane-afumate fills rank before the stand-ins pastrami + salam-de-casa, so the Romanian entrance stays Mici · Gerookte worst · Gerookt buikspek · Gerookte schenkel as since row 22p — ahead of the docs file, which Cowork brings level.",
   "date": "2026-10-30",
   "products": {
     "tapas-mix": {
@@ -401,6 +401,215 @@
         "ro": "Ciolane afumate pe o tavă, pe tejghea"
       },
       "level": "item"
+    },
+    "pastrami": {
+      "src": "products/pastrami-van-varken-slagerij-john.webp",
+      "from": "assets/raw/2026-11-05-downloads/pastrama-de-porc.webp",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Pastrami van varkensvlees, in plakken, met peperkorrels en look",
+        "ro": "Pastramă de porc feliată, cu boabe de piper și usturoi"
+      },
+      "level": "item"
+    },
+    "lamspastrami": {
+      "src": "products/lamspastrami-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-downloads/pastramă miel.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Gerookte lamspastrami, een stuk aangesneden",
+        "ro": "Pastramă de miel afumată, o bucată tăiată"
+      },
+      "level": "item"
+    },
+    "lamskotelet": {
+      "src": "products/lamskoteletten-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-downloads/COTLETE-DE-MIELjpg.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Rauwe lamskoteletten op een plank, met rode ui en laurier",
+        "ro": "Cotlete de miel crude pe un fund de lemn, cu ceapă roșie și dafin"
+      },
+      "level": "item"
+    },
+    "lamsbout": {
+      "src": "products/lamsbout-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-downloads/PULPA miel.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Rauwe lamsbout op een zwarte schaal, met kerstomaatjes en rode peper",
+        "ro": "Pulpă de miel crudă pe o tavă neagră, cu roșii cherry și ardei iute"
+      },
+      "level": "item"
+    },
+    "lamsschouder": {
+      "src": "products/lamsschouder-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-downloads/spata miel.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Rauwe lamsschouder op een houten plank",
+        "ro": "Spată de miel crudă pe un fund de lemn"
+      },
+      "level": "item"
+    },
+    "toba": {
+      "src": "products/roemeense-zult-toba-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-downloads/toba-de-casa.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Roemeense zult (tobă), in sneden op een plank",
+        "ro": "Tobă de casă feliată, pe un fund de lemn"
+      },
+      "level": "item"
+    },
+    "ro-toba": {
+      "src": "products/roemeense-zult-toba-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-downloads/toba-de-casa.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Roemeense zult (tobă), in sneden op een plank",
+        "ro": "Tobă de casă feliată, pe un fund de lemn"
+      },
+      "level": "item"
+    },
+    "biefstuk": {
+      "src": "products/biefstuk-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-downloads/biftec.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Twee rauwe biefstukken met een takje rozemarijn",
+        "ro": "Două bucăți de biftec de vită crud, cu o crenguță de rozmarin"
+      },
+      "level": "item"
+    },
+    "filetkotelet": {
+      "src": "products/filetkotelet-slagerij-john.webp",
+      "from": "assets/raw/2026-11-05-downloads/cotlet-de-porc-fara-os-1-kg.webp",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Filetkoteletten zonder been, in sneden",
+        "ro": "Cotlet de porc fără os, feliat"
+      },
+      "level": "item"
+    },
+    "varkenscote-a-los": {
+      "src": "products/varkenscote-met-been-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-downloads/cotlet de vita cu os .jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Twee rauwe varkenscôtes met been op zwarte leisteen, met rozemarijn",
+        "ro": "Două cotlete de porc cu os, crude, pe ardezie neagră, cu rozmarin"
+      },
+      "level": "item"
+    },
+    "kalkoenfilet": {
+      "src": "products/kalkoenfilet-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-downloads/piept de curcan.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Rauwe kalkoenfilets op zwarte leisteen, met lente-ui en look",
+        "ro": "Piept de curcan crud pe ardezie neagră, cu ceapă verde și usturoi"
+      },
+      "level": "item"
+    },
+    "kippenbil": {
+      "src": "products/kippenbil-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-downloads/pulpe-pui-cu-os-2.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Twee rauwe kippenbillen op zwarte leisteen, met rode ui",
+        "ro": "Două pulpe întregi de pui, crude, pe ardezie neagră, cu ceapă roșie"
+      },
+      "level": "item"
+    },
+    "kippenboutjes": {
+      "src": "products/kippenboutjes-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-downloads/pulpe_inferioare_de_pui_cu_os.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Rauwe kippenboutjes",
+        "ro": "Pulpe inferioare de pui, crude"
+      },
+      "level": "item"
+    },
+    "salam-de-casa": {
+      "src": "products/huisgemaakte-salami-slagerij-john.webp",
+      "from": "assets/raw/2026-11-05-downloads/salam de casă.webp",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Huisgemaakte salami, aangesneden op zwarte leisteen",
+        "ro": "Salam de casă tăiat, pe ardezie neagră"
+      },
+      "level": "item"
+    },
+    "boerenhesp": {
+      "src": "products/boerenhesp-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-downloads/șuncă țărănească.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Gerookte boerenhesp in twee stukken, op een houten tafel",
+        "ro": "Șuncă țărănească afumată, două bucăți pe o masă de lemn"
+      },
+      "level": "item"
+    },
+    "hespenworst": {
+      "src": "products/hespenworst-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-downloads/hespenworst.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Hespenworst in plakken op zwarte leisteen",
+        "ro": "Hespenworst feliat, pe ardezie neagră"
+      },
+      "level": "item"
+    },
+    "varkensschnitzel": {
+      "src": "products/varkensschnitzel-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-downloads/șnițele-de-porc.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Gebakken varkensschnitzels op een bord",
+        "ro": "Șnițele de porc prăjite, pe o farfurie"
+      },
+      "level": "item"
+    },
+    "cordon-bleu": {
+      "src": "products/cordon-bleu-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-downloads/cordon_bleu.jpg",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Cordon bleu doorgesneden, met hesp en gesmolten kaas",
+        "ro": "Cordon bleu tăiat în două, cu șuncă și cașcaval topit"
+      },
+      "level": "item"
+    },
+    "kipschnitzel": {
+      "src": "products/kipschnitzel-slagerij-john.webp",
+      "from": "assets/raw/2026-11-05-downloads/Snitel-de-pui.webp",
+      "focalX": 50,
+      "focalY": 50,
+      "alt": {
+        "nl": "Twee kipschnitzels met citroen en peterselie op een wit bord",
+        "ro": "Două șnițele de pui cu lămâie și pătrunjel, pe o farfurie albă"
+      },
+      "level": "item"
     }
   },
   "rubrics": {
@@ -486,6 +695,8 @@
     "roemeens": [
       "mici",
       "gerookte-worst",
+      "kaizer",
+      "ciolane-afumate",
       "pastrami",
       "salam-de-casa"
     ],
@@ -520,6 +731,8 @@
       ],
       "roemeens": [
         "gerookte-worst",
+        "kaizer",
+        "ciolane-afumate",
         "pastrami",
         "salam-de-casa"
       ]

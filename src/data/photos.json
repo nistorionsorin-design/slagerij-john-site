@@ -1,5 +1,5 @@
 {
-  "_source": "Hero v2 (row 14c, D-38, 17.10): docs/data/hero-frames.json poured 1:1 (ids added; order = array order; frame 1 = the LCP). Tag rule: line/price/unit null = not shown; price null hides the unit too. Other pages pick a hero photo by id. Before: Hero frames per docs/build-plan.md §3 (files, focal points) and the canvas boards Main/Desktop (zoom origins). Alts NL/RO and tag names NL/RO = lexicon §5.14 table (06.10) verbatim. Tag line and price stay [KOOKLIJN] / [PRIJS] (RO [PREȚ]) until FACTS.md has the owners' values. Claude Code, stage 1. Stage 9 revision (13.10): the RO cooking-line placeholder is [GĂTIRE] (lexicon §5.19 / §6), the NL one stays [KOOKLIJN]. Row 5b (15.10): frame 3 „Hapjes & feestschotels” price = vanaf €1,50 /stuk (RO de la 1,50 € /buc.) — the cheapest hapje of the owners' list (lepeltje paté, [OWNER] 13.10, docs/data/price-list.json); its line stays [KOOKLIJN]. Row 14 (16.10): hero frame 2 = the phone shoot's #16 (pork chops in the counter, docs/data/phone-shoot-slots.json `hero-frame-2-replacement`), white-balanced (display), replaces the old-site pork-products.webp under the same tag; focal 50/55, zoom 50/50, alt as the JSON. Row 14c budget: AVIF quality 45 unless the frame names its own (quality), the highest that keeps the variant served at 412 × 823 @1,75 ≤ 90 kB (sharp, 17.10). Dan 17.10 (13:1x, chat): „take out this photo” — John & Georgiana (frame 3) out of the hero; 9 frames.",
+  "_source": "Hero v2 (row 14c, D-38, 17.10): docs/data/hero-frames.json poured 1:1 (ids added; order = array order; frame 1 = the LCP). Tag rule: line/price/unit null = not shown; price null hides the unit too. Other pages pick a hero photo by id. Before: Hero frames per docs/build-plan.md §3 (files, focal points) and the canvas boards Main/Desktop (zoom origins). Alts NL/RO and tag names NL/RO = lexicon §5.14 table (06.10) verbatim. Tag line and price stay [KOOKLIJN] / [PRIJS] (RO [PREȚ]) until FACTS.md has the owners' values. Claude Code, stage 1. Stage 9 revision (13.10): the RO cooking-line placeholder is [GĂTIRE] (lexicon §5.19 / §6), the NL one stays [KOOKLIJN]. Row 5b (15.10): frame 3 „Hapjes & feestschotels” price = vanaf €1,50 /stuk (RO de la 1,50 € /buc.) — the cheapest hapje of the owners' list (lepeltje paté, [OWNER] 13.10, docs/data/price-list.json); its line stays [KOOKLIJN]. Row 14 (16.10): hero frame 2 = the phone shoot's #16 (pork chops in the counter, docs/data/phone-shoot-slots.json `hero-frame-2-replacement`), white-balanced (display), replaces the old-site pork-products.webp under the same tag; focal 50/55, zoom 50/50, alt as the JSON. Row 14c budget: AVIF quality 45 unless the frame names its own (quality), the highest that keeps the variant served at 412 × 823 @1,75 ≤ 90 kB (sharp, 17.10). Dan 17.10 (13:1x, chat): „take out this photo” — John & Georgiana (frame 3) out of the hero; 9 frames. Row 22w (D-57, Dan 05.11 16:43 „take out this photo from the hero”): the pork chops „Colli Varken 1” (the old site's pork-products.webp) out; 8 frames, T = 72 s; its file hero/varkenskoteletten-op-de-plank-slagerij-john.jpg deleted (nothing else used it).",
   "hero": [
     {
       "id": "mici",
@@ -184,32 +184,6 @@
         "price": null,
         "unit": null
       }
-    },
-    {
-      "id": "varkenskoteletten",
-      "src": "hero/varkenskoteletten-op-de-plank-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-03-site/pork-products.webp",
-      "focalX": 50,
-      "focalY": 50,
-      "zoomX": 50,
-      "zoomY": 50,
-      "alt": {
-        "nl": "Varkenskoteletten op een snijplank",
-        "ro": "Cotlete de porc pe un tocător"
-      },
-      "tag": {
-        "name": {
-          "nl": "Colli Varken 1",
-          "ro": "Colli Porc 1"
-        },
-        "line": null,
-        "price": null,
-        "unit": {
-          "nl": "/colli",
-          "ro": "/colli"
-        }
-      },
-      "note": "720×960 — sharp on the phone, soft on a wide desktop; owners asked for the original (Sunday). Replaces the 16.10 frame 2 (#16, 20261009_175704)."
     },
     {
       "id": "john-bbq",

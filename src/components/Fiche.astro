@@ -9,7 +9,7 @@
 // any other row is spelled out in the JSON below, by id — [unit, step, min, price, line, photo AVIF, photo WebP, photo
 // alt], the empty tail left off: the D-48 class (the
 // bestelbon's qtyRule), the price only where the row has one (else „Prijs per kilo / per stuk aan de toog”), the line
-// only where the data has one, the 720 × 440 photo only where the row has its own, big enough (lib/thumbs.ts `bigPhoto`) — its
+// only where the data has one, the 720 × 440 photo only where the row has its own (lib/thumbs.ts `bigPhoto`) — its
 // file is requested on open, never on page load, so the frame holds no <img> here and stays `hidden` without a photo.
 // The stepper = the bestelbon's markup, classes and labels (§5.20 less / more / qty, bestellen.ts) and its look
 // (OrderForm.astro's .qty rules, copied below: they are scoped there); it starts at the row's minimum. Strings:
@@ -24,7 +24,7 @@ import { productenT } from '../i18n/producten';
 import { bestellenT } from '../i18n/bestellen';
 import { qtyRule } from '../lib/order-core.js';
 import { priceLabel, priceUnitLabel } from '../lib/price';
-import { bigPhoto, photoFile, gravity } from '../lib/thumbs';
+import { bigPhoto, photoFile, gravity, cutWidth } from '../lib/thumbs';
 
 export interface Props {
   /** every row the page can open: the board names and the Vitrine tiles */
@@ -43,7 +43,9 @@ for (const p of rows) {
   const e = bigPhoto(p.id);
   let photo: string[] = [];
   if (e) {
-    const base = { src: photoFile(e), width: 720, height: 440, fit: 'cover' as const, position: gravity(e.focalX, e.focalY), quality: 50 };
+    // row 22v: a source under 720 px gets the widest 720:440 cut it holds (lib/thumbs.ts cutWidth), not a squarer file
+    const w = cutWidth(e, 720, 720 / 440);
+    const base = { src: photoFile(e), width: w, height: Math.round((w * 440) / 720), fit: 'cover' as const, position: gravity(e.focalX, e.focalY), quality: 50 };
     const [avif, webp] = await Promise.all([getImage({ ...base, format: 'avif' }), getImage({ ...base, format: 'webp' })]);
     photo = [avif.src, webp.src, e.alt[locale]];
   }
