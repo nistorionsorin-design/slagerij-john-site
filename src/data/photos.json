@@ -314,27 +314,25 @@
       }
     },
     {
-      "src": "products/spiering-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-13-phone/20261009_180103.jpg",
-      "wb": "display",
+      "src": "products/spiering-met-rozemarijn-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-chat/spiering-rozemarijn-leisteen.jpg",
       "focalX": 50,
       "focalY": 50,
       "alt": {
-        "nl": "Spiering, dik gesneden, met fijne vetadering",
-        "ro": "Ceafă de porc tăiată gros, cu marmorare fină"
+        "nl": "Spiering met een takje rozemarijn op zwarte leisteen",
+        "ro": "Ceafă de porc cu o crenguță de rozmarin, pe ardezie neagră"
       }
     },
     {
-      "src": "home/vleesmolen-gehakt-dichtbij-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-13-phone/20261009_174044.jpg",
-      "wb": "atelier",
+      "src": "home/vers-gehakt-op-leisteen-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-chat/gehakt-leisteen-peterselie.jpg",
       "focalX": 50,
-      "focalY": 45,
+      "focalY": 50,
       "alt": {
-        "nl": "Gehakt komt uit de vleesmolen, van dichtbij",
-        "ro": "Carnea tocată iese din mașina de tocat, de aproape"
+        "nl": "Vers gehakt op zwarte leisteen, met een takje peterselie",
+        "ro": "Carne tocată proaspătă pe ardezie neagră, cu o crenguță de pătrunjel"
       },
-      "note": "30.10 Dan's site review (pick Z1): a zoom on the outlet plate — crop x 450–1950, y 1000–2500 of the EXIF-transposed 3000×4000 raw (1500×1500), then the same atelier white balance as overons/vleesmolen-atelier-slagerij-john.jpg. /over-ons keeps the full shot (its entry unchanged)."
+      "note": "05.11 Dan: replaces the 30.10 Z1 zoom"
     },
     {
       "src": "roemeens/mici-in-de-toog-slagerij-john.jpg",

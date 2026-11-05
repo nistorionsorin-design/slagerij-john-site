@@ -148,16 +148,15 @@
       "wb": "atelier"
     },
     "spiering": {
-      "src": "products/spiering-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-13-phone/20261009_180103.jpg",
+      "src": "products/spiering-met-rozemarijn-slagerij-john.jpg",
+      "from": "assets/raw/2026-11-05-chat/spiering-rozemarijn-leisteen.jpg",
       "focalX": 50,
       "focalY": 50,
       "alt": {
-        "nl": "Spiering, dik gesneden, met fijne vetadering",
-        "ro": "Ceafă de porc tăiată gros, cu marmorare fină"
+        "nl": "Spiering met een takje rozemarijn op zwarte leisteen",
+        "ro": "Ceafă de porc cu o crenguță de rozmarin, pe ardezie neagră"
       },
-      "level": "item",
-      "wb": "display"
+      "level": "item"
     },
     "braadworst": {
       "src": "products/verse-braadworst-slagerij-john.jpg",
