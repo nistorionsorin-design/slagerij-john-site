@@ -156,7 +156,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
       <ul class="ck-grid">
         {cards.map((c) => (
           <li class="ck-grid__item">
-            <article class="ck" id={c.id} aria-labelledby={`${c.id}-name`}>
+            <article class="ck" id={c.id} aria-labelledby={`${c.id}-name`} data-qa-section={c.id}>
               <span class="ck__pin" aria-hidden="true"></span>
               <div class="ck__head">
                 <h3 class="ck__name" id={`${c.id}-name`}>{c.name}</h3>

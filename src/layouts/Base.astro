@@ -19,6 +19,8 @@ import Header from '../components/Header.astro';
 import Menu from '../components/Menu.astro';
 import Footer from '../components/Footer.astro';
 import BottomBar from '../components/BottomBar.astro';
+import QaSheet from '../components/QaSheet.astro';
+import { qaPageOf } from '../i18n/assistant';
 import { ui, home, wa, routeHref, type Locale } from '../i18n/ui';
 import { brandCard, ogFile } from '../lib/og-image';
 import type { Frame } from '../lib/hero-image';
@@ -180,6 +182,9 @@ const jsonld = entity.name
       navLabel={t.bar.label}
       path={path}
     />
+    {/* row 11a: the assistant's sheet and, on the phone, its floating button; on the nine pages of lexicon §5.32 the box
+        itself sits under the FAQ (Faq.astro) */}
+    <QaSheet locale={locale} withBox={!qaPageOf(path)} />
     {/* row 13b: one same-origin sendBeacon to /api/hit after load (docs/metrics-spine.md §4) — an external file from
         /_astro/ like every script (CSP script-src 'self'); the gate allows it as „Base → hit.ts” */}
     <script>

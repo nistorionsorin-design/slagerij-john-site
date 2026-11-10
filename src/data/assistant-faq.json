@@ -1,0 +1,3678 @@
+{
+  "_source": "Assistant v2 answer bank for build-plan row 11a (docs/assistant.md §3 + §3 legal bullet + §10; D-58). Cowork 05.11.2026. Facts only from FACTS.md and site/src/data; entries reused from site/src/data/faq.json are verbatim (facts tag). handoff: none = answer only · offer = answer + WhatsApp button · always = straight to WhatsApp/phone (not-on-file facts use the miss line, never a guess). dynamic = computed by the island at answer time; `a` is the static fallback. Allergen answers = the matrix sentence + allergens.json workshop notice verbatim (its last sentence is the §4.2 serious-allergy call line, so it is not repeated). Language: NL u-form, RO tu-form (lexicon D3/D4). site/src/data/faq.json is NOT replaced: it feeds the visible FAQ blocks.",
+  "miss": {
+    "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
+    "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+  },
+  "entries": [
+    {
+      "id": "hours-open-now",
+      "topic": "hours",
+      "q": {
+        "nl": "Zijn jullie nu open?",
+        "ro": "Sunteți deschiși acum?"
+      },
+      "keywords": {
+        "nl": [
+          "nu open",
+          "open",
+          "geopend",
+          "gesloten",
+          "dicht"
+        ],
+        "ro": [
+          "deschis acum",
+          "deschis",
+          "închis"
+        ]
+      },
+      "a": {
+        "nl": "Onze openingsuren: maandag van 13:00 tot 18:00, dinsdag van 08:00 tot 18:00, woensdag van 08:00 tot 13:00, donderdag tot zaterdag van 08:00 tot 18:00, zondag van 08:00 tot 13:00.",
+        "ro": "Programul nostru: luni între 13:00 și 18:00, marți între 08:00 și 18:00, miercuri între 08:00 și 13:00, de joi până sâmbătă între 08:00 și 18:00, duminică între 08:00 și 13:00."
+      },
+      "link": {
+        "nl": "/contact",
+        "ro": "/ro/contact"
+      },
+      "handoff": "none",
+      "dynamic": "open-now",
+      "facts": [
+        "FACTS.md: Opening hours",
+        "site/src/data/hours.json regular"
+      ]
+    },
+    {
+      "id": "hours-sunday",
+      "topic": "hours",
+      "q": {
+        "nl": "Zijn jullie open op zondag?",
+        "ro": "Sunteți deschiși duminica?"
+      },
+      "keywords": {
+        "nl": [
+          "zondag",
+          "zondag open",
+          "weekend"
+        ],
+        "ro": [
+          "duminica",
+          "duminică",
+          "weekend"
+        ]
+      },
+      "a": {
+        "nl": "Ja, zondag van 08:00 tot 13:00; maandag vanaf 13:00.",
+        "ro": "Da, duminica între 08:00 și 13:00; luni de la 13:00."
+      },
+      "link": {
+        "nl": "/contact",
+        "ro": "/ro/contact"
+      },
+      "handoff": "none",
+      "dynamic": "day-hours",
+      "facts": [
+        "site/src/data/faq.json (verbatim)",
+        "FACTS.md: Opening hours"
+      ]
+    },
+    {
+      "id": "hours-monday",
+      "topic": "hours",
+      "q": {
+        "nl": "Zijn jullie open op maandag?",
+        "ro": "Sunteți deschiși lunea?"
+      },
+      "keywords": {
+        "nl": [
+          "maandag",
+          "maandagochtend"
+        ],
+        "ro": [
+          "luni",
+          "lunea",
+          "luni dimineața"
+        ]
+      },
+      "a": {
+        "nl": "Ja, maandag van 13:00 tot 18:00; 's ochtends is de winkel dicht.",
+        "ro": "Da, lunea între 13:00 și 18:00; dimineața magazinul e închis."
+      },
+      "link": {
+        "nl": "/contact",
+        "ro": "/ro/contact"
+      },
+      "handoff": "none",
+      "dynamic": "day-hours",
+      "facts": [
+        "FACTS.md: Opening hours",
+        "site/src/data/hours.json regular"
+      ]
+    },
+    {
+      "id": "hours-wednesday",
+      "topic": "hours",
+      "q": {
+        "nl": "Tot hoe laat zijn jullie open op woensdag?",
+        "ro": "Până la ce oră sunteți deschiși miercurea?"
+      },
+      "keywords": {
+        "nl": [
+          "woensdag",
+          "woensdagnamiddag"
+        ],
+        "ro": [
+          "miercuri",
+          "miercurea"
+        ]
+      },
+      "a": {
+        "nl": "Woensdag van 08:00 tot 13:00; 's namiddags is de winkel dicht.",
+        "ro": "Miercurea între 08:00 și 13:00; după-amiaza magazinul e închis."
+      },
+      "link": {
+        "nl": "/contact",
+        "ro": "/ro/contact"
+      },
+      "handoff": "none",
+      "dynamic": "day-hours",
+      "facts": [
+        "FACTS.md: Opening hours",
+        "site/src/data/hours.json regular"
+      ]
+    },
+    {
+      "id": "hours-holidays",
+      "topic": "hours",
+      "q": {
+        "nl": "Zijn jullie open op feestdagen?",
+        "ro": "Sunteți deschiși de sărbători?"
+      },
+      "keywords": {
+        "nl": [
+          "feestdag",
+          "feestdagen",
+          "kerst",
+          "nieuwjaar",
+          "1 november",
+          "11 november",
+          "wapenstilstand",
+          "allerheiligen"
+        ],
+        "ro": [
+          "sărbători",
+          "crăciun",
+          "anul nou",
+          "1 noiembrie",
+          "11 noiembrie"
+        ]
+      },
+      "a": {
+        "nl": "Rond Kerst en Nieuwjaar gelden aparte uren: 24 december van 08:00 tot 18:00, 25 december van 08:00 tot 09:00 alleen om bestellingen af te halen, 26 en 27 december gesloten, 28 tot 31 december van 08:00 tot 18:00, 1 tot 3 januari gesloten. Op 1 en 11 november zijn wij gewoon open.",
+        "ro": "De sărbători avem alt program: pe 24 decembrie între 08:00 și 18:00, pe 25 decembrie între 08:00 și 09:00, doar pentru ridicarea comenzilor, pe 26 și 27 decembrie închis, între 28 și 31 decembrie între 08:00 și 18:00, între 1 și 3 ianuarie închis. Pe 1 și 11 noiembrie avem programul obișnuit."
+      },
+      "link": {
+        "nl": "/contact",
+        "ro": "/ro/contact"
+      },
+      "handoff": "none",
+      "dynamic": "day-hours",
+      "facts": [
+        "FACTS.md: Holidays 2026–27",
+        "site/src/data/hours.json special"
+      ]
+    },
+    {
+      "id": "hours-annual-leave",
+      "topic": "hours",
+      "q": {
+        "nl": "Wanneer zijn jullie met vakantie?",
+        "ro": "Când sunteți în concediu?"
+      },
+      "keywords": {
+        "nl": [
+          "vakantie",
+          "verlof",
+          "jaarlijkse vakantie",
+          "gesloten wegens vakantie"
+        ],
+        "ro": [
+          "concediu",
+          "vacanță",
+          "închis pentru concediu"
+        ]
+      },
+      "a": {
+        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
+        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+      },
+      "link": null,
+      "handoff": "always",
+      "dynamic": null,
+      "facts": [
+        "not on file: annual leave (FACTS: Not answered)"
+      ]
+    },
+    {
+      "id": "place-address",
+      "topic": "place",
+      "q": {
+        "nl": "Waar is de winkel?",
+        "ro": "Unde e magazinul?"
+      },
+      "keywords": {
+        "nl": [
+          "adres",
+          "waar",
+          "winkel",
+          "ligging"
+        ],
+        "ro": [
+          "adresa",
+          "unde",
+          "magazin"
+        ]
+      },
+      "a": {
+        "nl": "Bruggestraat 146A, 8750 Zwevezele, in de vroegere bakkerij.",
+        "ro": "Bruggestraat 146A, 8750 Zwevezele, în fosta brutărie."
+      },
+      "link": {
+        "nl": "/contact",
+        "ro": "/ro/contact"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/entity.json address",
+        "FACTS.md: Opened"
+      ]
+    },
+    {
+      "id": "place-parking",
+      "topic": "place",
+      "q": {
+        "nl": "Kan ik parkeren bij de winkel?",
+        "ro": "Unde pot parca?"
+      },
+      "keywords": {
+        "nl": [
+          "parkeren",
+          "parking",
+          "parkeerplaats"
+        ],
+        "ro": [
+          "parcare",
+          "parchez",
+          "loc de parcare"
+        ]
+      },
+      "a": {
+        "nl": "Ja, gratis: voor de winkel (2 plaatsen) en in de straat.",
+        "ro": "Gratuit, în fața magazinului (2 locuri) și pe stradă."
+      },
+      "link": {
+        "nl": "/contact",
+        "ro": "/ro/contact"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Parking"
+      ]
+    },
+    {
+      "id": "place-route",
+      "topic": "place",
+      "q": {
+        "nl": "Hoe rij ik naar de winkel?",
+        "ro": "Cum ajung la magazin?"
+      },
+      "keywords": {
+        "nl": [
+          "route",
+          "de weg",
+          "hoe kom ik",
+          "navigatie",
+          "kaart"
+        ],
+        "ro": [
+          "drum",
+          "traseu",
+          "cum ajung",
+          "hartă"
+        ]
+      },
+      "a": {
+        "nl": "Bruggestraat 146A in Zwevezele (Wingene). Op de contactpagina staat de kaart; op de telefoon opent „Route” onderaan uw kaart-app.",
+        "ro": "Bruggestraat 146A, în Zwevezele (Wingene). Harta e pe pagina Contact; pe telefon, butonul „Drum” de jos îți deschide harta."
+      },
+      "link": {
+        "nl": "/contact",
+        "ro": "/ro/contact"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/entity.json address",
+        "docs/lexicon.md §5.15 / §6 bottom bar"
+      ]
+    },
+    {
+      "id": "place-languages",
+      "topic": "place",
+      "q": {
+        "nl": "Welke talen spreken jullie?",
+        "ro": "Ce limbi vorbiți?"
+      },
+      "keywords": {
+        "nl": [
+          "taal",
+          "talen",
+          "frans",
+          "engels",
+          "roemeens spreken"
+        ],
+        "ro": [
+          "limbi",
+          "vorbiți",
+          "română",
+          "neerlandeză",
+          "franceză",
+          "engleză"
+        ]
+      },
+      "a": {
+        "nl": "Nederlands en Roemeens.",
+        "ro": "Româna și neerlandeza."
+      },
+      "link": {
+        "nl": "/contact",
+        "ro": "/ro/contact"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/entity.json knowsLanguage (nl-BE, ro)"
+      ]
+    },
+    {
+      "id": "order-how",
+      "topic": "order",
+      "q": {
+        "nl": "Hoe bestel ik?",
+        "ro": "Cum comand?"
+      },
+      "keywords": {
+        "nl": [
+          "bestellen",
+          "bestelling",
+          "hoe bestel",
+          "bestelbon"
+        ],
+        "ro": [
+          "comand",
+          "comandă",
+          "cum comand",
+          "bon de comandă"
+        ]
+      },
+      "a": {
+        "nl": "Op drie manieren: met de bestelbon op de site, via WhatsApp of telefonisch op 0466 18 64 57. U haalt af in de winkel of wij leveren aan huis.",
+        "ro": "În trei feluri: cu bonul de comandă de pe site, pe WhatsApp sau la telefon, la 0466 18 64 57. Ridici din magazin sau livrăm acasă."
+      },
+      "link": {
+        "nl": "/bestellen",
+        "ro": "/ro/comanda"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "docs/lexicon.md §5.27 Uw bestelling",
+        "site/src/data/entity.json telephoneDisplay"
+      ]
+    },
+    {
+      "id": "order-whatsapp",
+      "topic": "order",
+      "q": {
+        "nl": "Kan ik via WhatsApp bestellen?",
+        "ro": "Pot comanda pe WhatsApp?"
+      },
+      "keywords": {
+        "nl": [
+          "whatsapp",
+          "appen",
+          "bericht"
+        ],
+        "ro": [
+          "whatsapp",
+          "mesaj"
+        ]
+      },
+      "a": {
+        "nl": "Ja. Schrijf wat u wilt en voor welke dag; Georgiana antwoordt van 8 tot 20 uur.",
+        "ro": "Da. Scrie ce vrei și pentru ce zi; răspunde Georgiana, între 8 și 20."
+      },
+      "link": null,
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: WhatsApp",
+        "docs/lexicon.md §6 order line"
+      ]
+    },
+    {
+      "id": "order-phone",
+      "topic": "order",
+      "q": {
+        "nl": "Kan ik ook bellen om te bestellen?",
+        "ro": "Pot comanda și prin telefon?"
+      },
+      "keywords": {
+        "nl": [
+          "bellen",
+          "telefoon",
+          "telefonisch",
+          "nummer"
+        ],
+        "ro": [
+          "telefon",
+          "sun",
+          "număr"
+        ]
+      },
+      "a": {
+        "nl": "Ja, tijdens de openingsuren op 0466 18 64 57. Via WhatsApp kan het altijd; Georgiana antwoordt van 8 tot 20 uur.",
+        "ro": "Da, în programul magazinului, la 0466 18 64 57. Pe WhatsApp poți scrie oricând; răspunde Georgiana, între 8 și 20."
+      },
+      "link": {
+        "nl": "/contact",
+        "ro": "/ro/contact"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/faq.json (verbatim)",
+        "FACTS.md: WhatsApp"
+      ]
+    },
+    {
+      "id": "order-account",
+      "topic": "order",
+      "q": {
+        "nl": "Moet ik een account maken?",
+        "ro": "Trebuie să-mi fac cont?"
+      },
+      "keywords": {
+        "nl": [
+          "account",
+          "registreren",
+          "inloggen"
+        ],
+        "ro": [
+          "cont",
+          "înregistrare",
+          "logare"
+        ]
+      },
+      "a": {
+        "nl": "Nee. Naam, telefoon en e-mail volstaan; wij bewaren ze 90 dagen, alleen voor uw bestelling.",
+        "ro": "Nu. Ajung numele, telefonul și e-mailul; le păstrăm 90 de zile, doar pentru comanda ta."
+      },
+      "link": {
+        "nl": "/bestellen",
+        "ro": "/ro/comanda"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/faq.json (verbatim)"
+      ]
+    },
+    {
+      "id": "order-deadline",
+      "topic": "order",
+      "q": {
+        "nl": "Tot wanneer bestel ik voor morgen?",
+        "ro": "Până când comand pentru mâine?"
+      },
+      "keywords": {
+        "nl": [
+          "morgen",
+          "tot wanneer",
+          "uiterlijk",
+          "vóór 12",
+          "deadline"
+        ],
+        "ro": [
+          "mâine",
+          "până când",
+          "până la ce oră",
+          "termen"
+        ]
+      },
+      "a": {
+        "nl": "Tot 12:00 de dag ervoor; dan ligt het klaar op het uur dat u kiest.",
+        "ro": "Până la 12:00 cu o zi înainte; atunci e gata la ora pe care o alegi."
+      },
+      "link": {
+        "nl": "/bestellen",
+        "ro": "/ro/comanda"
+      },
+      "handoff": "none",
+      "dynamic": "deadline",
+      "facts": [
+        "FACTS.md: Orders",
+        "site/src/data/delivery.json pickup.cutoff"
+      ]
+    },
+    {
+      "id": "order-today",
+      "topic": "order",
+      "q": {
+        "nl": "Kan ik vandaag nog afhalen?",
+        "ro": "Pot ridica azi?"
+      },
+      "keywords": {
+        "nl": [
+          "vandaag",
+          "nog vandaag",
+          "zelfde dag"
+        ],
+        "ro": [
+          "azi",
+          "astăzi",
+          "în aceeași zi"
+        ]
+      },
+      "a": {
+        "nl": "Online bestelt u voor morgen of later en kiest u zelf dag en uur binnen de openingsuren. Voor vandaag: bel ons even, dan kijken wij wat kan.",
+        "ro": "Online comanzi pentru mâine sau mai târziu și alegi ziua și ora în programul magazinului. Pentru azi: sună-ne, vedem ce se poate."
+      },
+      "link": {
+        "nl": "/bestellen",
+        "ro": "/ro/comanda"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/faq.json (verbatim)"
+      ]
+    },
+    {
+      "id": "order-minimum",
+      "topic": "order",
+      "q": {
+        "nl": "Is er een minimumbestelling?",
+        "ro": "Există o comandă minimă?"
+      },
+      "keywords": {
+        "nl": [
+          "minimum",
+          "minimumbestelling",
+          "minimaal bedrag"
+        ],
+        "ro": [
+          "minimă",
+          "comandă minimă",
+          "sumă minimă"
+        ]
+      },
+      "a": {
+        "nl": "Bij afhaling niet. Bij levering aan huis bestelt u minstens €50.",
+        "ro": "La ridicare, nu. La livrare acasă, comanda minimă e de 50 €."
+      },
+      "link": {
+        "nl": "/bestellen",
+        "ro": "/ro/comanda"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "docs/lexicon.md §5.27 Afhalen",
+        "site/src/data/delivery.json minimumOrder"
+      ]
+    },
+    {
+      "id": "order-small",
+      "topic": "order",
+      "q": {
+        "nl": "Kan ik ook kleine hoeveelheden kopen?",
+        "ro": "Pot cumpăra și cantități mici?"
+      },
+      "keywords": {
+        "nl": [
+          "klein",
+          "kleine hoeveelheid",
+          "een beetje",
+          "per stuk"
+        ],
+        "ro": [
+          "puțin",
+          "cantități mici",
+          "la bucată"
+        ]
+      },
+      "a": {
+        "nl": "Ja. Aan de toog koopt u wat u nodig hebt; online bestelt u per kg of per pakket.",
+        "ro": "Da. La tejghea iei cât ai nevoie; online comanzi la kilogram sau la pachet."
+      },
+      "link": {
+        "nl": "/producten",
+        "ro": "/ro/produse"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/faq.json (verbatim)"
+      ]
+    },
+    {
+      "id": "order-pay-online",
+      "topic": "order",
+      "q": {
+        "nl": "Kan ik online betalen?",
+        "ro": "Pot plăti online?"
+      },
+      "keywords": {
+        "nl": [
+          "online betalen",
+          "vooraf betalen",
+          "overschrijving"
+        ],
+        "ro": [
+          "plătesc online",
+          "plată în avans",
+          "transfer"
+        ]
+      },
+      "a": {
+        "nl": "Dat is niet nodig: u betaalt bij afhaling of aan de deur. Alleen het eindejaarsmenu vraagt een voorschot, in de winkel of via overschrijving.",
+        "ro": "Nu e nevoie: plătești la ridicare sau la ușă. Doar meniul de sărbători cere un avans, în magazin sau prin transfer bancar."
+      },
+      "link": {
+        "nl": "/bestellen",
+        "ro": "/ro/comanda"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Payment in the shop",
+        "FACTS.md: Eindejaar",
+        "docs/lexicon.md §5.30 deposit"
+      ]
+    },
+    {
+      "id": "order-payment-methods",
+      "topic": "order",
+      "q": {
+        "nl": "Hoe betaal ik?",
+        "ro": "Cum plătesc?"
+      },
+      "keywords": {
+        "nl": [
+          "betalen",
+          "bancontact",
+          "payconiq",
+          "cash",
+          "visa",
+          "mastercard",
+          "kaart"
+        ],
+        "ro": [
+          "plată",
+          "plătesc",
+          "card",
+          "numerar",
+          "bancontact",
+          "payconiq"
+        ]
+      },
+      "a": {
+        "nl": "Bij afhaling in de winkel of bij levering aan de deur: cash, Bancontact, Payconiq, Visa of Mastercard. Online betalen is niet nodig.",
+        "ro": "La ridicare, în magazin, sau la livrare, la ușă: numerar, Bancontact, Payconiq, Visa sau Mastercard. Nu plătești online."
+      },
+      "link": {
+        "nl": "/bestellen",
+        "ro": "/ro/comanda"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/faq.json (verbatim)",
+        "FACTS.md: Payment in the shop"
+      ]
+    },
+    {
+      "id": "order-meal-vouchers",
+      "topic": "order",
+      "q": {
+        "nl": "Kan ik betalen met maaltijdcheques?",
+        "ro": "Pot plăti cu tichete de masă?"
+      },
+      "keywords": {
+        "nl": [
+          "maaltijdcheque",
+          "maaltijdcheques",
+          "ecocheque",
+          "edenred",
+          "sodexo",
+          "pluxee"
+        ],
+        "ro": [
+          "tichete de masă",
+          "tichete",
+          "bonuri de masă"
+        ]
+      },
+      "a": {
+        "nl": "Nee, maaltijdcheques nemen wij niet aan. U betaalt cash, met Bancontact, Payconiq, Visa of Mastercard.",
+        "ro": "Nu, tichetele de masă nu le primim. Plătești numerar, cu Bancontact, Payconiq, Visa sau Mastercard."
+      },
+      "link": {
+        "nl": "/bestellen",
+        "ro": "/ro/comanda"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Payment in the shop"
+      ]
+    },
+    {
+      "id": "order-cancel",
+      "topic": "order",
+      "q": {
+        "nl": "Kan ik mijn bestelling wijzigen of annuleren?",
+        "ro": "Pot modifica sau anula comanda?"
+      },
+      "keywords": {
+        "nl": [
+          "annuleren",
+          "wijzigen",
+          "veranderen",
+          "afzeggen"
+        ],
+        "ro": [
+          "anulez",
+          "anulare",
+          "modific",
+          "schimb comanda"
+        ]
+      },
+      "a": {
+        "nl": "Ja, telefonisch op 0466 18 64 57, zolang wij uw bestelling nog niet bereiden. Het eindejaarsmenu kunt u na 20 december niet meer wijzigen of annuleren.",
+        "ro": "Da, la telefon, la 0466 18 64 57, cât timp nu am început să o pregătim. Meniul de sărbători nu se mai poate modifica sau anula după 20 decembrie."
+      },
+      "link": {
+        "nl": "/algemene-voorwaarden",
+        "ro": "/ro/termeni"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "docs/lexicon.md §5.27 Wijzigen en annuleren",
+        "FACTS.md: Eindejaar"
+      ]
+    },
+    {
+      "id": "order-not-collected",
+      "topic": "order",
+      "q": {
+        "nl": "Wat als ik mijn bestelling niet afhaal?",
+        "ro": "Ce se întâmplă dacă nu ridic comanda?"
+      },
+      "keywords": {
+        "nl": [
+          "niet afgehaald",
+          "vergeten af te halen",
+          "niet komen"
+        ],
+        "ro": [
+          "nu ridic",
+          "am uitat",
+          "nu vin"
+        ]
+      },
+      "a": {
+        "nl": "Dan vragen wij bij uw volgende bestelling een voorschot van minstens 50 %.",
+        "ro": "Atunci, la următoarea comandă, îți cerem un avans de cel puțin 50%."
+      },
+      "link": {
+        "nl": "/algemene-voorwaarden",
+        "ro": "/ro/termeni"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: No-show",
+        "docs/lexicon.md §5.30 Niet afgehaald"
+      ]
+    },
+    {
+      "id": "order-someone-else",
+      "topic": "order",
+      "q": {
+        "nl": "Mag iemand anders mijn bestelling afhalen?",
+        "ro": "Poate ridica altcineva comanda mea?"
+      },
+      "keywords": {
+        "nl": [
+          "iemand anders",
+          "laten afhalen",
+          "in mijn plaats"
+        ],
+        "ro": [
+          "altcineva",
+          "în locul meu"
+        ]
+      },
+      "a": {
+        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
+        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+      },
+      "link": null,
+      "handoff": "always",
+      "dynamic": null,
+      "facts": [
+        "not on file: collection by a third person"
+      ]
+    },
+    {
+      "id": "delivery-or-pickup",
+      "topic": "delivery",
+      "q": {
+        "nl": "Leveren jullie, of haal ik af?",
+        "ro": "Livrați sau ridic eu?"
+      },
+      "keywords": {
+        "nl": [
+          "leveren",
+          "levering",
+          "afhalen",
+          "thuis"
+        ],
+        "ro": [
+          "livrați",
+          "livrare",
+          "ridic",
+          "acasă"
+        ]
+      },
+      "a": {
+        "nl": "Allebei. Afhalen in de winkel in Zwevezele, of levering aan huis: gratis tot 10 km vanaf €50, tot 20 km vanaf €100; de afstand telt vanaf de winkel.",
+        "ro": "Amândouă. Ridici din magazin, în Zwevezele, sau livrăm acasă: gratuit până la 10 km de la 50 €, până la 20 km de la 100 €; distanța se măsoară de la magazin."
+      },
+      "link": {
+        "nl": "/bestellen",
+        "ro": "/ro/comanda"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/faq.json (verbatim)",
+        "FACTS.md: Delivery"
+      ]
+    },
+    {
+      "id": "delivery-towns",
+      "topic": "delivery",
+      "q": {
+        "nl": "Leveren jullie in Tielt / Lichtervelde / Roeselare?",
+        "ro": "Livrați în Tielt / Lichtervelde / Roeselare?"
+      },
+      "keywords": {
+        "nl": [
+          "tielt",
+          "lichtervelde",
+          "roeselare",
+          "wingene",
+          "zwevezele",
+          "leveren in"
+        ],
+        "ro": [
+          "tielt",
+          "lichtervelde",
+          "roeselare",
+          "wingene",
+          "zwevezele",
+          "livrați în"
+        ]
+      },
+      "a": {
+        "nl": "Ja. Lichtervelde en Wingene liggen binnen 10 km (gratis vanaf €50), Tielt en Roeselare binnen 20 km (gratis vanaf €100); de afstand telt vanaf de winkel.",
+        "ro": "Da. Lichtervelde și Wingene sunt la mai puțin de 10 km (gratuit de la 50 €), Tielt și Roeselare la mai puțin de 20 km (gratuit de la 100 €). Distanța se măsoară de la magazin."
+      },
+      "link": {
+        "nl": "/bestellen",
+        "ro": "/ro/comanda"
+      },
+      "handoff": "none",
+      "dynamic": "delivery",
+      "facts": [
+        "site/src/data/faq.json (verbatim)",
+        "site/src/data/delivery.json zones"
+      ]
+    },
+    {
+      "id": "delivery-other-town",
+      "topic": "delivery",
+      "q": {
+        "nl": "Leveren jullie ook in een andere gemeente, zoals Brugge of Torhout?",
+        "ro": "Livrați și în altă localitate, de exemplu Brugge sau Torhout?"
+      },
+      "keywords": {
+        "nl": [
+          "brugge",
+          "torhout",
+          "pittem",
+          "ardooie",
+          "ruddervoorde",
+          "andere gemeente",
+          "verder"
+        ],
+        "ro": [
+          "brugge",
+          "torhout",
+          "altă localitate",
+          "mai departe"
+        ]
+      },
+      "a": {
+        "nl": "Die gemeente staat niet in onze vaste leverzone. Stuur ons uw postcode op WhatsApp; wij zeggen u of het kan en wat het kost.",
+        "ro": "Localitatea asta nu e în zona noastră obișnuită de livrare. Trimite-ne codul poștal pe WhatsApp și îți spunem dacă se poate și cât costă."
+      },
+      "link": null,
+      "handoff": "offer",
+      "dynamic": "delivery",
+      "facts": [
+        "site/src/data/delivery.json zones (any other postcode → ask)"
+      ]
+    },
+    {
+      "id": "delivery-cost",
+      "topic": "delivery",
+      "q": {
+        "nl": "Wat kost de levering?",
+        "ro": "Cât costă livrarea?"
+      },
+      "keywords": {
+        "nl": [
+          "leveringskosten",
+          "kost levering",
+          "prijs levering",
+          "per km"
+        ],
+        "ro": [
+          "cost livrare",
+          "cât costă livrarea",
+          "pe km"
+        ]
+      },
+      "a": {
+        "nl": "Gratis tot 10 km vanaf €50; tot 20 km vanaf €100; daarbuiten €1 per km. Het bedrag voor de levering bevestigen wij samen met uw bestelling.",
+        "ro": "Gratuit până la 10 km de la 50 €; până la 20 km de la 100 €; peste, 1 € pe km. Suma pentru livrare o confirmăm odată cu comanda."
+      },
+      "link": {
+        "nl": "/algemene-voorwaarden",
+        "ro": "/ro/termeni"
+      },
+      "handoff": "none",
+      "dynamic": "delivery",
+      "facts": [
+        "docs/lexicon.md §5.27 Levering",
+        "site/src/data/delivery.json"
+      ]
+    },
+    {
+      "id": "delivery-free-from",
+      "topic": "delivery",
+      "q": {
+        "nl": "Vanaf welk bedrag is de levering gratis?",
+        "ro": "De la ce sumă e livrarea gratuită?"
+      },
+      "keywords": {
+        "nl": [
+          "gratis levering",
+          "gratis",
+          "vanaf hoeveel"
+        ],
+        "ro": [
+          "livrare gratuită",
+          "gratuit",
+          "de la ce sumă"
+        ]
+      },
+      "a": {
+        "nl": "Tot 10 km van de winkel vanaf €50, tot 20 km vanaf €100.",
+        "ro": "Până la 10 km de magazin, de la 50 €; până la 20 km, de la 100 €."
+      },
+      "link": {
+        "nl": "/bestellen",
+        "ro": "/ro/comanda"
+      },
+      "handoff": "none",
+      "dynamic": "delivery",
+      "facts": [
+        "FACTS.md: Delivery",
+        "site/src/data/delivery.json rings"
+      ]
+    },
+    {
+      "id": "delivery-days",
+      "topic": "delivery",
+      "q": {
+        "nl": "Op welke dagen en uren leveren jullie?",
+        "ro": "În ce zile și la ce ore livrați?"
+      },
+      "keywords": {
+        "nl": [
+          "leverdagen",
+          "welke dag leveren",
+          "hoe laat leveren",
+          "leveruur"
+        ],
+        "ro": [
+          "zile de livrare",
+          "ce oră livrați",
+          "când livrați"
+        ]
+      },
+      "a": {
+        "nl": "Maandag tot zaterdag, tussen 18:00 en 19:30.",
+        "ro": "De luni până sâmbătă, între 18:00 și 19:30."
+      },
+      "link": {
+        "nl": "/bestellen",
+        "ro": "/ro/comanda"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Delivery",
+        "site/src/data/delivery.json days, times"
+      ]
+    },
+    {
+      "id": "delivery-holiday-menu",
+      "topic": "delivery",
+      "q": {
+        "nl": "Wordt het eindejaarsmenu geleverd?",
+        "ro": "Livrați meniul de sărbători?"
+      },
+      "keywords": {
+        "nl": [
+          "eindejaarsmenu leveren",
+          "kerstmenu leveren",
+          "levering kerst"
+        ],
+        "ro": [
+          "livrare meniu de sărbători",
+          "livrați de crăciun"
+        ]
+      },
+      "a": {
+        "nl": "Het eindejaarsmenu haalt u af in de winkel, op 24 of 31 december.",
+        "ro": "Meniul de sărbători se ridică din magazin, pe 24 sau 31 decembrie."
+      },
+      "link": {
+        "nl": "/feestmenu-eindejaar",
+        "ro": "/ro/sarbatori"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/menus.json eindejaar-2026 pickupOnly"
+      ]
+    },
+    {
+      "id": "products-do-you-have",
+      "topic": "products",
+      "q": {
+        "nl": "Hebben jullie …?",
+        "ro": "Aveți …?"
+      },
+      "keywords": {
+        "nl": [
+          "hebben jullie",
+          "verkopen jullie",
+          "is er",
+          "heeft u"
+        ],
+        "ro": [
+          "aveți",
+          "vindeți",
+          "găsesc",
+          "există"
+        ]
+      },
+      "a": {
+        "nl": "Ons hele assortiment staat op de pagina Producten. Staat het er niet bij, vraag het ons via WhatsApp.",
+        "ro": "Tot sortimentul e pe pagina Produse. Dacă nu găsești ce cauți, întreabă-ne pe WhatsApp."
+      },
+      "link": {
+        "nl": "/producten",
+        "ro": "/ro/produse"
+      },
+      "handoff": "offer",
+      "dynamic": "do-you-have",
+      "facts": [
+        "site/src/data/products.json"
+      ]
+    },
+    {
+      "id": "products-price-kg",
+      "topic": "products",
+      "q": {
+        "nl": "Wat kost het per kilo?",
+        "ro": "Cât costă la kilogram?"
+      },
+      "keywords": {
+        "nl": [
+          "prijs",
+          "kost",
+          "per kilo",
+          "kiloprijs",
+          "hoeveel kost"
+        ],
+        "ro": [
+          "preț",
+          "cât costă",
+          "pe kilogram",
+          "la kilogram"
+        ]
+      },
+      "a": {
+        "nl": "De prijs per kilogram ziet u aan de toog; colli en schotels staan op de site met hun prijs.",
+        "ro": "Prețul pe kilogram îl vezi la tejghea; pachetele și platourile au prețul pe site."
+      },
+      "link": {
+        "nl": "/producten",
+        "ro": "/ro/produse"
+      },
+      "handoff": "none",
+      "dynamic": "price",
+      "facts": [
+        "FACTS.md: Per-kg prices",
+        "docs/lexicon.md §5.30 per-kg prices"
+      ]
+    },
+    {
+      "id": "products-mici-what",
+      "topic": "products",
+      "q": {
+        "nl": "Wat zijn mici?",
+        "ro": "Ce sunt micii?"
+      },
+      "keywords": {
+        "nl": [
+          "mici",
+          "mititei",
+          "gehaktrolletjes"
+        ],
+        "ro": [
+          "mici",
+          "mititei"
+        ]
+      },
+      "a": {
+        "nl": "Mici zijn gekruide Roemeense gehaktrolletjes van rund en varken, voor op de BBQ of in de pan; de prijs per kg ziet u aan de toog.",
+        "ro": "Mici de casă din vită și porc, pentru grătar sau tigaie; prețul pe kilogram îl vezi la tejghea."
+      },
+      "link": {
+        "nl": "/roemeense-specialiteiten",
+        "ro": "/ro/mici-si-specialitati"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/faq.json (verbatim)"
+      ]
+    },
+    {
+      "id": "products-mici-cook",
+      "topic": "products",
+      "q": {
+        "nl": "Hoe bak ik mici?",
+        "ro": "Cum fac micii?"
+      },
+      "keywords": {
+        "nl": [
+          "mici bakken",
+          "mici grillen",
+          "hoe lang mici"
+        ],
+        "ro": [
+          "cum fac micii",
+          "mici la grătar",
+          "cât stau micii"
+        ]
+      },
+      "a": {
+        "nl": "Op een hete grill of in een pan met een beetje olie: ongeveer acht minuten, één keer draaien. Niet te lang, anders drogen ze uit.",
+        "ro": "Pe grătar încins sau în tigaie cu puțin ulei: cam opt minute, întorși o singură dată. Nu prea mult, ca să nu se usuce."
+      },
+      "link": {
+        "nl": "/roemeense-specialiteiten",
+        "ro": "/ro/mici-si-specialitati"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/faq.json (verbatim)"
+      ]
+    },
+    {
+      "id": "products-mici-price",
+      "topic": "products",
+      "q": {
+        "nl": "Wat kosten mici per kilo?",
+        "ro": "Cât costă micii la kilogram?"
+      },
+      "keywords": {
+        "nl": [
+          "prijs mici",
+          "mici per kilo"
+        ],
+        "ro": [
+          "preț mici",
+          "mici la kilogram"
+        ]
+      },
+      "a": {
+        "nl": "De prijs per kilogram ziet u aan de toog. U koopt ze daar of bestelt ze via WhatsApp.",
+        "ro": "Prețul pe kilogram îl vezi la tejghea. Îi iei de acolo sau îi comanzi pe WhatsApp."
+      },
+      "link": {
+        "nl": "/roemeense-specialiteiten",
+        "ro": "/ro/mici-si-specialitati"
+      },
+      "handoff": "none",
+      "dynamic": "price",
+      "facts": [
+        "site/src/data/faq.json (verbatim) (RO)",
+        "FACTS.md: Per-kg prices"
+      ]
+    },
+    {
+      "id": "products-colli-what",
+      "topic": "products",
+      "q": {
+        "nl": "Hoeveel is 1 colli?",
+        "ro": "Cât înseamnă un colli?"
+      },
+      "keywords": {
+        "nl": [
+          "colli",
+          "vleespakket",
+          "pakket",
+          "vleescolli"
+        ],
+        "ro": [
+          "colli",
+          "pachet",
+          "pachet de carne"
+        ]
+      },
+      "a": {
+        "nl": "Een colli is een vast pakket van 5–10 kg; Colli Varken 1 bevat 1 kg spiering, 1 kg filet kotelet, 1 kg spek, 1 kg worst, 1 kg gehakt voor €45.",
+        "ro": "Un colli e un pachet fix de 5-10 kg; Colli Porc 1 are 1 kg ceafă, 1 kg cotlet, 1 kg piept de porc, 1 kg cârnați și 1 kg carne tocată, la 45 €."
+      },
+      "link": {
+        "nl": "/colli-vleespakketten",
+        "ro": "/ro/colli"
+      },
+      "handoff": "none",
+      "dynamic": "colli",
+      "facts": [
+        "site/src/data/faq.json (verbatim)",
+        "FACTS.md: Colli"
+      ]
+    },
+    {
+      "id": "products-colli-list",
+      "topic": "products",
+      "q": {
+        "nl": "Welke colli's hebben jullie?",
+        "ro": "Ce pachete colli aveți?"
+      },
+      "keywords": {
+        "nl": [
+          "welke colli",
+          "colli prijzen",
+          "alle colli"
+        ],
+        "ro": [
+          "ce colli",
+          "prețuri colli",
+          "toate pachetele"
+        ]
+      },
+      "a": {
+        "nl": "Zes vaste pakketten: Colli Varken 1 €45, Colli Varken 2 €55, Colli Kip €50, Colli Kip-Varken €60, BBQ Colli €55 en Colli John €100.",
+        "ro": "Șase pachete fixe: Colli Porc 1 45 €, Colli Porc 2 55 €, Colli Pui 50 €, Colli Pui și Porc 60 €, Colli BBQ 55 € și Colli John 100 €."
+      },
+      "link": {
+        "nl": "/colli-vleespakketten",
+        "ro": "/ro/colli"
+      },
+      "handoff": "none",
+      "dynamic": "colli",
+      "facts": [
+        "FACTS.md: Colli",
+        "site/src/data/products.json colli"
+      ]
+    },
+    {
+      "id": "products-colli-contents",
+      "topic": "products",
+      "q": {
+        "nl": "Wat zit er in een colli?",
+        "ro": "Ce conține un colli?"
+      },
+      "keywords": {
+        "nl": [
+          "inhoud colli",
+          "wat zit erin",
+          "samenstelling"
+        ],
+        "ro": [
+          "ce conține",
+          "conținut colli"
+        ]
+      },
+      "a": {
+        "nl": "Van elk product 1 kg; de inhoud staat bij elk pakket en ligt vast. Wilt u een product ruilen, vraag het via WhatsApp.",
+        "ro": "Câte 1 kg din fiecare produs; conținutul e scris la fiecare pachet și e fix. Dacă vrei să schimbi un produs, întreabă-ne pe WhatsApp."
+      },
+      "link": {
+        "nl": "/colli-vleespakketten",
+        "ro": "/ro/colli"
+      },
+      "handoff": "offer",
+      "dynamic": "colli",
+      "facts": [
+        "site/src/data/faq.json (verbatim)"
+      ]
+    },
+    {
+      "id": "products-colli-john",
+      "topic": "products",
+      "q": {
+        "nl": "Wat zit er in Colli John?",
+        "ro": "Ce conține Colli John?"
+      },
+      "keywords": {
+        "nl": [
+          "colli john"
+        ],
+        "ro": [
+          "colli john"
+        ]
+      },
+      "a": {
+        "nl": "10 kg: braadworst, varkensgehakt, burger, boomstammetjes, filet kotelet, kip gyros, kip brochette, kippenboutjes, kip schnitzel en kipfilet, voor €100.",
+        "ro": "10 kg: cârnați proaspeți, carne tocată de porc, hamburgeri, rulouri de carne tocată (boomstammetjes), cotlet, gyros de pui, frigărui de pui, pulpe de pui, șnițel de pui și piept de pui, la 100 €."
+      },
+      "link": {
+        "nl": "/colli-vleespakketten",
+        "ro": "/ro/colli"
+      },
+      "handoff": "none",
+      "dynamic": "colli",
+      "facts": [
+        "site/src/data/products.json colli-john line, price"
+      ]
+    },
+    {
+      "id": "products-colli-freeze",
+      "topic": "products",
+      "q": {
+        "nl": "Kan ik een colli invriezen?",
+        "ro": "Pot congela un colli?"
+      },
+      "keywords": {
+        "nl": [
+          "invriezen",
+          "diepvries",
+          "bevriezen"
+        ],
+        "ro": [
+          "congelez",
+          "congelator",
+          "îngheț"
+        ]
+      },
+      "a": {
+        "nl": "Ja. Verdeel het vlees per maaltijd en vries het in op de dag van afhaling.",
+        "ro": "Da. Împarte carnea pe porții și pune-o la congelator în ziua ridicării."
+      },
+      "link": {
+        "nl": "/colli-vleespakketten",
+        "ro": "/ro/colli"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/faq.json (verbatim)"
+      ]
+    },
+    {
+      "id": "products-colli-keep",
+      "topic": "products",
+      "q": {
+        "nl": "Hoe lang blijft een colli goed in de koelkast?",
+        "ro": "Cât ține un colli în frigider?"
+      },
+      "keywords": {
+        "nl": [
+          "houdbaarheid",
+          "hoe lang goed",
+          "vacuüm",
+          "koelkast"
+        ],
+        "ro": [
+          "cât ține",
+          "frigider",
+          "vid",
+          "termen de valabilitate"
+        ]
+      },
+      "a": {
+        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
+        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+      },
+      "link": null,
+      "handoff": "always",
+      "dynamic": null,
+      "facts": [
+        "not on file: shelf life / vacuum packing"
+      ]
+    },
+    {
+      "id": "products-gourmet-price",
+      "topic": "products",
+      "q": {
+        "nl": "Wat kost een gourmetschotel per persoon?",
+        "ro": "Cât costă un platou gourmet de persoană?"
+      },
+      "keywords": {
+        "nl": [
+          "gourmet",
+          "gourmetschotel",
+          "fondue",
+          "steengrill",
+          "per persoon"
+        ],
+        "ro": [
+          "gourmet",
+          "fondue",
+          "de persoană"
+        ]
+      },
+      "a": {
+        "nl": "Gourmet 9 soorten €10, 10 soorten €11, luxe €15 per persoon; fondue vanaf €10.",
+        "ro": "Gourmet cu 9 feluri 10 €, cu 10 feluri 11 €, de lux 15 € de persoană; fondue de la 10 €."
+      },
+      "link": {
+        "nl": "/bbq-pakketten",
+        "ro": "/ro/gratar"
+      },
+      "handoff": "none",
+      "dynamic": "price",
+      "facts": [
+        "site/src/data/faq.json (verbatim)",
+        "site/src/data/products.json gourmet"
+      ]
+    },
+    {
+      "id": "products-gourmet-amount",
+      "topic": "products",
+      "q": {
+        "nl": "Hoeveel gourmet reken ik per persoon?",
+        "ro": "Câtă carne socotesc de persoană la gourmet?"
+      },
+      "keywords": {
+        "nl": [
+          "hoeveel gourmet",
+          "gram per persoon gourmet"
+        ],
+        "ro": [
+          "câtă carne gourmet",
+          "grame de persoană"
+        ]
+      },
+      "a": {
+        "nl": "U bestelt gourmet per persoon; wij stellen de schotel samen op het aantal personen dat u opgeeft.",
+        "ro": "Platoul gourmet se comandă de persoană; noi îl alcătuim după numărul de persoane pe care ni-l spui."
+      },
+      "link": {
+        "nl": "/bbq-pakketten",
+        "ro": "/ro/gratar"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/products.json gourmet unit pers",
+        "docs/lexicon.md §5.11 (gram figure not on file)"
+      ]
+    },
+    {
+      "id": "products-bbq-amount",
+      "topic": "products",
+      "q": {
+        "nl": "Hoeveel vlees reken ik per persoon voor een barbecue?",
+        "ro": "Câtă carne socotesc de persoană la un grătar?"
+      },
+      "keywords": {
+        "nl": [
+          "hoeveel vlees",
+          "per persoon",
+          "bbq hoeveelheid",
+          "gram per persoon"
+        ],
+        "ro": [
+          "câtă carne",
+          "de persoană",
+          "grătar cantitate"
+        ]
+      },
+      "a": {
+        "nl": "Zeg ons het aantal personen en wat u nog serveert; wij wegen af. Voor een pakket per persoon rekenen wij het voor u uit.",
+        "ro": "Spune-ne câte persoane și ce mai servești; noi cântărim. La pachetul de persoană, calculăm noi pentru tine."
+      },
+      "link": {
+        "nl": "/bbq-pakketten",
+        "ro": "/ro/gratar"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/faq.json (verbatim)"
+      ]
+    },
+    {
+      "id": "products-bbq-pakket",
+      "topic": "products",
+      "q": {
+        "nl": "Hebben jullie een BBQ-pakket?",
+        "ro": "Aveți pachet pentru grătar?"
+      },
+      "keywords": {
+        "nl": [
+          "bbq-pakket",
+          "bbq pakket",
+          "barbecuepakket",
+          "bbq vlees"
+        ],
+        "ro": [
+          "pachet bbq",
+          "pachet grătar",
+          "carne de grătar"
+        ]
+      },
+      "a": {
+        "nl": "Ja: gemarineerd, kant-en-klaar voor de grill, vanaf 10 personen. De prijs is op aanvraag; stuur ons datum en aantal personen.",
+        "ro": "Da: marinat, gata pentru grătar, de la 10 persoane. Prețul e la cerere; trimite-ne data și numărul de persoane."
+      },
+      "link": {
+        "nl": "/bbq-pakketten",
+        "ro": "/ro/gratar"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: BBQ-pakket",
+        "docs/lexicon.md §5.30 Traiteur / BBQ op aanvraag"
+      ]
+    },
+    {
+      "id": "products-romanian",
+      "topic": "products",
+      "q": {
+        "nl": "Hebben jullie cârnați afumați, pastramă of tobă?",
+        "ro": "Aveți cârnați afumați, pastramă sau tobă?"
+      },
+      "keywords": {
+        "nl": [
+          "roemeens",
+          "roemeense specialiteiten",
+          "carnati",
+          "pastrama",
+          "toba"
+        ],
+        "ro": [
+          "românești",
+          "specialități",
+          "cârnați afumați",
+          "pastramă",
+          "tobă"
+        ]
+      },
+      "a": {
+        "nl": "Ja: gerookte worst, pastrami, tobă en meer Roemeense specialiteiten, alles zelf gemaakt. U vindt ze op de pagina Roemeense specialiteiten.",
+        "ro": "Da: cârnați afumați, pastramă, tobă și alte specialități românești, toate făcute de noi. Le găsești pe pagina Mici și specialități."
+      },
+      "link": {
+        "nl": "/roemeense-specialiteiten",
+        "ro": "/ro/mici-si-specialitati"
+      },
+      "handoff": "none",
+      "dynamic": "do-you-have",
+      "facts": [
+        "FACTS.md: Own-made",
+        "site/src/data/products.json roemeens"
+      ]
+    },
+    {
+      "id": "products-halal",
+      "topic": "products",
+      "q": {
+        "nl": "Is het vlees halal?",
+        "ro": "Carnea este halal?"
+      },
+      "keywords": {
+        "nl": [
+          "halal"
+        ],
+        "ro": [
+          "halal"
+        ]
+      },
+      "a": {
+        "nl": "Niet standaard. Halal producten kunnen alleen op bestelling; vraag het ons via WhatsApp.",
+        "ro": "Nu, în mod obișnuit. Produse halal avem doar la comandă; întreabă-ne pe WhatsApp."
+      },
+      "link": null,
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Halal"
+      ]
+    },
+    {
+      "id": "products-origin",
+      "topic": "products",
+      "q": {
+        "nl": "Waar komt het vlees vandaan?",
+        "ro": "De unde vine carnea?"
+      },
+      "keywords": {
+        "nl": [
+          "herkomst",
+          "waar komt",
+          "belgisch",
+          "boer",
+          "leverancier"
+        ],
+        "ro": [
+          "de unde",
+          "proveniență",
+          "belgiană",
+          "furnizor"
+        ]
+      },
+      "a": {
+        "nl": "Ons vlees komt uit België.",
+        "ro": "Carnea noastră e din Belgia."
+      },
+      "link": {
+        "nl": "/producten",
+        "ro": "/ro/produse"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Meat (from Belgium; no supplier names)"
+      ]
+    },
+    {
+      "id": "products-own-made",
+      "topic": "products",
+      "q": {
+        "nl": "Maken jullie alles zelf?",
+        "ro": "Faceți totul voi?"
+      },
+      "keywords": {
+        "nl": [
+          "zelf gemaakt",
+          "huisgemaakt",
+          "huisbereid",
+          "eigen recept"
+        ],
+        "ro": [
+          "de casă",
+          "făcut de voi",
+          "rețetă proprie"
+        ]
+      },
+      "a": {
+        "nl": "Ja: onze worsten, mici, pastrami en het gerookte vlees maken wij zelf, in onze eigen werkplaats.",
+        "ro": "Da: cârnații, micii, pastrama și afumăturile le facem noi, în atelierul nostru."
+      },
+      "link": {
+        "nl": "/roemeense-specialiteiten",
+        "ro": "/ro/mici-si-specialitati"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Own-made",
+        "site/src/data/allergens.json workshop notice (one workshop)"
+      ]
+    },
+    {
+      "id": "products-smoked",
+      "topic": "products",
+      "q": {
+        "nl": "Hoe roken jullie het vlees?",
+        "ro": "Cum afumați carnea?"
+      },
+      "keywords": {
+        "nl": [
+          "roken",
+          "gerookt",
+          "rookhout",
+          "houtrook"
+        ],
+        "ro": [
+          "afumat",
+          "afumați",
+          "fum",
+          "lemn"
+        ]
+      },
+      "a": {
+        "nl": "Met zaagsel van hardhout, gemengd met zaagsel van fruitbomen.",
+        "ro": "Cu rumeguș de lemn de esență tare, amestecat cu rumeguș de pomi fructiferi."
+      },
+      "link": {
+        "nl": "/roemeense-specialiteiten",
+        "ro": "/ro/mici-si-specialitati"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Own-made (smoking method)"
+      ]
+    },
+    {
+      "id": "products-fresh-frozen",
+      "topic": "products",
+      "q": {
+        "nl": "Is het vlees vers of diepgevroren?",
+        "ro": "Carnea e proaspătă sau congelată?"
+      },
+      "keywords": {
+        "nl": [
+          "diepgevroren",
+          "bevroren",
+          "vers of diepvries"
+        ],
+        "ro": [
+          "congelată",
+          "proaspătă sau congelată"
+        ]
+      },
+      "a": {
+        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
+        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+      },
+      "link": null,
+      "handoff": "always",
+      "dynamic": null,
+      "facts": [
+        "not on file: fresh vs frozen statement"
+      ]
+    },
+    {
+      "id": "products-cut-to-order",
+      "topic": "products",
+      "q": {
+        "nl": "Kunnen jullie het vlees op maat versnijden?",
+        "ro": "Puteți tăia carnea cum vreau eu?"
+      },
+      "keywords": {
+        "nl": [
+          "op maat",
+          "versnijden",
+          "snijden",
+          "dikte"
+        ],
+        "ro": [
+          "tăiat la comandă",
+          "cum vreau",
+          "felii"
+        ]
+      },
+      "a": {
+        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
+        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+      },
+      "link": null,
+      "handoff": "always",
+      "dynamic": null,
+      "facts": [
+        "not on file: cutting to order"
+      ]
+    },
+    {
+      "id": "products-voucher",
+      "topic": "products",
+      "q": {
+        "nl": "Hebben jullie cadeaubonnen?",
+        "ro": "Aveți carduri cadou?"
+      },
+      "keywords": {
+        "nl": [
+          "cadeaubon",
+          "cadeaukaart",
+          "geschenkbon"
+        ],
+        "ro": [
+          "card cadou",
+          "voucher",
+          "cadou"
+        ]
+      },
+      "a": {
+        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
+        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+      },
+      "link": null,
+      "handoff": "always",
+      "dynamic": null,
+      "facts": [
+        "not on file: gift vouchers"
+      ]
+    },
+    {
+      "id": "products-week",
+      "topic": "products",
+      "q": {
+        "nl": "Wat ligt er deze week aan de toog?",
+        "ro": "Ce aveți săptămâna asta pe tejghea?"
+      },
+      "keywords": {
+        "nl": [
+          "deze week",
+          "aanbieding",
+          "promo",
+          "in de kijker"
+        ],
+        "ro": [
+          "săptămâna asta",
+          "ofertă",
+          "promoție"
+        ]
+      },
+      "a": {
+        "nl": "Dat staat op de startpagina, onder „Deze week op de toog”, met de prijs erbij.",
+        "ro": "E pe prima pagină, la „Săptămâna asta pe tejghea”, cu prețul lângă."
+      },
+      "link": {
+        "nl": "/",
+        "ro": "/ro"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/products.json week",
+        "docs/lexicon.md §5.15 home strings"
+      ]
+    },
+    {
+      "id": "products-recipes",
+      "topic": "products",
+      "q": {
+        "nl": "Hebben jullie recepten?",
+        "ro": "Aveți rețete?"
+      },
+      "keywords": {
+        "nl": [
+          "recept",
+          "recepten",
+          "hoe klaarmaken"
+        ],
+        "ro": [
+          "rețetă",
+          "rețete",
+          "cum se gătește"
+        ]
+      },
+      "a": {
+        "nl": "Ja, op de pagina Recepten: hoe u ons vlees bakt, braadt of stooft.",
+        "ro": "Da, pe pagina Rețete: cum gătești carnea noastră."
+      },
+      "link": {
+        "nl": "/recepten",
+        "ro": "/ro/retete"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "docs/lexicon.md §5.29"
+      ]
+    },
+    {
+      "id": "products-cooking",
+      "topic": "products",
+      "q": {
+        "nl": "Hoe bak ik dit stuk vlees?",
+        "ro": "Cum gătesc bucata asta de carne?"
+      },
+      "keywords": {
+        "nl": [
+          "hoe bak ik",
+          "hoe lang bakken",
+          "hoe klaarmaken",
+          "bereiden"
+        ],
+        "ro": [
+          "cum gătesc",
+          "cât timp",
+          "cum se face"
+        ]
+      },
+      "a": {
+        "nl": "Bij elk product op de pagina Producten staat in één zin hoe u het bakt; meer staat op de pagina Recepten.",
+        "ro": "La fiecare produs de pe pagina Produse scrie, într-o propoziție, cum îl gătești; mai multe pe pagina Rețete."
+      },
+      "link": {
+        "nl": "/producten",
+        "ro": "/ro/produse"
+      },
+      "handoff": "none",
+      "dynamic": "do-you-have",
+      "facts": [
+        "site/src/data/products.json line"
+      ]
+    },
+    {
+      "id": "allergen-gluten-sausage",
+      "topic": "allergens",
+      "q": {
+        "nl": "Zit er gluten in de worst?",
+        "ro": "Au cârnații gluten?"
+      },
+      "keywords": {
+        "nl": [
+          "gluten",
+          "worst",
+          "glutenvrij worst"
+        ],
+        "ro": [
+          "gluten",
+          "cârnați"
+        ]
+      },
+      "a": {
+        "nl": "Volgens onze allergenenlijst bevat Worst & charcuterie gluten (paneermeel, afhankelijk van het recept). Omdat wij in één open ambachtelijke werkplaats werken, worden allergenen zoals gluten, eieren, melk, mosterd, selderij en noten in dezelfde ruimte verwerkt als onze andere producten. Ondanks strikte hygiënemaatregelen kunnen wij nooit 100 % garanderen dat een product volledig vrij is van sporen van allergenen (kruisbesmetting). Heeft u een ernstige allergie? Meld dit altijd vooraf via telefoon: 0466 18 64 57.",
+        "ro": "Conform listei noastre de alergeni, cârnații și mezelurile conțin gluten (pesmet, în funcție de rețetă). Lucrăm într-un singur atelier deschis: alergeni precum gluten, ouă, lapte, muștar, țelină și nuci sunt prelucrați în același spațiu cu celelalte produse. Cu toate măsurile de igienă, nu putem garanta niciodată 100 % că un produs nu conține urme de alergeni (contaminare încrucișată). Ai o alergie gravă? Spune-ne mereu înainte, la telefon: 0466 18 64 57."
+      },
+      "link": {
+        "nl": "/allergenen",
+        "ro": "/ro/alergeni"
+      },
+      "handoff": "none",
+      "dynamic": "allergen",
+      "facts": [
+        "site/src/data/allergens.json categories + workshop notice",
+        "FACTS.md: Allergens table (confirmed 19.10)"
+      ]
+    },
+    {
+      "id": "allergen-fresh-meat",
+      "topic": "allergens",
+      "q": {
+        "nl": "Bevat vers vlees allergenen?",
+        "ro": "Carnea proaspătă are alergeni?"
+      },
+      "keywords": {
+        "nl": [
+          "vers vlees allergenen",
+          "onbewerkt"
+        ],
+        "ro": [
+          "carne proaspătă alergeni",
+          "neprelucrată"
+        ]
+      },
+      "a": {
+        "nl": "Volgens onze allergenenlijst bevat Vers vlees (onbewerkt) geen allergenen; sporen zijn nooit uitgesloten. Omdat wij in één open ambachtelijke werkplaats werken, worden allergenen zoals gluten, eieren, melk, mosterd, selderij en noten in dezelfde ruimte verwerkt als onze andere producten. Ondanks strikte hygiënemaatregelen kunnen wij nooit 100 % garanderen dat een product volledig vrij is van sporen van allergenen (kruisbesmetting). Heeft u een ernstige allergie? Meld dit altijd vooraf via telefoon: 0466 18 64 57.",
+        "ro": "Conform listei noastre de alergeni, carnea proaspătă neprelucrată nu conține alergeni; urmele nu sunt niciodată excluse. Lucrăm într-un singur atelier deschis: alergeni precum gluten, ouă, lapte, muștar, țelină și nuci sunt prelucrați în același spațiu cu celelalte produse. Cu toate măsurile de igienă, nu putem garanta niciodată 100 % că un produs nu conține urme de alergeni (contaminare încrucișată). Ai o alergie gravă? Spune-ne mereu înainte, la telefon: 0466 18 64 57."
+      },
+      "link": {
+        "nl": "/allergenen",
+        "ro": "/ro/alergeni"
+      },
+      "handoff": "none",
+      "dynamic": "allergen",
+      "facts": [
+        "site/src/data/allergens.json categories + workshop notice",
+        "FACTS.md: Allergens table (confirmed 19.10)"
+      ]
+    },
+    {
+      "id": "allergen-gluten-free",
+      "topic": "allergens",
+      "q": {
+        "nl": "Wat is glutenvrij?",
+        "ro": "Ce e fără gluten?"
+      },
+      "keywords": {
+        "nl": [
+          "glutenvrij",
+          "zonder gluten",
+          "coeliakie"
+        ],
+        "ro": [
+          "fără gluten",
+          "celiachie"
+        ]
+      },
+      "a": {
+        "nl": "Volgens onze allergenenlijst bevat Vers vlees (onbewerkt) geen gluten; sporen zijn nooit uitgesloten. Gemarineerd vlees, worst & charcuterie, bereide gerechten & traiteur, gourmet en broodjes bevatten gluten. Omdat wij in één open ambachtelijke werkplaats werken, worden allergenen zoals gluten, eieren, melk, mosterd, selderij en noten in dezelfde ruimte verwerkt als onze andere producten. Ondanks strikte hygiënemaatregelen kunnen wij nooit 100 % garanderen dat een product volledig vrij is van sporen van allergenen (kruisbesmetting). Heeft u een ernstige allergie? Meld dit altijd vooraf via telefoon: 0466 18 64 57.",
+        "ro": "Conform listei noastre de alergeni, carnea proaspătă neprelucrată nu conține gluten; urmele nu sunt niciodată excluse. Carnea marinată, cârnații și mezelurile, preparatele și traiteur, gourmet și sandvișurile conțin gluten. Lucrăm într-un singur atelier deschis: alergeni precum gluten, ouă, lapte, muștar, țelină și nuci sunt prelucrați în același spațiu cu celelalte produse. Cu toate măsurile de igienă, nu putem garanta niciodată 100 % că un produs nu conține urme de alergeni (contaminare încrucișată). Ai o alergie gravă? Spune-ne mereu înainte, la telefon: 0466 18 64 57."
+      },
+      "link": {
+        "nl": "/allergenen",
+        "ro": "/ro/alergeni"
+      },
+      "handoff": "none",
+      "dynamic": "allergen",
+      "facts": [
+        "site/src/data/allergens.json categories + workshop notice",
+        "FACTS.md: Allergens table (confirmed 19.10)"
+      ]
+    },
+    {
+      "id": "allergen-milk",
+      "topic": "allergens",
+      "q": {
+        "nl": "Zit er melk of lactose in jullie producten?",
+        "ro": "Produsele voastre au lapte sau lactoză?"
+      },
+      "keywords": {
+        "nl": [
+          "lactose",
+          "melk",
+          "lactosevrij",
+          "zuivel"
+        ],
+        "ro": [
+          "lactoză",
+          "lapte",
+          "fără lactoză"
+        ]
+      },
+      "a": {
+        "nl": "Volgens onze allergenenlijst bevatten worst & charcuterie, bereide gerechten & traiteur, gourmet en broodjes melk; vers en gemarineerd vlees kunnen er sporen van bevatten. Omdat wij in één open ambachtelijke werkplaats werken, worden allergenen zoals gluten, eieren, melk, mosterd, selderij en noten in dezelfde ruimte verwerkt als onze andere producten. Ondanks strikte hygiënemaatregelen kunnen wij nooit 100 % garanderen dat een product volledig vrij is van sporen van allergenen (kruisbesmetting). Heeft u een ernstige allergie? Meld dit altijd vooraf via telefoon: 0466 18 64 57.",
+        "ro": "Conform listei noastre de alergeni, cârnații și mezelurile, preparatele și traiteur, gourmet și sandvișurile conțin lapte; carnea proaspătă și cea marinată pot conține urme. Lucrăm într-un singur atelier deschis: alergeni precum gluten, ouă, lapte, muștar, țelină și nuci sunt prelucrați în același spațiu cu celelalte produse. Cu toate măsurile de igienă, nu putem garanta niciodată 100 % că un produs nu conține urme de alergeni (contaminare încrucișată). Ai o alergie gravă? Spune-ne mereu înainte, la telefon: 0466 18 64 57."
+      },
+      "link": {
+        "nl": "/allergenen",
+        "ro": "/ro/alergeni"
+      },
+      "handoff": "none",
+      "dynamic": "allergen",
+      "facts": [
+        "site/src/data/allergens.json categories + workshop notice",
+        "FACTS.md: Allergens table (confirmed 19.10)"
+      ]
+    },
+    {
+      "id": "allergen-nuts",
+      "topic": "allergens",
+      "q": {
+        "nl": "Bevatten jullie producten noten?",
+        "ro": "Produsele voastre au nuci?"
+      },
+      "keywords": {
+        "nl": [
+          "noten",
+          "nootjes",
+          "notenallergie",
+          "pinda",
+          "aardnoten"
+        ],
+        "ro": [
+          "nuci",
+          "alune",
+          "arahide"
+        ]
+      },
+      "a": {
+        "nl": "Volgens onze allergenenlijst bevat geen enkele productgroep noten als vast ingrediënt, maar elke groep kan er sporen van bevatten. Aardnoten: hetzelfde, behalve vers vlees, dat volgens de lijst geen aardnoten bevat; sporen zijn nooit uitgesloten. Omdat wij in één open ambachtelijke werkplaats werken, worden allergenen zoals gluten, eieren, melk, mosterd, selderij en noten in dezelfde ruimte verwerkt als onze andere producten. Ondanks strikte hygiënemaatregelen kunnen wij nooit 100 % garanderen dat een product volledig vrij is van sporen van allergenen (kruisbesmetting). Heeft u een ernstige allergie? Meld dit altijd vooraf via telefoon: 0466 18 64 57.",
+        "ro": "Conform listei noastre de alergeni, nicio grupă de produse nu are nuci ca ingredient fix, dar fiecare grupă poate conține urme. La arahide la fel, în afară de carnea proaspătă, care conform listei nu conține arahide; urmele nu sunt niciodată excluse. Lucrăm într-un singur atelier deschis: alergeni precum gluten, ouă, lapte, muștar, țelină și nuci sunt prelucrați în același spațiu cu celelalte produse. Cu toate măsurile de igienă, nu putem garanta niciodată 100 % că un produs nu conține urme de alergeni (contaminare încrucișată). Ai o alergie gravă? Spune-ne mereu înainte, la telefon: 0466 18 64 57."
+      },
+      "link": {
+        "nl": "/allergenen",
+        "ro": "/ro/alergeni"
+      },
+      "handoff": "none",
+      "dynamic": "allergen",
+      "facts": [
+        "site/src/data/allergens.json categories + workshop notice",
+        "FACTS.md: Allergens table (confirmed 19.10)"
+      ]
+    },
+    {
+      "id": "allergen-mustard",
+      "topic": "allergens",
+      "q": {
+        "nl": "Zit er mosterd in?",
+        "ro": "Conține muștar?"
+      },
+      "keywords": {
+        "nl": [
+          "mosterd",
+          "mosterdallergie"
+        ],
+        "ro": [
+          "muștar"
+        ]
+      },
+      "a": {
+        "nl": "Volgens onze allergenenlijst bevatten gemarineerd vlees, worst & charcuterie, bereide gerechten & traiteur, gourmet en broodjes mosterd; vers vlees kan er sporen van bevatten. Omdat wij in één open ambachtelijke werkplaats werken, worden allergenen zoals gluten, eieren, melk, mosterd, selderij en noten in dezelfde ruimte verwerkt als onze andere producten. Ondanks strikte hygiënemaatregelen kunnen wij nooit 100 % garanderen dat een product volledig vrij is van sporen van allergenen (kruisbesmetting). Heeft u een ernstige allergie? Meld dit altijd vooraf via telefoon: 0466 18 64 57.",
+        "ro": "Conform listei noastre de alergeni, carnea marinată, cârnații și mezelurile, preparatele și traiteur, gourmet și sandvișurile conțin muștar; carnea proaspătă poate conține urme. Lucrăm într-un singur atelier deschis: alergeni precum gluten, ouă, lapte, muștar, țelină și nuci sunt prelucrați în același spațiu cu celelalte produse. Cu toate măsurile de igienă, nu putem garanta niciodată 100 % că un produs nu conține urme de alergeni (contaminare încrucișată). Ai o alergie gravă? Spune-ne mereu înainte, la telefon: 0466 18 64 57."
+      },
+      "link": {
+        "nl": "/allergenen",
+        "ro": "/ro/alergeni"
+      },
+      "handoff": "none",
+      "dynamic": "allergen",
+      "facts": [
+        "site/src/data/allergens.json categories + workshop notice",
+        "FACTS.md: Allergens table (confirmed 19.10)"
+      ]
+    },
+    {
+      "id": "allergen-celery",
+      "topic": "allergens",
+      "q": {
+        "nl": "Zit er selderij in?",
+        "ro": "Conține țelină?"
+      },
+      "keywords": {
+        "nl": [
+          "selderij",
+          "selder"
+        ],
+        "ro": [
+          "țelină"
+        ]
+      },
+      "a": {
+        "nl": "Volgens onze allergenenlijst bevatten gemarineerd vlees, worst & charcuterie, bereide gerechten & traiteur en gourmet selderij; vers vlees en broodjes kunnen er sporen van bevatten. Omdat wij in één open ambachtelijke werkplaats werken, worden allergenen zoals gluten, eieren, melk, mosterd, selderij en noten in dezelfde ruimte verwerkt als onze andere producten. Ondanks strikte hygiënemaatregelen kunnen wij nooit 100 % garanderen dat een product volledig vrij is van sporen van allergenen (kruisbesmetting). Heeft u een ernstige allergie? Meld dit altijd vooraf via telefoon: 0466 18 64 57.",
+        "ro": "Conform listei noastre de alergeni, carnea marinată, cârnații și mezelurile, preparatele și traiteur și gourmet conțin țelină; carnea proaspătă și sandvișurile pot conține urme. Lucrăm într-un singur atelier deschis: alergeni precum gluten, ouă, lapte, muștar, țelină și nuci sunt prelucrați în același spațiu cu celelalte produse. Cu toate măsurile de igienă, nu putem garanta niciodată 100 % că un produs nu conține urme de alergeni (contaminare încrucișată). Ai o alergie gravă? Spune-ne mereu înainte, la telefon: 0466 18 64 57."
+      },
+      "link": {
+        "nl": "/allergenen",
+        "ro": "/ro/alergeni"
+      },
+      "handoff": "none",
+      "dynamic": "allergen",
+      "facts": [
+        "site/src/data/allergens.json categories + workshop notice",
+        "FACTS.md: Allergens table (confirmed 19.10)"
+      ]
+    },
+    {
+      "id": "allergen-cross",
+      "topic": "allergens",
+      "q": {
+        "nl": "Kan er kruisbesmetting zijn?",
+        "ro": "Poate exista contaminare încrucișată?"
+      },
+      "keywords": {
+        "nl": [
+          "kruisbesmetting",
+          "sporen",
+          "contaminatie"
+        ],
+        "ro": [
+          "contaminare",
+          "urme",
+          "încrucișată"
+        ]
+      },
+      "a": {
+        "nl": "Ja, sporen zijn nooit uitgesloten. Omdat wij in één open ambachtelijke werkplaats werken, worden allergenen zoals gluten, eieren, melk, mosterd, selderij en noten in dezelfde ruimte verwerkt als onze andere producten. Ondanks strikte hygiënemaatregelen kunnen wij nooit 100 % garanderen dat een product volledig vrij is van sporen van allergenen (kruisbesmetting). Heeft u een ernstige allergie? Meld dit altijd vooraf via telefoon: 0466 18 64 57.",
+        "ro": "Da, urmele nu sunt niciodată excluse. Lucrăm într-un singur atelier deschis: alergeni precum gluten, ouă, lapte, muștar, țelină și nuci sunt prelucrați în același spațiu cu celelalte produse. Cu toate măsurile de igienă, nu putem garanta niciodată 100 % că un produs nu conține urme de alergeni (contaminare încrucișată). Ai o alergie gravă? Spune-ne mereu înainte, la telefon: 0466 18 64 57."
+      },
+      "link": {
+        "nl": "/allergenen",
+        "ro": "/ro/alergeni"
+      },
+      "handoff": "none",
+      "dynamic": "allergen",
+      "facts": [
+        "site/src/data/allergens.json categories + workshop notice",
+        "FACTS.md: Allergens table (confirmed 19.10)"
+      ]
+    },
+    {
+      "id": "allergen-list",
+      "topic": "allergens",
+      "q": {
+        "nl": "Waar vind ik de allergenen?",
+        "ro": "Unde găsesc alergenii?"
+      },
+      "keywords": {
+        "nl": [
+          "allergenen",
+          "allergenenlijst",
+          "allergie",
+          "allergeneninfo"
+        ],
+        "ro": [
+          "alergeni",
+          "listă de alergeni",
+          "alergie"
+        ]
+      },
+      "a": {
+        "nl": "Op de pagina Allergenen: de 14 allergenen per productgroep, bevestigd door John en Georgiana op 19 oktober 2026. Omdat wij in één open ambachtelijke werkplaats werken, worden allergenen zoals gluten, eieren, melk, mosterd, selderij en noten in dezelfde ruimte verwerkt als onze andere producten. Ondanks strikte hygiënemaatregelen kunnen wij nooit 100 % garanderen dat een product volledig vrij is van sporen van allergenen (kruisbesmetting). Heeft u een ernstige allergie? Meld dit altijd vooraf via telefoon: 0466 18 64 57.",
+        "ro": "Pe pagina Alergeni: cei 14 alergeni pe grupe de produse, confirmați de John și Georgiana la 19 octombrie 2026. Lucrăm într-un singur atelier deschis: alergeni precum gluten, ouă, lapte, muștar, țelină și nuci sunt prelucrați în același spațiu cu celelalte produse. Cu toate măsurile de igienă, nu putem garanta niciodată 100 % că un produs nu conține urme de alergeni (contaminare încrucișată). Ai o alergie gravă? Spune-ne mereu înainte, la telefon: 0466 18 64 57."
+      },
+      "link": {
+        "nl": "/allergenen",
+        "ro": "/ro/alergeni"
+      },
+      "handoff": "none",
+      "dynamic": "allergen",
+      "facts": [
+        "site/src/data/allergens.json categories + workshop notice",
+        "FACTS.md: Allergens table (confirmed 19.10)"
+      ]
+    },
+    {
+      "id": "allergen-serious",
+      "topic": "allergens",
+      "q": {
+        "nl": "Ik heb een ernstige allergie.",
+        "ro": "Am o alergie gravă."
+      },
+      "keywords": {
+        "nl": [
+          "ernstige allergie",
+          "allergisch",
+          "anafylaxie"
+        ],
+        "ro": [
+          "alergie gravă",
+          "sunt alergic",
+          "alergică"
+        ]
+      },
+      "a": {
+        "nl": "Meld een ernstige allergie altijd vóór u bestelt, telefonisch of in de winkel. Zonder die melding kunnen wij er geen rekening mee houden. Omdat wij in één open ambachtelijke werkplaats werken, worden allergenen zoals gluten, eieren, melk, mosterd, selderij en noten in dezelfde ruimte verwerkt als onze andere producten. Ondanks strikte hygiënemaatregelen kunnen wij nooit 100 % garanderen dat een product volledig vrij is van sporen van allergenen (kruisbesmetting). Heeft u een ernstige allergie? Meld dit altijd vooraf via telefoon: 0466 18 64 57.",
+        "ro": "Anunță o alergie gravă mereu înainte să comanzi, la telefon sau în magazin. Fără anunț, nu putem ține cont de ea. Lucrăm într-un singur atelier deschis: alergeni precum gluten, ouă, lapte, muștar, țelină și nuci sunt prelucrați în același spațiu cu celelalte produse. Cu toate măsurile de igienă, nu putem garanta niciodată 100 % că un produs nu conține urme de alergeni (contaminare încrucișată). Ai o alergie gravă? Spune-ne mereu înainte, la telefon: 0466 18 64 57."
+      },
+      "link": {
+        "nl": "/allergenen",
+        "ro": "/ro/alergeni"
+      },
+      "handoff": "always",
+      "dynamic": "allergen",
+      "facts": [
+        "site/src/data/allergens.json categories + workshop notice",
+        "FACTS.md: Allergens table (confirmed 19.10)"
+      ]
+    },
+    {
+      "id": "traiteur-yes",
+      "topic": "traiteur",
+      "q": {
+        "nl": "Doen jullie traiteur voor feesten?",
+        "ro": "Faceți catering pentru petreceri?"
+      },
+      "keywords": {
+        "nl": [
+          "traiteur",
+          "feest",
+          "catering",
+          "verjaardag",
+          "communie",
+          "trouw"
+        ],
+        "ro": [
+          "catering",
+          "petrecere",
+          "botez",
+          "nuntă",
+          "aniversare"
+        ]
+      },
+      "a": {
+        "nl": "Ja, voor elk feest: in Belgische stijl (buffet, hamburgers, barbecue ter plaatse) of in Roemeense stijl (borden per persoon). Stuur ons datum en aantal personen.",
+        "ro": "Da, pentru orice preferință: în stil belgian (bufet, hamburgeri, grătar pe loc) sau în stil românesc (farfurii pe persoană). Trimite-ne data și numărul de persoane."
+      },
+      "link": {
+        "nl": "/traiteur",
+        "ro": "/ro/catering"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Catering styles"
+      ]
+    },
+    {
+      "id": "traiteur-price",
+      "topic": "traiteur",
+      "q": {
+        "nl": "Wat is de gemiddelde kostprijs van een traiteur?",
+        "ro": "Cât costă un traiteur de persoană?"
+      },
+      "keywords": {
+        "nl": [
+          "kostprijs traiteur",
+          "prijs traiteur",
+          "prijs per persoon"
+        ],
+        "ro": [
+          "preț catering",
+          "cât costă de persoană"
+        ]
+      },
+      "a": {
+        "nl": "Hapjes vanaf €1,50 per stuk, tapasschotels vanaf €30 (4–5 personen), gourmet vanaf €10 per persoon, warme gerechten vanaf €8 per portie van 200 g. Stuur ons datum en aantal, dan krijgt u een prijs op maat.",
+        "ro": "Aperitive de la 1,50 € bucata, platouri tapas de la 30 € (4-5 persoane), gourmet de la 10 € de persoană, feluri calde de la 8 € porția de 200 g. Trimite-ne data și numărul de persoane și primești un preț pe măsură."
+      },
+      "link": {
+        "nl": "/traiteur",
+        "ro": "/ro/catering"
+      },
+      "handoff": "offer",
+      "dynamic": "price",
+      "facts": [
+        "site/src/data/faq.json (verbatim)"
+      ]
+    },
+    {
+      "id": "traiteur-bbq-home",
+      "topic": "traiteur",
+      "q": {
+        "nl": "Wat kost een barbecue aan huis voor 20 personen?",
+        "ro": "Cât costă un grătar la domiciliu pentru 20 de persoane?"
+      },
+      "keywords": {
+        "nl": [
+          "barbecue aan huis",
+          "bbq aan huis",
+          "met kok",
+          "offerte"
+        ],
+        "ro": [
+          "grătar la domiciliu",
+          "bucătar",
+          "ofertă"
+        ]
+      },
+      "a": {
+        "nl": "Op offerte, die u binnen 24 uur krijgt. Wat inbegrepen is — kok, grill, materiaal — leest u erin; stuur ons datum, plaats en aantal personen (vanaf 10, tot 200 km van Zwevezele).",
+        "ro": "La cerere: primești oferta în 24 de ore. Ce e inclus (bucătar, grătar, materiale) scrie în ofertă; trimite-ne data, localitatea și numărul de persoane (de la 10, până la 200 de km de Zwevezele)."
+      },
+      "link": {
+        "nl": "/traiteur",
+        "ro": "/ro/catering"
+      },
+      "handoff": "always",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/faq.json (verbatim)",
+        "FACTS.md: Grătar la domiciliu"
+      ]
+    },
+    {
+      "id": "traiteur-cook",
+      "topic": "traiteur",
+      "q": {
+        "nl": "Komt er iemand mee koken of bedienen?",
+        "ro": "Vine cineva să gătească sau să servească?"
+      },
+      "keywords": {
+        "nl": [
+          "kok",
+          "bediening",
+          "koken ter plaatse"
+        ],
+        "ro": [
+          "bucătar",
+          "servire",
+          "gătește la noi"
+        ]
+      },
+      "a": {
+        "nl": "Bij een barbecue aan huis: ja, een kok van ons staat aan de grill. Schotels, buffetten en hapjes komen kant-en-klaar; wilt u bediening erbij, vraag het bij uw offerte.",
+        "ro": "La grătar la domiciliu, da: un bucătar de la noi stă la grătar. Platourile, bufetele și aperitivele vin gata pregătite; dacă vrei și servire, cere-o odată cu oferta."
+      },
+      "link": {
+        "nl": "/traiteur",
+        "ro": "/ro/catering"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/faq.json (verbatim)"
+      ]
+    },
+    {
+      "id": "traiteur-lead-time",
+      "topic": "traiteur",
+      "q": {
+        "nl": "Hoe lang vooraf bestel ik schotels en hapjes?",
+        "ro": "Cu cât timp înainte comand platourile?"
+      },
+      "keywords": {
+        "nl": [
+          "hoe lang vooraf",
+          "op voorhand",
+          "schotels bestellen",
+          "hapjes bestellen"
+        ],
+        "ro": [
+          "cu cât timp înainte",
+          "din timp",
+          "platouri"
+        ]
+      },
+      "a": {
+        "nl": "Een dag vooraf: bestelt u vóór 12 uur, dan ligt het morgen klaar op het uur dat u kiest. Grote schotels vragen soms meer tijd; vraag het ons even.",
+        "ro": "Cu o zi înainte: comanzi până la ora 12 și mâine e gata, la ora pe care o alegi. Platourile mari cer uneori mai mult timp; întreabă-ne."
+      },
+      "link": {
+        "nl": "/traiteur",
+        "ro": "/ro/catering"
+      },
+      "handoff": "offer",
+      "dynamic": "deadline",
+      "facts": [
+        "site/src/data/faq.json (verbatim)",
+        "FACTS.md: Lead times (section 2)"
+      ]
+    },
+    {
+      "id": "traiteur-bbq-reserve",
+      "topic": "traiteur",
+      "q": {
+        "nl": "Hoe lang vooraf reserveer ik een barbecue aan huis?",
+        "ro": "Cu cât timp înainte rezerv un grătar la domiciliu?"
+      },
+      "keywords": {
+        "nl": [
+          "reserveren",
+          "datum vastleggen",
+          "barbecue reserveren"
+        ],
+        "ro": [
+          "rezerv",
+          "rezervare",
+          "data"
+        ]
+      },
+      "a": {
+        "nl": "Zo vroeg mogelijk: leg de datum vast zodra u ze kent, in elke maand van het jaar. In de zomer zijn er dagen met meerdere barbecues.",
+        "ro": "Cât mai devreme: rezervă data de cum o știi, în orice lună a anului. Vara sunt zile cu mai multe grătare."
+      },
+      "link": {
+        "nl": "/traiteur",
+        "ro": "/ro/catering"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/faq.json (verbatim)"
+      ]
+    },
+    {
+      "id": "traiteur-minimum",
+      "topic": "traiteur",
+      "q": {
+        "nl": "Vanaf hoeveel personen kan het?",
+        "ro": "De la câte persoane se poate?"
+      },
+      "keywords": {
+        "nl": [
+          "minimum personen",
+          "vanaf hoeveel",
+          "aantal personen"
+        ],
+        "ro": [
+          "minim persoane",
+          "de la câte",
+          "număr de persoane"
+        ]
+      },
+      "a": {
+        "nl": "Een barbecue aan huis en een BBQ-pakket vanaf 10 personen. Schotels en hapjes bestelt u per persoon of per stuk.",
+        "ro": "Grătarul la domiciliu și pachetul BBQ, de la 10 persoane. Platourile și aperitivele le comanzi de persoană sau la bucată."
+      },
+      "link": {
+        "nl": "/traiteur",
+        "ro": "/ro/catering"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Grătar la domiciliu",
+        "FACTS.md: BBQ-pakket",
+        "site/src/data/products.json units"
+      ]
+    },
+    {
+      "id": "traiteur-cold-platter",
+      "topic": "traiteur",
+      "q": {
+        "nl": "Wat kost een koude schotel per persoon?",
+        "ro": "Cât costă un platou rece de persoană?"
+      },
+      "keywords": {
+        "nl": [
+          "koude schotel",
+          "koud buffet",
+          "vleesschotel"
+        ],
+        "ro": [
+          "platou rece",
+          "bufet rece"
+        ]
+      },
+      "a": {
+        "nl": "Koude schotel €13,50 per persoon (hesp, salami, eieren en vleessalade); met extra kaas €15 per persoon.",
+        "ro": "Platoul rece costă 13,50 € de persoană (șuncă, salam, ouă și salată de carne); cu brânză extra, 15 € de persoană."
+      },
+      "link": {
+        "nl": "/traiteur",
+        "ro": "/ro/catering"
+      },
+      "handoff": "none",
+      "dynamic": "price",
+      "facts": [
+        "site/src/data/products.json koude-schotel",
+        "FACTS.md: Koude schotel extra kaas"
+      ]
+    },
+    {
+      "id": "traiteur-warm-buffet",
+      "topic": "traiteur",
+      "q": {
+        "nl": "Wat kost een warm buffet?",
+        "ro": "Cât costă un bufet cald?"
+      },
+      "keywords": {
+        "nl": [
+          "warm buffet",
+          "warme gerechten",
+          "hoofdgerecht"
+        ],
+        "ro": [
+          "bufet cald",
+          "feluri calde"
+        ]
+      },
+      "a": {
+        "nl": "Een warm buffet is op aanvraag. Warme gerechten bestelt u ook per portie van 200 g, vanaf €8.",
+        "ro": "Bufetul cald e la cerere. Felurile calde le poți comanda și la porție de 200 g, de la 8 €."
+      },
+      "link": {
+        "nl": "/traiteur",
+        "ro": "/ro/catering"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "docs/lexicon.md §5.30 Warm buffet op aanvraag",
+        "site/src/data/products.json warm",
+        "site/src/data/menus.json section warm note"
+      ]
+    },
+    {
+      "id": "traiteur-platou-romanesc",
+      "topic": "traiteur",
+      "q": {
+        "nl": "Wat kost de Roemeense feestschotel?",
+        "ro": "Cât costă platoul românesc festiv?"
+      },
+      "keywords": {
+        "nl": [
+          "roemeense feestschotel",
+          "roemeense schotel"
+        ],
+        "ro": [
+          "platou românesc",
+          "platou festiv"
+        ]
+      },
+      "a": {
+        "nl": "€65 voor de schotel, voor 6 personen.",
+        "ro": "65 € platoul, pentru 6 persoane."
+      },
+      "link": {
+        "nl": "/traiteur",
+        "ro": "/ro/catering"
+      },
+      "handoff": "none",
+      "dynamic": "price",
+      "facts": [
+        "FACTS.md: Platou românesc festiv"
+      ]
+    },
+    {
+      "id": "traiteur-plates-cutlery",
+      "topic": "traiteur",
+      "q": {
+        "nl": "Brengen jullie borden en bestek mee?",
+        "ro": "Aduceți farfurii și tacâmuri?"
+      },
+      "keywords": {
+        "nl": [
+          "borden",
+          "bestek",
+          "servies",
+          "glazen"
+        ],
+        "ro": [
+          "farfurii",
+          "tacâmuri",
+          "veselă",
+          "pahare"
+        ]
+      },
+      "a": {
+        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
+        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+      },
+      "link": null,
+      "handoff": "always",
+      "dynamic": null,
+      "facts": [
+        "not on file: plates and cutlery with catering"
+      ]
+    },
+    {
+      "id": "traiteur-tasting",
+      "topic": "traiteur",
+      "q": {
+        "nl": "Kan ik vooraf proeven?",
+        "ro": "Pot gusta înainte?"
+      },
+      "keywords": {
+        "nl": [
+          "proeven",
+          "degustatie",
+          "proefmenu"
+        ],
+        "ro": [
+          "gust",
+          "degustare"
+        ]
+      },
+      "a": {
+        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
+        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+      },
+      "link": null,
+      "handoff": "always",
+      "dynamic": null,
+      "facts": [
+        "not on file: tasting"
+      ]
+    },
+    {
+      "id": "traiteur-spit",
+      "topic": "traiteur",
+      "q": {
+        "nl": "Doen jullie varken aan het spit?",
+        "ro": "Faceți porc la proțap?"
+      },
+      "keywords": {
+        "nl": [
+          "varken aan het spit",
+          "speenvarken",
+          "spit"
+        ],
+        "ro": [
+          "porc la proțap",
+          "proțap"
+        ]
+      },
+      "a": {
+        "nl": "Ja, op bestelling. Het aantal personen en de prijs bespreken wij met u; vraag het ons via WhatsApp.",
+        "ro": "Da, la comandă. Numărul de persoane și prețul le discutăm cu tine; întreabă-ne pe WhatsApp."
+      },
+      "link": {
+        "nl": "/traiteur",
+        "ro": "/ro/catering"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Porc la proțap (section 2)"
+      ]
+    },
+    {
+      "id": "traiteur-distance",
+      "topic": "traiteur",
+      "q": {
+        "nl": "Komen jullie ook verder dan de regio?",
+        "ro": "Veniți și mai departe?"
+      },
+      "keywords": {
+        "nl": [
+          "ver",
+          "verder",
+          "afstand",
+          "buiten de regio"
+        ],
+        "ro": [
+          "departe",
+          "distanță",
+          "în afara zonei"
+        ]
+      },
+      "a": {
+        "nl": "Een barbecue aan huis doen wij tot 200 km van Zwevezele.",
+        "ro": "Grătarul la domiciliu îl facem până la 200 de km de Zwevezele."
+      },
+      "link": {
+        "nl": "/traiteur",
+        "ro": "/ro/catering"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Grătar la domiciliu"
+      ]
+    },
+    {
+      "id": "season-christmas-deadline",
+      "topic": "season",
+      "q": {
+        "nl": "Tot wanneer kan ik bestellen voor Kerstmis?",
+        "ro": "Până când pot comanda pentru Crăciun?"
+      },
+      "keywords": {
+        "nl": [
+          "kerst",
+          "kerstmenu",
+          "eindejaarsmenu",
+          "nieuwjaar",
+          "oudejaar"
+        ],
+        "ro": [
+          "crăciun",
+          "meniu de sărbători",
+          "revelion",
+          "anul nou"
+        ]
+      },
+      "a": {
+        "nl": "Eindejaarsmenu bestellen tot 20 december; afhalen op 24 en 31 december van 08:00 tot 18:00.",
+        "ro": "Comenzi din meniul de sărbători până pe 20 decembrie; ridicare pe 24 și 31 decembrie, între 08:00 și 18:00."
+      },
+      "link": {
+        "nl": "/feestmenu-eindejaar",
+        "ro": "/ro/sarbatori"
+      },
+      "handoff": "none",
+      "dynamic": "deadline",
+      "facts": [
+        "site/src/data/faq.json (verbatim)",
+        "FACTS.md: Eindejaar",
+        "site/src/data/menus.json deadline, pickup"
+      ]
+    },
+    {
+      "id": "season-deposit",
+      "topic": "season",
+      "q": {
+        "nl": "Moet ik een voorschot betalen voor het eindejaarsmenu?",
+        "ro": "Trebuie să plătesc avans pentru meniul de sărbători?"
+      },
+      "keywords": {
+        "nl": [
+          "voorschot",
+          "aanbetaling",
+          "waarborg"
+        ],
+        "ro": [
+          "avans",
+          "plată în avans"
+        ]
+      },
+      "a": {
+        "nl": "Ja, het eindejaarsmenu bestelt u met een voorschot, in de winkel of via overschrijving. Voor het bedrag: vraag het ons via WhatsApp.",
+        "ro": "Da, meniul de sărbători se comandă cu avans, în magazin sau prin transfer bancar. Pentru sumă, întreabă-ne pe WhatsApp."
+      },
+      "link": {
+        "nl": "/feestmenu-eindejaar",
+        "ro": "/ro/sarbatori"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Eindejaar (deposit, amount not stated)",
+        "docs/lexicon.md §5.30 deposit"
+      ]
+    },
+    {
+      "id": "season-pickup",
+      "topic": "season",
+      "q": {
+        "nl": "Wanneer haal ik het eindejaarsmenu af?",
+        "ro": "Când ridic meniul de sărbători?"
+      },
+      "keywords": {
+        "nl": [
+          "afhalen kerst",
+          "ophalen eindejaar",
+          "24 december",
+          "31 december"
+        ],
+        "ro": [
+          "ridic",
+          "24 decembrie",
+          "31 decembrie"
+        ]
+      },
+      "a": {
+        "nl": "Op 24 of 31 december, van 08:00 tot 18:00, in de winkel.",
+        "ro": "Pe 24 sau 31 decembrie, între 08:00 și 18:00, din magazin."
+      },
+      "link": {
+        "nl": "/feestmenu-eindejaar",
+        "ro": "/ro/sarbatori"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/menus.json pickup, pickupOnly"
+      ]
+    },
+    {
+      "id": "season-christmas-pig",
+      "topic": "season",
+      "q": {
+        "nl": "Kan ik een kerstvarken bestellen?",
+        "ro": "Pot comanda porc de Crăciun?"
+      },
+      "keywords": {
+        "nl": [
+          "kerstvarken",
+          "heel varken",
+          "half varken"
+        ],
+        "ro": [
+          "porc de crăciun",
+          "porc întreg",
+          "jumătate de porc"
+        ]
+      },
+      "a": {
+        "nl": "Ja, heel of half, op bestelling uiterlijk 18 december. De prijs is op aanvraag.",
+        "ro": "Da, întreg sau jumătate, la comandă până pe 18 decembrie. Prețul e la cerere."
+      },
+      "link": {
+        "nl": "/feestmenu-eindejaar",
+        "ro": "/ro/sarbatori"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Porc la proțap / de Crăciun",
+        "docs/lexicon.md §5.30 Porc de Crăciun"
+      ]
+    },
+    {
+      "id": "season-christmas-day",
+      "topic": "season",
+      "q": {
+        "nl": "Zijn jullie open op Kerstmis?",
+        "ro": "Sunteți deschiși de Crăciun?"
+      },
+      "keywords": {
+        "nl": [
+          "kerstdag",
+          "25 december",
+          "tweede kerstdag"
+        ],
+        "ro": [
+          "ziua de crăciun",
+          "25 decembrie",
+          "26 decembrie"
+        ]
+      },
+      "a": {
+        "nl": "Op 25 december van 08:00 tot 09:00, alleen om bestellingen af te halen. Op 26 en 27 december zijn wij gesloten.",
+        "ro": "Pe 25 decembrie între 08:00 și 09:00, doar pentru ridicarea comenzilor. Pe 26 și 27 decembrie suntem închiși."
+      },
+      "link": {
+        "nl": "/contact",
+        "ro": "/ro/contact"
+      },
+      "handoff": "none",
+      "dynamic": "day-hours",
+      "facts": [
+        "site/src/data/hours.json special",
+        "FACTS.md: Holidays 2026–27"
+      ]
+    },
+    {
+      "id": "season-romanian-dishes",
+      "topic": "season",
+      "q": {
+        "nl": "Maken jullie sarmale of piftie voor de feestdagen?",
+        "ro": "Faceți sarmale sau piftie de sărbători?"
+      },
+      "keywords": {
+        "nl": [
+          "sarmale",
+          "piftie",
+          "ciorba",
+          "salata de boeuf",
+          "roemeense feestgerechten"
+        ],
+        "ro": [
+          "sarmale",
+          "piftie",
+          "ciorbă",
+          "salată de boeuf",
+          "preparate de sărbători"
+        ]
+      },
+      "a": {
+        "nl": "Ja, op het eindejaarsmenu: sarmale, piftie, tobă, caltaboș, salată de boeuf, carne la garniță, ciorbă de perișoare en ciorbă de văcuță. De prijs ziet u in de winkel; wij bevestigen ze bij uw bestelling.",
+        "ro": "Da, în meniul de sărbători: sarmale, piftie, tobă, caltaboș, salată de boeuf, carne la garniță, ciorbă de perișoare și ciorbă de văcuță. Prețul îl vezi în magazin; ți-l confirmăm la comandă."
+      },
+      "link": {
+        "nl": "/feestmenu-eindejaar",
+        "ro": "/ro/sarbatori"
+      },
+      "handoff": "offer",
+      "dynamic": "do-you-have",
+      "facts": [
+        "site/src/data/menus.json ro-feest",
+        "docs/lexicon.md §5.22 19.10 ninth rubric"
+      ]
+    },
+    {
+      "id": "season-easter",
+      "topic": "season",
+      "q": {
+        "nl": "Hebben jullie een paasmenu of paaslam?",
+        "ro": "Aveți meniu de Paște sau miel de Paște?"
+      },
+      "keywords": {
+        "nl": [
+          "pasen",
+          "paaslam",
+          "paasmenu"
+        ],
+        "ro": [
+          "paște",
+          "miel de paște",
+          "drob"
+        ]
+      },
+      "a": {
+        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
+        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+      },
+      "link": null,
+      "handoff": "always",
+      "dynamic": null,
+      "facts": [
+        "not on file: Easter menu"
+      ]
+    },
+    {
+      "id": "trust-reviews",
+      "topic": "trust",
+      "q": {
+        "nl": "Wat zeggen klanten over jullie?",
+        "ro": "Ce spun clienții despre voi?"
+      },
+      "keywords": {
+        "nl": [
+          "reviews",
+          "beoordelingen",
+          "recensies",
+          "google score"
+        ],
+        "ro": [
+          "recenzii",
+          "păreri",
+          "nota google"
+        ]
+      },
+      "a": {
+        "nl": "Onze Google-beoordelingen staan op de startpagina, met een link naar Google.",
+        "ro": "Recenziile noastre de pe Google sunt pe prima pagină, cu link spre Google."
+      },
+      "link": {
+        "nl": "/",
+        "ro": "/ro"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/reviews.json",
+        "docs/lexicon.md §5.7"
+      ]
+    },
+    {
+      "id": "trust-certified",
+      "topic": "trust",
+      "q": {
+        "nl": "Zijn jullie een erkende slager?",
+        "ro": "Sunteți măcelari autorizați?"
+      },
+      "keywords": {
+        "nl": [
+          "erkend",
+          "beenhouwer-spekslager",
+          "diploma"
+        ],
+        "ro": [
+          "autorizat",
+          "măcelar autorizat"
+        ]
+      },
+      "a": {
+        "nl": "Ja, Slagerij John is erkend beenhouwer-spekslager.",
+        "ro": "Da, Măcelăria John e măcelar autorizat (erkend beenhouwer-spekslager)."
+      },
+      "link": {
+        "nl": "/over-ons",
+        "ro": "/ro/despre-noi"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: „Erkend Beenhouwer-Spekslager” (owners' own line; owners confirm)"
+      ]
+    },
+    {
+      "id": "trust-since",
+      "topic": "trust",
+      "q": {
+        "nl": "Sinds wanneer bestaan jullie?",
+        "ro": "De când existați?"
+      },
+      "keywords": {
+        "nl": [
+          "sinds wanneer",
+          "hoe lang al",
+          "geopend",
+          "opening"
+        ],
+        "ro": [
+          "de când",
+          "deschis",
+          "deschidere"
+        ]
+      },
+      "a": {
+        "nl": "Sinds 1 februari 2025, in de vroegere bakkerij in de Bruggestraat.",
+        "ro": "Din 1 februarie 2025, în fosta brutărie din Bruggestraat."
+      },
+      "link": {
+        "nl": "/over-ons",
+        "ro": "/ro/despre-noi"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Opened"
+      ]
+    },
+    {
+      "id": "trust-owners",
+      "topic": "trust",
+      "q": {
+        "nl": "Wie zijn John en Georgiana?",
+        "ro": "Cine sunt John și Georgiana?"
+      },
+      "keywords": {
+        "nl": [
+          "john",
+          "georgiana",
+          "eigenaars",
+          "wie zijn jullie"
+        ],
+        "ro": [
+          "john",
+          "georgiana",
+          "proprietari",
+          "cine sunteți"
+        ]
+      },
+      "a": {
+        "nl": "De eigenaars van Slagerij John. Sinds 1 februari 2025 staan ze samen achter de toog in Zwevezele.",
+        "ro": "Proprietarii Măcelăriei John. Din 1 februarie 2025 stau împreună la tejghea, în Zwevezele."
+      },
+      "link": {
+        "nl": "/over-ons",
+        "ro": "/ro/despre-noi"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "docs/lexicon.md §0 D5 + §5.30 opening date",
+        "FACTS.md: Opened"
+      ]
+    },
+    {
+      "id": "trust-tgtg",
+      "topic": "trust",
+      "q": {
+        "nl": "Doen jullie mee met Too Good To Go?",
+        "ro": "Sunteți pe Too Good To Go?"
+      },
+      "keywords": {
+        "nl": [
+          "too good to go",
+          "tgtg",
+          "verrassingspakket"
+        ],
+        "ro": [
+          "too good to go",
+          "pachet surpriză"
+        ]
+      },
+      "a": {
+        "nl": "Ja, met een verrassingspakket. Of er vandaag een pakket is, ziet u in de app Too Good To Go.",
+        "ro": "Da, cu un pachet surpriză. Dacă azi e un pachet, vezi în aplicația Too Good To Go."
+      },
+      "link": null,
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Too Good To Go [OBSERVED]",
+        "site/src/data/entity.json sameAs"
+      ]
+    },
+    {
+      "id": "site-language",
+      "topic": "site",
+      "q": {
+        "nl": "Hoe zet ik de site in het Roemeens?",
+        "ro": "Cum schimb site-ul în neerlandeză?"
+      },
+      "keywords": {
+        "nl": [
+          "roemeens",
+          "taal wijzigen",
+          "in het roemeens"
+        ],
+        "ro": [
+          "neerlandeză",
+          "schimb limba",
+          "în olandeză"
+        ]
+      },
+      "a": {
+        "nl": "Tik bovenaan op RO; onderaan de pagina kan het ook, bij Română.",
+        "ro": "Apasă sus pe NL; poți și jos, la Nederlands."
+      },
+      "link": null,
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "docs/lexicon.md §5.15 language switch",
+        "docs/lexicon.md §6 interface strings"
+      ]
+    },
+    {
+      "id": "site-privacy",
+      "topic": "site",
+      "q": {
+        "nl": "Wat doen jullie met mijn gegevens?",
+        "ro": "Ce faceți cu datele mele?"
+      },
+      "keywords": {
+        "nl": [
+          "privacy",
+          "gegevens",
+          "persoonsgegevens",
+          "gdpr"
+        ],
+        "ro": [
+          "date personale",
+          "confidențialitate",
+          "gdpr"
+        ]
+      },
+      "a": {
+        "nl": "Wij gebruiken alleen wat u op de bestelbon invult, en alleen voor uw bestelling; wij bewaren het 90 dagen. Geen cookies, geen account, geen nieuwsbrief.",
+        "ro": "Folosim doar ce completezi în bonul de comandă și doar pentru comanda ta; le păstrăm 90 de zile. Fără cookie-uri, fără cont, fără newsletter."
+      },
+      "link": {
+        "nl": "/privacy",
+        "ro": "/ro/confidentialitate"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "docs/lexicon.md §5.26"
+      ]
+    },
+    {
+      "id": "site-cookies",
+      "topic": "site",
+      "q": {
+        "nl": "Gebruikt de site cookies?",
+        "ro": "Site-ul folosește cookie-uri?"
+      },
+      "keywords": {
+        "nl": [
+          "cookies",
+          "tracking"
+        ],
+        "ro": [
+          "cookie-uri",
+          "urmărire"
+        ]
+      },
+      "a": {
+        "nl": "Nee. Deze website meet bezoeken zonder cookies en zonder persoonsgegevens.",
+        "ro": "Nu. Site-ul măsoară vizitele fără cookie-uri și fără date personale."
+      },
+      "link": {
+        "nl": "/privacy",
+        "ro": "/ro/confidentialitate"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "docs/lexicon.md §5.5 statistics sentence"
+      ]
+    },
+    {
+      "id": "site-bot",
+      "topic": "site",
+      "q": {
+        "nl": "Ben jij een mens?",
+        "ro": "Ești om?"
+      },
+      "keywords": {
+        "nl": [
+          "bot",
+          "robot",
+          "mens",
+          "chatbot",
+          "echt persoon"
+        ],
+        "ro": [
+          "bot",
+          "robot",
+          "om",
+          "persoană reală"
+        ]
+      },
+      "a": {
+        "nl": "Nee, ik ben een automatische assistent. Ik antwoord uit de gegevens van deze site; voor iets anders bereikt u Georgiana via WhatsApp.",
+        "ro": "Nu, sunt un asistent automat. Răspund din datele acestui site; pentru altceva, scrie-i Georgianei pe WhatsApp."
+      },
+      "link": null,
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "docs/assistant.md §5 label (AI Act art. 50)"
+      ]
+    },
+    {
+      "id": "legal-return",
+      "topic": "legal",
+      "q": {
+        "nl": "Kan ik vlees terugbrengen?",
+        "ro": "Pot returna carnea?"
+      },
+      "keywords": {
+        "nl": [
+          "terugbrengen",
+          "retour",
+          "ruilen",
+          "herroeping"
+        ],
+        "ro": [
+          "returnez",
+          "retur",
+          "schimb"
+        ]
+      },
+      "a": {
+        "nl": "Nee. Vers vlees wordt niet teruggenomen (art. VI.53, 4° WER): verse producten en bereide gerechten bederven snel. Is er iets mis, laat het ons dezelfde dag weten, met een foto.",
+        "ro": "Nu. Carnea proaspătă nu se returnează (art. VI.53, 4° WER): produsele proaspete și preparatele se strică repede. Dacă ceva nu e în regulă, spune-ne în aceeași zi, cu o poză."
+      },
+      "link": {
+        "nl": "/algemene-voorwaarden",
+        "ro": "/ro/termeni"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "docs/lexicon.md §5.27 Herroepingsrecht",
+        "FACTS.md: Complaints"
+      ]
+    },
+    {
+      "id": "legal-complaint",
+      "topic": "legal",
+      "q": {
+        "nl": "Ik heb een klacht.",
+        "ro": "Am o reclamație."
+      },
+      "keywords": {
+        "nl": [
+          "klacht",
+          "niet tevreden",
+          "probleem met bestelling"
+        ],
+        "ro": [
+          "reclamație",
+          "nemulțumit",
+          "problemă cu comanda"
+        ]
+      },
+      "a": {
+        "nl": "Laat het ons liefst dezelfde dag weten, met een foto, op 0466 18 64 57 of via info@slagerij-john.be. Wij zoeken samen een oplossing.",
+        "ro": "Spune-ne, de preferință în aceeași zi, cu o poză, la 0466 18 64 57 sau la info@slagerij-john.be. Căutăm o soluție împreună."
+      },
+      "link": {
+        "nl": "/algemene-voorwaarden",
+        "ro": "/ro/termeni"
+      },
+      "handoff": "always",
+      "dynamic": null,
+      "facts": [
+        "docs/lexicon.md §5.27 Klachten",
+        "FACTS.md: Complaints"
+      ]
+    },
+    {
+      "id": "legal-weighed",
+      "topic": "legal",
+      "q": {
+        "nl": "Klopt de prijs per kilo precies?",
+        "ro": "Prețul la kilogram e exact?"
+      },
+      "keywords": {
+        "nl": [
+          "gewicht",
+          "gewogen",
+          "juist gewicht",
+          "eindbedrag"
+        ],
+        "ro": [
+          "greutate",
+          "cântărit",
+          "suma finală"
+        ]
+      },
+      "a": {
+        "nl": "Bij producten per kilogram bepaalt het gewogen gewicht in de winkel het eindbedrag.",
+        "ro": "La produsele la kilogram, cântărirea din magazin stabilește suma finală."
+      },
+      "link": {
+        "nl": "/algemene-voorwaarden",
+        "ro": "/ro/termeni"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "docs/lexicon.md §5.30 Terms Prijzen"
+      ]
+    },
+    {
+      "id": "legal-terms",
+      "topic": "legal",
+      "q": {
+        "nl": "Waar staan jullie voorwaarden?",
+        "ro": "Unde sunt condițiile voastre?"
+      },
+      "keywords": {
+        "nl": [
+          "voorwaarden",
+          "algemene voorwaarden",
+          "regels"
+        ],
+        "ro": [
+          "condiții",
+          "termeni",
+          "reguli"
+        ]
+      },
+      "a": {
+        "nl": "Op de pagina Algemene voorwaarden: bestellen, afhalen, levering, betalen en annuleren.",
+        "ro": "Pe pagina Termeni și condiții: comanda, ridicarea, livrarea, plata și anularea."
+      },
+      "link": {
+        "nl": "/algemene-voorwaarden",
+        "ro": "/ro/termeni"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "docs/lexicon.md §5.27"
+      ]
+    }
+  ],
+  "allergen_category_map": {
+    "_status": "PROPOSED by Cowork 05.11 — not a fact yet. allergens.json has the matrix per category but no product → category link (per_product: not available). Mapped from the matrix's own category names (Vers vlees (onbewerkt) · Gemarineerd vlees · Worst & charcuterie · Huisbereide gerechten & traiteur · Gourmet & steengrill · Broodjes & snacks). null = unknown → the assistant hands off (§4.3), never guesses: minced meat and américain (seasoning not on file), colli (mixed contents), desserts (not in the matrix). The owners confirm this map before row 11a ships (release blocker §4).",
+    "map": {
+      "rundsgebraad": "vers-vlees",
+      "entrecote": "vers-vlees",
+      "stoofvlees": "vers-vlees",
+      "gehakt": null,
+      "biefstuk": "vers-vlees",
+      "chateaubriand": "vers-vlees",
+      "filet-pur": "vers-vlees",
+      "rumsteak": "vers-vlees",
+      "rosbief": "vers-vlees",
+      "filet-entrecote": "vers-vlees",
+      "zesrib-entrecote": "vers-vlees",
+      "kraaibiefstuk": "vers-vlees",
+      "filet-mignon": "vers-vlees",
+      "cote-a-los-rund": "vers-vlees",
+      "tomahawk": "vers-vlees",
+      "osso-buco": "vers-vlees",
+      "picanha-rozemarijn": "vers-vlees",
+      "rundscarpaccio": "vers-vlees",
+      "soepvlees": "vers-vlees",
+      "mergpijpjes": "vers-vlees",
+      "blinde-vink": "vers-vlees",
+      "americain": null,
+      "kalfsgehakt": null,
+      "varkenshaasje": "vers-vlees",
+      "spiering": "vers-vlees",
+      "ribbetjes": "vers-vlees",
+      "braadworst": "worst-charcuterie",
+      "varkensgehakt": null,
+      "gemengd-gehakt": null,
+      "droge-worst": "worst-charcuterie",
+      "chipolata": "worst-charcuterie",
+      "merguez": "worst-charcuterie",
+      "witte-pens": "worst-charcuterie",
+      "gevulde-witte-pens": "worst-charcuterie",
+      "filetkotelet": "vers-vlees",
+      "spieringgebraad": "vers-vlees",
+      "ardens-gebraad": "vers-vlees",
+      "hespengebraad": "vers-vlees",
+      "carregebraad": "vers-vlees",
+      "mignonette-rozemarijn": "vers-vlees",
+      "buikribben": "vers-vlees",
+      "buikrollade": "vers-vlees",
+      "spek": "vers-vlees",
+      "carre": "vers-vlees",
+      "orloffgebraad": "vers-vlees",
+      "ardeense-steak": "vers-vlees",
+      "varkenscote-a-los": "vers-vlees",
+      "varkenskroontje": "vers-vlees",
+      "varkensstoofvlees": "vers-vlees",
+      "schenkel": "vers-vlees",
+      "varkenswangetjes": "vers-vlees",
+      "varkensniertjes": "vers-vlees",
+      "varkensstaart": "vers-vlees",
+      "varkenspoot": "vers-vlees",
+      "varkensoren": "vers-vlees",
+      "varkenslever": "vers-vlees",
+      "varkenstong": "vers-vlees",
+      "hersenen": "vers-vlees",
+      "kipfilet": "vers-vlees",
+      "kippenboutjes": "vers-vlees",
+      "kalkoengebraad": "vers-vlees",
+      "hoeve-kip": "vers-vlees",
+      "kippenbil": "vers-vlees",
+      "kippenvleugel": "vers-vlees",
+      "kippenhaasje": "vers-vlees",
+      "kip-orloff": "vers-vlees",
+      "italiaanse-kipfilet": "vers-vlees",
+      "kippenhartjes": "vers-vlees",
+      "kippenlever": "vers-vlees",
+      "kippenmagen": "vers-vlees",
+      "kippenworst": "worst-charcuterie",
+      "kippenchipolata": "worst-charcuterie",
+      "kipgehakt": null,
+      "kalkoenfilet": "vers-vlees",
+      "kalkoen-bursan": "vers-vlees",
+      "kalkoen-orloff": "vers-vlees",
+      "lamsbout": "vers-vlees",
+      "lam-half": "vers-vlees",
+      "lam-heel": "vers-vlees",
+      "lamskotelet": "vers-vlees",
+      "lamskotelet-zonder-been": "vers-vlees",
+      "lamspastrami": "vers-vlees",
+      "lamsrib": "vers-vlees",
+      "lamsschenkel": "vers-vlees",
+      "lamsstoofvlees": "vers-vlees",
+      "lamsschouder": "vers-vlees",
+      "lamsnek": "vers-vlees",
+      "lamsgehakt": null,
+      "varkensschnitzel": "traiteur",
+      "kipschnitzel": "traiteur",
+      "natuurburger": "traiteur",
+      "kaasburger": "traiteur",
+      "valentineburger": "traiteur",
+      "boerburger": "traiteur",
+      "special-burger": "traiteur",
+      "ajuinburger": "traiteur",
+      "hawaiburger": "traiteur",
+      "dubaiburger": "traiteur",
+      "beefburger": "traiteur",
+      "kipburger": "traiteur",
+      "spies-mini-burger": "traiteur",
+      "cordon-bleu": "traiteur",
+      "special-cordon-bleu": "traiteur",
+      "vogelnestjes": "traiteur",
+      "boomstammetje-spek": "traiteur",
+      "boomstammetje-varken": "traiteur",
+      "gehaktbrood-varken": "traiteur",
+      "gehaktbrood-kaas": "traiteur",
+      "rulade-gehakt": "traiteur",
+      "varkensbrochette": "gemarineerd",
+      "balletjesbrochette": "gemarineerd",
+      "grillworstbrochette": "gemarineerd",
+      "kipbrochette": "gemarineerd",
+      "kalkoenbrochette": "gemarineerd",
+      "rundsbrochette": "gemarineerd",
+      "ardeense-brochette": "gemarineerd",
+      "spekbrochette": "gemarineerd",
+      "lamsbrochette": "gemarineerd",
+      "special-brochette": "gemarineerd",
+      "spekfakkels": "gemarineerd",
+      "varkenscote-gemarineerd": "gemarineerd",
+      "spieringkotelet-gemarineerd": "gemarineerd",
+      "filetkotelet-gemarineerd": "gemarineerd",
+      "spek-gemarineerd": "gemarineerd",
+      "varkenshaasje-gemarineerd": "gemarineerd",
+      "varkensmedaillon": "gemarineerd",
+      "varkensgyros": "gemarineerd",
+      "wokvlees-varken": "gemarineerd",
+      "pitavlees-varken": "gemarineerd",
+      "ardeens-gemarineerd": "gemarineerd",
+      "blum-ardeens": "gemarineerd",
+      "pizdulici-marinate": "gemarineerd",
+      "kipfilet-gemarineerd": "gemarineerd",
+      "kippenbil-gemarineerd": "gemarineerd",
+      "kippenbout-gemarineerd": "gemarineerd",
+      "kippenhaasje-gemarineerd": "gemarineerd",
+      "kipgyros": "gemarineerd",
+      "kalkoen-gemarineerd": "gemarineerd",
+      "hespenworst": "worst-charcuterie",
+      "kalfsworst": "worst-charcuterie",
+      "parijzer-worst": "worst-charcuterie",
+      "champignonworst": "worst-charcuterie",
+      "mosterdspek": "worst-charcuterie",
+      "blokpate": "worst-charcuterie",
+      "pate-maison": "worst-charcuterie",
+      "fijnkostsalami": "worst-charcuterie",
+      "pepersalami": "worst-charcuterie",
+      "kruidensalami": "worst-charcuterie",
+      "kalkoensalami": "worst-charcuterie",
+      "chorizo": "worst-charcuterie",
+      "mayaworst": "worst-charcuterie",
+      "charc-kipfilet": "worst-charcuterie",
+      "charc-kalkoenfilet": "worst-charcuterie",
+      "lookworst-rood": "worst-charcuterie",
+      "boerenhesp": "worst-charcuterie",
+      "serrano": "worst-charcuterie",
+      "gerookte-ham": "worst-charcuterie",
+      "gezouten-spek": "worst-charcuterie",
+      "copa": "worst-charcuterie",
+      "prepare-van-de-chef": "traiteur",
+      "vleessalade": "traiteur",
+      "krabsalade": "traiteur",
+      "kip-tartaar": "traiteur",
+      "kip-van-de-chef": "traiteur",
+      "bereid-gehakt": "traiteur",
+      "mici": "worst-charcuterie",
+      "gerookte-worst": "worst-charcuterie",
+      "pastrami": "worst-charcuterie",
+      "kaizer": "worst-charcuterie",
+      "sunca-de-casa": "worst-charcuterie",
+      "afumatura": "worst-charcuterie",
+      "ciolane-afumate": "worst-charcuterie",
+      "carnati-afumati-cascaval": "worst-charcuterie",
+      "carnati-afumati-mustar": "worst-charcuterie",
+      "caltabos": "worst-charcuterie",
+      "crenvursti": "worst-charcuterie",
+      "polonezi": "worst-charcuterie",
+      "toba": "worst-charcuterie",
+      "salam-de-casa": "worst-charcuterie",
+      "salam-de-casa-sunca": "worst-charcuterie",
+      "parizer-de-casa": "worst-charcuterie",
+      "parizer-ciuperci": "worst-charcuterie",
+      "parizer-masline": "worst-charcuterie",
+      "parizer-ciuperci-masline": "worst-charcuterie",
+      "carne-la-garnita": "worst-charcuterie",
+      "jumari": "worst-charcuterie",
+      "untura": "worst-charcuterie",
+      "colli-varken-1": null,
+      "gourmet-9": "gourmet",
+      "colli-varken-2": null,
+      "colli-kip": null,
+      "colli-kip-varken": null,
+      "colli-bbq": null,
+      "colli-john": null,
+      "fondue": "gourmet",
+      "fondue-14": "gourmet",
+      "gourmet-10": "gourmet",
+      "gourmet-luxe": "gourmet",
+      "tapas-kinder": "traiteur",
+      "tapas-mix": "traiteur",
+      "tapas-john-1": "traiteur",
+      "tapas-john-1-scampi": "traiteur",
+      "tapas-john-2": "traiteur",
+      "tapas-ro": "traiteur",
+      "platou-romanesc-festiv": "traiteur",
+      "koude-schotel": "traiteur",
+      "koude-schotel-extra-kaas": "traiteur",
+      "hapje-scampi-2": "traiteur",
+      "hapje-lepeltje-scampi": "traiteur",
+      "hapje-lepeltje-meloen-serrano": "traiteur",
+      "hapje-lepeltje-pate": "traiteur",
+      "hapje-lepeltje-geitenkaas": "traiteur",
+      "hapje-lepeltje-zalm": "traiteur",
+      "hapje-taco-gehakt": "traiteur",
+      "hapje-taco-kip": "traiteur",
+      "hapje-blinis-zalm": "traiteur",
+      "hapje-bruschetta": "traiteur",
+      "hapje-bruschetta-zalm": "traiteur",
+      "hapje-bruschetta-tomaat": "traiteur",
+      "hapje-wrap-zalm": "traiteur",
+      "hapje-wrap-hesp": "traiteur",
+      "hapje-wrap-kip": "traiteur",
+      "hapje-bulgur-feta": "traiteur",
+      "hapje-bulgur-feta-meloen": "traiteur",
+      "hapje-bulgur-zalm": "traiteur",
+      "hapje-bulgur-garnaal": "traiteur",
+      "hapje-hawaii-salade": "traiteur",
+      "warm-ardeens": "traiteur",
+      "warm-varkenshaasje": "traiteur",
+      "warm-orloff": "traiteur",
+      "warm-kalkoen": "traiteur",
+      "warm-hamrol": "traiteur",
+      "warm-kipfilet-curry": "traiteur",
+      "warm-zalm": "traiteur",
+      "warm-groenten": "traiteur",
+      "soep-tomaat": "traiteur",
+      "soep-tomaat-balletjes": "traiteur",
+      "soep-pompoen": "traiteur",
+      "soep-broccoli": "traiteur",
+      "broodjes-mini": "broodjes",
+      "dessert-buffet-1": null,
+      "dessert-buffet-2": null,
+      "fruit-buffet": null,
+      "dessert-vanille": null,
+      "dessert-tiramisu": null,
+      "dessert-donut": null,
+      "dessert-mini-donut": null,
+      "dessert-macarons": null
+    }
+  }
+}

@@ -1,75 +1,100 @@
 ---
-// Q&A box (D-04) — the site's only island. STUB: markup, styles and the script
-// entry point exist; retrieval over faq.json (synonyms, diacritic-insensitive
-// match) is not implemented. Every label is a prop; nothing is baked in.
-import faq from '../data/faq.json';
-import type { FaqItem } from '../data/types';
+// QaBox — „Vraag het ons” / „Întreabă-ne”, the assistant (row 11a; D-04 · D-58 · D-60; docs/assistant.md §10, §12).
+// One box per page: inline under the FAQ on the nine pages of lexicon §5.32 „Start chips per page” (Faq.astro), else
+// inside the sheet (QaSheet.astro) that the „Vraag het ons” doors open — the floating button on the phone, the header's
+// pill on desktop, „Vraag over dit product” in the product sheet. On an inline page the same box moves into the sheet while it is open: one
+// conversation, one instance (§10.3).
+// Strings: lexicon §5.32 / §5.33 (NL) and §6 „Asistent” (RO), src/i18n/assistant.ts. The face: design/svg/mascot.svg
+// (src/assets/mascot.svg, byte-identical; one <symbol> per page, lib/mascot.ts) + design/css/mascot.css
+// (src/styles/mascot.css), six states by data-s. This file styles the box, its greeting and its start chips; what only
+// an answer needs (cards, buttons, the customer's bubble) is src/styles/qa-chat.css, added by qa-ui.ts with the engine.
+// Without script: the chips and the greeting show, the form sends the question to WhatsApp through /wa (the traiteur
+// quote form's way: /wa swaps [q] in the text for the field „q”), the „Vraag het ons” buttons are WhatsApp links.
+// With script (src/scripts/qa.ts, on every page): on the first focus, tap or question it loads the engine
+// (src/scripts/qa-ui.ts → lib/assistant/engine.js) and /assistant-index.json — never on page load, nothing from
+// another host. The engine answers in the browser; nothing is sent; the conversation's state sits in sessionStorage.
+import '../styles/mascot.css';
+import entity from '../data/entity.json';
+import { pigUse } from '../lib/mascot';
+import { qaT, type QaPage } from '../i18n/assistant';
+import { type Locale } from '../i18n/ui';
 
 export interface Props {
-  locale: 'nl' | 'ro';
-  heading: string;
-  automatedLabel: string;
-  inputLabel: string;
-  submitLabel: string;
-  handoffLabel: string;
-  src: string;
+  locale: Locale;
+  /** the page's chips (lexicon §5.32); null = a page without its own chips: the home's */
+  page: QaPage | null;
 }
-const { locale, heading, automatedLabel, inputLabel, submitLabel, handoffLabel, src } = Astro.props;
-const items = faq[locale] as FaqItem[];
+const { locale, page } = Astro.props;
+const t = qaT[locale];
+const chips = t.chips[page ?? 'home'];
+const waText = t.t.waText.replace('{question}', '[q]');
+const [failA, failB] = t.t.fail.split('{phone}');
 ---
-<section class="qa" aria-labelledby="qa-title" data-qa data-items={JSON.stringify(items)}>
-  <h2 id="qa-title" class="qa__title">{heading}</h2>
-  <p class="qa__auto">{automatedLabel}</p>
-  <div class="qa__chips">
-    {items.slice(0, 4).map((it) => <button type="button" class="qa__chip" data-qa-chip>{it.q}</button>)}
+<section class="qa" aria-labelledby="qa-title" data-qa data-page={page ?? 'home'} data-lang={locale}>
+  <div class="qa__head">
+    <span class="qa__mark" aria-hidden="true" set:html={pigUse} />
+    <div class="qa__titles">
+      <h2 class="qa__title" id="qa-title">{t.title}</h2>
+      <p class="qa__can">{t.can}</p>
+    </div>
   </div>
-  <form class="qa__form" data-qa-form>
-    <label class="vh" for="qa-input">{inputLabel}</label>
-    <input id="qa-input" name="q" type="text" autocomplete="off" placeholder={inputLabel} />
-    <button class="btn btn--ink btn--sm" type="submit">{submitLabel}</button>
+  <p class="qa__auto">{t.auto}</p>
+  <div class="qa__log" role="log" aria-live="polite" aria-label={t.title} data-qa-log>
+    <div class="qa__msg qa__msg--bot"><span class="qa__face" aria-hidden="true" set:html={pigUse} /><div class="qa__bub"><p>{t.t.greeting}</p></div></div>
+  </div>
+  <p class="qa__fail" hidden data-qa-fail>{failA}<a href={`tel:${entity.telephone}`}>{entity.telephoneDisplay}</a>{failB}</p>
+  <div class="qa__chips" data-qa-chips>
+    {chips.map((q) => <button type="button" class="qa__chip" data-ask={q}>{q}</button>)}
+  </div>
+  <form class="qa__form" method="get" action="/wa" data-qa-form>
+    <input type="hidden" name="src" value="qa" />
+    <input type="hidden" name="lang" value={locale} />
+    <input type="hidden" name="text" value={waText} />
+    <label class="vh" for="qa-input">{t.inputLabel}</label>
+    <input class="qa__in" id="qa-input" name="q" type="text" autocomplete="off" enterkeyhint="send" maxlength="500" placeholder={t.placeholder} required />
+    <button class="btn btn--ink btn--sm qa__send" type="submit">{t.submit}</button>
   </form>
-  <div class="qa__answer" aria-live="polite" data-qa-answer></div>
-  <a class="qa__handoff" href={`/wa?src=${encodeURIComponent(src)}`} rel="nofollow">{handoffLabel}</a>
+  <div class="qa__foot">
+    <button type="button" class="qa__restart" data-qa-restart hidden>{t.t.restartBtn}</button>
+  </div>
 </section>
 
 <script>
-  // Island entry point. Retrieval lands here; until then the form does nothing.
-  document.querySelectorAll<HTMLFormElement>('[data-qa-form]').forEach((form) => {
-    form.addEventListener('submit', (e) => e.preventDefault());
-  });
+  import '../scripts/qa.ts';
 </script>
 
-<style>
-  .qa {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--r-frame-lg);
-    padding: 20px;
+<style is:global>
+  /* the box: a card of the site's paper; in the sheet it is the sheet's whole body */
+  .qa { --mascot: 44px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-frame-lg); padding: 18px 16px 14px; min-width: 0; }
+  .qa__head { display: flex; align-items: center; gap: 12px; }
+  .qa__mark { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--accent); }
+  .qa__titles { min-width: 0; }
+  .qa__title { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 24px; line-height: 1.05; letter-spacing: -0.01em; }
+  .qa__can { margin: 4px 0 0; font-size: 14px; line-height: 1.4; }
+  .qa__auto { margin: 10px 0 0; font-size: var(--fs-caption); line-height: 1.4; color: var(--muted); }
+  .qa__log { margin: 14px 0 0; display: flex; flex-direction: column; gap: 12px; max-height: 460px; overflow-y: auto; overscroll-behavior: contain; }
+  .qa__msg { display: flex; align-items: flex-end; gap: 8px; min-width: 0; }
+  .qa__face { --mascot: 36px; flex: none; width: 36px; }
+  .qa__bub { min-width: 0; max-width: 100%; padding: 9px 12px; border-radius: 10px 10px 10px 2px; background: var(--tag); border: 1px solid var(--tag-line); font-size: 14.5px; line-height: 1.45; overflow-wrap: anywhere; }
+  .qa__bub > p { margin: 0; }
+  .qa__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .qa__chips[hidden] { display: none; }
+  .qa__chip { min-height: var(--touch); padding: 0 14px; border-radius: var(--r-chip); border: 1px solid var(--line); background: var(--paper); color: var(--fg); font: inherit; font-size: 14px; font-weight: 600; line-height: 1.2; text-align: left; cursor: pointer; }
+  @media (hover: hover) { .qa__chip:hover { border-color: var(--fg); } }
+  .qa__chip:focus-visible, .qa__restart:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+  .qa__form { display: flex; gap: 8px; margin-top: 12px; }
+  .qa__in { flex: 1; min-width: 0; min-height: var(--touch); padding: 0 14px; border: 1px solid rgba(26, 21, 17, 0.55); border-radius: var(--r-btn); background: var(--paper); font: inherit; font-size: 16px; color: var(--fg); }
+  .qa__in::placeholder { color: var(--muted); }
+  .qa__in:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+  .qa__send { min-height: var(--touch); }
+  .qa__foot { display: flex; justify-content: flex-end; min-height: 8px; }
+  .qa__restart { margin-top: 6px; min-height: 36px; padding: 0 4px; border: 0; background: none; color: var(--muted); font: inherit; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .qa__fail { margin: 12px 0 0; font-size: 14px; }
+  .qa__fail a { color: var(--ox); font-weight: 600; }
+  /* the FAQ's column on desktop: the box under the heading, beside the questions (Faq.astro) */
+  .faq__qa { margin-top: 18px; }
+  @media (min-width: 960px) {
+    .faq__qa { grid-column: 1; grid-row: 2; margin-top: 0; }
+    .faq__in > .faq__list { grid-column: 2; grid-row: 1 / span 2; }
   }
-  .qa__title { margin: 0 0 4px; }
-  .qa__auto { font-size: var(--fs-caption); color: var(--muted); margin: 0 0 12px; }
-  .qa__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-  .qa__chip {
-    min-height: var(--touch);
-    padding: 0 14px;
-    border-radius: var(--r-chip);
-    border: 1px solid var(--line);
-    background: var(--paper);
-    color: var(--fg);
-    font: inherit;
-    cursor: pointer;
-  }
-  .qa__form { display: flex; gap: 8px; }
-  .qa__form input {
-    flex: 1;
-    min-height: var(--touch);
-    padding: 0 12px;
-    border: 1px solid var(--line);
-    border-radius: var(--r-tag);
-    background: var(--paper);
-    font: inherit;
-    color: var(--fg);
-  }
-  .qa__answer { margin-top: 12px; }
-  .qa__handoff { display: inline-block; margin-top: 12px; font-weight: 600; }
 </style>

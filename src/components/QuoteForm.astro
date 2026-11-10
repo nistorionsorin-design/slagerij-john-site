@@ -33,7 +33,7 @@ const today = iso(brussels().day);
 const f = t.fields;
 const scriptData = { locale, src, msg: t.msg, errors: t.errors, fields: f };
 ---
-<form class="qf on-ink" method="get" action="/wa" data-quote aria-labelledby="qf-title">
+<form class="qf on-ink" method="get" action="/wa" data-quote data-qa-section="offerte" aria-labelledby="qf-title">
   <input type="hidden" name="src" value={src} />
   <input type="hidden" name="lang" value={locale} />
   <input type="hidden" name="text" value={t.msg} />

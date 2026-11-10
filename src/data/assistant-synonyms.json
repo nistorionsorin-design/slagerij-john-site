@@ -1,0 +1,3331 @@
+{
+  "_source": "Assistant v2 synonym bank for build-plan row 11a (docs/assistant.md §10.2 A; D-58). Cowork 05.11.2026. Words only, no facts. products: one entry per site/src/data/products.json id — nl (NL + Flemish), ro (RO + Moldovan + products.json alias), typo (no-diacritic and common misspellings; the island also strips diacritics itself). Base forms come from the product names; curated forms are words customers use (lexicon §2–3 word banks, the 27.10 counter list). intents: trigger words NL / RO. A word that fits several products (worst, gehakt, cârnați, spek, pulpe, cotlet …) is resolved by the clarify chips, not here.",
+  "products": {
+    "rundsgebraad": {
+      "nl": [
+        "rundsgebraad",
+        "rundgebraad",
+        "gebraad"
+      ],
+      "ro": [
+        "friptură de vită",
+        "friptură"
+      ],
+      "typo": [
+        "runsgebraad",
+        "friptura de vita",
+        "friptura"
+      ]
+    },
+    "entrecote": {
+      "nl": [
+        "entrecote",
+        "entrecôte",
+        "ribeye",
+        "rib-eye"
+      ],
+      "ro": [
+        "antricot de vită",
+        "antricot"
+      ],
+      "typo": [
+        "entrecotte",
+        "antrecot",
+        "antricot de vita"
+      ]
+    },
+    "stoofvlees": {
+      "nl": [
+        "stoofvlees",
+        "stoverij",
+        "stoofkarbonaden",
+        "rundsstoofvlees",
+        "stoofvlees rund"
+      ],
+      "ro": [
+        "carne de vită pentru tocăniță",
+        "carne de tocăniță",
+        "tocăniță"
+      ],
+      "typo": [
+        "stoovlees",
+        "carne de vita pentru tocanita",
+        "carne de tocanita",
+        "tocanita"
+      ]
+    },
+    "gehakt": {
+      "nl": [
+        "gehakt",
+        "vers gehakt",
+        "gemalen vlees",
+        "rundsgehakt"
+      ],
+      "ro": [
+        "carne tocată",
+        "tocătură",
+        "carne tocată de vită"
+      ],
+      "typo": [
+        "gehackt",
+        "gehaakt",
+        "carne tocata",
+        "tocatura",
+        "carne tocata de vita"
+      ]
+    },
+    "biefstuk": {
+      "nl": [
+        "biefstuk",
+        "steak",
+        "beefsteak",
+        "steaks"
+      ],
+      "ro": [
+        "biftec de vită",
+        "steak",
+        "biftec"
+      ],
+      "typo": [
+        "biefstukken",
+        "stek",
+        "biftec de vita"
+      ]
+    },
+    "chateaubriand": {
+      "nl": [
+        "chateaubriand"
+      ],
+      "ro": [
+        "chateaubriand (mușchi de vită)",
+        "chateaubriand"
+      ],
+      "typo": [
+        "chateaubriand (muschi de vita)"
+      ]
+    },
+    "filet-pur": {
+      "nl": [
+        "filet pur"
+      ],
+      "ro": [
+        "mușchiuleț de vită (filet pur)",
+        "mușchiuleț de vită"
+      ],
+      "typo": [
+        "muschiulet de vita (filet pur)",
+        "muschiulet de vita"
+      ]
+    },
+    "rumsteak": {
+      "nl": [
+        "rumsteak"
+      ],
+      "ro": [
+        "rumsteak (pulpă de vită)",
+        "rumsteak"
+      ],
+      "typo": [
+        "rumsteak (pulpa de vita)"
+      ]
+    },
+    "rosbief": {
+      "nl": [
+        "rosbief"
+      ],
+      "ro": [
+        "rosbif"
+      ],
+      "typo": []
+    },
+    "filet-entrecote": {
+      "nl": [
+        "filet entrecote"
+      ],
+      "ro": [
+        "antricot de vită, filet"
+      ],
+      "typo": [
+        "antricot de vita, filet"
+      ]
+    },
+    "zesrib-entrecote": {
+      "nl": [
+        "zesrib entrecote"
+      ],
+      "ro": [
+        "antricot de vită, zesrib"
+      ],
+      "typo": [
+        "antricot de vita, zesrib"
+      ]
+    },
+    "kraaibiefstuk": {
+      "nl": [
+        "kraaibiefstuk"
+      ],
+      "ro": [
+        "fleică de vită (kraaibiefstuk)",
+        "fleică de vită"
+      ],
+      "typo": [
+        "fleica de vita (kraaibiefstuk)",
+        "fleica de vita"
+      ]
+    },
+    "filet-mignon": {
+      "nl": [
+        "filet mignon"
+      ],
+      "ro": [
+        "filet mignon de vită"
+      ],
+      "typo": [
+        "filet mignon de vita"
+      ]
+    },
+    "cote-a-los-rund": {
+      "nl": [
+        "côte à l'os",
+        "cote a los",
+        "côte de boeuf",
+        "rib met been"
+      ],
+      "ro": [
+        "cotlet de vită cu os (côte à l'os)",
+        "cotlet de vită cu os",
+        "cotlet de vită",
+        "coastă de vită"
+      ],
+      "typo": [
+        "cote a l os",
+        "kote a los",
+        "cotlet de vita cu os (cote a l'os)",
+        "cotlet de vita cu os",
+        "cotlet de vita",
+        "coasta de vita",
+        "cote a l'os",
+        "cote de boeuf"
+      ]
+    },
+    "tomahawk": {
+      "nl": [
+        "tomahawk"
+      ],
+      "ro": [
+        "tomahawk"
+      ],
+      "typo": []
+    },
+    "osso-buco": {
+      "nl": [
+        "osso buco"
+      ],
+      "ro": [
+        "osso buco (rasol de vită cu os)",
+        "osso buco"
+      ],
+      "typo": [
+        "osso buco (rasol de vita cu os)"
+      ]
+    },
+    "picanha-rozemarijn": {
+      "nl": [
+        "picanha met rozemarijn"
+      ],
+      "ro": [
+        "picanha cu rozmarin"
+      ],
+      "typo": []
+    },
+    "rundscarpaccio": {
+      "nl": [
+        "rundscarpaccio"
+      ],
+      "ro": [
+        "carpaccio de vită"
+      ],
+      "typo": [
+        "carpaccio de vita"
+      ]
+    },
+    "soepvlees": {
+      "nl": [
+        "soepvlees",
+        "rundsoepvlees"
+      ],
+      "ro": [
+        "carne de vită pentru supă",
+        "carne de supă",
+        "rasol"
+      ],
+      "typo": [
+        "carne de vita pentru supa",
+        "carne de supa"
+      ]
+    },
+    "mergpijpjes": {
+      "nl": [
+        "mergpijpjes"
+      ],
+      "ro": [
+        "oase cu măduvă"
+      ],
+      "typo": [
+        "oase cu maduva"
+      ]
+    },
+    "blinde-vink": {
+      "nl": [
+        "blinde vink"
+      ],
+      "ro": [
+        "blinde vink (rulou de vită umplut)",
+        "blinde vink"
+      ],
+      "typo": [
+        "blinde vink (rulou de vita umplut)"
+      ]
+    },
+    "americain": {
+      "nl": [
+        "américain",
+        "americain",
+        "préparé",
+        "filet americain",
+        "americain natuur"
+      ],
+      "ro": [
+        "américain (tartar de vită)",
+        "américain",
+        "tartar"
+      ],
+      "typo": [
+        "amerikain",
+        "americaan",
+        "americain (tartar de vita)",
+        "prepare"
+      ]
+    },
+    "kalfsgehakt": {
+      "nl": [
+        "kalfsgehakt"
+      ],
+      "ro": [
+        "carne tocată de vițel"
+      ],
+      "typo": [
+        "carne tocata de vitel"
+      ]
+    },
+    "varkenshaasje": {
+      "nl": [
+        "varkenshaasje",
+        "varkenshaas",
+        "haasje",
+        "varkensfilet"
+      ],
+      "ro": [
+        "mușchiuleț de porc",
+        "mușchi de porc",
+        "mușchiuleț"
+      ],
+      "typo": [
+        "varkenshaasjes",
+        "muschiulet",
+        "muschiulet de porc",
+        "muschi de porc"
+      ]
+    },
+    "spiering": {
+      "nl": [
+        "spiering",
+        "spieringkotelet",
+        "varkensnek",
+        "nekkarbonade",
+        "halskarbonade"
+      ],
+      "ro": [
+        "ceafă de porc",
+        "ceafă",
+        "cefă"
+      ],
+      "typo": [
+        "spiring",
+        "speering",
+        "ceafa",
+        "ceafa de porc",
+        "cefa"
+      ]
+    },
+    "ribbetjes": {
+      "nl": [
+        "ribbetjes",
+        "spareribs",
+        "ribben",
+        "krabbetjes",
+        "ribbekes"
+      ],
+      "ro": [
+        "coaste de porc",
+        "coaste",
+        "coastă de porc",
+        "coastele"
+      ],
+      "typo": [
+        "ribbetje",
+        "spare ribs",
+        "coasta de porc"
+      ]
+    },
+    "braadworst": {
+      "nl": [
+        "braadworst",
+        "braadworsten",
+        "verse worst",
+        "barbecueworst",
+        "bbq worst",
+        "grillworst"
+      ],
+      "ro": [
+        "cârnați proaspeți de porc",
+        "cârnați",
+        "cârnăciori",
+        "cârnați de porc"
+      ],
+      "typo": [
+        "braatworst",
+        "carnati",
+        "carnati proaspeti de porc",
+        "carnaciori",
+        "carnati de porc"
+      ]
+    },
+    "varkensgehakt": {
+      "nl": [
+        "varkensgehakt",
+        "varkens gehakt"
+      ],
+      "ro": [
+        "carne tocată de porc",
+        "tocătură de porc"
+      ],
+      "typo": [
+        "carne tocata de porc",
+        "tocatura de porc"
+      ]
+    },
+    "gemengd-gehakt": {
+      "nl": [
+        "gemengd gehakt",
+        "half om half",
+        "half-om-half",
+        "gehakt half om half",
+        "gemengd"
+      ],
+      "ro": [
+        "carne tocată amestec",
+        "carne tocată mixtă",
+        "tocătură mixtă",
+        "porc și vită"
+      ],
+      "typo": [
+        "halfomhalf",
+        "carne tocata amestec",
+        "carne tocata mixta",
+        "tocatura mixta",
+        "porc si vita"
+      ]
+    },
+    "droge-worst": {
+      "nl": [
+        "droge worst",
+        "gedroogde worst",
+        "droge worstjes"
+      ],
+      "ro": [
+        "cârnați uscați",
+        "cârnați uscați de casă"
+      ],
+      "typo": [
+        "drogeworst",
+        "carnati uscati",
+        "carnati uscati de casa"
+      ]
+    },
+    "chipolata": {
+      "nl": [
+        "chipolata",
+        "chipolatas",
+        "chipo"
+      ],
+      "ro": [
+        "chipolata",
+        "cârnăciori subțiri"
+      ],
+      "typo": [
+        "chipolatta",
+        "carnaciori subtiri"
+      ]
+    },
+    "merguez": {
+      "nl": [
+        "merguez",
+        "merguezworst"
+      ],
+      "ro": [
+        "merguez"
+      ],
+      "typo": [
+        "mergez",
+        "merguezz"
+      ]
+    },
+    "witte-pens": {
+      "nl": [
+        "witte pens",
+        "witte pensen",
+        "pens",
+        "pensen"
+      ],
+      "ro": [
+        "caltaboș alb"
+      ],
+      "typo": [
+        "wittepens",
+        "caltabos alb"
+      ]
+    },
+    "gevulde-witte-pens": {
+      "nl": [
+        "gevulde witte pens"
+      ],
+      "ro": [
+        "caltaboș alb umplut"
+      ],
+      "typo": [
+        "caltabos alb umplut"
+      ]
+    },
+    "filetkotelet": {
+      "nl": [
+        "filetkotelet",
+        "filet kotelet",
+        "kotelet",
+        "koteletten",
+        "karbonade",
+        "varkenskotelet"
+      ],
+      "ro": [
+        "cotlet de porc, file",
+        "cotlet",
+        "cotlete",
+        "cotlet de porc"
+      ],
+      "typo": [
+        "filet kottelet",
+        "kotlet"
+      ]
+    },
+    "spieringgebraad": {
+      "nl": [
+        "spieringgebraad"
+      ],
+      "ro": [
+        "friptură de ceafă de porc"
+      ],
+      "typo": [
+        "friptura de ceafa de porc"
+      ]
+    },
+    "ardens-gebraad": {
+      "nl": [
+        "ardens gebraad"
+      ],
+      "ro": [
+        "friptură ardeneză"
+      ],
+      "typo": [
+        "friptura ardeneza"
+      ]
+    },
+    "hespengebraad": {
+      "nl": [
+        "hespengebraad"
+      ],
+      "ro": [
+        "friptură de pulpă de porc"
+      ],
+      "typo": [
+        "friptura de pulpa de porc"
+      ]
+    },
+    "carregebraad": {
+      "nl": [
+        "carrégebraad"
+      ],
+      "ro": [
+        "friptură de cotlet (carré)",
+        "friptură de cotlet"
+      ],
+      "typo": [
+        "friptura de cotlet (carre)",
+        "friptura de cotlet",
+        "carregebraad"
+      ]
+    },
+    "mignonette-rozemarijn": {
+      "nl": [
+        "mignonette met rozemarijn"
+      ],
+      "ro": [
+        "mignonette cu rozmarin"
+      ],
+      "typo": []
+    },
+    "buikribben": {
+      "nl": [
+        "buikribben"
+      ],
+      "ro": [
+        "coaste din piept de porc"
+      ],
+      "typo": []
+    },
+    "buikrollade": {
+      "nl": [
+        "buikrollade"
+      ],
+      "ro": [
+        "rulou din piept de porc"
+      ],
+      "typo": []
+    },
+    "spek": {
+      "nl": [
+        "spek",
+        "buikspek",
+        "varkensbuik",
+        "spekreepjes"
+      ],
+      "ro": [
+        "piept de porc (slănină)",
+        "piept de porc",
+        "slănină",
+        "costiță",
+        "burtă de porc"
+      ],
+      "typo": [
+        "slanina",
+        "costita",
+        "piept de porc (slanina)",
+        "burta de porc"
+      ]
+    },
+    "carre": {
+      "nl": [
+        "carré"
+      ],
+      "ro": [
+        "carré de porc"
+      ],
+      "typo": [
+        "carre de porc",
+        "carre"
+      ]
+    },
+    "orloffgebraad": {
+      "nl": [
+        "orloffgebraad"
+      ],
+      "ro": [
+        "friptură orloff"
+      ],
+      "typo": [
+        "friptura orloff"
+      ]
+    },
+    "ardeense-steak": {
+      "nl": [
+        "ardeense steak"
+      ],
+      "ro": [
+        "steak ardenez"
+      ],
+      "typo": []
+    },
+    "varkenscote-a-los": {
+      "nl": [
+        "varkenscôte à l'os"
+      ],
+      "ro": [
+        "cotlet de porc cu os (côte à l'os)",
+        "cotlet de porc cu os"
+      ],
+      "typo": [
+        "cotlet de porc cu os (cote a l'os)",
+        "varkenscote a l'os"
+      ]
+    },
+    "varkenskroontje": {
+      "nl": [
+        "varkenskroontje"
+      ],
+      "ro": [
+        "coroană de porc"
+      ],
+      "typo": [
+        "coroana de porc"
+      ]
+    },
+    "varkensstoofvlees": {
+      "nl": [
+        "varkensstoofvlees"
+      ],
+      "ro": [
+        "carne de porc pentru tocăniță"
+      ],
+      "typo": [
+        "carne de porc pentru tocanita"
+      ]
+    },
+    "schenkel": {
+      "nl": [
+        "schenkel"
+      ],
+      "ro": [
+        "rasol de porc"
+      ],
+      "typo": []
+    },
+    "varkenswangetjes": {
+      "nl": [
+        "varkenswangetjes"
+      ],
+      "ro": [
+        "obrăjori de porc"
+      ],
+      "typo": [
+        "obrajori de porc"
+      ]
+    },
+    "varkensniertjes": {
+      "nl": [
+        "varkensniertjes"
+      ],
+      "ro": [
+        "rinichi de porc"
+      ],
+      "typo": []
+    },
+    "varkensstaart": {
+      "nl": [
+        "varkensstaart"
+      ],
+      "ro": [
+        "coadă de porc"
+      ],
+      "typo": [
+        "coada de porc"
+      ]
+    },
+    "varkenspoot": {
+      "nl": [
+        "varkenspoot"
+      ],
+      "ro": [
+        "picior de porc"
+      ],
+      "typo": []
+    },
+    "varkensoren": {
+      "nl": [
+        "varkensoren"
+      ],
+      "ro": [
+        "urechi de porc"
+      ],
+      "typo": []
+    },
+    "varkenslever": {
+      "nl": [
+        "varkenslever"
+      ],
+      "ro": [
+        "ficat de porc"
+      ],
+      "typo": []
+    },
+    "varkenstong": {
+      "nl": [
+        "varkenstong"
+      ],
+      "ro": [
+        "limbă de porc"
+      ],
+      "typo": [
+        "limba de porc"
+      ]
+    },
+    "hersenen": {
+      "nl": [
+        "hersenen"
+      ],
+      "ro": [
+        "creier de porc"
+      ],
+      "typo": []
+    },
+    "kipfilet": {
+      "nl": [
+        "kipfilet",
+        "kippenfilet",
+        "kiekenfilet",
+        "kippenborst",
+        "kipborst",
+        "kip"
+      ],
+      "ro": [
+        "piept de pui",
+        "piepți de pui",
+        "file de pui",
+        "pui"
+      ],
+      "typo": [
+        "kip filet",
+        "kipfillet",
+        "kiekefilet",
+        "piept pui",
+        "piepti de pui"
+      ]
+    },
+    "kippenboutjes": {
+      "nl": [
+        "kippenboutjes",
+        "kippenbouten",
+        "kippenpootjes",
+        "drumsticks",
+        "kiekenboutjes"
+      ],
+      "ro": [
+        "pulpe de pui",
+        "pulpe inferioare",
+        "ciocănele",
+        "ciocănele de pui",
+        "copane",
+        "copane de pui"
+      ],
+      "typo": [
+        "kippeboutjes",
+        "pulpe pui",
+        "ciocanele",
+        "ciocanele de pui"
+      ]
+    },
+    "kalkoengebraad": {
+      "nl": [
+        "kalkoengebraad"
+      ],
+      "ro": [
+        "friptură de curcan"
+      ],
+      "typo": [
+        "friptura de curcan"
+      ]
+    },
+    "hoeve-kip": {
+      "nl": [
+        "hoeve kip",
+        "hele kip",
+        "boerenkip",
+        "braadkip",
+        "kieken"
+      ],
+      "ro": [
+        "pui de fermă, întreg",
+        "pui întreg",
+        "pui de țară"
+      ],
+      "typo": [
+        "pui de ferma, intreg",
+        "pui intreg",
+        "pui de tara"
+      ]
+    },
+    "kippenbil": {
+      "nl": [
+        "kippenbil",
+        "kippenbillen",
+        "kippendij",
+        "kippendijen",
+        "kiekenbil"
+      ],
+      "ro": [
+        "pulpă superioară de pui",
+        "pulpe superioare",
+        "pulpă de pui",
+        "pulpe întregi"
+      ],
+      "typo": [
+        "kippebil",
+        "pulpa superioara",
+        "pulpa superioara de pui",
+        "pulpa de pui",
+        "pulpe intregi"
+      ]
+    },
+    "kippenvleugel": {
+      "nl": [
+        "kippenvleugel",
+        "kippenvleugels",
+        "kippenvleugeltjes",
+        "chicken wings",
+        "kiekenvleugels"
+      ],
+      "ro": [
+        "aripioare de pui",
+        "aripi de pui",
+        "aripioare"
+      ],
+      "typo": [
+        "aripioare pui"
+      ]
+    },
+    "kippenhaasje": {
+      "nl": [
+        "kippenhaasje"
+      ],
+      "ro": [
+        "mușchiuleț de pui"
+      ],
+      "typo": [
+        "muschiulet de pui"
+      ]
+    },
+    "kip-orloff": {
+      "nl": [
+        "kip orloff"
+      ],
+      "ro": [
+        "pui orloff"
+      ],
+      "typo": []
+    },
+    "italiaanse-kipfilet": {
+      "nl": [
+        "italiaanse kipfilet"
+      ],
+      "ro": [
+        "piept de pui italian"
+      ],
+      "typo": []
+    },
+    "kippenhartjes": {
+      "nl": [
+        "kippenhartjes"
+      ],
+      "ro": [
+        "inimi de pui"
+      ],
+      "typo": []
+    },
+    "kippenlever": {
+      "nl": [
+        "kippenlever"
+      ],
+      "ro": [
+        "ficat de pui"
+      ],
+      "typo": []
+    },
+    "kippenmagen": {
+      "nl": [
+        "kippenmagen"
+      ],
+      "ro": [
+        "pipote de pui"
+      ],
+      "typo": []
+    },
+    "kippenworst": {
+      "nl": [
+        "kippenworst"
+      ],
+      "ro": [
+        "cârnați de pui"
+      ],
+      "typo": [
+        "carnati de pui"
+      ]
+    },
+    "kippenchipolata": {
+      "nl": [
+        "kippenchipolata"
+      ],
+      "ro": [
+        "chipolata de pui"
+      ],
+      "typo": []
+    },
+    "kipgehakt": {
+      "nl": [
+        "kipgehakt"
+      ],
+      "ro": [
+        "carne tocată de pui"
+      ],
+      "typo": [
+        "carne tocata de pui"
+      ]
+    },
+    "kalkoenfilet": {
+      "nl": [
+        "kalkoenfilet",
+        "kalkoenborst",
+        "kalkoen"
+      ],
+      "ro": [
+        "piept de curcan",
+        "curcan",
+        "piept curcan"
+      ],
+      "typo": [
+        "kalkoen filet"
+      ]
+    },
+    "kalkoen-bursan": {
+      "nl": [
+        "kalkoen bursan"
+      ],
+      "ro": [
+        "curcan bursan"
+      ],
+      "typo": []
+    },
+    "kalkoen-orloff": {
+      "nl": [
+        "kalkoen orloff"
+      ],
+      "ro": [
+        "curcan orloff"
+      ],
+      "typo": []
+    },
+    "lamsbout": {
+      "nl": [
+        "lamsbout",
+        "lamsboutje",
+        "bout van lam"
+      ],
+      "ro": [
+        "pulpă de miel",
+        "pulpa de miel"
+      ],
+      "typo": [
+        "lambout"
+      ]
+    },
+    "lam-half": {
+      "nl": [
+        "lam 1/2",
+        "half lam"
+      ],
+      "ro": [
+        "miel, jumătate",
+        "jumătate de miel"
+      ],
+      "typo": [
+        "miel, jumatate",
+        "jumatate de miel"
+      ]
+    },
+    "lam-heel": {
+      "nl": [
+        "lam",
+        "heel lam",
+        "een lam"
+      ],
+      "ro": [
+        "miel întreg",
+        "un miel"
+      ],
+      "typo": [
+        "miel intreg"
+      ]
+    },
+    "lamskotelet": {
+      "nl": [
+        "lamskotelet",
+        "lamskoteletjes",
+        "lamskoteletten",
+        "lamsribbetjes"
+      ],
+      "ro": [
+        "cotlete de miel",
+        "cotlet de miel"
+      ],
+      "typo": [
+        "lamskottelet"
+      ]
+    },
+    "lamskotelet-zonder-been": {
+      "nl": [
+        "lamskotelet zonder been"
+      ],
+      "ro": [
+        "cotlet de miel fără os"
+      ],
+      "typo": [
+        "cotlet de miel fara os"
+      ]
+    },
+    "lamspastrami": {
+      "nl": [
+        "lamspastrami",
+        "pastrami van lam"
+      ],
+      "ro": [
+        "pastramă de miel",
+        "pastramă de oaie"
+      ],
+      "typo": [
+        "pastrama de miel",
+        "pastrama de oaie"
+      ]
+    },
+    "lamsrib": {
+      "nl": [
+        "lamsrib"
+      ],
+      "ro": [
+        "coaste de miel"
+      ],
+      "typo": []
+    },
+    "lamsschenkel": {
+      "nl": [
+        "lamsschenkel"
+      ],
+      "ro": [
+        "rasol de miel"
+      ],
+      "typo": []
+    },
+    "lamsstoofvlees": {
+      "nl": [
+        "lamsstoofvlees"
+      ],
+      "ro": [
+        "carne de miel pentru tocăniță"
+      ],
+      "typo": [
+        "carne de miel pentru tocanita"
+      ]
+    },
+    "lamsschouder": {
+      "nl": [
+        "lamsschouder",
+        "lamsschoudertje"
+      ],
+      "ro": [
+        "spată de miel",
+        "spata de miel"
+      ],
+      "typo": []
+    },
+    "lamsnek": {
+      "nl": [
+        "lamsnek"
+      ],
+      "ro": [
+        "gât de miel"
+      ],
+      "typo": [
+        "gat de miel"
+      ]
+    },
+    "lamsgehakt": {
+      "nl": [
+        "lamsgehakt"
+      ],
+      "ro": [
+        "carne tocată de miel"
+      ],
+      "typo": [
+        "carne tocata de miel"
+      ]
+    },
+    "varkensschnitzel": {
+      "nl": [
+        "varkensschnitzel",
+        "schnitzel varken",
+        "schnitzel"
+      ],
+      "ro": [
+        "șnițel de porc",
+        "șnițele de porc"
+      ],
+      "typo": [
+        "snitel de porc",
+        "snitele de porc"
+      ]
+    },
+    "kipschnitzel": {
+      "nl": [
+        "kipschnitzel",
+        "kippenschnitzel",
+        "schnitzel kip"
+      ],
+      "ro": [
+        "șnițel de pui",
+        "șnițel",
+        "șnițele de pui"
+      ],
+      "typo": [
+        "snitel de pui",
+        "kipsnitzel",
+        "snitel",
+        "snitele de pui"
+      ]
+    },
+    "natuurburger": {
+      "nl": [
+        "natuurburger",
+        "hamburger",
+        "burger",
+        "burgers"
+      ],
+      "ro": [
+        "burger natur",
+        "hamburger",
+        "burger"
+      ],
+      "typo": [
+        "hamburgers"
+      ]
+    },
+    "kaasburger": {
+      "nl": [
+        "kaasburger"
+      ],
+      "ro": [
+        "burger cu brânză"
+      ],
+      "typo": [
+        "burger cu branza"
+      ]
+    },
+    "valentineburger": {
+      "nl": [
+        "valentineburger"
+      ],
+      "ro": [
+        "burger valentine"
+      ],
+      "typo": []
+    },
+    "boerburger": {
+      "nl": [
+        "boerburger"
+      ],
+      "ro": [
+        "burger țărănesc"
+      ],
+      "typo": [
+        "burger taranesc"
+      ]
+    },
+    "special-burger": {
+      "nl": [
+        "special burger"
+      ],
+      "ro": [
+        "burger special"
+      ],
+      "typo": []
+    },
+    "ajuinburger": {
+      "nl": [
+        "ajuinburger"
+      ],
+      "ro": [
+        "burger cu ceapă"
+      ],
+      "typo": [
+        "burger cu ceapa"
+      ]
+    },
+    "hawaiburger": {
+      "nl": [
+        "hawaïburger"
+      ],
+      "ro": [
+        "burger hawaii"
+      ],
+      "typo": [
+        "hawaiburger"
+      ]
+    },
+    "dubaiburger": {
+      "nl": [
+        "dubaiburger"
+      ],
+      "ro": [
+        "burger dubai"
+      ],
+      "typo": []
+    },
+    "beefburger": {
+      "nl": [
+        "beefburger"
+      ],
+      "ro": [
+        "burger de vită"
+      ],
+      "typo": [
+        "burger de vita"
+      ]
+    },
+    "kipburger": {
+      "nl": [
+        "kipburger"
+      ],
+      "ro": [
+        "burger de pui"
+      ],
+      "typo": []
+    },
+    "spies-mini-burger": {
+      "nl": [
+        "spies mini burger"
+      ],
+      "ro": [
+        "frigăruie cu mini burgeri"
+      ],
+      "typo": [
+        "frigaruie cu mini burgeri"
+      ]
+    },
+    "cordon-bleu": {
+      "nl": [
+        "cordon bleu",
+        "cordonbleu",
+        "cordon-bleu"
+      ],
+      "ro": [
+        "cordon bleu"
+      ],
+      "typo": [
+        "cordon blue",
+        "cordombleu"
+      ]
+    },
+    "special-cordon-bleu": {
+      "nl": [
+        "special cordon bleu"
+      ],
+      "ro": [
+        "cordon bleu special"
+      ],
+      "typo": []
+    },
+    "vogelnestjes": {
+      "nl": [
+        "vogelnestjes"
+      ],
+      "ro": [
+        "vogelnestje (ou fiert învelit în carne tocată)",
+        "vogelnestje"
+      ],
+      "typo": [
+        "vogelnestje (ou fiert invelit in carne tocata)"
+      ]
+    },
+    "boomstammetje-spek": {
+      "nl": [
+        "boomstammetje spek"
+      ],
+      "ro": [
+        "boomstammetje cu bacon (rulou de carne tocată)",
+        "boomstammetje cu bacon"
+      ],
+      "typo": [
+        "boomstammetje cu bacon (rulou de carne tocata)"
+      ]
+    },
+    "boomstammetje-varken": {
+      "nl": [
+        "boomstammetje varken"
+      ],
+      "ro": [
+        "boomstammetje de porc (rulou de carne tocată)",
+        "boomstammetje de porc"
+      ],
+      "typo": [
+        "boomstammetje de porc (rulou de carne tocata)"
+      ]
+    },
+    "gehaktbrood-varken": {
+      "nl": [
+        "gehaktbrood varken"
+      ],
+      "ro": [
+        "gehaktbrood de porc (carne tocată la cuptor)",
+        "gehaktbrood de porc"
+      ],
+      "typo": [
+        "gehaktbrood de porc (carne tocata la cuptor)"
+      ]
+    },
+    "gehaktbrood-kaas": {
+      "nl": [
+        "gehaktbrood met kaas"
+      ],
+      "ro": [
+        "gehaktbrood cu brânză"
+      ],
+      "typo": [
+        "gehaktbrood cu branza"
+      ]
+    },
+    "rulade-gehakt": {
+      "nl": [
+        "rulade gehakt"
+      ],
+      "ro": [
+        "ruladă de carne tocată"
+      ],
+      "typo": [
+        "rulada de carne tocata"
+      ]
+    },
+    "varkensbrochette": {
+      "nl": [
+        "varkensbrochette",
+        "brochette varken",
+        "varkensspies"
+      ],
+      "ro": [
+        "frigăruie de porc",
+        "frigărui de porc"
+      ],
+      "typo": [
+        "varkensbrochet",
+        "frigaruie de porc",
+        "frigarui de porc"
+      ]
+    },
+    "balletjesbrochette": {
+      "nl": [
+        "balletjesbrochette"
+      ],
+      "ro": [
+        "frigăruie cu chifteluțe"
+      ],
+      "typo": [
+        "frigaruie cu chiftelute"
+      ]
+    },
+    "grillworstbrochette": {
+      "nl": [
+        "grillworstbrochette"
+      ],
+      "ro": [
+        "frigăruie cu cârnăcior de grătar"
+      ],
+      "typo": [
+        "frigaruie cu carnacior de gratar"
+      ]
+    },
+    "kipbrochette": {
+      "nl": [
+        "kipbrochette",
+        "kippenbrochette",
+        "kipspies",
+        "kippenspiesjes",
+        "brochette kip"
+      ],
+      "ro": [
+        "frigăruie de pui",
+        "frigărui de pui",
+        "frigăruie pui"
+      ],
+      "typo": [
+        "kipbrochet",
+        "frigaruie de pui",
+        "frigarui de pui",
+        "frigaruie pui"
+      ]
+    },
+    "kalkoenbrochette": {
+      "nl": [
+        "kalkoenbrochette"
+      ],
+      "ro": [
+        "frigăruie de curcan"
+      ],
+      "typo": [
+        "frigaruie de curcan"
+      ]
+    },
+    "rundsbrochette": {
+      "nl": [
+        "rundsbrochette"
+      ],
+      "ro": [
+        "frigăruie de vită"
+      ],
+      "typo": [
+        "frigaruie de vita"
+      ]
+    },
+    "ardeense-brochette": {
+      "nl": [
+        "ardeense brochette"
+      ],
+      "ro": [
+        "frigăruie ardeneză"
+      ],
+      "typo": [
+        "frigaruie ardeneza"
+      ]
+    },
+    "spekbrochette": {
+      "nl": [
+        "spekbrochette"
+      ],
+      "ro": [
+        "frigăruie cu bacon"
+      ],
+      "typo": [
+        "frigaruie cu bacon"
+      ]
+    },
+    "lamsbrochette": {
+      "nl": [
+        "lamsbrochette"
+      ],
+      "ro": [
+        "frigăruie de miel"
+      ],
+      "typo": [
+        "frigaruie de miel"
+      ]
+    },
+    "special-brochette": {
+      "nl": [
+        "special brochette"
+      ],
+      "ro": [
+        "frigăruie specială"
+      ],
+      "typo": [
+        "frigaruie speciala"
+      ]
+    },
+    "spekfakkels": {
+      "nl": [
+        "spekfakkels"
+      ],
+      "ro": [
+        "spekfakkels (frigărui învelite în bacon)",
+        "spekfakkels"
+      ],
+      "typo": [
+        "spekfakkels (frigarui invelite in bacon)"
+      ]
+    },
+    "varkenscote-gemarineerd": {
+      "nl": [
+        "varkenscôte à l'os gemarineerd"
+      ],
+      "ro": [
+        "cotlet de porc cu os, marinat"
+      ],
+      "typo": [
+        "varkenscote a l'os gemarineerd"
+      ]
+    },
+    "spieringkotelet-gemarineerd": {
+      "nl": [
+        "spieringkotelet gemarineerd"
+      ],
+      "ro": [
+        "cotlet de ceafă de porc, marinat"
+      ],
+      "typo": [
+        "cotlet de ceafa de porc, marinat"
+      ]
+    },
+    "filetkotelet-gemarineerd": {
+      "nl": [
+        "filetkotelet gemarineerd"
+      ],
+      "ro": [
+        "cotlet de porc file, marinat"
+      ],
+      "typo": []
+    },
+    "spek-gemarineerd": {
+      "nl": [
+        "spek gemarineerd"
+      ],
+      "ro": [
+        "piept de porc marinat"
+      ],
+      "typo": []
+    },
+    "varkenshaasje-gemarineerd": {
+      "nl": [
+        "varkenshaasje gemarineerd"
+      ],
+      "ro": [
+        "mușchiuleț de porc marinat"
+      ],
+      "typo": [
+        "muschiulet de porc marinat"
+      ]
+    },
+    "varkensmedaillon": {
+      "nl": [
+        "varkensmedaillon"
+      ],
+      "ro": [
+        "medalion de porc"
+      ],
+      "typo": []
+    },
+    "varkensgyros": {
+      "nl": [
+        "varkensgyros",
+        "gyros varken"
+      ],
+      "ro": [
+        "gyros de porc",
+        "giros de porc"
+      ],
+      "typo": [
+        "varkensgiros"
+      ]
+    },
+    "wokvlees-varken": {
+      "nl": [
+        "wok"
+      ],
+      "ro": [
+        "carne de porc pentru wok"
+      ],
+      "typo": []
+    },
+    "pitavlees-varken": {
+      "nl": [
+        "pitavlees varken"
+      ],
+      "ro": [
+        "carne de porc pentru pita"
+      ],
+      "typo": []
+    },
+    "ardeens-gemarineerd": {
+      "nl": [
+        "ardeens gemarineerd"
+      ],
+      "ro": [
+        "ardenez marinat"
+      ],
+      "typo": []
+    },
+    "blum-ardeens": {
+      "nl": [
+        "blum ardeens"
+      ],
+      "ro": [
+        "blum ardeens, cotlet marinat tăiat floare"
+      ],
+      "typo": [
+        "blum ardeens, cotlet marinat taiat floare"
+      ]
+    },
+    "pizdulici-marinate": {
+      "nl": [
+        "spenekop gemarineerd"
+      ],
+      "ro": [
+        "pizdulici marinate"
+      ],
+      "typo": []
+    },
+    "kipfilet-gemarineerd": {
+      "nl": [
+        "kipfilet gemarineerd"
+      ],
+      "ro": [
+        "piept de pui marinat"
+      ],
+      "typo": []
+    },
+    "kippenbil-gemarineerd": {
+      "nl": [
+        "kippenbil gemarineerd"
+      ],
+      "ro": [
+        "pulpă superioară de pui, marinată"
+      ],
+      "typo": [
+        "pulpa superioara de pui, marinata"
+      ]
+    },
+    "kippenbout-gemarineerd": {
+      "nl": [
+        "kippenbout gemarineerd"
+      ],
+      "ro": [
+        "pulpe de pui marinate"
+      ],
+      "typo": []
+    },
+    "kippenhaasje-gemarineerd": {
+      "nl": [
+        "kippenhaasje gemarineerd"
+      ],
+      "ro": [
+        "mușchiuleț de pui marinat"
+      ],
+      "typo": [
+        "muschiulet de pui marinat"
+      ]
+    },
+    "kipgyros": {
+      "nl": [
+        "kipgyros",
+        "gyros",
+        "kippengyros"
+      ],
+      "ro": [
+        "gyros de pui",
+        "gyros",
+        "giros de pui"
+      ],
+      "typo": [
+        "giros",
+        "kipgiros"
+      ]
+    },
+    "kalkoen-gemarineerd": {
+      "nl": [
+        "kalkoen gemarineerd"
+      ],
+      "ro": [
+        "curcan marinat"
+      ],
+      "typo": []
+    },
+    "hespenworst": {
+      "nl": [
+        "hespenworst"
+      ],
+      "ro": [
+        "hespenworst (cârnat fiert cu șuncă)",
+        "hespenworst"
+      ],
+      "typo": [
+        "hespenworst (carnat fiert cu sunca)"
+      ]
+    },
+    "kalfsworst": {
+      "nl": [
+        "kalfsworst"
+      ],
+      "ro": [
+        "kalfsworst (cârnat de vițel)",
+        "kalfsworst"
+      ],
+      "typo": [
+        "kalfsworst (carnat de vitel)"
+      ]
+    },
+    "parijzer-worst": {
+      "nl": [
+        "parijzer worst"
+      ],
+      "ro": [
+        "parizer"
+      ],
+      "typo": []
+    },
+    "champignonworst": {
+      "nl": [
+        "champignonworst"
+      ],
+      "ro": [
+        "champignonworst (parizer cu ciuperci)",
+        "champignonworst"
+      ],
+      "typo": []
+    },
+    "mosterdspek": {
+      "nl": [
+        "mosterdspek"
+      ],
+      "ro": [
+        "mosterdspek (slănină cu muștar)",
+        "mosterdspek"
+      ],
+      "typo": [
+        "mosterdspek (slanina cu mustar)"
+      ]
+    },
+    "blokpate": {
+      "nl": [
+        "blokpaté"
+      ],
+      "ro": [
+        "pateu bloc"
+      ],
+      "typo": [
+        "blokpate"
+      ]
+    },
+    "pate-maison": {
+      "nl": [
+        "paté maison"
+      ],
+      "ro": [
+        "pateu de casă"
+      ],
+      "typo": [
+        "pateu de casa",
+        "pate maison"
+      ]
+    },
+    "fijnkostsalami": {
+      "nl": [
+        "fijnkostsalami"
+      ],
+      "ro": [
+        "salam fijnkost"
+      ],
+      "typo": []
+    },
+    "pepersalami": {
+      "nl": [
+        "pepersalami"
+      ],
+      "ro": [
+        "salam cu piper"
+      ],
+      "typo": []
+    },
+    "kruidensalami": {
+      "nl": [
+        "kruidensalami"
+      ],
+      "ro": [
+        "salam cu ierburi"
+      ],
+      "typo": []
+    },
+    "kalkoensalami": {
+      "nl": [
+        "kalkoensalami"
+      ],
+      "ro": [
+        "salam de curcan"
+      ],
+      "typo": []
+    },
+    "chorizo": {
+      "nl": [
+        "chorizo"
+      ],
+      "ro": [
+        "chorizo"
+      ],
+      "typo": []
+    },
+    "mayaworst": {
+      "nl": [
+        "mayaworst"
+      ],
+      "ro": [
+        "mayaworst"
+      ],
+      "typo": []
+    },
+    "charc-kipfilet": {
+      "nl": [
+        "kipfilet (charcuterie)"
+      ],
+      "ro": [
+        "piept de pui, mezel"
+      ],
+      "typo": []
+    },
+    "charc-kalkoenfilet": {
+      "nl": [
+        "kalkoenfilet (charcuterie)"
+      ],
+      "ro": [
+        "piept de curcan, mezel"
+      ],
+      "typo": []
+    },
+    "lookworst-rood": {
+      "nl": [
+        "lookworst rood"
+      ],
+      "ro": [
+        "lookworst roșu (cârnat cu usturoi)",
+        "lookworst roșu"
+      ],
+      "typo": [
+        "lookworst rosu (carnat cu usturoi)",
+        "lookworst rosu"
+      ]
+    },
+    "boerenhesp": {
+      "nl": [
+        "boerenhesp"
+      ],
+      "ro": [
+        "șuncă țărănească"
+      ],
+      "typo": [
+        "sunca taraneasca"
+      ]
+    },
+    "serrano": {
+      "nl": [
+        "serrano"
+      ],
+      "ro": [
+        "jambon serrano"
+      ],
+      "typo": []
+    },
+    "gerookte-ham": {
+      "nl": [
+        "gerookte ham"
+      ],
+      "ro": [
+        "șuncă afumată"
+      ],
+      "typo": [
+        "sunca afumata"
+      ]
+    },
+    "gezouten-spek": {
+      "nl": [
+        "gezouten spek"
+      ],
+      "ro": [
+        "slănină sărată"
+      ],
+      "typo": [
+        "slanina sarata"
+      ]
+    },
+    "copa": {
+      "nl": [
+        "copa"
+      ],
+      "ro": [
+        "copa (coppa)",
+        "copa"
+      ],
+      "typo": []
+    },
+    "prepare-van-de-chef": {
+      "nl": [
+        "préparé van de chef",
+        "préparé",
+        "prepare",
+        "huisbereide americain"
+      ],
+      "ro": [
+        "préparé al bucătarului (tartar de vită preparat)",
+        "préparé al bucătarului"
+      ],
+      "typo": [
+        "preparé",
+        "prepare al bucatarului (tartar de vita preparat)",
+        "prepare al bucatarului",
+        "prepare van de chef"
+      ]
+    },
+    "vleessalade": {
+      "nl": [
+        "vleessalade"
+      ],
+      "ro": [
+        "salată de carne"
+      ],
+      "typo": [
+        "salata de carne"
+      ]
+    },
+    "krabsalade": {
+      "nl": [
+        "krabsalade"
+      ],
+      "ro": [
+        "salată de crab"
+      ],
+      "typo": [
+        "salata de crab"
+      ]
+    },
+    "kip-tartaar": {
+      "nl": [
+        "kip tartaar"
+      ],
+      "ro": [
+        "tartar de pui"
+      ],
+      "typo": []
+    },
+    "kip-van-de-chef": {
+      "nl": [
+        "kip van de chef"
+      ],
+      "ro": [
+        "pui al bucătarului"
+      ],
+      "typo": [
+        "pui al bucatarului"
+      ]
+    },
+    "bereid-gehakt": {
+      "nl": [
+        "bereid gehakt"
+      ],
+      "ro": [
+        "carne tocată condimentată"
+      ],
+      "typo": [
+        "carne tocata condimentata"
+      ]
+    },
+    "mici": {
+      "nl": [
+        "mici",
+        "mititei",
+        "roemeense gehaktrolletjes",
+        "gehaktrolletjes",
+        "roemeense balletjes"
+      ],
+      "ro": [
+        "mici",
+        "mititei",
+        "mici de casă",
+        "mici românești"
+      ],
+      "typo": [
+        "mitei",
+        "mititi",
+        "micii",
+        "mic",
+        "mici de casa",
+        "mici romanesti"
+      ]
+    },
+    "gerookte-worst": {
+      "nl": [
+        "gerookte worst",
+        "rookworst",
+        "gerookte worsten"
+      ],
+      "ro": [
+        "cârnați afumați",
+        "cârnați afumați de casă",
+        "cârnați de casă"
+      ],
+      "typo": [
+        "carnati afumati",
+        "carnati afumati de casa",
+        "carnati de casa"
+      ]
+    },
+    "pastrami": {
+      "nl": [
+        "pastrami",
+        "pastrama"
+      ],
+      "ro": [
+        "pastramă de porc",
+        "pastramă"
+      ],
+      "typo": [
+        "pastrami van varken",
+        "pastrama de porc"
+      ]
+    },
+    "kaizer": {
+      "nl": [
+        "gerookt buikspek",
+        "kaizer",
+        "kaiser",
+        "gerookt spek"
+      ],
+      "ro": [
+        "kaizer de casă",
+        "kaiser",
+        "costiță afumată"
+      ],
+      "typo": [
+        "kaizăr",
+        "kaizer de casa",
+        "costita afumata"
+      ]
+    },
+    "sunca-de-casa": {
+      "nl": [
+        "huisgemaakte hesp",
+        "hesp",
+        "huisgemaakte ham"
+      ],
+      "ro": [
+        "șuncă de casă",
+        "șuncă"
+      ],
+      "typo": [
+        "sunca de casa",
+        "sunca"
+      ]
+    },
+    "afumatura": {
+      "nl": [
+        "gerookt varkensvlees",
+        "gerookt vlees"
+      ],
+      "ro": [
+        "afumătură",
+        "afumături",
+        "afumaturi"
+      ],
+      "typo": [
+        "afumatura"
+      ]
+    },
+    "ciolane-afumate": {
+      "nl": [
+        "gerookte schenkel",
+        "gerookte varkensschenkel",
+        "schenkel gerookt"
+      ],
+      "ro": [
+        "ciolane afumate",
+        "ciolan afumat",
+        "ciolan",
+        "ciolane"
+      ],
+      "typo": []
+    },
+    "carnati-afumati-cascaval": {
+      "nl": [
+        "gerookte worst met kaas"
+      ],
+      "ro": [
+        "cârnați afumați cu cașcaval"
+      ],
+      "typo": [
+        "carnati afumati cu cascaval"
+      ]
+    },
+    "carnati-afumati-mustar": {
+      "nl": [
+        "gerookte worst met mosterd"
+      ],
+      "ro": [
+        "cârnați afumați cu muștar"
+      ],
+      "typo": [
+        "carnati afumati cu mustar"
+      ]
+    },
+    "caltabos": {
+      "nl": [
+        "roemeense leverworst",
+        "leverworst"
+      ],
+      "ro": [
+        "caltaboș",
+        "lebăr",
+        "lebervurst"
+      ],
+      "typo": [
+        "caltabos",
+        "caltabosi",
+        "lebar"
+      ]
+    },
+    "crenvursti": {
+      "nl": [
+        "roemeense knakworsten",
+        "knakworst",
+        "knakworsten",
+        "frankfurters",
+        "weense worstjes"
+      ],
+      "ro": [
+        "crenvurști",
+        "crenvursti"
+      ],
+      "typo": [
+        "crenvusti"
+      ]
+    },
+    "polonezi": {
+      "nl": [
+        "poolse worst",
+        "poolse worstjes"
+      ],
+      "ro": [
+        "polonezi",
+        "cârnați polonezi"
+      ],
+      "typo": [
+        "carnati polonezi"
+      ]
+    },
+    "toba": {
+      "nl": [
+        "roemeense zult",
+        "zult",
+        "hoofdkaas",
+        "hoofdvlees"
+      ],
+      "ro": [
+        "tobă",
+        "tobă de porc"
+      ],
+      "typo": [
+        "toba",
+        "toba de porc"
+      ]
+    },
+    "salam-de-casa": {
+      "nl": [
+        "huisgemaakte salami",
+        "roemeense salami"
+      ],
+      "ro": [
+        "salam de casă",
+        "salam"
+      ],
+      "typo": [
+        "salam de casa"
+      ]
+    },
+    "salam-de-casa-sunca": {
+      "nl": [
+        "huisgemaakte salami met hesp"
+      ],
+      "ro": [
+        "salam de casă cu șuncă"
+      ],
+      "typo": [
+        "salam de casa cu sunca"
+      ]
+    },
+    "parizer-de-casa": {
+      "nl": [
+        "huisgemaakte parijzer worst, varken",
+        "parijzer"
+      ],
+      "ro": [
+        "parizer de casă (porc)",
+        "parizer de casă",
+        "parizer",
+        "parizel"
+      ],
+      "typo": [
+        "parizer de casa",
+        "parizer de casa (porc)"
+      ]
+    },
+    "parizer-ciuperci": {
+      "nl": [
+        "parijzer worst met champignons"
+      ],
+      "ro": [
+        "parizer cu ciuperci"
+      ],
+      "typo": []
+    },
+    "parizer-masline": {
+      "nl": [
+        "parijzer worst met olijven"
+      ],
+      "ro": [
+        "parizer cu măsline"
+      ],
+      "typo": [
+        "parizer cu masline"
+      ]
+    },
+    "parizer-ciuperci-masline": {
+      "nl": [
+        "parijzer worst met champignons en olijven"
+      ],
+      "ro": [
+        "parizer cu ciuperci și măsline"
+      ],
+      "typo": [
+        "parizer cu ciuperci si masline"
+      ]
+    },
+    "carne-la-garnita": {
+      "nl": [
+        "varkensvlees bewaard in reuzel",
+        "vlees in reuzel"
+      ],
+      "ro": [
+        "carne la garniță",
+        "carne în untură"
+      ],
+      "typo": [
+        "carne la garnita",
+        "carne in untura"
+      ]
+    },
+    "jumari": {
+      "nl": [
+        "gebakken spekjes",
+        "kaantjes",
+        "spekjes"
+      ],
+      "ro": [
+        "jumări",
+        "jumări de porc"
+      ],
+      "typo": [
+        "jumari",
+        "jumari de porc"
+      ]
+    },
+    "untura": {
+      "nl": [
+        "reuzel",
+        "varkensvet"
+      ],
+      "ro": [
+        "untură",
+        "untură de porc"
+      ],
+      "typo": [
+        "untura",
+        "untura de porc"
+      ]
+    },
+    "colli-varken-1": {
+      "nl": [
+        "colli varken 1",
+        "colli varken",
+        "varkenscolli",
+        "colli 1"
+      ],
+      "ro": [
+        "colli porc 1",
+        "colli porc"
+      ],
+      "typo": [
+        "coli varken 1"
+      ]
+    },
+    "gourmet-9": {
+      "nl": [
+        "gourmet 9 soorten",
+        "gourmet",
+        "gourmetschotel",
+        "gourmetten",
+        "steengrill"
+      ],
+      "ro": [
+        "platou gourmet, 9 feluri",
+        "gourmet",
+        "platou gourmet"
+      ],
+      "typo": [
+        "gourment",
+        "gurme"
+      ]
+    },
+    "colli-varken-2": {
+      "nl": [
+        "colli varken 2"
+      ],
+      "ro": [
+        "colli porc 2"
+      ],
+      "typo": []
+    },
+    "colli-kip": {
+      "nl": [
+        "colli kip"
+      ],
+      "ro": [
+        "colli pui"
+      ],
+      "typo": []
+    },
+    "colli-kip-varken": {
+      "nl": [
+        "colli kip-varken"
+      ],
+      "ro": [
+        "colli pui și porc"
+      ],
+      "typo": [
+        "colli pui si porc"
+      ]
+    },
+    "colli-bbq": {
+      "nl": [
+        "bbq colli",
+        "barbecuecolli"
+      ],
+      "ro": [
+        "colli bbq",
+        "colli grătar"
+      ],
+      "typo": [
+        "colli gratar"
+      ]
+    },
+    "colli-john": {
+      "nl": [
+        "colli john",
+        "grote colli"
+      ],
+      "ro": [
+        "colli john"
+      ],
+      "typo": [
+        "coli john"
+      ]
+    },
+    "fondue": {
+      "nl": [
+        "fondue",
+        "fondueschotel",
+        "fonduevlees",
+        "vleesfondue"
+      ],
+      "ro": [
+        "fondue"
+      ],
+      "typo": [
+        "fondu"
+      ]
+    },
+    "fondue-14": {
+      "nl": [
+        "fondue 14 soorten"
+      ],
+      "ro": [
+        "fondue, 14 feluri"
+      ],
+      "typo": []
+    },
+    "gourmet-10": {
+      "nl": [
+        "gourmet 10 soorten"
+      ],
+      "ro": [
+        "platou gourmet, 10 feluri"
+      ],
+      "typo": []
+    },
+    "gourmet-luxe": {
+      "nl": [
+        "gourmet luxe"
+      ],
+      "ro": [
+        "gourmet de lux"
+      ],
+      "typo": []
+    },
+    "tapas-kinder": {
+      "nl": [
+        "kinder tapas"
+      ],
+      "ro": [
+        "tapas pentru copii"
+      ],
+      "typo": []
+    },
+    "tapas-mix": {
+      "nl": [
+        "tapas mix",
+        "tapas",
+        "tapasschotel",
+        "tapasplank",
+        "aperitiefschotel"
+      ],
+      "ro": [
+        "tapas mix",
+        "tapas",
+        "platou tapas"
+      ],
+      "typo": [
+        "tappas"
+      ]
+    },
+    "tapas-john-1": {
+      "nl": [
+        "tapas john 1"
+      ],
+      "ro": [
+        "tapas john 1"
+      ],
+      "typo": []
+    },
+    "tapas-john-1-scampi": {
+      "nl": [
+        "tapas john 1 met scampi"
+      ],
+      "ro": [
+        "tapas john 1 cu creveți"
+      ],
+      "typo": [
+        "tapas john 1 cu creveti"
+      ]
+    },
+    "tapas-john-2": {
+      "nl": [
+        "tapas john 2"
+      ],
+      "ro": [
+        "tapas john 2"
+      ],
+      "typo": []
+    },
+    "tapas-ro": {
+      "nl": [
+        "roemeense tapas"
+      ],
+      "ro": [
+        "tapas românești"
+      ],
+      "typo": [
+        "tapas romanesti"
+      ]
+    },
+    "platou-romanesc-festiv": {
+      "nl": [
+        "roemeense feestschotel",
+        "roemeense schotel",
+        "feestschotel"
+      ],
+      "ro": [
+        "platou românesc festiv",
+        "platou românesc",
+        "platou festiv"
+      ],
+      "typo": [
+        "platou romanesc",
+        "platou romanesc festiv"
+      ]
+    },
+    "koude-schotel": {
+      "nl": [
+        "koude schotel",
+        "koud buffet",
+        "vleesschotel",
+        "koude vleesschotel"
+      ],
+      "ro": [
+        "platou rece",
+        "bufet rece"
+      ],
+      "typo": [
+        "koude schotels"
+      ]
+    },
+    "koude-schotel-extra-kaas": {
+      "nl": [
+        "koude schotel extra kaas"
+      ],
+      "ro": [
+        "platou rece cu brânză extra"
+      ],
+      "typo": [
+        "platou rece cu branza extra"
+      ]
+    },
+    "hapje-scampi-2": {
+      "nl": [
+        "scampi"
+      ],
+      "ro": [
+        "scampi"
+      ],
+      "typo": []
+    },
+    "hapje-lepeltje-scampi": {
+      "nl": [
+        "lepeltje scampi"
+      ],
+      "ro": [
+        "linguriță cu scampi"
+      ],
+      "typo": [
+        "lingurita cu scampi"
+      ]
+    },
+    "hapje-lepeltje-meloen-serrano": {
+      "nl": [
+        "lepeltje meloen & serrano"
+      ],
+      "ro": [
+        "linguriță cu pepene și serrano"
+      ],
+      "typo": [
+        "lingurita cu pepene si serrano"
+      ]
+    },
+    "hapje-lepeltje-pate": {
+      "nl": [
+        "lepeltje paté"
+      ],
+      "ro": [
+        "linguriță cu pateu"
+      ],
+      "typo": [
+        "lingurita cu pateu",
+        "lepeltje pate"
+      ]
+    },
+    "hapje-lepeltje-geitenkaas": {
+      "nl": [
+        "lepeltje geitenkaas"
+      ],
+      "ro": [
+        "linguriță cu brânză de capră"
+      ],
+      "typo": [
+        "lingurita cu branza de capra"
+      ]
+    },
+    "hapje-lepeltje-zalm": {
+      "nl": [
+        "lepeltje zalm"
+      ],
+      "ro": [
+        "linguriță cu somon"
+      ],
+      "typo": [
+        "lingurita cu somon"
+      ]
+    },
+    "hapje-taco-gehakt": {
+      "nl": [
+        "taco gehakt"
+      ],
+      "ro": [
+        "taco cu carne tocată"
+      ],
+      "typo": [
+        "taco cu carne tocata"
+      ]
+    },
+    "hapje-taco-kip": {
+      "nl": [
+        "taco kip"
+      ],
+      "ro": [
+        "taco cu pui"
+      ],
+      "typo": []
+    },
+    "hapje-blinis-zalm": {
+      "nl": [
+        "blinis met gerookte zalm"
+      ],
+      "ro": [
+        "blinis cu somon afumat"
+      ],
+      "typo": []
+    },
+    "hapje-bruschetta": {
+      "nl": [
+        "bruschetta geitenkaas"
+      ],
+      "ro": [
+        "bruschetta cu brânză de capră"
+      ],
+      "typo": [
+        "bruschetta cu branza de capra"
+      ]
+    },
+    "hapje-bruschetta-zalm": {
+      "nl": [
+        "bruschetta zalm"
+      ],
+      "ro": [
+        "bruschetta cu somon"
+      ],
+      "typo": []
+    },
+    "hapje-bruschetta-tomaat": {
+      "nl": [
+        "bruschetta tomaat"
+      ],
+      "ro": [
+        "bruschetta cu roșii"
+      ],
+      "typo": [
+        "bruschetta cu rosii"
+      ]
+    },
+    "hapje-wrap-zalm": {
+      "nl": [
+        "wraps zalm"
+      ],
+      "ro": [
+        "wrap cu somon"
+      ],
+      "typo": []
+    },
+    "hapje-wrap-hesp": {
+      "nl": [
+        "wraps hesp"
+      ],
+      "ro": [
+        "wrap cu șuncă"
+      ],
+      "typo": [
+        "wrap cu sunca"
+      ]
+    },
+    "hapje-wrap-kip": {
+      "nl": [
+        "wraps kip"
+      ],
+      "ro": [
+        "wrap cu pui"
+      ],
+      "typo": []
+    },
+    "hapje-bulgur-feta": {
+      "nl": [
+        "bulgur feta"
+      ],
+      "ro": [
+        "bulgur cu feta"
+      ],
+      "typo": []
+    },
+    "hapje-bulgur-feta-meloen": {
+      "nl": [
+        "bulgur feta & meloen"
+      ],
+      "ro": [
+        "bulgur cu feta și pepene"
+      ],
+      "typo": [
+        "bulgur cu feta si pepene"
+      ]
+    },
+    "hapje-bulgur-zalm": {
+      "nl": [
+        "bulgur zalm"
+      ],
+      "ro": [
+        "bulgur cu somon"
+      ],
+      "typo": []
+    },
+    "hapje-bulgur-garnaal": {
+      "nl": [
+        "bulgur garnaal"
+      ],
+      "ro": [
+        "bulgur cu creveți"
+      ],
+      "typo": [
+        "bulgur cu creveti"
+      ]
+    },
+    "hapje-hawaii-salade": {
+      "nl": [
+        "hawaii salade"
+      ],
+      "ro": [
+        "salată hawaii"
+      ],
+      "typo": [
+        "salata hawaii"
+      ]
+    },
+    "warm-ardeens": {
+      "nl": [
+        "ardeens gebraad in champignonsaus"
+      ],
+      "ro": [
+        "friptură ardeneză în sos de ciuperci"
+      ],
+      "typo": [
+        "friptura ardeneza in sos de ciuperci"
+      ]
+    },
+    "warm-varkenshaasje": {
+      "nl": [
+        "varkenshaasje in sausje met spek"
+      ],
+      "ro": [
+        "mușchiuleț de porc în sos cu bacon"
+      ],
+      "typo": [
+        "muschiulet de porc in sos cu bacon"
+      ]
+    },
+    "warm-orloff": {
+      "nl": [
+        "orloffgebraad in kaassaus"
+      ],
+      "ro": [
+        "friptură orloff în sos de brânză"
+      ],
+      "typo": [
+        "friptura orloff in sos de branza"
+      ]
+    },
+    "warm-kalkoen": {
+      "nl": [
+        "kalkoen in champignonsaus"
+      ],
+      "ro": [
+        "curcan în sos de ciuperci"
+      ],
+      "typo": [
+        "curcan in sos de ciuperci"
+      ]
+    },
+    "warm-hamrol": {
+      "nl": [
+        "hamrol met witloof in kaassaus"
+      ],
+      "ro": [
+        "rulou de șuncă cu andive în sos de brânză"
+      ],
+      "typo": [
+        "rulou de sunca cu andive in sos de branza"
+      ]
+    },
+    "warm-kipfilet-curry": {
+      "nl": [
+        "kipfilet in currysaus"
+      ],
+      "ro": [
+        "piept de pui în sos curry"
+      ],
+      "typo": [
+        "piept de pui in sos curry"
+      ]
+    },
+    "warm-zalm": {
+      "nl": [
+        "zalm in bearnaisesaus"
+      ],
+      "ro": [
+        "somon în sos bearnez"
+      ],
+      "typo": [
+        "somon in sos bearnez"
+      ]
+    },
+    "warm-groenten": {
+      "nl": [
+        "warme groenten"
+      ],
+      "ro": [
+        "legume calde"
+      ],
+      "typo": []
+    },
+    "soep-tomaat": {
+      "nl": [
+        "tomatensoep"
+      ],
+      "ro": [
+        "supă de roșii"
+      ],
+      "typo": [
+        "supa de rosii"
+      ]
+    },
+    "soep-tomaat-balletjes": {
+      "nl": [
+        "tomatensoep met balletjes"
+      ],
+      "ro": [
+        "supă de roșii cu perișoare"
+      ],
+      "typo": [
+        "supa de rosii cu perisoare"
+      ]
+    },
+    "soep-pompoen": {
+      "nl": [
+        "pompoensoep"
+      ],
+      "ro": [
+        "supă de dovleac"
+      ],
+      "typo": [
+        "supa de dovleac"
+      ]
+    },
+    "soep-broccoli": {
+      "nl": [
+        "broccolisoep"
+      ],
+      "ro": [
+        "supă de broccoli"
+      ],
+      "typo": [
+        "supa de broccoli"
+      ]
+    },
+    "broodjes-mini": {
+      "nl": [
+        "mini belegde broodjes",
+        "broodjes",
+        "belegde broodjes",
+        "sandwiches"
+      ],
+      "ro": [
+        "mini sandvișuri",
+        "sandvișuri",
+        "sandvisuri"
+      ],
+      "typo": [
+        "mini sandvisuri"
+      ]
+    },
+    "dessert-buffet-1": {
+      "nl": [
+        "dessertbuffet 1"
+      ],
+      "ro": [
+        "bufet de deserturi 1"
+      ],
+      "typo": []
+    },
+    "dessert-buffet-2": {
+      "nl": [
+        "dessertbuffet 2"
+      ],
+      "ro": [
+        "bufet de deserturi 2"
+      ],
+      "typo": []
+    },
+    "fruit-buffet": {
+      "nl": [
+        "fruitbuffet"
+      ],
+      "ro": [
+        "bufet de fructe"
+      ],
+      "typo": []
+    },
+    "dessert-vanille": {
+      "nl": [
+        "vanillepudding"
+      ],
+      "ro": [
+        "budincă de vanilie"
+      ],
+      "typo": [
+        "budinca de vanilie"
+      ]
+    },
+    "dessert-tiramisu": {
+      "nl": [
+        "tiramisu"
+      ],
+      "ro": [
+        "tiramisu"
+      ],
+      "typo": []
+    },
+    "dessert-donut": {
+      "nl": [
+        "donut"
+      ],
+      "ro": [
+        "gogoașă (donut)",
+        "gogoașă"
+      ],
+      "typo": [
+        "gogoasa (donut)",
+        "gogoasa"
+      ]
+    },
+    "dessert-mini-donut": {
+      "nl": [
+        "mini donut"
+      ],
+      "ro": [
+        "mini donut"
+      ],
+      "typo": []
+    },
+    "dessert-macarons": {
+      "nl": [
+        "macarons"
+      ],
+      "ro": [
+        "macarons"
+      ],
+      "typo": []
+    }
+  },
+  "intents": {
+    "open-now": {
+      "nl": [
+        "open",
+        "nu open",
+        "geopend",
+        "gesloten",
+        "dicht",
+        "openingsuren",
+        "uren",
+        "tot hoe laat",
+        "vanaf hoe laat"
+      ],
+      "ro": [
+        "deschis",
+        "închis",
+        "program",
+        "orar",
+        "până la ce oră",
+        "de la ce oră"
+      ]
+    },
+    "day-hours": {
+      "nl": [
+        "maandag",
+        "dinsdag",
+        "woensdag",
+        "donderdag",
+        "vrijdag",
+        "zaterdag",
+        "zondag",
+        "morgen",
+        "vandaag",
+        "overmorgen",
+        "feestdag"
+      ],
+      "ro": [
+        "luni",
+        "marți",
+        "miercuri",
+        "joi",
+        "vineri",
+        "sâmbătă",
+        "duminică",
+        "mâine",
+        "azi",
+        "poimâine",
+        "sărbătoare"
+      ]
+    },
+    "deadline": {
+      "nl": [
+        "tot wanneer",
+        "uiterlijk",
+        "vóór",
+        "op tijd",
+        "deadline",
+        "laatste dag"
+      ],
+      "ro": [
+        "până când",
+        "cel târziu",
+        "termen",
+        "ultima zi"
+      ]
+    },
+    "price": {
+      "nl": [
+        "prijs",
+        "kost",
+        "kosten",
+        "hoeveel kost",
+        "per kilo",
+        "per kg",
+        "euro",
+        "duur",
+        "goedkoop"
+      ],
+      "ro": [
+        "preț",
+        "cât costă",
+        "costă",
+        "pe kilogram",
+        "la kilogram",
+        "euro",
+        "scump",
+        "ieftin"
+      ]
+    },
+    "do-you-have": {
+      "nl": [
+        "hebben jullie",
+        "heeft u",
+        "verkopen jullie",
+        "is er",
+        "zijn er",
+        "hebt u",
+        "verkoopt u"
+      ],
+      "ro": [
+        "aveți",
+        "ai",
+        "vindeți",
+        "există",
+        "găsesc",
+        "se găsește"
+      ]
+    },
+    "delivery": {
+      "nl": [
+        "leveren",
+        "levering",
+        "thuislevering",
+        "bezorgen",
+        "aan huis",
+        "leverkost",
+        "postcode"
+      ],
+      "ro": [
+        "livrare",
+        "livrați",
+        "livrați acasă",
+        "acasă",
+        "cod poștal",
+        "cost livrare"
+      ]
+    },
+    "allergen": {
+      "nl": [
+        "allergie",
+        "allergeen",
+        "allergenen",
+        "gluten",
+        "lactose",
+        "melk",
+        "noten",
+        "mosterd",
+        "selderij",
+        "soja",
+        "ei",
+        "eieren",
+        "sesam",
+        "sulfiet",
+        "vis",
+        "schaaldieren",
+        "lupine",
+        "weekdieren",
+        "glutenvrij",
+        "lactosevrij"
+      ],
+      "ro": [
+        "alergie",
+        "alergen",
+        "alergeni",
+        "gluten",
+        "lactoză",
+        "lapte",
+        "nuci",
+        "muștar",
+        "țelină",
+        "soia",
+        "ou",
+        "ouă",
+        "susan",
+        "sulfiți",
+        "pește",
+        "crustacee",
+        "lupin",
+        "moluște",
+        "fără gluten",
+        "fără lactoză"
+      ]
+    },
+    "order": {
+      "nl": [
+        "bestellen",
+        "bestelling",
+        "bestel",
+        "reserveren",
+        "afhalen",
+        "ophalen",
+        "klaarzetten"
+      ],
+      "ro": [
+        "comand",
+        "comandă",
+        "comanda",
+        "rezerv",
+        "ridic",
+        "pregătiți"
+      ]
+    },
+    "cooking": {
+      "nl": [
+        "hoe bak ik",
+        "hoe lang",
+        "bakken",
+        "braden",
+        "grillen",
+        "stoven",
+        "recept",
+        "klaarmaken"
+      ],
+      "ro": [
+        "cum gătesc",
+        "cât timp",
+        "prăjesc",
+        "la grătar",
+        "la cuptor",
+        "rețetă",
+        "pregătesc"
+      ]
+    },
+    "party": {
+      "nl": [
+        "personen",
+        "feest",
+        "verjaardag",
+        "communie",
+        "trouw",
+        "bbq voor",
+        "voor",
+        "gasten"
+      ],
+      "ro": [
+        "persoane",
+        "petrecere",
+        "botez",
+        "nuntă",
+        "aniversare",
+        "grătar pentru",
+        "invitați"
+      ]
+    },
+    "human": {
+      "nl": [
+        "mens",
+        "medewerker",
+        "iemand spreken",
+        "iemand",
+        "persoon",
+        "bellen met",
+        "echte persoon",
+        "georgiana",
+        "john"
+      ],
+      "ro": [
+        "om",
+        "cineva",
+        "persoană",
+        "vorbesc cu",
+        "operator",
+        "georgiana",
+        "john"
+      ]
+    },
+    "language": {
+      "nl": [
+        "nederlands",
+        "in het nederlands",
+        "vlaams"
+      ],
+      "ro": [
+        "română",
+        "în română",
+        "romaneste",
+        "românește"
+      ]
+    },
+    "greeting": {
+      "nl": [
+        "hallo",
+        "dag",
+        "goeiedag",
+        "goedemorgen",
+        "hoi",
+        "hey"
+      ],
+      "ro": [
+        "bună",
+        "salut",
+        "bună ziua",
+        "bună dimineața",
+        "buna"
+      ]
+    },
+    "thanks": {
+      "nl": [
+        "bedankt",
+        "dank u",
+        "dank je",
+        "merci",
+        "top"
+      ],
+      "ro": [
+        "mulțumesc",
+        "mersi",
+        "mulțumim",
+        "mulțam"
+      ]
+    },
+    "restart": {
+      "nl": [
+        "opnieuw",
+        "herbegin",
+        "wissen",
+        "reset"
+      ],
+      "ro": [
+        "de la capăt",
+        "din nou",
+        "șterge",
+        "reset"
+      ]
+    },
+    "colli": {
+      "nl": [
+        "colli",
+        "vleespakket",
+        "pakket",
+        "vleescolli"
+      ],
+      "ro": [
+        "colli",
+        "pachet",
+        "pachet de carne"
+      ]
+    },
+    "location": {
+      "nl": [
+        "waar",
+        "adres",
+        "route",
+        "parkeren",
+        "parking"
+      ],
+      "ro": [
+        "unde",
+        "adresă",
+        "drum",
+        "parcare"
+      ]
+    }
+  }
+}

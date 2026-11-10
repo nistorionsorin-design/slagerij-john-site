@@ -131,7 +131,7 @@ const waEmpty = `/wa?src=${locale === 'ro' ? 'ro-comanda' : 'bestelbon'}&text=${
 // the WhatsApp preview before anything is chosen: the order-flow §5 frame with nothing in it
 const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', time: '', lines: [], requests: [], name: '', phone: '', address: null });
 ---
-<form class="order" id="bestelbon" method="post" action="/api/order" data-order>
+<form class="order" id="bestelbon" method="post" action="/api/order" data-order data-qa-section="bestelbon">
   <input type="hidden" name="lang" value={locale} />
   <div class="order__trap" aria-hidden="true">
     <label>website <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>

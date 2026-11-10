@@ -7,6 +7,8 @@ import type { FaqItem } from '../data/types';
 import type { Locale } from '../i18n/ui';
 import { keepUnits } from '../lib/typo';
 import { fillSeason } from '../lib/menu';
+import QaBox from './QaBox.astro';
+import { qaPageOf } from '../i18n/assistant';
 
 export interface Props {
   locale: Locale;
@@ -17,9 +19,12 @@ export interface Props {
 const { locale, title, page } = Astro.props;
 const items = (page ? faq.pages[page][locale] : faq[locale]) as FaqItem[];
 const plus = '<path d="M12 5v14M5 12h14"/>';
+// row 11a (D-58 point 2): on the nine pages of lexicon §5.32 the assistant's box sits here — under the questions on the
+// phone, under the heading beside them on desktop; Base.astro then leaves it out of the sheet (the same lookup by path)
+const qa = qaPageOf(Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '').replace(/(.)\/$/, '$1') || '/');
 ---
 {items.length > 0 && (
-<section class="sec faq" aria-labelledby="faq-title">
+<section class="sec faq" aria-labelledby="faq-title" data-qa-section="faq">
   <div class="container faq__in">
     <h2 class="sec__title faq__title" id="faq-title">{title}</h2>
     <div class="faq__list">
@@ -33,6 +38,7 @@ const plus = '<path d="M12 5v14M5 12h14"/>';
         </details>
       ))}
     </div>
+    {qa && <div class="faq__qa"><QaBox locale={locale} page={qa} /></div>}
   </div>
 </section>
 )}

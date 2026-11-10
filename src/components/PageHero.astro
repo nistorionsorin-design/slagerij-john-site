@@ -89,7 +89,7 @@ const moves = true; // every showcase hero zooms (spec §5); the pause hides its
 const hasCta = Astro.slots.has('default');
 ---
 {timing && <style is:inline set:html={timing}></style>}
-<section class:list={['hero', 'sh', N > 1 ? 'sh--loop' : 'sh--kb']} data-sh aria-labelledby={id}>
+<section class:list={['hero', 'sh', N > 1 ? 'sh--loop' : 'sh--kb']} data-qa-section="head" data-sh aria-labelledby={id}>
   <div class="sh__media">
     <div class:list={['sh__f', 'sh__f0', { 'sh__f--bd': first.backdrop }]}>
       <HeroPic class="sh__p" imgClass={first.whole ? 'sh__k sh__k--whole' : 'sh__k'} d={first.d} t={first.t} m={first.m} alt={first.alt} style={first.style} first="lcp" />
@@ -192,7 +192,8 @@ const hasCta = Astro.slots.has('default');
     z-index: 2;
     display: flex;
     flex-direction: column;
-    padding: calc(var(--nav-h) + 16px) var(--gutter) calc(var(--bar) + 22px + env(safe-area-inset-bottom, 0px));
+    /* + the assistant's floating button above the bar (row 11a, --qa-fab from QaSheet.astro) */
+    padding: calc(var(--nav-h) + 16px) var(--gutter) calc(var(--bar) + var(--qa-fab, 0px) + 22px + env(safe-area-inset-bottom, 0px));
   }
   .sh__lead { display: flex; flex-direction: column; gap: 14px; }
   .sh__row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: var(--touch); }
@@ -264,7 +265,9 @@ const hasCta = Astro.slots.has('default');
     .sh__cta :global(.btn) { width: auto; }
     .sh__row { min-height: 0; }
     .sh__row:not(:has(.oc)) { display: contents; }
-    .sh__pause { position: absolute; right: 32px; bottom: 36px; z-index: 3; margin: 0; }
+    /* row 11a (Dan 10.11): 52 px higher than the board's 36, clear above the assistant's floating button (QaSheet.astro)
+       on a 768 px tall screen, where the print ends 16 px above the window's foot */
+    .sh__pause { position: absolute; right: 32px; bottom: 88px; z-index: 3; margin: 0; }
     .sh-after { padding-top: 40px; }
     .sh-after__lead { font-size: var(--fs-lead); line-height: 1.5; }
     /* a whole frame on desktop: as tall as the print + 12 %, at its right, behind the text's gradient; an opaque one fades in

@@ -283,7 +283,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
       {cats.map((c) => {
         const isRo = c.id === 'roemeens';
         return (
-          <section class="pp-cat as-target" id={c.id} aria-labelledby={`${c.id}-title`}>
+          <section class="pp-cat as-target" id={c.id} aria-labelledby={`${c.id}-title`} data-qa-section={c.id}>
             <div class="pp-cat__in">
               <div class="pp-cat__head">
                 {isRo && t.roemeens.eyebrow && <p class="eyebrow">{t.roemeens.eyebrow}</p>}
@@ -311,7 +311,7 @@ const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 
       <div class="as-rubs">
         {rubs.map((r) => (
-          <section class="rub" id={r.id} aria-labelledby={`rub-${r.id}`}>
+          <section class="rub" id={r.id} aria-labelledby={`rub-${r.id}`} data-qa-section={r.id}>
             <div class="rub__head">
               {r.print && <span class="rub__print"><Thumb entry={r.print} locale={locale} variant="print" /></span>}
               <h3 class="rub__title" id={`rub-${r.id}`}><span class="rub__name">{r.name}</span><span class="rub__note">{r.note}</span></h3>

@@ -10,7 +10,7 @@ export interface Props { locale?: Locale }
 const { locale = 'nl' } = Astro.props;
 const t = homeT[locale].season;
 ---
-<section class="sec season-wrap" aria-labelledby="season-title">
+<section class="sec season-wrap" aria-labelledby="season-title" data-qa-section="season">
   <div class="container">
     <div class="season on-ink">
       <div class="season__text">

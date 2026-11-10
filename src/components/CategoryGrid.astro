@@ -43,7 +43,7 @@ const ratios = [4 / 3, 4 / 3, 4 / 3, 16 / 9];
 const [fresh, bbq, traiteur, ro] = (photos.categories as Photo[]).map((p, i) => pic(p, ratios[i]));
 const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 ---
-<section class="sec cats" aria-label={t.label}>
+<section class="sec cats" aria-label={t.label} data-qa-section="categories">
   <div class="container cats__grid">
     <article class="cat cat--fresh">
       <Picture class="cat__img" src={fresh.img} {...fresh.crop} widths={fresh.widths} sizes="(min-width: 960px) 50vw, 100vw" formats={['avif', 'webp']} fallbackFormat="webp" quality={55} alt={fresh.alt} loading="lazy" decoding="async" fetchpriority="low" style={fresh.pos} />

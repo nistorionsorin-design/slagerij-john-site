@@ -18,6 +18,8 @@
 // name and tile stays the bestelbon link.
 import { getImage } from 'astro:assets';
 import WaIcon from './WaIcon.astro';
+import { pigUse } from '../lib/mascot';
+import { qaT } from '../i18n/assistant';
 import type { Product } from '../data/types';
 import { wa, type Locale } from '../i18n/ui';
 import { productenT } from '../i18n/producten';
@@ -77,6 +79,8 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
     <a class="fiche__primary" href={t.onlineHref}>{t.fiche.primary}</a>
     <a class="fiche__wa" href={`${wa(t.fiche.waSrc)}${ro ? '&lang=ro' : ''}`} data-msg={t.orderCard.msg}><WaIcon /><span>{t.fiche.wa}</span></a>
   </div>
+  {/* row 11a (D-58 point 2): the assistant with this product as „this” (src/scripts/qa.ts reads ?product= of the link above) */}
+  <a class="fiche__ask" href={`${wa('qa')}${ro ? '&lang=ro' : ''}`} rel="nofollow" data-qa-open><span class="fiche__pig" aria-hidden="true" set:html={pigUse} /><span>{qaT[locale].sheetAsk}</span></a>
 </dialog>
 <script type="application/json" id="fiche-data" set:html={json} />
 
@@ -85,6 +89,9 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
 </script>
 
 <style>
+  /* row 11a: „Vraag over dit product” — a quiet link under the two buttons, the pig at rest beside it */
+  .fiche__ask { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; margin-top: 6px; color: var(--fg); font-size: 14px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+  .fiche__pig { --mascot: 26px; display: block; width: 26px; height: 26px; }
   /* the price box: its text left, the stepper right (the contract's grid 1fr auto) */
   .fiche__price > div:first-child { min-width: 0; }
   .fiche__price-s { margin-top: 2px; }

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none" stroke="#1A1511" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="mascot" aria-hidden="true" focusable="false">
+<path d="M16 120c2-19 18-29 44-29s42 10 44 29z" fill="#FBF7EE"/>
+<path d="M40 120V99c0-3 2-5 5-5h30c3 0 5 2 5 5v21z" fill="#15110D" stroke="none"/>
+<path d="M46 94 52 82M74 94 68 82" stroke="#15110D" stroke-width="4"/>
+<path d="M50 106h20" stroke="#F2C12E"/>
+<g class="hd">
+<path class="el" d="M31 46C20 38 17 25 22 15c11 0 21 6 27 16z" fill="#E3BFB1"/>
+<path class="er" d="M89 46c11-8 14-21 9-31-11 0-21 6-27 16z" fill="#E3BFB1"/>
+<ellipse cx="60" cy="61" rx="37" ry="33" fill="#E3BFB1"/>
+<path d="M36 41 39 21c12-7 30-7 42 0l3 20z" fill="#FBF7EE"/>
+<path d="M39.5 35h41" stroke="#F2C12E" stroke-width="4"/>
+<path d="M99 20 108 46" stroke="#F2C12E" stroke-width="5.5"/>
+<path d="m108 46 1.5 6-4.5-4.5" fill="#1A1511" stroke-width="2"/>
+<g class="ch" stroke="none" fill="#7B2420" opacity=".2"><circle cx="36" cy="66" r="4.5"/><circle cx="84" cy="66" r="4.5"/></g>
+<path class="br-r" d="M40 49.500c4-1.5 8-1.5 11 0M67 47.500c4-3.5 9-4 13-1.5"/>
+<path class="br-up" opacity="0" d="M40 48c3-3 8-3 11 0M69 48c3-3 8-3 11 0"/>
+<path class="br-q" opacity="0" d="M40 50.500c3-3 7-4 11-4M69 46.500c4 0 8 1 11 4"/>
+<path class="br-f" opacity="0" d="M40 49.500h11M69 49.500h11"/>
+<g class="ey" stroke="none" fill="#1A1511"><circle cx="46" cy="56" r="3.4"/><circle cx="74" cy="56" r="3.4"/></g>
+<g class="sn"><ellipse cx="60" cy="68" rx="14" ry="10" fill="#D6A592"/><g stroke="none" fill="#7B2420"><ellipse cx="54.5" cy="68" rx="2.2" ry="3"/><ellipse cx="65.5" cy="68" rx="2.2" ry="3"/></g></g>
+<path class="mo-s" d="M50 83c6 4.5 14 4.5 20-1"/>
+<path class="mo-b" opacity="0" d="M50 82.500c3 8 17 8 20 0z" fill="#7B2420" stroke-width="2.5"/>
+<circle class="mo-o" opacity="0" cx="60" cy="85" r="2.8" fill="#7B2420" stroke-width="2.5"/>
+<path class="mo-w" opacity="0" d="M51 85c3-2.5 6-2.5 9 0s6 2.5 9 0"/>
+<path class="mo-f" opacity="0" d="M52 85h16"/>
+</g>
+</svg>

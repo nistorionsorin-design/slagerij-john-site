@@ -12,7 +12,7 @@ const { locale = 'nl' } = Astro.props;
 const t = homeT[locale].owners;
 const arrow = '<path d="M5 12h14M13 6l6 6-6 6"/>';
 ---
-<div class="own">
+<div class="own" data-qa-section="owners">
   <div class="own__photo">
     <Picture src={portrait} widths={[240, 480]} sizes="(min-width: 960px) 240px, 120px" formats={['avif', 'webp']} fallbackFormat="webp" quality={60} alt={t.alt} loading="lazy" decoding="async" fetchpriority="low" />
   </div>

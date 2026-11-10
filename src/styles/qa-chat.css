@@ -1,0 +1,27 @@
+/* The assistant's conversation (row 11a): what only an answer needs — the customer's bubble, the bubble while the face
+   reads, the product card (photo · name · price · line · „Meer over …”; D-34: the row's own photo or its first letter,
+   never a stock image), the buttons, the chips inside an answer, the link line. Added by src/scripts/qa-ui.ts with the
+   engine as one <style> (the CSP's style-src allows inline styles), so no page carries it before the box is used. The
+   box itself, its greeting and its start chips: QaBox.astro. */
+.qa__bub > p + p { margin-top: 6px; }
+.qa__bub a { color: var(--ox); font-weight: 600; }
+.qa__msg--me { justify-content: flex-end; }
+.qa__msg--me .qa__bub { max-width: 85%; background: var(--ink); border-color: var(--ink); color: var(--on-ink); border-radius: 10px 10px 2px 10px; }
+.qa__msg--wait .qa__bub { min-width: 52px; min-height: 38px; }
+.qa__link { font-size: 13.5px; }
+.qa__cards { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; }
+.qa__card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; padding: 8px; border-radius: var(--r-tag); background: var(--card); border: 1px solid var(--tag-line); color: var(--fg); text-decoration: none; }
+.qa__card img { display: block; width: 56px; height: 56px; border-radius: 8px; object-fit: cover; background: var(--tag); }
+.qa__card-mono { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 8px; background: var(--tag); color: var(--ox); font-family: var(--f-display); font-size: 24px; font-weight: 600; }
+.qa__card b { display: block; font-size: 15px; line-height: 1.25; }
+.qa__card-p { display: block; margin-top: 2px; font-size: 13px; font-weight: 600; color: var(--ox); font-variant-numeric: tabular-nums; }
+.qa__card-l { display: block; margin-top: 2px; font-size: 13px; line-height: 1.35; color: var(--muted); }
+.qa__card-m { display: inline-block; margin-top: 4px; font-size: 13px; font-weight: 600; color: var(--ox); text-decoration: underline; text-underline-offset: 3px; }
+.qa__card:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+@media (hover: hover) { .qa__card:hover { border-color: var(--fg); } }
+.qa__acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.qa__acts .btn, .qa__acts .link-arrow { min-height: 40px; }
+.qa__bub .qa__chips { margin-top: 10px; }
+.qa__bub .qa__chip { background: var(--card); border-color: var(--tag-line); }
+.qa__log { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { .qa__log { scroll-behavior: auto; } }

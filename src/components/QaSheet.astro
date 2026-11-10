@@ -1,0 +1,114 @@
+---
+// QaSheet — the assistant as a sheet from any page (row 11a, docs/assistant.md §10.3; D-58 point 2: on tap only, never
+// by itself): one native <dialog> per page after the footer, opened by every [data-qa-open] — the floating button,
+// „Vraag over dit product” in the product sheet (src/scripts/qa.ts).
+// The floating button (Dan 10.11, on the row-11a look: „place it more visual in the right side as the assistants go,
+// not on the bar”, then „also on desktop … on the right side of the page and make it visible”): at the lower right of
+// every page — on the phone just above the bottom bar, from 960 px 24 px from the corner, where the header's pill was —
+// the design sheet's own button (design/mascot.html `.btn`: ink pill, the pig on the yellow disc, „Vraag het ons”),
+// larger. It never moves and never opens anything by itself. What it would cover keeps its height free (--qa-fab): the
+// phone's hero text (Hero, PageHero), the footer's last row with the DG Advisory credit (Footer), and from 960 px the
+// heroes' pause controls, raised by 52 px (Hero, PageHero). On a page without
+// an inline box the box lives here; on the nine pages with one (Faq.astro) the box moves in while the sheet is open
+// and back when it closes — the same conversation. A bottom sheet on the phone (the product sheet's shape,
+// design/css/vitrine.css `.fiche`), a panel at the lower right from 960 px. Closed by ×, Esc, the back gesture
+// (native), a click on the backdrop; the focus goes back to the button that opened it. Reduced motion: no slide.
+import QaBox from './QaBox.astro';
+import { pigSymbol, pigUse } from '../lib/mascot';
+import { qaT } from '../i18n/assistant';
+import { wa, type Locale } from '../i18n/ui';
+
+export interface Props {
+  locale: Locale;
+  /** the page has no inline box: it lives here */
+  withBox: boolean;
+}
+const { locale, withBox } = Astro.props;
+const t = qaT[locale];
+---
+{/* the pig, drawn once per page; every face refers to it (lib/mascot.ts) */}
+<Fragment set:html={pigSymbol} />
+{/* without script a WhatsApp link, as every assistant door (/wa?src=qa) */}
+<a class="qa-fab" href={`${wa('qa')}${locale === 'ro' ? '&lang=ro' : ''}`} rel="nofollow" data-qa-open>
+  <span class="qa-fab__pig" aria-hidden="true" set:html={pigUse} />
+  <span class="qa-fab__l">{t.open}</span>
+</a>
+<dialog class="qa-sheet" aria-label={t.title} data-qa-sheet>
+  <form method="dialog" class="qa-sheet__bar"><span class="qa-sheet__grab" aria-hidden="true"></span><button class="qa-sheet__close" aria-label={t.close}>×</button></form>
+  <div class="qa-sheet__body" data-qa-slot>
+    {withBox && <QaBox locale={locale} page={null} />}
+  </div>
+</dialog>
+
+<style is:global>
+  /* the floating button: --qa-fab = its height + 10–12 px, the room the page keeps free under and above it (see the
+     header comment). Below the overlay menu (z-index 15) and the header (20); above the page. */
+  :root { --qa-fab: 68px; }
+  .qa-fab {
+    position: fixed;
+    right: 14px;
+    bottom: calc(var(--bar) + 10px + env(safe-area-inset-bottom, 0px));
+    z-index: 14;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 58px;
+    padding: 5px 18px 5px 5px;
+    border-radius: var(--r-btn);
+    background: var(--ink);
+    color: var(--on-ink);
+    /* a thin paper rim: the pill stays outlined over the dark hero photos */
+    border: 1px solid rgba(244, 237, 224, 0.22);
+    font-family: var(--f-ui);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+    text-decoration: none;
+    box-shadow: 0 10px 28px -10px rgba(21, 17, 13, 0.55), 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  }
+  .qa-fab__pig { --mascot: 44px; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--accent); }
+  .qa-fab:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+  .qa-fab:active { transform: translateY(1px); }
+  @media (min-width: 960px) {
+    :root { --qa-fab: 74px; }
+    .qa-fab { right: 24px; bottom: 24px; min-height: 62px; gap: 12px; padding: 5px 22px 5px 5px; font-size: 16px; }
+    .qa-fab__pig { --mascot: 48px; width: 52px; height: 52px; }
+    .qa-fab { transition: transform 0.14s var(--ease-paper), box-shadow 0.14s; }
+  }
+  @media (hover: hover) and (min-width: 960px) { .qa-fab:hover { transform: translateY(-2px); box-shadow: 0 16px 34px -12px rgba(21, 17, 13, 0.6); } }
+  @media (prefers-reduced-motion: reduce) { .qa-fab { transition: none; } .qa-fab:hover, .qa-fab:active { transform: none; } }
+  .qa-sheet {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    height: min(88svh, 760px);
+    max-height: 100%;
+    margin: auto 0 0;
+    padding: 0;
+    border: 0;
+    border-radius: 18px 18px 0 0;
+    background: var(--card);
+    color: var(--fg);
+    box-shadow: 0 -18px 48px -24px rgba(21, 17, 13, 0.45);
+    overflow: hidden;
+  }
+  .qa-sheet[open] { display: flex; flex-direction: column; animation: qa-up 0.24s var(--ease-paper) both; }
+  .qa-sheet::backdrop { background: rgba(21, 17, 13, 0.45); }
+  .qa-sheet__bar { position: relative; flex: none; display: flex; justify-content: flex-end; align-items: center; height: 44px; padding: 0 6px; }
+  .qa-sheet__grab { position: absolute; left: 50%; top: 8px; width: 40px; height: 4px; margin-left: -20px; border-radius: 2px; background: var(--line); }
+  .qa-sheet__close { width: 44px; height: 44px; border: 0; border-radius: 50%; background: transparent; color: var(--fg); font-size: 26px; line-height: 1; cursor: pointer; }
+  .qa-sheet__close:focus-visible { outline: 2px solid var(--fg); outline-offset: -2px; }
+  .qa-sheet__body { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 0 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+  .qa-sheet .qa { flex: 1; min-height: 0; display: flex; flex-direction: column; border: 0; background: transparent; padding: 0; border-radius: 0; }
+  .qa-sheet .qa__log { flex: 1; min-height: 0; max-height: none; }
+  .qa-sheet .qa__form, .qa-sheet .qa__chips, .qa-sheet .qa__foot { flex: none; }
+  @keyframes qa-up { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+  @media (min-width: 960px) {
+    .qa-sheet { width: 420px; height: min(80vh, 760px); margin: auto 24px 24px auto; border-radius: var(--r-frame-lg); box-shadow: 0 24px 64px -24px rgba(21, 17, 13, 0.55); }
+    .qa-sheet::backdrop { background: rgba(21, 17, 13, 0.28); }
+    .qa-sheet__grab { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .qa-sheet[open] { animation: none; } }
+  /* the page behind keeps its place while the sheet is open */
+  html.qa-lock { overflow: hidden; }
+</style>

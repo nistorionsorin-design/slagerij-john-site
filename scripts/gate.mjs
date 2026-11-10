@@ -3,7 +3,7 @@
 // or needs a browser/deployed URL; it never hides a failure on real content.
 import { spawnSync } from 'node:child_process';
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
-import { brotliDecompressSync } from 'node:zlib';
+import { brotliDecompressSync, gzipSync } from 'node:zlib';
 import { join, relative, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -411,7 +411,9 @@ if (built) {
     };
     for (const p of pages) scan(p.file, p.html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/gi, ' '));
     for (const f of walk(join(root, 'src/content')).filter((f) => /\.(md|mdx)$/.test(f))) scan(rel(f), read(f));
-    for (const f of walk(join(root, 'src/data')).filter((f) => f.endsWith('.json'))) scan(rel(f), read(f).replace(/"_source":\s*"(?:[^"\\]|\\.)*"/g, ''));
+    // provenance is never shown: `_source`, and (row 11a) the answer bank's per-entry `facts` lists („FACTS.md: Too
+    // Good To Go [OBSERVED]”) — the index the box fetches carries neither
+    for (const f of walk(join(root, 'src/data')).filter((f) => f.endsWith('.json'))) scan(rel(f), read(f).replace(/"_source":\s*"(?:[^"\\]|\\.)*"/g, '').replace(/"facts":\s*\[[^\]]*\]/g, ''));
     // the order mails (stage 5) are written by the functions, not the pages: their strings count too
     for (const f of walk(join(root, 'api')).filter((f) => f.endsWith('.js'))) scan(rel(f), read(f).replace(/^\s*\/\/.*$/gm, ''));
     const list = [...found].map(([k, v]) => `${k}: ${[...v].join(' ')}`);
@@ -617,7 +619,7 @@ if (built) {
     let dialogs = 0;
     for (const p of pages) {
       const bar = p.html.match(/<nav class="bar"[\s\S]*?<\/nav>/i)?.[0];
-      // four since row 8b (D-33): Bel · WhatsApp · Bestel · Route
+      // four since row 8b (D-33): Bel · WhatsApp · Bestel · Route (row 11a's assistant floats above the bar, Dan 10.11)
       if (bar && (/<button/i.test(bar) || (bar.match(/<a\s[^>]*href=/gi) || []).length !== 4)) e.push(`${p.file}: bottom bar must be four real <a href>`);
       const qa = p.html.match(/<section class="qa"[\s\S]*?<\/section>/i)?.[0];
       if (qa && !/class="qa__auto"[^>]*>\s*[^<\s]/.test(qa)) e.push(`${p.file}: Q&A box lacks the automated-assistant label`);
@@ -696,7 +698,43 @@ if (built) {
         if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / Header / OpenChip / QaBox / OrderForm / QuoteForm / ProductTiles / Producten / Bbq / AsPills / Fiche / AsSearch / Rows / Base → hit.ts)`);
         else if (!m[1].test(p.html)) e.push(`${p.file}: ships ${file} without its component`);
       }
-    verdict('client-js', e, `${js.length} JS files in dist; no inline script; each script ships only with its component; the hit.ts beacon ${beacon.map((f) => statSync(f).size).join(' / ')} B, same-origin`);
+    // row 11a (docs/assistant.md §10.4 budgets): the box's entry (qa.ts) ships on every page, ≤ 4 kB, names no host;
+    // the engine (qa-ui.ts + lib/assistant + what it imports) is the entry's lazy chunk, loaded on the first use, ≤ 40 kB
+    // gzip all together; the index dist/assistant-index.json ≤ 60 kB gzip and named by no page's HTML (fetched on the
+    // first question only)
+    const qaEntry = js.filter((f) => /[\\/]QaBox\./.test(f));
+    let qaNote = '';
+    if (!qaEntry.length) e.push('no QaBox script in dist — the assistant (row 11a) is not built');
+    for (const f of qaEntry) {
+      const src = read(f);
+      if (statSync(f).size > 4096) e.push(`${rel(f)}: ${statSync(f).size} B — the assistant's entry is ≤ 4 kB (row 11a; ~1,7 kB of it is Vite's preload helper for the lazy import)`);
+      if (/https?:\/\//.test(src)) e.push(`${rel(f)}: the assistant's entry names a host (same-origin only, BE-05)`);
+      // the entry's chunks, followed through their imports (Vite writes them as "./name.hash.js")
+      const seen = new Set();
+      const follow = (file) => {
+        if (seen.has(file)) return;
+        seen.add(file);
+        for (const m of read(file).matchAll(/["'`]\.\/([\w.-]+\.js)["'`]/g)) {
+          const next = join(dirname(file), m[1]);
+          if (existsSync(next)) follow(next);
+        }
+      };
+      follow(f);
+      seen.delete(f);
+      const lazy = [...seen].reduce((n, x) => n + gzipSync(readFileSync(x)).length, 0);
+      if (!seen.size) e.push(`${rel(f)}: the engine is not a separate chunk — it must load on first use, not with the page`);
+      if (lazy > 40 * 1024) e.push(`assistant chunks ${lazy} B gzip > 40 kB (row 11a)`);
+      qaNote = `; the assistant: entry ${statSync(f).size} B, ${seen.size} lazy chunks ${(lazy / 1024).toFixed(1)} kB gzip`;
+    }
+    const qaIndex = join(dist, 'assistant-index.json');
+    if (!existsSync(qaIndex)) e.push('dist/assistant-index.json missing (row 11a)');
+    else {
+      const gz = gzipSync(readFileSync(qaIndex)).length;
+      if (gz > 60 * 1024) e.push(`dist/assistant-index.json ${gz} B gzip > 60 kB (row 11a)`);
+      if (pages.some((p) => /assistant-index\.json/.test(p.html))) e.push('a page names assistant-index.json — it is fetched on the first question only');
+      qaNote += `, index ${(gz / 1024).toFixed(1)} kB gzip`;
+    }
+    verdict('client-js', e, `${js.length} JS files in dist; no inline script; each script ships only with its component; the hit.ts beacon ${beacon.map((f) => statSync(f).size).join(' / ')} B, same-origin${qaNote}`);
   }
 }
 

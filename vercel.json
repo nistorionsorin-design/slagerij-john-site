@@ -27,6 +27,12 @@
       ]
     },
     {
+      "source": "/assistant-index.json",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex" }
+      ]
+    },
+    {
       "source": "/(.*)\\.pdf",
       "headers": [
         { "key": "X-Robots-Tag", "value": "noindex" },

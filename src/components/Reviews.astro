@@ -17,7 +17,7 @@ const count = reviews.count === null ? h.countPh : String(reviews.count);
 const filled = hasRating ? Math.round(Number(reviews.rating)) : 0;
 const star = 'M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z';
 ---
-<section class="sec rev" aria-labelledby="rev-title">
+<section class="sec rev" aria-labelledby="rev-title" data-qa-section="reviews">
   <div class="container rev__in">
     <p class:list={['rev__fig', { 'rev__fig--ph': !hasRating }]} aria-hidden={hasRating ? 'true' : undefined}>{rating}</p>
     <div class="rev__text">

@@ -42,7 +42,7 @@ export interface Props {
 const { id, title, heading, groups, eyebrow, line, cta, more, href, cap, foot, wa, locale } = Astro.props;
 const OPEN = 6;
 ---
-<section class="rows" id={`rows-${id}`} aria-labelledby={`rows-${id}-title ${heading}`} data-cat={title}>
+<section class="rows" id={`rows-${id}`} data-qa-section={id} aria-labelledby={`rows-${id}-title ${heading}`} data-cat={title}>
   <p class="rows__eyebrow" id={`rows-${id}-title`}>{eyebrow}</p>
   <p class="rows__line">{line}</p>
   {groups.map((g) => {

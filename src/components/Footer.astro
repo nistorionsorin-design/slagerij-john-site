@@ -451,8 +451,8 @@ const icons = {
     flex-direction: column;
     gap: 12px;
     padding-top: 16px;
-    /* clear of the fixed bottom bar on the phone (U-03) */
-    padding-bottom: calc(24px + var(--bar) + env(safe-area-inset-bottom, 0px));
+    /* clear of the fixed bottom bar on the phone (U-03) and, row 11a, of the assistant's floating button above it */
+    padding-bottom: calc(24px + var(--bar) + var(--qa-fab, 0px) + env(safe-area-inset-bottom, 0px));
   }
   .foot__switch { order: 1; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
   .foot__legal-links { order: 2; display: flex; flex-wrap: wrap; gap: 6px 14px; }
@@ -558,7 +558,8 @@ const icons = {
       align-items: center;
       gap: 6px 18px;
       padding-top: 18px;
-      padding-bottom: 24px;
+      /* row 11a: + the assistant's floating button, so the credit at the row's right end ends above it */
+      padding-bottom: calc(24px + var(--qa-fab, 0px));
     }
     .foot__copy, .foot__legal-links, .foot__switch { order: 0; }
     .foot__legal-links { gap: 6px 18px; }

@@ -108,7 +108,7 @@ const loop = first && { ...first, wipe: CORNERS[(N - 1) % 4] };
 ---
 {first && <style is:inline set:html={timing}></style>}
 {first && (
-<section class="hero hw" data-hero aria-labelledby="hero-title">
+<section class="hero hw" data-qa-section="head" data-hero aria-labelledby="hero-title">
   <div class="hero__text on-ink-m">
     {/* board Desktop: the text column is space-between — this lead group on top, the trust
         strip (stage 3, slot "trust") at the foot. On the phone the group is the whole block. */}
@@ -301,7 +301,8 @@ const loop = first && { ...first, wipe: CORNERS[(N - 1) % 4] };
       z-index: 2;
       display: flex;
       flex-direction: column;
-      padding: calc(var(--nav-h) + 16px) var(--gutter) calc(var(--bar) + 22px + env(safe-area-inset-bottom, 0px));
+      /* + the assistant's floating button above the bar (row 11a, --qa-fab from QaSheet.astro) */
+      padding: calc(var(--nav-h) + 16px) var(--gutter) calc(var(--bar) + var(--qa-fab, 0px) + 22px + env(safe-area-inset-bottom, 0px));
     }
     /* desktop-only piece: the counter tag (the ink stamp hides itself below 960 in hero-seam.css) */
     .hero__tag { display: none; }
@@ -365,11 +366,12 @@ const loop = first && { ...first, wipe: CORNERS[(N - 1) % 4] };
     /* the pause stays in the text row (the phone is unchanged, D-28); on desktop it sits on the
        print as on the board: 32 px from its right edge, 36 px above its bottom edge (16 px inset
        → 52 from the hero's foot). The absolute text column (left 0, down to the hero's foot) is its
-       containing block, so the left offset is counted from the hero's width: 100cqw − 32 − 44. */
+       containing block, so the left offset is counted from the hero's width: 100cqw − 32 − 44.
+       Row 11a (Dan 10.11): 52 px higher (52 → 104), clear above the assistant's floating button at the lower right. */
     .hero__pause {
       position: absolute;
       left: calc(100cqw - 76px);
-      bottom: 52px;
+      bottom: 104px;
       z-index: 3;
     }
     .hero__title { color: var(--fg); }

@@ -38,7 +38,7 @@ if (n !== 10) throw new Error(`photos.json loop: ${n} photos, the pl keyframe is
 const delay = (i: number, j: number) => -(9 * n + 0.8 * i + 9 * ((((i - j) % n) + n) % n));
 const sizes = '(min-width: 960px) 60vw, 100vw';
 ---
-<section class="loop sec plw" aria-labelledby="loop-title">
+<section class="loop sec plw" aria-labelledby="loop-title" data-qa-section="loop">
   <div class="container loop__in">
     <div class="sec__head loop__head">
       <p class="eyebrow">{t.eyebrow}</p>

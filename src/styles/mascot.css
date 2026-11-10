@@ -1,0 +1,35 @@
+/* The assistant's face: the pig from the shop sign in John's apron (D-60, 10.11.2026).
+   Markup: design/svg/mascot.svg inline; state on the svg: data-s="rest|greet|read|answer|miss|serious".
+   Without this file the svg shows the rest state. Opacity and transform only; every animation ends by itself (longest 3.6 s); still under reduced motion. */
+.mascot{display:block;width:var(--mascot,44px);height:var(--mascot,44px);overflow:visible}
+.mascot *{transition:opacity .18s linear}
+.mascot .ey{transition:transform .18s ease-out}
+.mascot .er{transform-origin:82px 42px}
+.mascot .el{transform-origin:38px 42px}
+.mascot .sn{transform-origin:60px 68px}
+.mascot .hd{transform-origin:60px 92px;transition:transform .18s ease-out}
+
+.mascot[data-s="greet"] .mo-s,.mascot[data-s="answer"] .mo-s,
+.mascot[data-s="greet"] .br-r,.mascot[data-s="answer"] .br-r{opacity:0}
+.mascot[data-s="greet"] .mo-b,.mascot[data-s="answer"] .mo-b,
+.mascot[data-s="greet"] .br-up,.mascot[data-s="answer"] .br-up{opacity:1}
+.mascot[data-s="greet"] .er{animation:mascot-ear 1.2s ease-in-out 1}
+.mascot[data-s="greet"] .el{animation:mascot-ear 1.2s ease-in-out 1 reverse}
+.mascot[data-s="answer"] .hd{animation:mascot-pop .36s ease-out 1}
+
+.mascot[data-s="read"] .mo-s{opacity:0}
+.mascot[data-s="read"] .mo-o{opacity:1}
+.mascot[data-s="read"] .ey{transform:translate(-1.5px,2.5px)}
+.mascot[data-s="read"] .sn{animation:mascot-sniff 1.2s ease-in-out 3}
+
+.mascot[data-s="miss"] .mo-s,.mascot[data-s="miss"] .br-r{opacity:0}
+.mascot[data-s="miss"] .mo-w,.mascot[data-s="miss"] .br-q{opacity:1}
+.mascot[data-s="miss"] .hd{transform:rotate(-6deg)}
+
+.mascot[data-s="serious"] .mo-s,.mascot[data-s="serious"] .br-r,.mascot[data-s="serious"] .ch{opacity:0}
+.mascot[data-s="serious"] .mo-f,.mascot[data-s="serious"] .br-f{opacity:1}
+
+@keyframes mascot-ear{0%,100%{transform:rotate(0)}25%,75%{transform:rotate(9deg)}50%{transform:rotate(-5deg)}}
+@keyframes mascot-sniff{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-1.5px) scale(1.05)}}
+@keyframes mascot-pop{0%{transform:scale(1)}50%{transform:scale(1.07)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.mascot,.mascot *{animation:none!important;transition:none!important}}
