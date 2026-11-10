@@ -42,3 +42,8 @@
 .qa__foot-l { margin: 8px 0 0; font-size: 13px; line-height: 1.4; color: var(--muted); }
 /* row 11c: the quiet line while the Claude layer writes (lexicon §5.33 „De assistent schrijft een antwoord.”) */
 .qa__writing { margin: 0; font-size: 13px; color: var(--muted); }
+/* row 11d (D-65, §13): the label over the „what goes with it” cards (lexicon §5.37 „Past erbij” / §6 „Merge cu”), in the
+   slip title's small caps; the next-question buttons are the answer's chips (same shape), drawn with the answer — after
+   the last line — so nothing moves under the customer's finger */
+.qa__cards-t { display: block; margin: 8px 0 0; font-size: 12.5px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.qa__cards-t + .qa__cards { margin-top: 4px; }

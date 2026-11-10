@@ -15,6 +15,8 @@ import entity from '../../data/entity.json';
 import recipes from '../../data/recipes.json';
 import towns from '../../data/towns.json';
 import reviews from '../../data/reviews.json';
+import nextQ from '../../data/assistant-paths.json';
+import pairings from '../../data/assistant-pairings.json';
 import { homeT } from '../../i18n/home';
 import type { Products } from '../../data/types';
 import { qaT } from '../../i18n/assistant';
@@ -69,6 +71,10 @@ export async function assistantIndex() {
     menus,
     entity,
     recipes: recipes.recipes.map((r) => r.id),
+    // row 11d (D-65): the next question — the buttons and the `after` table, the owners' pairings, the recipes' products
+    recipesFull: recipes.recipes,
+    nextQ,
+    pairings,
     strings,
     pages: pageNames(),
     paths: {

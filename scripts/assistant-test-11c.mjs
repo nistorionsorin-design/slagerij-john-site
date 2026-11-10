@@ -272,8 +272,16 @@ const isQuestionBack = (t) => {
   const sentences = text.split(/(?<=[.!?])\s+/).filter(Boolean);
   return sentences.length > 0 && sentences.every((x) => /\?$/.test(x.trim()));
 };
+// Row 11d (D-67 point 2; the bank's `_source` of 10.11 15:5x): seven entries now carry an answer instead of the hand-off
+// the 05.11 cases expect — for these the expected hand-off is the bank's own of 10.11 (the entry expected is unchanged).
+// Named in the row-11d report; the runner counts them (`handoff_10_11`).
+const HANDOFF_10_11 = new Set(['hours-annual-leave', 'order-someone-else', 'products-colli-keep', 'products-cut-to-order', 'traiteur-plates-cutlery', 'traiteur-tasting', 'season-easter']);
+let handoff1011 = 0;
 function gradeBank(c, t) {
-  const e = c.expect;
+  const e0 = c.expect;
+  const changed = HANDOFF_10_11.has(e0.entry) && ENTRY.get(e0.entry)?.handoff !== e0.handoff;
+  if (changed) handoff1011++;
+  const e = changed ? { ...e0, handoff: ENTRY.get(e0.entry).handoff } : e0;
   const why = [];
   const entry = ENTRY.get(e.entry);
   const allergen = entry?.topic === 'allergens';
@@ -396,7 +404,7 @@ if (args.includes('--bank')) {
   const b = await runBank();
   const al = b.filter((x) => x.allergen);
   const modelAl = al.filter((x) => x.turns.some((t) => t.fails?.includes('a model-written allergen answer')));
-  report.bank = { pass: b.filter((x) => x.ok).length, total: b.length, rate: pct(b.filter((x) => x.ok).length, b.length), allergen: { cases: al.length, wrong: al.filter((x) => !x.ok).map((x) => x.id), model_written: modelAl.map((x) => x.id) }, ...sumTurns(b), results: b };
+  report.bank = { handoff_10_11: handoff1011, pass: b.filter((x) => x.ok).length, total: b.length, rate: pct(b.filter((x) => x.ok).length, b.length), allergen: { cases: al.length, wrong: al.filter((x) => !x.ok).map((x) => x.id), model_written: modelAl.map((x) => x.id) }, ...sumTurns(b), results: b };
   const verdict = report.bank.rate >= 95 && !report.bank.allergen.wrong.length && !modelAl.length ? 'PASS' : 'FAIL';
   report.bank.verdict = verdict;
   console.log(`bank ${report.bank.pass}/${report.bank.total} = ${report.bank.rate} % (bar 95 %) · allergen ${al.length - report.bank.allergen.wrong.length}/${al.length}, model-written ${modelAl.length} · ${JSON.stringify(report.bank.by)} ${JSON.stringify(report.bank.fallback_why)} · first text p50 ${report.bank.first_text_ms.p50} ms p95 ${report.bank.first_text_ms.p95} ms · $${report.bank.cost_usd}  ${verdict}`);

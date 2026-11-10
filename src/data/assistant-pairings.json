@@ -1,0 +1,107 @@
+{
+  "_source": "The owners' own pairings for „Past erbij” / „Merge cu” (docs/assistant.md §13.4; D-65 point 2). Georgiana's words: FACTS.md „Owners' answers — WhatsApp 10.11.2026” [OWNER]. basis: owner = her word · data = from site/src/data · inferred = Cowork by logic on Dan's instruction 10.11 15:36, the owners can correct. `show` = product ids drawn as cards; the product ids behind her words are Cowork's reading (carnati → braadworst, ceafa → spiering, piept de porc → spek, cote a los → cote-a-los-rund, frigarui → the brochettes, oaie → lam). `text` is said only where there is no card to draw. Cowork 10.11.2026; input for build-plan row 11d. cards_under_bank = the row's cards (the first three of `show`) are also drawn under the bank answer named in `bank` when that answer is given; false = only on the „Past erbij” tap. For a colli the cards come from this week's list without any colli.",
+  "pairings": [
+    {
+      "id": "with-mici",
+      "basis": "owner",
+      "when": {
+        "products": [
+          "mici"
+        ]
+      },
+      "show": [
+        "braadworst",
+        "spiering",
+        "spek",
+        "cote-a-los-rund",
+        "biefstuk",
+        "kipbrochette",
+        "varkensbrochette"
+      ],
+      "text": null,
+      "bank": "products-mici-with",
+      "cards_under_bank": true
+    },
+    {
+      "id": "bbq-party",
+      "basis": "owner",
+      "when": {
+        "stage": "planning",
+        "words": {
+          "nl": [
+            "bbq",
+            "barbecue"
+          ],
+          "ro": [
+            "grătar"
+          ]
+        }
+      },
+      "per_person": {
+        "pieces_min": 4,
+        "pieces_max": 5
+      },
+      "show": [
+        "mici",
+        "spiering",
+        "braadworst",
+        "spek",
+        "kipbrochette",
+        "kalkoenbrochette",
+        "rundsbrochette",
+        "lamsbrochette"
+      ],
+      "text": null,
+      "bank": "products-bbq-amount",
+      "cards_under_bank": true
+    },
+    {
+      "id": "with-gourmet-fondue",
+      "basis": "owner",
+      "when": {
+        "products": [
+          "gourmet-9",
+          "gourmet-10",
+          "gourmet-luxe",
+          "fondue",
+          "fondue-14"
+        ]
+      },
+      "show": [],
+      "order_via": "whatsapp",
+      "bank": "products-gourmet-sides",
+      "text": {
+        "nl": "Erbij: pastasalade, frieten, kroketten of een schotel rauwkost. Te bestellen via WhatsApp.",
+        "ro": "Lângă el: salată de paste, cartofi prăjiți, crochete sau un platou de crudități. Se comandă pe WhatsApp."
+      },
+      "cards_under_bank": false
+    },
+    {
+      "id": "with-holiday-platters",
+      "basis": "owner",
+      "when": {
+        "menu": "eindejaar-2026"
+      },
+      "show": [],
+      "bank": "season-platters-with",
+      "text": {
+        "nl": "Erbij: bijgerechten en een goede fles rode, witte of rosé wijn.",
+        "ro": "Lângă ele: garnituri și o sticlă bună de vin roșu, alb sau rosé."
+      },
+      "cards_under_bank": false
+    },
+    {
+      "id": "with-colli",
+      "basis": "inferred",
+      "when": {
+        "category": "colli"
+      },
+      "show_from": "week",
+      "show": [],
+      "bank": "products-colli-keep",
+      "note": "Georgiana gave no pairing for a colli (q4); Dan 10.11: „alte produse care le aveți în magazin”. By logic: the cards come from this week's list (products.json `week`), never the colli itself; drinks are not on file → none. Her tip (freeze what is not eaten in the next days) is the bank answer products-colli-keep, basis owner.",
+      "text": null,
+      "cards_under_bank": false
+    }
+  ]
+}

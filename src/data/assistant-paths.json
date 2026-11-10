@@ -1,0 +1,829 @@
+{
+  "_source": "The next question the assistant may offer after an answer — build-plan row 11d, docs/assistant.md §13 (D-65). Cowork 10.11.2026. `buttons`: id → the label in the customer's own voice (NL u-form / RO tu-form; these labels are the strings, there is no second copy in the lexicon) and what a tap does: entry = that answer of assistant-faq.json · pick = the order helper's pick · cards = the „Past erbij” / „Merge cu” cards of §13.4 (assistant-pairings.json first, then the four data sources) · say = a lexicon §5.37 line built from the data. needs = what must be true for the button to exist at all. until = the last day it may be shown. `after`: the first row whose `when` fits the answer just given decides; `offer` is an ordered list of candidates and the box shows the first two that pass `rules` — often one, sometimes none. `product` on a row = the product the buttons refer to when the answer names none. stage = §13.3's five places (looking · weighing · planning · ordering · practical), kept for the weekly count only. Checked 10.11 16:3x against the engine itself (built from src with this folder's bank): every `entry` exists, none is a hand-off-only or an allergen answer; a typed sentence was dropped as a tap's action because the engine read „Cum se gătește Mici?” as „do you have mici” — a tap goes straight to its answer.",
+  "rules": {
+    "max": 2,
+    "where": "under the answer, after it is complete (after the last streamed word); never before or instead of the answer",
+    "a_tap": "is a known question: answered by the local engine at once, no model call, also when the layer is on; the customer's bubble shows the label; the turn is added to the history the layer receives with the next typed message; one numbers-only log row (model_called false, tapped = [id])",
+    "passed": "never a button whose answer the conversation already holds (its entry / say / cards were already given, typed or tapped) and never the button for the question just asked",
+    "not_twice": "a button shown twice in this conversation and not tapped is not shown a third time",
+    "needs": {
+      "product": "a product is known: named in the answer, the row's `product`, the open product sheet, or state.last",
+      "pairing": "assistant-pairings.json has a row for it, or one of the four data sources of §13.4 gives at least one card other than the product itself",
+      "product.line": "the product has a cooking line",
+      "product.in-colli": "at least one colli's contents name it",
+      "product.is-colli": "the product is a colli",
+      "product.kg-meat": "sold per kg and in one of: rund, varken, kip, lam, marinades, roemeens — the discount's own scope (FACTS: only meat, only on order)",
+      "no-card-with-add": "the answer does not already show that product's card with its own add button",
+      "no-recipe-link": "the answer does not already carry the „Recept →” link of that product",
+      "no-colli-link": "the answer does not already carry a link to a colli that holds it",
+      "contents-not-said": "the answer did not already give the colli's contents"
+    },
+    "never": {
+      "topics": [
+        "allergens",
+        "legal"
+      ],
+      "entries_handoff_always": [
+        "allergen-serious",
+        "legal-complaint",
+        "products-fresh-frozen",
+        "products-voucher",
+        "traiteur-bbq-home"
+      ],
+      "intents": [
+        "allergen",
+        "miss-1",
+        "miss-2",
+        "handoff",
+        "person",
+        "scope",
+        "complaint",
+        "clarify"
+      ],
+      "also": "a reply that carries the order helper's own chips or its handover buttons (the helper leads); an answer that shows an offer row (one nudge at a time); the bubble of the salute and the greeting"
+    },
+    "layer_on": "the model does not write chips any more: `present.chips` becomes a list of at most two ids of `buttons`; the server keeps only ids that pass these rules, fills {product} and draws the labels of this file. No ids from the model = no buttons. The `after` table is used by the local engine alone (layer off, fallback, taps).",
+    "counts": "every answer logs the ids it showed (`shown`); every tap logs one row (`tapped` = [id]); a handover row („Naar de bestelbon” / „Via WhatsApp”) carries all ids tapped so far in this conversation (`tapped`); the first turn of a conversation is flagged (`first`). docs/sql/qa-asks-11d.sql.",
+    "say": {
+      "cookLine": "the product's own cooking line of products.json, word for word",
+      "colliContents": "the colli's own line of products.json (weight and contents) and its price",
+      "inColli": "lexicon §5.37 „{product} zit in {list}.”, {list} from the colli lines that name the product",
+      "askTown": "lexicon §5.37 „In welke gemeente woont u? …”; the next message is read as a town or postcode (the delivery-by-town answer of row 11b)"
+    }
+  },
+  "buttons": {
+    "with": {
+      "label": {
+        "nl": "Wat past erbij?",
+        "ro": "Cu ce merge?"
+      },
+      "cards": "pairings",
+      "needs": [
+        "product",
+        "pairing"
+      ]
+    },
+    "cook": {
+      "label": {
+        "nl": "Hoe maak ik het klaar?",
+        "ro": "Cum se gătește?"
+      },
+      "say": "cookLine",
+      "needs": [
+        "product",
+        "product.line",
+        "no-recipe-link"
+      ]
+    },
+    "add": {
+      "label": {
+        "nl": "Zet het bij mijn bestelling",
+        "ro": "Pune în comandă"
+      },
+      "pick": "add:{product}",
+      "needs": [
+        "product",
+        "no-card-with-add"
+      ]
+    },
+    "in-colli": {
+      "label": {
+        "nl": "In welke colli zit het?",
+        "ro": "În ce colli îl găsesc?"
+      },
+      "say": "inColli",
+      "needs": [
+        "product",
+        "product.in-colli",
+        "no-colli-link"
+      ]
+    },
+    "discount": {
+      "label": {
+        "nl": "Is er korting vanaf een paar kilo?",
+        "ro": "E reducere la mai multe kilograme?"
+      },
+      "entry": "order-volume-discount",
+      "needs": [
+        "product",
+        "product.kg-meat"
+      ]
+    },
+    "colli-list": {
+      "label": {
+        "nl": "Welke colli's zijn er?",
+        "ro": "Ce colli aveți?"
+      },
+      "entry": "products-colli-list"
+    },
+    "colli-contents": {
+      "label": {
+        "nl": "Wat zit erin?",
+        "ro": "Ce conține?"
+      },
+      "say": "colliContents",
+      "needs": [
+        "product",
+        "product.is-colli",
+        "contents-not-said"
+      ]
+    },
+    "colli-freeze": {
+      "label": {
+        "nl": "Kan ik het invriezen?",
+        "ro": "Pot să-l congelez?"
+      },
+      "entry": "products-colli-freeze"
+    },
+    "colli-keep": {
+      "label": {
+        "nl": "Hoe bewaar ik het?",
+        "ro": "Cum îl păstrez?"
+      },
+      "entry": "products-colli-keep"
+    },
+    "bbq-amount": {
+      "label": {
+        "nl": "Hoeveel vlees per persoon?",
+        "ro": "Câtă carne de persoană?"
+      },
+      "entry": "products-bbq-amount"
+    },
+    "bbq-pakket": {
+      "label": {
+        "nl": "Hebben jullie een BBQ-pakket?",
+        "ro": "Aveți pachet de grătar?"
+      },
+      "entry": "products-bbq-pakket"
+    },
+    "bbq-home": {
+      "label": {
+        "nl": "Komt John bij ons barbecueën?",
+        "ro": "Vine John să facă grătarul la noi?"
+      },
+      "entry": "traiteur-bbq-home"
+    },
+    "gourmet-price": {
+      "label": {
+        "nl": "Wat kost gourmet per persoon?",
+        "ro": "Cât costă gourmetul de persoană?"
+      },
+      "entry": "products-gourmet-price"
+    },
+    "gourmet-sides": {
+      "label": {
+        "nl": "Wat serveer ik erbij?",
+        "ro": "Ce pun lângă?"
+      },
+      "entry": "products-gourmet-sides"
+    },
+    "cold-platter": {
+      "label": {
+        "nl": "Wat kost een koude schotel?",
+        "ro": "Cât costă un platou rece?"
+      },
+      "entry": "traiteur-cold-platter"
+    },
+    "lead-time": {
+      "label": {
+        "nl": "Hoe lang vooraf bestel ik?",
+        "ro": "Cu cât timp înainte comand?"
+      },
+      "entry": "traiteur-lead-time"
+    },
+    "xmas-deadline": {
+      "label": {
+        "nl": "Tot wanneer bestel ik voor de feestdagen?",
+        "ro": "Până când comand pentru sărbători?"
+      },
+      "entry": "season-christmas-deadline",
+      "until": "2026-12-20"
+    },
+    "xmas-pickup": {
+      "label": {
+        "nl": "Wanneer haal ik het af?",
+        "ro": "Când ridic comanda?"
+      },
+      "entry": "season-pickup",
+      "until": "2026-12-31"
+    },
+    "platters-with": {
+      "label": {
+        "nl": "Wat past bij de feestschotels?",
+        "ro": "Ce merge lângă platouri?"
+      },
+      "entry": "season-platters-with",
+      "until": "2026-12-31"
+    },
+    "deadline": {
+      "label": {
+        "nl": "Tot wanneer bestel ik voor morgen?",
+        "ro": "Până când comand pentru mâine?"
+      },
+      "entry": "order-deadline"
+    },
+    "my-town": {
+      "label": {
+        "nl": "Leveren jullie bij mij?",
+        "ro": "Livrați la mine?"
+      },
+      "say": "askTown"
+    },
+    "delivery-cost": {
+      "label": {
+        "nl": "Wat kost de levering?",
+        "ro": "Cât costă livrarea?"
+      },
+      "entry": "delivery-cost"
+    },
+    "how-order": {
+      "label": {
+        "nl": "Hoe bestel ik?",
+        "ro": "Cum comand?"
+      },
+      "entry": "order-how"
+    },
+    "route": {
+      "label": {
+        "nl": "Hoe kom ik bij de winkel?",
+        "ro": "Cum ajung la magazin?"
+      },
+      "entry": "place-route"
+    },
+    "romanian": {
+      "label": {
+        "nl": "Welke Roemeense specialiteiten zijn er?",
+        "ro": "Ce specialități românești aveți?"
+      },
+      "entry": "products-romanian"
+    },
+    "week": {
+      "label": {
+        "nl": "Wat staat er deze week op de lijst?",
+        "ro": "Ce e pe lista săptămânii?"
+      },
+      "entry": "products-week"
+    },
+    "own-made": {
+      "label": {
+        "nl": "Maken jullie het zelf?",
+        "ro": "E făcut de voi?"
+      },
+      "entry": "products-own-made"
+    }
+  },
+  "after": [
+    {
+      "stage": "looking",
+      "when": {
+        "intent": "do-you-have",
+        "result": "yes",
+        "product": "not-colli"
+      },
+      "offer": [
+        "with",
+        "cook",
+        "in-colli"
+      ]
+    },
+    {
+      "stage": "looking",
+      "when": {
+        "intent": "do-you-have",
+        "result": "yes",
+        "product": "colli"
+      },
+      "offer": [
+        "colli-contents",
+        "colli-freeze"
+      ]
+    },
+    {
+      "stage": "looking",
+      "when": {
+        "entry": [
+          "products-mici-what"
+        ]
+      },
+      "offer": [
+        "with",
+        "cook",
+        "add"
+      ],
+      "product": "mici"
+    },
+    {
+      "stage": "looking",
+      "when": {
+        "entry": [
+          "products-mici-cook"
+        ]
+      },
+      "offer": [
+        "with",
+        "add"
+      ],
+      "product": "mici"
+    },
+    {
+      "stage": "looking",
+      "when": {
+        "entry": [
+          "products-cooking",
+          "products-recipes"
+        ]
+      },
+      "offer": [
+        "with",
+        "add"
+      ]
+    },
+    {
+      "stage": "looking",
+      "when": {
+        "entry": [
+          "products-romanian"
+        ]
+      },
+      "offer": [
+        "week",
+        "own-made"
+      ]
+    },
+    {
+      "stage": "looking",
+      "when": {
+        "entry": [
+          "products-own-made",
+          "products-smoked",
+          "products-origin"
+        ]
+      },
+      "offer": [
+        "romanian",
+        "week"
+      ]
+    },
+    {
+      "stage": "looking",
+      "when": {
+        "entry": [
+          "products-week"
+        ]
+      },
+      "offer": [
+        "how-order",
+        "deadline"
+      ]
+    },
+    {
+      "stage": "looking",
+      "when": {
+        "entry": [
+          "products-mici-with"
+        ]
+      },
+      "offer": [
+        "bbq-amount",
+        "add"
+      ],
+      "product": "mici"
+    },
+    {
+      "stage": "weighing",
+      "when": {
+        "entry": [
+          "products-price-kg"
+        ]
+      },
+      "offer": [
+        "discount",
+        "in-colli",
+        "add"
+      ]
+    },
+    {
+      "stage": "weighing",
+      "when": {
+        "entry": [
+          "products-mici-price"
+        ]
+      },
+      "offer": [
+        "discount",
+        "in-colli",
+        "add"
+      ],
+      "product": "mici"
+    },
+    {
+      "stage": "weighing",
+      "when": {
+        "entry": [
+          "order-volume-discount"
+        ]
+      },
+      "offer": [
+        "add",
+        "how-order"
+      ]
+    },
+    {
+      "stage": "weighing",
+      "when": {
+        "entry": [
+          "products-colli-what"
+        ]
+      },
+      "offer": [
+        "colli-list",
+        "colli-freeze"
+      ]
+    },
+    {
+      "stage": "weighing",
+      "when": {
+        "entry": [
+          "products-colli-list"
+        ]
+      },
+      "offer": [
+        "colli-freeze",
+        "how-order"
+      ]
+    },
+    {
+      "stage": "weighing",
+      "when": {
+        "entry": [
+          "products-colli-contents"
+        ]
+      },
+      "offer": [
+        "colli-freeze",
+        "colli-keep",
+        "add"
+      ]
+    },
+    {
+      "stage": "weighing",
+      "when": {
+        "entry": [
+          "products-colli-john"
+        ]
+      },
+      "offer": [
+        "colli-freeze",
+        "colli-keep",
+        "add"
+      ],
+      "product": "colli-john"
+    },
+    {
+      "stage": "weighing",
+      "when": {
+        "entry": [
+          "products-colli-freeze"
+        ]
+      },
+      "offer": [
+        "colli-keep",
+        "add"
+      ]
+    },
+    {
+      "stage": "weighing",
+      "when": {
+        "entry": [
+          "products-colli-keep"
+        ]
+      },
+      "offer": [
+        "add",
+        "how-order"
+      ]
+    },
+    {
+      "stage": "looking",
+      "when": {
+        "say": "cookLine"
+      },
+      "offer": [
+        "with",
+        "add"
+      ]
+    },
+    {
+      "stage": "weighing",
+      "when": {
+        "say": "inColli"
+      },
+      "offer": [
+        "add",
+        "colli-list"
+      ]
+    },
+    {
+      "stage": "weighing",
+      "when": {
+        "say": "colliContents"
+      },
+      "offer": [
+        "colli-freeze",
+        "add"
+      ]
+    },
+    {
+      "stage": "planning",
+      "when": {
+        "entry": [
+          "products-bbq-amount"
+        ]
+      },
+      "offer": [
+        "bbq-pakket",
+        "bbq-home"
+      ]
+    },
+    {
+      "stage": "planning",
+      "when": {
+        "entry": [
+          "products-bbq-pakket"
+        ]
+      },
+      "offer": [
+        "bbq-amount",
+        "bbq-home"
+      ]
+    },
+    {
+      "stage": "planning",
+      "when": {
+        "entry": [
+          "products-gourmet-price"
+        ]
+      },
+      "offer": [
+        "gourmet-sides",
+        "lead-time"
+      ]
+    },
+    {
+      "stage": "planning",
+      "when": {
+        "entry": [
+          "products-gourmet-amount"
+        ]
+      },
+      "offer": [
+        "gourmet-price",
+        "gourmet-sides"
+      ]
+    },
+    {
+      "stage": "planning",
+      "when": {
+        "entry": [
+          "products-gourmet-sides"
+        ]
+      },
+      "offer": [
+        "gourmet-price",
+        "lead-time"
+      ]
+    },
+    {
+      "stage": "planning",
+      "when": {
+        "entry": [
+          "traiteur-yes",
+          "traiteur-price"
+        ]
+      },
+      "offer": [
+        "cold-platter",
+        "gourmet-price",
+        "bbq-home"
+      ]
+    },
+    {
+      "stage": "planning",
+      "when": {
+        "entry": [
+          "traiteur-cold-platter",
+          "traiteur-platou-romanesc"
+        ]
+      },
+      "offer": [
+        "lead-time",
+        "gourmet-price"
+      ]
+    },
+    {
+      "stage": "planning",
+      "when": {
+        "entry": [
+          "traiteur-warm-buffet"
+        ]
+      },
+      "offer": [
+        "lead-time",
+        "cold-platter"
+      ]
+    },
+    {
+      "stage": "planning",
+      "when": {
+        "entry": [
+          "traiteur-lead-time"
+        ]
+      },
+      "offer": [
+        "how-order"
+      ]
+    },
+    {
+      "stage": "planning",
+      "when": {
+        "entry": [
+          "traiteur-minimum",
+          "traiteur-cook",
+          "traiteur-distance",
+          "traiteur-spit",
+          "traiteur-bbq-reserve"
+        ]
+      },
+      "offer": [
+        "lead-time"
+      ]
+    },
+    {
+      "stage": "planning",
+      "when": {
+        "entry": [
+          "season-christmas-deadline"
+        ]
+      },
+      "offer": [
+        "xmas-pickup",
+        "platters-with"
+      ]
+    },
+    {
+      "stage": "planning",
+      "when": {
+        "entry": [
+          "season-pickup"
+        ]
+      },
+      "offer": [
+        "platters-with"
+      ]
+    },
+    {
+      "stage": "planning",
+      "when": {
+        "entry": [
+          "season-romanian-dishes",
+          "season-platters-with"
+        ]
+      },
+      "offer": [
+        "xmas-deadline"
+      ]
+    },
+    {
+      "stage": "planning",
+      "when": {
+        "entry": [
+          "season-christmas-pig"
+        ]
+      },
+      "offer": [
+        "xmas-pickup"
+      ]
+    },
+    {
+      "stage": "ordering",
+      "when": {
+        "draft": "line-added",
+        "helper": "asks-nothing"
+      },
+      "offer": [
+        "with"
+      ]
+    },
+    {
+      "stage": "practical",
+      "when": {
+        "entry": [
+          "hours-open-now",
+          "hours-sunday",
+          "hours-monday",
+          "hours-wednesday",
+          "hours-holidays"
+        ]
+      },
+      "offer": [
+        "deadline",
+        "route"
+      ]
+    },
+    {
+      "stage": "practical",
+      "when": {
+        "entry": [
+          "place-address",
+          "place-route",
+          "place-parking"
+        ]
+      },
+      "offer": [
+        "deadline",
+        "my-town"
+      ]
+    },
+    {
+      "stage": "practical",
+      "when": {
+        "entry": [
+          "order-how",
+          "order-whatsapp",
+          "order-phone",
+          "order-account"
+        ]
+      },
+      "offer": [
+        "deadline",
+        "my-town"
+      ]
+    },
+    {
+      "stage": "practical",
+      "when": {
+        "entry": [
+          "order-deadline",
+          "order-today"
+        ]
+      },
+      "offer": [
+        "how-order",
+        "my-town"
+      ]
+    },
+    {
+      "stage": "practical",
+      "when": {
+        "entry": [
+          "order-payment-methods",
+          "order-pay-online",
+          "order-meal-vouchers",
+          "order-minimum",
+          "order-small"
+        ]
+      },
+      "offer": [
+        "how-order"
+      ]
+    },
+    {
+      "stage": "practical",
+      "when": {
+        "entry": [
+          "delivery-or-pickup",
+          "delivery-towns",
+          "delivery-days"
+        ]
+      },
+      "offer": [
+        "my-town",
+        "delivery-cost"
+      ]
+    },
+    {
+      "stage": "practical",
+      "when": {
+        "entry": [
+          "delivery-cost",
+          "delivery-free-from"
+        ]
+      },
+      "offer": [
+        "my-town",
+        "how-order"
+      ]
+    },
+    {
+      "stage": "practical",
+      "when": {
+        "intent": "delivery-town",
+        "place": "named"
+      },
+      "offer": [
+        "how-order",
+        "deadline"
+      ]
+    }
+  ]
+}

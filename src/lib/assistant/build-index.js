@@ -57,6 +57,9 @@ function categoryPhrases(cat) {
  * @param {object} d.towns         towns.json (row 11b: delivery by town)
  * @param {object} d.orderPaths    { bestellen, eindejaar } per locale (row 11b: the handover and the menu page)
  * @param {object} [d.reviews]     { nl, ro: { line, link, href, read } } — the trust strip's Google line (row 11c offers)
+ * @param {object} [d.nextQ]       assistant-paths.json (row 11d: the next-question buttons, the `after` table, the rules)
+ * @param {object} [d.pairings]    assistant-pairings.json (row 11d: the owners' „what goes with it”)
+ * @param {object[]} [d.recipesFull] recipes.json `recipes` (row 11d: the products a recipe names beside its own)
  */
 export function buildIndex(d) {
   const items = d.products.items;
@@ -198,6 +201,52 @@ export function buildIndex(d) {
     return { p: t.place, pc: t.postcode, km: t.km, ph: uniq([t.place, ...(t.alias ?? [])].map(norm)), ...(zone ? { z: zone.ring } : {}), ...(t.edge ? { e: true } : {}) };
   });
 
+  // Row 11d (D-65, docs/assistant.md §13): the next question. The buttons with their labels and what a tap does, the
+  // `after` table, the „never” lists, the owners' pairings, and the four data sources of §13.4 that fill „what goes with
+  // it” where the owners gave no pairing — the products a recipe names beside a product, the colli that hold it
+  // (`inc` above), the rubric's best sellers (product-photos.json, in her order), this week's list.
+  const nextQ = d.nextQ
+    ? (() => {
+        const ids = new Set(items.map((p) => p.id));
+        const rcp = {};
+        for (const r of d.recipesFull ?? []) {
+          const txt = ` ${norm([...(r.nl?.ingredients ?? []), ...(r.ro?.ingredients ?? [])].join(' '))} `;
+          const named = uniq([ids.has(r.id) ? r.id : null, ...products.filter((p) => p.ex.some((n) => n.length > 3 && txt.includes(` ${n} `))).map((p) => p.id)]);
+          for (const id of named) rcp[id] = uniq([...(rcp[id] ?? []), ...named.filter((x) => x !== id)]);
+        }
+        // only the products a recipe names beside another one (today's recipes each name their own product alone)
+        for (const id of Object.keys(rcp)) if (!rcp[id].length) delete rcp[id];
+        const nv = d.nextQ.rules.never;
+        return {
+          b: Object.fromEntries(
+            Object.entries(d.nextQ.buttons).map(([id, b]) => [
+              id,
+              { l: b.label, ...(b.entry ? { entry: b.entry } : {}), ...(b.say ? { say: b.say } : {}), ...(b.pick ? { pick: b.pick } : {}), ...(b.cards ? { cards: b.cards } : {}), needs: b.needs ?? [], ...(b.until ? { until: b.until } : {}) },
+            ]),
+          ),
+          after: d.nextQ.after.map((r) => ({ when: r.when, offer: r.offer, ...(r.product ? { product: r.product } : {}), stage: r.stage })),
+          max: d.nextQ.rules.max ?? 2,
+          never: { topics: nv.topics ?? [], entries: nv.entries_handoff_always ?? [], intents: nv.intents ?? [] },
+          pairs: (d.pairings?.pairings ?? []).map((r) => ({
+            id: r.id,
+            basis: r.basis,
+            p: r.when?.products ?? [],
+            ...(r.when?.category ? { cat: r.when.category } : {}),
+            ...(r.when?.menu ? { menu: r.when.menu } : {}),
+            show: (r.show ?? []).filter((id) => ids.has(id)),
+            ...(r.show_from ? { from: r.show_from } : {}),
+            ...(r.text ? { text: r.text } : {}),
+            ...(r.order_via === 'whatsapp' ? { wa: true } : {}),
+            ...(r.bank ? { bank: r.bank } : {}),
+            under: !!r.cards_under_bank,
+          })),
+          best: Object.fromEntries(Object.entries(d.photos.bestsellers ?? {}).filter(([k, v]) => !k.startsWith('_') && Array.isArray(v)).map(([k, v]) => [k, v.filter((id) => ids.has(id))])),
+          week: (d.products.week ?? []).filter((id) => ids.has(id)),
+          rcp,
+        };
+      })()
+    : null;
+
   return {
     v: 1,
     phone: d.entity.telephoneDisplay,
@@ -226,5 +275,7 @@ export function buildIndex(d) {
     },
     // row 11c: the Google figure as the site prints it (the Claude layer's `google-rating` offer)
     ...(d.reviews ? { reviews: d.reviews } : {}),
+    // row 11d: the next question (docs/assistant.md §13)
+    ...(nextQ ? { nq: nextQ } : {}),
   };
 }

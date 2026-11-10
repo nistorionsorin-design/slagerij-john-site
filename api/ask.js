@@ -8,6 +8,15 @@
 //          {t:"wait"} at once · {t:"delta",d} a checked sentence · {t:"reset"} drop what was shown · {t:"done", reply,
 //          st} the answer in the box's own shape · {t:"local", why} the box's engine answers (allergens, greetings,
 //          a person asked for) · {t:"fallback", why} the box's engine answers (no key, the cap, an error, a check).
+//   POST {ev:"tap", id, shown, lang, page} · {ev:"handover", kind, tapped, lang, page} → 204 (row 11d, D-65 §13.5): one
+//          numbers-only row, no model call — a next-question button tapped (the box answered it itself) or a click on
+//          „Naar de bestelbon” / a WhatsApp button, with the button ids tapped so far in the conversation. Sent by the box
+//          as a beacon, only while the layer is on.
+// Row 11d: `present.chips` = button ids of assistant-paths.json; the server keeps those that pass the rules (lib/
+// assistant/next.js — the same rules as the local engine) and draws the file's labels as the reply's `nq`. The row
+// carries shown · tapped · first_turn (docs/sql/qa-asks-11d.sql, qa_ask_log_v2; until Dan runs that file, the 11c
+// function qa_ask_log, without an error anywhere). `handover` = a click on a handover button (§11.7 point 5 „handover
+// clicked”), counted by the click's own row; a model answer that only shows the buttons no longer sets it.
 // The server's own checks (§11.7): in — ≤ 500 characters, e-mail addresses and digit runs of 9+ cut, the context
 // whitelisted (assistant-sections.json, products.json ids), 12 turns of history, 20 messages a conversation; the
 // allergen gate (no model call; the §4 text word for word); out — every price, percentage, hour, date, distance and
@@ -31,7 +40,8 @@ import { prepare, ask as engineAsk, newState, kit } from '../src/lib/assistant/e
 import { prepareOrder } from '../src/lib/assistant/order.js';
 import { words as normWords } from '../src/lib/assistant/normalize.js';
 import { fill, reply as newReply, handoff as handoffActs } from '../src/lib/assistant/say.js';
-import { SYSTEM, TOOLS, TERMINAL, session, familyOf, saidNo, asksWhatItIs, allowedOf, numberCheck, textCheck, wordingCheck, tidy, offerIn, offerAllowed, formCheck, rude, otherLang, asksToWhatsApp } from '../src/lib/assistant/lookups.js';
+import { SYSTEM, TERMINAL, toolsFor, session, familyOf, saidNo, asksWhatItIs, allowedOf, numberCheck, textCheck, wordingCheck, tidy, offerIn, offerAllowed, formCheck, rude, otherLang, asksToWhatsApp } from '../src/lib/assistant/lookups.js';
+import { nextFor, nqOf } from '../src/lib/assistant/next.js';
 import { AI_LAYER, DAILY_CAP, MAX_MESSAGES } from '../src/lib/assistant/ai.js';
 import { siteId, afterResponse } from '../src/lib/metrics.js';
 
@@ -55,7 +65,7 @@ const OPENED = new Set(['inline', 'button', 'sheet']);
 
 /** Test doubles (scripts/assistant-test-11c.mjs only; inert unless the test sets them): the index, the model call, the
  *  call counter, the log row, a spy on what the model is sent, and — only with `test` on — a clock per request (`_test`). */
-export const hooks = { test: false, index: null, model: null, today: null, log: null, spy: null };
+export const hooks = { test: false, index: null, model: null, today: null, log: null, spy: null, rpc: null };
 
 let indexP = null;
 const loadIndex = (origin) =>
@@ -128,6 +138,8 @@ function stateOf(ix, m, pageLang) {
     off: (Array.isArray(s.off) ? s.off : []).filter((x) => typeof x === 'string' && offersFile.offers.some((o) => o.id === x)),
     no: !!s.no,
     n: Math.max(0, Math.min(99, Number(s.n) || 0)),
+    // row 11d: the next question's own memory (counts, answer keys, the product of the last buttons), shape-checked
+    nq: nqOf(s),
   };
 }
 const histOf = (m) =>
@@ -167,8 +179,8 @@ function userTurn(ix, L, pageLang, ctx, st, q, at, pre) {
 
 // ——— the model call: streamed SSE, read into content blocks ———
 
-async function callModel(messages, signal, onText) {
-  if (hooks.model) return hooks.model(messages, { signal, onText, tools: TOOLS, system: SYSTEM });
+async function callModel(messages, signal, onText, tools) {
+  if (hooks.model) return hooks.model(messages, { signal, onText, tools, system: SYSTEM });
   const res = await fetch(API, {
     method: 'POST',
     signal,
@@ -178,7 +190,7 @@ async function callModel(messages, signal, onText) {
       max_tokens: MAX_TOKENS,
       stream: true,
       system: [{ type: 'text', text: SYSTEM, cache_control: { type: 'ephemeral' } }],
-      tools: TOOLS,
+      tools,
       output_config: { effort: 'low' },
       messages,
     }),
@@ -282,13 +294,15 @@ export default {
     } catch {
       m = null;
     }
+    // row 11d: a count from the box (a tap, a handover) — one numbers-only row, nothing streamed
+    if (m && typeof m === 'object' && typeof m.ev === 'string') return countEvent(request, m);
     if (!m || typeof m !== 'object' || typeof m.q !== 'string') return json(400, { t: 'fallback', why: 'body' });
 
     const enc = new TextEncoder();
     const { readable, writable } = new TransformStream();
     const w = writable.getWriter();
     const send = (o) => w.write(enc.encode(`${JSON.stringify(o)}\n`)).catch(() => {});
-    const log = { lang: 'other', page: null, family: 'other', lookups: [], in: 0, out: 0, cache: 0, write: 0, model: false, fallback: false, offer: null, handover: false, why: null };
+    const log = { lang: 'other', page: null, family: 'other', lookups: [], in: 0, out: 0, cache: 0, write: 0, model: false, fallback: false, offer: null, handover: false, shown: [], tapped: [], first: false, why: null };
     const site = siteId(request);
     const work = (async () => {
       send({ t: 'wait' });
@@ -323,6 +337,8 @@ async function turn(request, m, send, log, site) {
   const st = stateOf(ix, m, pageLang);
   if (ctx.sheet && !st.last) st.last = ctx.sheet;
   const hist = histOf(m);
+  // row 11d: the first message of a conversation (the box counts the typed messages in its state)
+  log.first = st.n === 0;
   const q = clean(m.q);
   const typed = q !== String(m.q ?? '').slice(0, 500).replace(/\s+/g, ' ').trim() && /\S+@\S+|(?:\+?\d[\s./-]?){9,}/.test(String(m.q));
   log.page = ctx.path;
@@ -347,7 +363,6 @@ async function turn(request, m, send, log, site) {
     const r = newReply(L, { face });
     r.lines.push(fill(line));
     handoffActs(ix, r, L, q);
-    log.handover = true;
     send({ t: 'done', reply: r, st: { ...st, lang: L, n: st.n + 1 } });
   };
   // „ben je een mens?” — the §5.36 answer, fixed (D-64): made by DanGabriel Advisory, built on Claude, the way to a person
@@ -437,7 +452,7 @@ async function turn(request, m, send, log, site) {
     let res;
     hooks.spy?.(messages, probe.id ?? null);
     try {
-      res = await callModel(messages, AbortSignal.timeout(left), onText);
+      res = await callModel(messages, AbortSignal.timeout(left), onText, toolsFor(ix.nq));
     } catch (e) {
       if (e?.name === 'TimeoutError' || e?.name === 'AbortError') throw fail('timeout');
       throw Object.assign(e, { why: e.status === 429 ? 'rate' : e.type === 'invalid_request_error' ? 'refused' : e.type ?? 'api' });
@@ -481,6 +496,7 @@ async function turn(request, m, send, log, site) {
     messages.push({ role: 'assistant', content: res.blocks.map(strip) }, { role: 'user', content: [...results, { type: 'text', text: `Not shown to the customer: ${why.join('; ')}. Answer again: use only figures that stand in a lookup result (call the lookup), or leave them out.` }] });
     S.cards = [];
     S.chips = [];
+    S.nqIds = [];
   }
   if (final === null) throw fail('rounds');
 
@@ -491,12 +507,13 @@ async function turn(request, m, send, log, site) {
   const r = newReply(L, { face: S.handoff ? 'serious' : 'answer' });
   for (const l of lines) r.lines.push([{ t: l }]);
   r.cards = S.cards;
-  r.chips = S.chips;
+  // row 11d: the reply's chips are the order helper's own (its question's answers); the model's are button ids (below)
+  r.chips = [];
   if (S.draft) {
     r.slip = S.draft.slip ?? null;
     r.acts.push(...S.draft.acts);
     r.foot = S.draft.foot ?? [];
-    if (!S.chips.length) r.chips = S.draft.chips ?? [];
+    r.chips = S.draft.chips ?? [];
   }
   for (const a of S.acts) if (!r.acts.some((x) => x.kind === a.kind)) r.acts.push(a);
   // a phone number or an e-mail address was typed (cut before the model): the order helper's line (lexicon §5.34)
@@ -528,13 +545,29 @@ async function turn(request, m, send, log, site) {
   const offer = leak ? null : offerIn(final, S, offersFile);
   log.offer = offer;
   log.lookups = S.used;
-  log.handover = r.acts.some((a) => a.kind === 'wa' || a.kind === 'form');
   if (other) log.lang = 'other';
   if (S.handoff) log.family = S.handoff === 'complaint' ? 'handoff' : log.family;
   if (S.draft) log.family = log.family === 'info' ? 'order' : log.family;
   if (leak) log.family = 'scope';
   const last = S.cards[0]?.id ?? S.st.last ?? st.last;
   const next = { ...st, ...S.st, lang: L, last, pend: null, miss: unclear && st.miss !== 1 ? 1 : 0, off: [...new Set([...st.off, ...(offer ? [offer] : [])])], no, n: st.n + 1 };
+  // row 11d (§13.9): the model's button ids, kept only where the rules let them — never beside a hand-off (the model's
+  // handoff call, or the second unclear message: the serious face), a complaint, the scope sentence or an offer, never one the conversation already holds; the answer's
+  // keys are the local engine's reading of the same message (what was asked is what was answered)
+  const scope = leak || lines.join(' ') === t.ai.scope;
+  const nx = nextFor(ix, {
+    st,
+    reply: r,
+    dbg: { intent: 'layer', entry: local.dbg.entry, product: local.dbg.product, handoff: r.face === 'serious' ? 'always' : 'none', offer, scope, complaint: S.handoff === 'complaint' },
+    L,
+    today: new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Brussels' }).format(at),
+    product: ctx.sheet,
+    draft: next.draft,
+    ids: S.nqIds,
+  });
+  r.nq = nx.chips;
+  next.nq = nx.nq;
+  log.shown = nx.ids;
   // D-58 point 3 with the layer on: a question the model could not answer (it handed off as „not sure”) goes to the
   // weekly mail like the local engine's second miss — the box sends it to /api/miss, cut of digits and e-mail addresses
   send({ t: 'done', reply: r, st: next, ...(S.handoff === 'not-sure' ? { unanswered: true } : {}) });
@@ -579,6 +612,7 @@ function checks(text, S, allowed) {
 // ——— the metrics spine: the cap before, the row after (docs/sql/qa-asks-11c.sql) ———
 
 async function rpc(name, args, ms) {
+  if (hooks.rpc) return hooks.rpc(name, args);
   const base = process.env.METRICS_URL;
   const key = process.env.METRICS_KEY;
   const token = process.env.QA_DIGEST_TOKEN;
@@ -601,14 +635,51 @@ async function callsToday(site) {
     return null;
   }
 }
+// row 11d: qa_ask_log_v2 (docs/sql/qa-asks-11d.sql) until it answers „not found” — then the 11c qa_ask_log for 15
+// minutes, and v2 is tried again (Dan runs the SQL file before the push; a warm function finds it within 15 minutes)
+let v2Missing = 0;
 async function logRow(site, l) {
   const row = { p_site: site, p_lang: l.lang === 'nl' || l.lang === 'ro' ? l.lang : 'other', p_page: l.page, p_family: l.family, p_lookups: [...new Set(l.lookups)], p_in: l.in, p_out: l.out, p_cache: l.cache, p_model: l.model, p_fallback: l.fallback, p_offer: l.offer, p_handover: l.handover };
-  if (hooks.log) return hooks.log({ ...row, _write: l.write, _why: l.why }, l.id ?? null);
+  const v2 = { ...row, p_shown: (l.shown ?? []).slice(0, 2), p_tapped: (l.tapped ?? []).slice(0, 40), p_first: !!l.first };
+  if (hooks.log) return hooks.log({ ...v2, _write: l.write, _why: l.why }, l.id ?? null);
   try {
+    if (Date.now() - v2Missing > 15 * 60000) {
+      const r = await rpc('qa_ask_log_v2', v2, 3000);
+      if (r.skipped) {
+        if (!process.env.VERCEL) console.log(JSON.stringify({ event: 'ask', dryRun: true, row: v2 }));
+        return;
+      }
+      if (!r.error) return;
+      if (r.error !== 404) return console.log(JSON.stringify({ event: 'ask', log: `http ${r.error}` }));
+      v2Missing = Date.now();
+    }
     const r = await rpc('qa_ask_log', row, 3000);
-    if (r.skipped && !process.env.VERCEL) console.log(JSON.stringify({ event: 'ask', dryRun: true, row }));
     if (r.error) console.log(JSON.stringify({ event: 'ask', log: `http ${r.error}` }));
   } catch (e) {
     console.log(JSON.stringify({ event: 'ask', log: e?.name ?? 'error' }));
   }
+}
+
+/** Row 11d (§13.5): a count from the box — `tap` (a next-question button the box answered itself: its id, the ids shown
+ *  under that answer) or `handover` (a click on „Naar de bestelbon” or a WhatsApp button: the ids tapped so far in the
+ *  conversation). Ids are checked against the buttons of the index, the page against the whitelist; no text, no model
+ *  call, no identifier. */
+async function countEvent(request, m) {
+  const done = new Response(null, { status: 204, headers: { 'cache-control': 'no-store' } });
+  if (!keyOn()) return done;
+  const site = siteId(request);
+  const ix = await loadIndex(new URL(request.url).origin).catch(() => null);
+  const b = ix?.nq?.b;
+  if (!b) return done;
+  const ids = (a, n) => [...new Set((Array.isArray(a) ? a : []).filter((x) => typeof x === 'string' && Object.hasOwn(b, x)))].slice(0, n);
+  const page = typeof m.page === 'string' && Object.hasOwn(sections, m.page) ? m.page : null;
+  const lang = m.lang === 'ro' || m.lang === 'nl' ? m.lang : 'other';
+  const base = { lang, page, lookups: [], in: 0, out: 0, cache: 0, write: 0, model: false, fallback: false, offer: null, first: false, why: null };
+  let row = null;
+  if (m.ev === 'tap' && typeof m.id === 'string' && Object.hasOwn(b, m.id)) {
+    const topic = b[m.id].entry ? ix.faq.find((e) => e.id === b[m.id].entry)?.topic : null;
+    row = { ...base, family: b[m.id].pick ? 'order' : topic === 'delivery' ? 'delivery' : topic === 'order' ? 'order' : 'info', shown: ids(m.shown, 2), tapped: [m.id], handover: false };
+  } else if (m.ev === 'handover') row = { ...base, family: m.kind === 'order' ? 'order' : 'handoff', shown: [], tapped: ids(m.tapped, 40), handover: true };
+  if (row) afterResponse(logRow(site, row));
+  return done;
 }

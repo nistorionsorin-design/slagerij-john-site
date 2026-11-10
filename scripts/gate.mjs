@@ -413,8 +413,9 @@ if (built) {
     for (const f of walk(join(root, 'src/content')).filter((f) => /\.(md|mdx)$/.test(f))) scan(rel(f), read(f));
     // provenance is never shown: `_source`, and (row 11a) the answer bank's per-entry `facts` lists („FACTS.md: Too
     // Good To Go [OBSERVED]”) — the index the box fetches carries neither; (row 11c) the offers' `source` („FACTS.md
-    // Volumekorting [OWNER] …”) — the function's offers lookup returns a row's id and sentence only
-    for (const f of walk(join(root, 'src/data')).filter((f) => f.endsWith('.json'))) scan(rel(f), read(f).replace(/"_source":\s*"(?:[^"\\]|\\.)*"/g, '').replace(/"facts":\s*\[[^\]]*\]/g, '').replace(/"source":\s*"(?:[^"\\]|\\.)*"/g, ''));
+    // Volumekorting [OWNER] …”) — the function's offers lookup returns a row's id and sentence only. Row 11d: a `facts`
+    // list of several strings, each with its own tag, is skipped whole (not only up to its first „]”)
+    for (const f of walk(join(root, 'src/data')).filter((f) => f.endsWith('.json'))) scan(rel(f), read(f).replace(/"_source":\s*"(?:[^"\\]|\\.)*"/g, '').replace(/"facts":\s*\[(?:\s*"(?:[^"\\]|\\.)*"\s*,?)*\s*\]/g, '').replace(/"source":\s*"(?:[^"\\]|\\.)*"/g, ''));
     // the order mails (stage 5) are written by the functions, not the pages: their strings count too
     for (const f of walk(join(root, 'api')).filter((f) => f.endsWith('.js'))) scan(rel(f), read(f).replace(/^\s*\/\/.*$/gm, ''));
     const list = [...found].map(([k, v]) => `${k}: ${[...v].join(' ')}`);
@@ -731,7 +732,9 @@ if (built) {
       if (size > 1024) e.push(`${rel(f)}: ${size} B — the pill row's scroll-spy is ≤ 1 kB (row 18)`);
     }
     // row 22: the sheet ≤ 3 kB, the search ≤ 2 kB, each one file (no shared chunk pulled in); row 22b: the rows' folds ≤ 1 kB
-    for (const [name, max, what] of [['Fiche', 3072, 'the product sheet (fiche.ts)'], ['AsSearch', 2048, 'the search (search.ts)'], ['Rows', 1024, 'the rows\' folds (rows.ts)'], ['QaSheet', 1536, 'the salute (qa-salute.ts, row 11e)']]) {
+    for (const [name, max, what] of [['Fiche', 3072, 'the product sheet (fiche.ts)'], ['AsSearch', 2048, 'the search (search.ts)'], ['Rows', 1024, 'the rows\' folds (rows.ts)'], ['QaSheet', 2304, 'the salute (qa-salute.ts, rows 11e + 11g)']]) {
+      // row 11e: the salute ≤ 1,5 kB → row 11g (D-69): ≤ 2,25 kB — + the browser's language and both languages' salute and
+      // greeting, so a Romanian browser on a Dutch page gets its salute and Mitică's greeting at once (1 408 → 2 042 B)
       for (const f of js.filter((f) => new RegExp(`[\\\\/]${name}\\.`).test(f))) {
         const size = statSync(f).size;
         if (size > max) e.push(`${rel(f)}: ${size} B — ${what} is ≤ ${max / 1024} kB (row 22)`);

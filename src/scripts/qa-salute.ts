@@ -5,8 +5,18 @@
 // nor once it was opened or used in this visit; not on the order form (no bubble there, QaSheet's `salute`). A tap on it
 // opens the box exactly as the button does; the box still opens on tap only. Fixed, opacity + transform: no layout shift;
 // reduced motion: still (CSS). Nothing is fetched. Decorative (aria-hidden): the button keeps its own name.
+// Row 11g (D-69, Dan 10.11 16:17): the salute follows the browser's language. The first entry of navigator.languages (else
+// navigator.language) whose primary subtag is ro or nl decides; neither → the page's language. On a Dutch page a browser
+// set to Romanian gets „Cine urmează? Tu.” (the bubble's text swapped while it is still hidden, `lang` on it), and a tap
+// on the bubble or the button opens the box in Romanian: Mitică's greeting at once, then the box's own line that offers
+// the site in Romanian (qa-ui.ts) — and the other way round on a Romanian page. Read in the browser only; nothing is
+// sent or stored beyond row 11e's flag; the page itself (its HTML, language, links) does not change; no redirect.
+import { saluteT } from '../i18n/salute.ts';
+
 const bubble = document.querySelector<HTMLElement>('[data-qa-salute]');
 const fab = document.querySelector<HTMLElement>('.qa-fab');
+/** the salute's language: the browser's first ro / nl, in its own order; neither → undefined (the page's) */
+const browserLang = () => (navigator.languages?.length ? navigator.languages : [navigator.language]).map((t) => String(t).toLowerCase().split('-')[0]).find((p) => p === 'ro' || p === 'nl') as 'nl' | 'ro' | undefined;
 const KEY = 'qa-salute';
 const stored = (k: string) => {
   try {
@@ -36,7 +46,24 @@ if (bubble && fab && !stored(KEY) && !stored('qa-state')) {
     if (!bubble.hidden) hide();
     done = true;
   };
-  document.addEventListener('click', (e) => (e.target as Element).closest?.('[data-qa-open]') && e.target !== bubble && off(), true);
+  // row 11g: the box opened by the button after the salute in the other language — Mitică's (or Jefke's) greeting is in
+  // place before the sheet shows; the box's script reads the button's mark (qa.ts → qa-ui.ts `opened`)
+  document.addEventListener(
+    'click',
+    (e) => {
+      const door = (e.target as Element).closest?.('[data-qa-open]');
+      const L = fab.dataset.qaLang as 'nl' | 'ro' | undefined;
+      const log = document.querySelector('section.qa [data-qa-log]');
+      // a box not used yet: its one bubble, the greeting, in that language
+      if (door === fab && L && log?.children.length === 1) {
+        const p = log.querySelector('p')!;
+        p.textContent = saluteT[L].greeting;
+        p.parentElement!.lang = `${L}-BE`;
+      }
+      if (door && e.target !== bubble) off();
+    },
+    true,
+  );
   document.querySelector('section.qa')?.addEventListener('focusin', off, { once: true });
   bubble.addEventListener('click', () => {
     off();
@@ -45,6 +72,13 @@ if (bubble && fab && !stored(KEY) && !stored('qa-state')) {
   const show = () => {
     if (done || document.documentElement.classList.contains('qa-lock') || document.querySelector('dialog[open]')) return;
     mark();
+    // row 11g: the browser's language, set before the bubble is visible (no flash of the page's own)
+    const L = browserLang();
+    if (L && !document.documentElement.lang.startsWith(L)) {
+      bubble.textContent = saluteT[L].salute;
+      bubble.lang = L;
+      fab.dataset.qaLang = L;
+    }
     bubble.hidden = false;
     // left of the button, level with it (the button's own box: its width differs per language); never past a 12 px gutter
     const r = fab.getBoundingClientRect();

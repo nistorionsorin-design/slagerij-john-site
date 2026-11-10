@@ -12,6 +12,7 @@
 // (RO), verbatim — `ai` (the AI label, the personal-data line, the writing line, the person / scope / 20-message lines)
 // and `credit` (the DanGabriel Advisory line under the label, and the link under the `site-made-by` answer).
 import type { Locale } from './ui';
+import { saluteT } from './salute.ts';
 
 /** The pages with an inline box (lexicon §5.32 „Start chips per page”), by their two paths. Every other page has the
  *  „Vraag het ons” sheet only, with the home's chips. */
@@ -54,7 +55,7 @@ export const qaT = {
     submit: 'Vraag',
     open: 'Vraag het ons',
     /** row 11e (D-66, lexicon §5.38): the salute beside the floating button, once per visit — the butcher calling the next customer */
-    salute: 'Aan wie is \'t? Aan u.',
+    salute: saluteT.nl.salute,
     openAria: 'Open de automatische assistent',
     close: 'Sluiten',
     sheetAsk: 'Vraag over dit product',
@@ -140,6 +141,8 @@ export const qaT = {
       aContains: 'Volgens onze allergenenlijst bevat {category} {allergen}.',
       aMay: 'Volgens onze allergenenlijst kan {category} sporen van {allergen} bevatten.',
       aNone: 'Volgens onze allergenenlijst bevat {category} geen {allergen}; sporen zijn nooit uitgesloten.',
+      /** row 11d (lexicon §5.37): the second sentence about the same group — the lead is said once */
+      aMayShort: 'Kan sporen van {allergen} bevatten.',
       aNoList: 'Voor dit product heb ik geen allergenenlijst. Bel ons vooraf: {phone}.',
       clarify: 'Welke bedoelt u?',
       miss1: 'Dat ligt niet in mijn toog. Vraag het anders, of kies hieronder.',
@@ -151,13 +154,24 @@ export const qaT = {
       switchAsk: 'Wilt u de site in het Nederlands?',
       switchBtn: 'Ja, in het Nederlands',
       // row 11e (D-66, lexicon §5.38): the Dutch pages' pig is Jefke — the greeting names him, as the Romanian one names Mitică
-      greeting: 'Dag! Ik ben Jefke. Zeg het maar.',
+      greeting: saluteT.nl.greeting,
       thanks: 'Graag gedaan. Smakelijk!',
       handover: 'Tot aan de toog!',
       restartBtn: 'Opnieuw',
       restart: 'Wij beginnen opnieuw. Wat wilt u weten?',
       link: 'Meer op de pagina {page}.',
       fail: 'De assistent laadt niet. Stuur ons een WhatsApp of bel {phone}.',
+    },
+    /** row 11d (D-65) — lexicon §5.37: the next question. The buttons' labels are data (src/data/assistant-paths.json);
+     *  these are the lines around them: the label over the „what goes with it” cards, the opening line from a product's
+     *  sheet, the „In welke colli zit het?” answer ({list} = „BBQ Colli (€55)”, „, ” and a last „ en ”), the town
+     *  question; and the weekly mail's table is Romanian only (§6, lib/assistant/misses.js). */
+    nq: {
+      cardsLabel: 'Past erbij',
+      open: 'Over {product}: wat wilt u weten?',
+      inColli: '{product} zit in {list}.',
+      and: 'en',
+      askTown: 'In welke gemeente woont u? Typ de naam of de postcode.',
     },
     /** §5.32 slot forms: {unit} NL kg / stuk / portie / liter / colli · {day} vandaag / morgen / a weekday · {list} „ of ” */
     unit: { kg: 'kg', stuk: 'stuk', portie: 'portie', liter: 'liter', colli: 'colli', pers: 'persoon' },
@@ -185,7 +199,7 @@ export const qaT = {
     submit: 'Întreabă',
     open: 'Întreabă-ne',
     /** §6 „Mitică, salutul la încărcare, 10.11” (row 11e) */
-    salute: 'Cine urmează? Tu.',
+    salute: saluteT.ro.salute,
     openAria: 'Deschide asistentul automat',
     close: 'Închide',
     sheetAsk: 'Întreabă despre produsul ăsta',
@@ -269,6 +283,8 @@ export const qaT = {
       aContains: 'Conform listei noastre de alergeni, {category} conține {allergen}.',
       aMay: 'Conform listei noastre de alergeni, {category} poate conține urme de {allergen}.',
       aNone: 'Conform listei noastre de alergeni, {category} nu conține {allergen}; urmele nu sunt niciodată excluse.',
+      /** §6 „Asistentul, întrebarea următoare” (row 11d): a doua propoziție despre aceeași grupă */
+      aMayShort: 'Poate conține urme de {allergen}.',
       aNoList: 'Pentru produsul ăsta nu am lista de alergeni. Sună-ne înainte: {phone}.',
       clarify: 'La care te referi?',
       miss1: 'Asta n-o am în vitrină. Întreabă altfel sau alege mai jos.',
@@ -281,13 +297,21 @@ export const qaT = {
       switchBtn: 'Da, în română',
       // D-62 (Dan 10.11 12:05): the pig's Romanian name, lexicon §6 mascot lines; the Dutch greeting stays nameless until
       // the Flemish name is picked
-      greeting: 'Bună! Eu sunt Mitică. Ce să fie?',
+      greeting: saluteT.ro.greeting,
       thanks: 'Cu plăcere. Poftă bună!',
       handover: 'Ne vedem la tejghea!',
       restartBtn: 'De la capăt',
       restart: 'Începem de la capăt. Ce vrei să afli?',
       link: 'Mai multe pe pagina {page}.',
       fail: 'Asistentul nu se încarcă. Scrie-ne pe WhatsApp sau sună la {phone}.',
+    },
+    /** §6 „Asistentul, întrebarea următoare, 10.11” (row 11d) — the lines around the buttons, as in NL */
+    nq: {
+      cardsLabel: 'Merge cu',
+      open: 'Despre {product}: ce vrei să știi?',
+      inColli: 'Găsești {product} în {list}.',
+      and: 'și',
+      askTown: 'În ce localitate ești? Scrie numele sau codul poștal.',
     },
     /** §6 RO slot forms: {unit} kg / bucată / porție / litru / colli · {day} azi / mâine / a weekday · {list} „ sau ” */
     unit: { kg: 'kg', stuk: 'bucată', portie: 'porție', liter: 'litru', colli: 'colli', pers: 'persoană' },

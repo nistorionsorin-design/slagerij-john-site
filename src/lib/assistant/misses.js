@@ -44,8 +44,13 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&
 /** The weekly mail to the shop, in Romanian (lexicon §6 „Asistent, comanda, 10.11” — no Dutch version): subject,
  *  greeting, one line per question „{date} · {page} · {q}”, the close, the foot. `rows` = qa_misses_week().
  *  Row 11c (a): the intro's three number forms of the lexicon (10.11 13:2x) — one question (its own sentence), 2–19 and
- *  any n ending in 01–19 („la 213 întrebări”), and from 20 with „de” („la 20 de întrebări”, „la 100 de întrebări”). */
-export function digestMail(rows) {
+ *  any n ending in 01–19 („la 213 întrebări”), and from 20 with „de” („la 20 de întrebări”, „la 100 de întrebări”).
+ *  Row 11d (D-65, docs/assistant.md §13.5; lexicon §6 „Asistentul, întrebarea următoare”): `paths` = qa_paths_week()
+ *  ({days, conversations, handovers, buttons: [{id, shown, tapped, in_handover}]}) adds the table „Butoanele
+ *  săptămânii” — a button by its Romanian label (`labels`: id → label, assistant-paths.json), shown · tapped · in a
+ *  conversation that reached the order form or WhatsApp — and the total line; no button → „Niciun buton apăsat
+ *  săptămâna asta.”; no `paths` (the SQL file not run yet, an error) → the mail as before. */
+export function digestMail(rows, paths = null, labels = {}) {
   const n = rows.length;
   const subject = `Întrebări fără răspuns pe site: ${n}`;
   const intro =
@@ -55,7 +60,28 @@ export function digestMail(rows) {
   const lines = rows.map((r) => `${day(r.day)} · ${r.page} · ${r.q}`);
   const close = 'Trimiteți-i lui Dan Gabriel răspunsurile pe WhatsApp și le adăugăm pe site.';
   const foot = 'Asistentul site-ului este făcut de DanGabriel Advisory.';
-  const text = [intro, '', ...lines, '', close, '', foot].join('\n');
-  const html = `<!doctype html><html lang="ro"><body style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#1a1511"><p>${esc(intro)}</p><ul>${lines.map((l) => `<li>${esc(l)}</li>`).join('')}</ul><p>${esc(close)}</p><p style="color:#5e534a;font-size:13px">${esc(foot)}</p></body></html>`;
+  const table = pathsTable(paths, labels);
+  const text = [intro, '', ...lines, '', close, ...(table ? ['', ...table.text] : []), '', foot].join('\n');
+  const html = `<!doctype html><html lang="ro"><body style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#1a1511"><p>${esc(intro)}</p><ul>${lines.map((l) => `<li>${esc(l)}</li>`).join('')}</ul><p>${esc(close)}</p>${table?.html ?? ''}<p style="color:#5e534a;font-size:13px">${esc(foot)}</p></body></html>`;
   return { subject, text, html };
+}
+
+/** the weekly table of the next-question buttons (lexicon §6), as text lines and as HTML; null without data */
+function pathsTable(paths, labels) {
+  if (!paths || typeof paths !== 'object' || !Array.isArray(paths.buttons)) return null;
+  const title = 'Butoanele săptămânii';
+  const head = ['Buton', 'Arătat', 'Apăsat', 'În comenzi'];
+  const num = (v) => String(Math.max(0, Math.floor(Number(v) || 0)));
+  const rows = paths.buttons.map((b) => [labels[b.id] ?? String(b.id), num(b.shown), num(b.tapped), num(b.in_handover)]);
+  const total = `Conversații: ${num(paths.conversations)}. Au ajuns la bon sau la WhatsApp: ${num(paths.handovers)}.`;
+  const none = 'Niciun buton apăsat săptămâna asta.';
+  const text = [title, ...(rows.length ? [head.join(' · '), ...rows.map((r) => r.join(' · '))] : [none]), total];
+  const td = 'style="padding:4px 10px 4px 0;border-bottom:1px solid #e4dccf"';
+  const tdn = 'style="padding:4px 10px 4px 0;border-bottom:1px solid #e4dccf;text-align:right"';
+  const html = `<h3 style="font-size:16px;margin:20px 0 6px">${esc(title)}</h3>${
+    rows.length
+      ? `<table style="border-collapse:collapse;font-size:14px"><thead><tr>${head.map((h, i) => `<th ${i ? tdn : td}>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((c, i) => `<td ${i ? tdn : td}>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`
+      : `<p>${esc(none)}</p>`
+  }<p>${esc(total)}</p>`;
+  return { text, html };
 }

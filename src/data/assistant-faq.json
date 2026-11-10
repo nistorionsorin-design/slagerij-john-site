@@ -1,5 +1,5 @@
 {
-  "_source": "Assistant v2 answer bank for build-plan row 11a (docs/assistant.md §3 + §3 legal bullet + §10; D-58). Cowork 05.11.2026. Facts only from FACTS.md and site/src/data; entries reused from site/src/data/faq.json are verbatim (facts tag). handoff: none = answer only · offer = answer + WhatsApp button · always = straight to WhatsApp/phone (not-on-file facts use the miss line, never a guess). dynamic = computed by the island at answer time; `a` is the static fallback. Allergen answers = the matrix sentence + allergens.json workshop notice verbatim (its last sentence is the §4.2 serious-allergy call line, so it is not repeated). Language: NL u-form, RO tu-form (lexicon D3/D4). site/src/data/faq.json is NOT replaced: it feeds the visible FAQ blocks.",
+  "_source": "Assistant v2 answer bank for build-plan row 11a (docs/assistant.md §3 + §3 legal bullet + §10; D-58). Cowork 05.11.2026. Facts only from FACTS.md and site/src/data; entries reused from site/src/data/faq.json are verbatim (facts tag). handoff: none = answer only · offer = answer + WhatsApp button · always = straight to WhatsApp/phone (not-on-file facts use the miss line, never a guess). dynamic = computed by the island at answer time; `a` is the static fallback. Allergen answers = the matrix sentence + allergens.json workshop notice verbatim (its last sentence is the §4.2 serious-allergy call line, so it is not repeated). Language: NL u-form, RO tu-form (lexicon D3/D4). site/src/data/faq.json is NOT replaced: it feeds the visible FAQ blocks. · 10.11.2026 15:5x (Cowork): Georgiana's WhatsApp answers of 15:20–15:28 in (products-bbq-amount, products-colli-keep + 3 new: products-mici-with, products-gourmet-sides, season-platters-with); 6 hand-off answers now carry an answer by logic on Dan's instruction (facts tag [INFERRED]): hours-annual-leave, order-someone-else, products-cut-to-order, traiteur-plates-cutlery, traiteur-tasting, season-easter (the last from products.json). Still hand-off: products-voucher, products-fresh-frozen, the deposit amount. NOT yet in site/src/data — rides with row 11d. · 10.11.2026 16:3x (Cowork): keywords corrected after a run of the live engine — „Wanneer zijn jullie open?” was answered with trust-since („Sinds 1 februari 2025”) and „ce specialități românești aveți?” with „nu e pe lista noastră”: trust-since loses „geopend / opening / deschis / deschidere”, hours-open-now, products-mici-cook and products-romanian gain the phrases customers type.",
   "miss": {
     "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
     "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
@@ -18,12 +18,23 @@
           "open",
           "geopend",
           "gesloten",
-          "dicht"
+          "dicht",
+          "wanneer open",
+          "openingsuren",
+          "open vandaag",
+          "tot hoe laat",
+          "hoe laat open"
         ],
         "ro": [
           "deschis acum",
           "deschis",
-          "închis"
+          "închis",
+          "program",
+          "orar",
+          "la ce oră",
+          "când sunteți deschiși",
+          "deschis azi",
+          "până la ce oră"
         ]
       },
       "a": {
@@ -202,14 +213,18 @@
         ]
       },
       "a": {
-        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
-        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+        "nl": "Sluitingsdagen zetten wij bij de openingsuren op de site zodra ze vastliggen. Voor een datum verder weg vraagt u het best even via WhatsApp.",
+        "ro": "Zilele în care e închis apar pe site, lângă program, de îndată ce sunt stabilite. Pentru o dată mai îndepărtată, întreabă-ne pe WhatsApp."
       },
-      "link": null,
-      "handoff": "always",
+      "link": {
+        "nl": "/contact",
+        "ro": "/ro/contact"
+      },
+      "handoff": "offer",
       "dynamic": null,
       "facts": [
-        "not on file: annual leave (FACTS: Not answered)"
+        "[INFERRED] by Cowork on Dan's instruction 10.11 15:36 („answer yourself … based on the logic”) — not the owners' word; they can correct it (FACTS.md „Answered by logic”)",
+        "site/src/data/hours.json `special` (how closing days reach the site); annual leave itself: still not on file"
       ]
     },
     {
@@ -867,14 +882,18 @@
         ]
       },
       "a": {
-        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
-        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+        "nl": "Ja, dat mag. Wie afhaalt, zegt de naam van de bestelling; betalen kan bij het afhalen.",
+        "ro": "Da, se poate. Cine vine spune numele de pe comandă; plata se face la ridicare."
       },
-      "link": null,
-      "handoff": "always",
+      "link": {
+        "nl": "/bestellen",
+        "ro": "/ro/comanda"
+      },
+      "handoff": "none",
       "dynamic": null,
       "facts": [
-        "not on file: collection by a third person"
+        "[INFERRED] by Cowork on Dan's instruction 10.11 15:36 („answer yourself … based on the logic”) — not the owners' word; they can correct it (FACTS.md „Answered by logic”)",
+        "FACTS.md: payment at pickup (bank order-pay-online)"
       ]
     },
     {
@@ -1239,12 +1258,22 @@
         "nl": [
           "mici bakken",
           "mici grillen",
-          "hoe lang mici"
+          "hoe lang mici",
+          "mici klaarmaken",
+          "hoe maak ik mici",
+          "mici bereiden",
+          "mici in de pan",
+          "mici klaar"
         ],
         "ro": [
           "cum fac micii",
           "mici la grătar",
-          "cât stau micii"
+          "cât stau micii",
+          "cum se gătesc micii",
+          "cum gătesc micii",
+          "cum se fac micii",
+          "cum prepar micii",
+          "cum se gătește mici"
         ]
       },
       "a": {
@@ -1478,14 +1507,17 @@
         ]
       },
       "a": {
-        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
-        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+        "nl": "Een colli is veel vlees ineens. Wat u de eerstvolgende dagen niet eet, steekt u best meteen in de diepvries.",
+        "ro": "Un colli înseamnă multă carne deodată. Ce nu gătești în zilele următoare pui la congelator din ziua în care îl ridici."
       },
-      "link": null,
-      "handoff": "always",
+      "link": {
+        "nl": "/colli-vleespakketten",
+        "ro": "/ro/colli"
+      },
+      "handoff": "offer",
       "dynamic": null,
       "facts": [
-        "not on file: shelf life / vacuum packing"
+        "FACTS.md: Owners' answers — WhatsApp 10.11.2026 [OWNER] Georgiana 15:20–15:28 q4 (freeze what is not eaten in the next days; no day figure on file — none written; worded on the quantity, not on age, at her ask)"
       ]
     },
     {
@@ -1577,8 +1609,8 @@
         ]
       },
       "a": {
-        "nl": "Zeg ons het aantal personen en wat u nog serveert; wij wegen af. Voor een pakket per persoon rekenen wij het voor u uit.",
-        "ro": "Spune-ne câte persoane și ce mai servești; noi cântărim. La pachetul de persoană, calculăm noi pentru tine."
+        "nl": "Reken 4 à 5 stukken vlees per persoon. Bijvoorbeeld mici, spiering, braadworst, spek en brochettes van kip, kalkoen, rund of lam, naar wat uw gasten graag eten.",
+        "ro": "Socotește 4–5 bucăți de carne de persoană. De exemplu mici, ceafă, cârnați, piept de porc și frigărui de pui, curcan, vită sau miel, după ce le place invitaților."
       },
       "link": {
         "nl": "/bbq-pakketten",
@@ -1587,7 +1619,83 @@
       "handoff": "offer",
       "dynamic": null,
       "facts": [
-        "site/src/data/faq.json (verbatim)"
+        "FACTS.md: Owners' answers — WhatsApp 10.11.2026 [OWNER] Georgiana 15:20–15:28 q2 („4, 5 bucăți de carne de persoana”; her „oaie” = the lamb list, FACTS 27.10 q8)"
+      ]
+    },
+    {
+      "id": "products-mici-with",
+      "topic": "products",
+      "q": {
+        "nl": "Wat past er bij mici op de barbecue?",
+        "ro": "Ce merge lângă mici la grătar?"
+      },
+      "keywords": {
+        "nl": [
+          "bij mici",
+          "past bij mici",
+          "naast mici",
+          "mici combineren"
+        ],
+        "ro": [
+          "lângă mici",
+          "merge cu mici",
+          "pe lângă mici",
+          "cu ce servesc mici"
+        ]
+      },
+      "a": {
+        "nl": "Bij mici raden wij aan: braadworst, spiering, spek, een côte à l'os, biefstuk of brochettes.",
+        "ro": "Lângă mici recomandăm cârnați, ceafă, piept de porc, côte à l'os, biftec sau frigărui."
+      },
+      "link": {
+        "nl": "/roemeense-specialiteiten",
+        "ro": "/ro/mici-si-specialitati"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Owners' answers — WhatsApp 10.11.2026 [OWNER] Georgiana 15:20–15:28 q1",
+        "docs/data/assistant-pairings.json with-mici"
+      ]
+    },
+    {
+      "id": "products-gourmet-sides",
+      "topic": "products",
+      "q": {
+        "nl": "Wat serveer ik bij gourmet of fondue?",
+        "ro": "Ce pun lângă gourmet sau fondue?"
+      },
+      "keywords": {
+        "nl": [
+          "bij gourmet",
+          "bij fondue",
+          "past bij gourmet",
+          "bijgerechten gourmet",
+          "pastasalade",
+          "rauwkost"
+        ],
+        "ro": [
+          "lângă gourmet",
+          "lângă fondue",
+          "garnituri gourmet",
+          "salată de paste",
+          "crochete",
+          "crudități"
+        ]
+      },
+      "a": {
+        "nl": "Bij gourmet of fondue passen een pastasalade, frieten, kroketten of een schotel rauwkost (sla, tomaat, komkommer, maïs, erwten, bonen). U kunt ze bij ons bestellen; vraag het even via WhatsApp.",
+        "ro": "Lângă gourmet sau fondue merg o salată de paste, cartofi prăjiți, crochete sau un platou de crudități (salată, roșii, castraveți, porumb, mazăre, fasole). Le poți comanda la noi; scrie-ne pe WhatsApp."
+      },
+      "link": {
+        "nl": "/bbq-pakketten",
+        "ro": "/ro/gratar"
+      },
+      "handoff": "offer",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Owners' answers — WhatsApp 10.11.2026 [OWNER] Georgiana 15:20–15:28 q3 („Puteți face comenzi”)",
+        "none of these sides is in products.json: no price, not on the order form → WhatsApp"
       ]
     },
     {
@@ -1638,14 +1746,19 @@
           "roemeense specialiteiten",
           "carnati",
           "pastrama",
-          "toba"
+          "toba",
+          "roemeense producten",
+          "welke roemeense"
         ],
         "ro": [
           "românești",
           "specialități",
           "cârnați afumați",
           "pastramă",
-          "tobă"
+          "tobă",
+          "specialități românești",
+          "produse românești",
+          "ce aveți românesc"
         ]
       },
       "a": {
@@ -1845,14 +1958,18 @@
         ]
       },
       "a": {
-        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
-        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+        "nl": "Ja. Aan de toonbank zegt u hoe u het wilt; bij een bestelling schrijft u het bij „Opmerkingen”.",
+        "ro": "Da. La tejghea spui cum o vrei; la comandă scrii la „Observații”."
       },
-      "link": null,
-      "handoff": "always",
+      "link": {
+        "nl": "/bestellen",
+        "ro": "/ro/comanda"
+      },
+      "handoff": "none",
       "dynamic": null,
       "facts": [
-        "not on file: cutting to order"
+        "[INFERRED] by Cowork on Dan's instruction 10.11 15:36 („answer yourself … based on the logic”) — not the owners' word; they can correct it (FACTS.md „Answered by logic”)",
+        "site/src/i18n/bestellen.ts remarks: „Opmerkingen” / „Observații”"
       ]
     },
     {
@@ -2682,14 +2799,18 @@
         ]
       },
       "a": {
-        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
-        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+        "nl": "Dat spreken wij af in de offerte. Zet het in uw aanvraag; u krijgt binnen 24 uur antwoord.",
+        "ro": "Asta se stabilește în ofertă. Scrie-o în cerere; primești răspuns în 24 de ore."
       },
-      "link": null,
-      "handoff": "always",
+      "link": {
+        "nl": "/traiteur",
+        "ro": "/ro/catering"
+      },
+      "handoff": "offer",
       "dynamic": null,
       "facts": [
-        "not on file: plates and cutlery with catering"
+        "[INFERRED] by Cowork on Dan's instruction 10.11 15:36 („answer yourself … based on the logic”) — not the owners' word; they can correct it (FACTS.md „Answered by logic”) — no yes or no is given, only where it is settled",
+        "FACTS.md: Offerte answered within 24 h [OWNER] 27.10"
       ]
     },
     {
@@ -2711,14 +2832,18 @@
         ]
       },
       "a": {
-        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
-        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+        "nl": "Vraag het in uw offerteaanvraag; wij antwoorden binnen 24 uur.",
+        "ro": "Cere asta în cererea de ofertă; răspundem în 24 de ore."
       },
-      "link": null,
-      "handoff": "always",
+      "link": {
+        "nl": "/traiteur",
+        "ro": "/ro/catering"
+      },
+      "handoff": "offer",
       "dynamic": null,
       "facts": [
-        "not on file: tasting"
+        "[INFERRED] by Cowork on Dan's instruction 10.11 15:36 („answer yourself … based on the logic”) — not the owners' word; they can correct it (FACTS.md „Answered by logic”) — no yes or no is given",
+        "FACTS.md: Offerte answered within 24 h [OWNER] 27.10"
       ]
     },
     {
@@ -3018,14 +3143,55 @@
         ]
       },
       "a": {
-        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
-        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+        "nl": "Een paasmenu staat nog niet op de site. Lamsvlees bestelt u wel met de bestelbon: lamsbout, lamskoteletten, een half of een heel lam.",
+        "ro": "Un meniu de Paște nu e încă pe site. Carnea de miel o poți comanda de pe acum: pulpă, cotlete, jumătate de miel sau miel întreg."
       },
-      "link": null,
-      "handoff": "always",
+      "link": {
+        "nl": "/producten",
+        "ro": "/ro/produse"
+      },
+      "handoff": "offer",
       "dynamic": null,
       "facts": [
-        "not on file: Easter menu"
+        "site/src/data/products.json: lamsbout · lamskotelet · lam-half · lam-heel (on the order form; price in the shop)",
+        "Easter menu: not on file"
+      ]
+    },
+    {
+      "id": "season-platters-with",
+      "topic": "season",
+      "q": {
+        "nl": "Wat past er bij de feestschotels?",
+        "ro": "Ce merge lângă platourile de sărbători?"
+      },
+      "keywords": {
+        "nl": [
+          "bij de feestschotels",
+          "bij de feestschotel",
+          "welke wijn",
+          "wijn erbij",
+          "bijgerechten feest"
+        ],
+        "ro": [
+          "lângă platouri",
+          "lângă platourile de sărbători",
+          "ce vin merge",
+          "vin roșu",
+          "vin alb"
+        ]
+      },
+      "a": {
+        "nl": "Bij de feestschotels raden wij bijgerechten aan en een goede fles rode, witte of rosé wijn.",
+        "ro": "Lângă platourile de sărbători recomandăm garnituri și o sticlă bună de vin roșu, alb sau rosé."
+      },
+      "link": {
+        "nl": "/feestmenu-eindejaar",
+        "ro": "/ro/sarbatori"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Owners' answers — WhatsApp 10.11.2026 [OWNER] Georgiana 15:20–15:28 q5 — advice only; whether the shop sells wine is not on file, so the answer does not say it"
       ]
     },
     {
@@ -3106,13 +3272,15 @@
         "nl": [
           "sinds wanneer",
           "hoe lang al",
-          "geopend",
-          "opening"
+          "bestaan jullie",
+          "sinds welk jaar",
+          "wanneer begonnen"
         ],
         "ro": [
           "de când",
-          "deschis",
-          "deschidere"
+          "de câți ani",
+          "când ați deschis magazinul",
+          "de când existați"
         ]
       },
       "a": {

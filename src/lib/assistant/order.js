@@ -464,7 +464,14 @@ function finish(ctx, d, ev) {
       }
     }
   }
+  toForm(ix, r, L, d, at);
   return { r, dbg: { intent, draft: d, product: d.last ?? undefined, dynamic: 'order', handoff: 'none', ...(ev.dbg ?? {}) } };
+}
+
+/** Row 11d (§13.2 „three taps”; D-69): from the first noted line on, the helper's reply also carries „Naar de
+ *  bestelbon” (pre-filled with the lines so far) beside its own question — the bestelbon asks the rest itself */
+function toForm(ix, r, L, d, at) {
+  if (hasLines(d) && !r.acts.some((a) => a.kind === 'form')) r.acts.push({ kind: 'form', label: ix.s[L].o.toForm, href: formHref(ix, L, d, at) });
 }
 
 const blank = () => ({ lines: [], intent: null, ask: null, clarify: null, method: null, day: null, prompt: null, chips: null, slip: false, quiet: false, dbg: null });
@@ -531,6 +538,7 @@ export function orderTurn(ctx, best) {
     const r = reply(L);
     if (hasLines(d)) r.slip = slip(ix, L, d, at);
     else r.lines.push(fill(o.empty));
+    toForm(ix, r, L, d, at);
     d.q = null;
     return { r, dbg: { intent: 'order-show', draft: d, dynamic: 'order', handoff: 'none' } };
   }
@@ -680,13 +688,16 @@ const km = (x) => {
 /** „Leveren jullie in Tielt?”, „levering 8820”, „aduceți și la Oostkamp?” — one town or postcode, or an unknown one
  *  with a delivery word; several towns, or none, leave the answer bank's own answer (delivery-towns,
  *  delivery-or-pickup). Never a fee: the distance, the rule, and who confirms. */
-export function townTurn(ctx) {
+export function townTurn(ctx, forced = false) {
   const { ix, T, L, raw } = ctx;
   prepareOrder(ix);
   const towns = ix.order?.towns ?? [];
   if (!towns.length) return null;
   const nt = ` ${T.join(' ')} `;
-  const strong = T.some((w) => DELIVER.has(w)) || / aan huis | la domiciliu /.test(nt);
+  // row 11d: after the tap „Leveren jullie bij mij?” (lexicon §5.37 „In welke gemeente woont u?”) the next message is
+  // read as a town or a postcode, with no delivery word needed — a short one; a question is read as usual
+  const asked = forced && T.length > 0 && T.length <= 4 && !/\?/.test(String(raw));
+  const strong = asked || T.some((w) => DELIVER.has(w)) || / aan huis | la domiciliu /.test(nt);
   const weak = T.some((w) => COME.has(w));
   if ((!strong && !weak) || T.some((w) => PARTY.has(w) || /^(bbq|barbecue|grill|gratar|spit|protap|traiteur)/.test(w))) return null;
   // a town named as it is spelled wins over one a typo reaches („roeselare” is one letter-pair from „koekelare”); a
@@ -728,6 +739,12 @@ export function townTurn(ctx) {
     return { r, dbg: { intent: 'delivery-town', entry: 'delivery-other-town', place: t.p, km: k, dynamic: 'delivery', handoff: 'offer' } };
   }
   if (!strong) return null;
+  // row 11d: the town question's answer that names no town of the table — „Die gemeente ken ik niet …”
+  if (asked && !T.some((w) => ix._bankWord.has(w) && !towns.some((t) => t.phw.some((ph) => ph.includes(w))))) {
+    r.lines.push(fill(s.townUnknown));
+    r.acts.push({ kind: 'wa', label: ix.s[L].t.askWa, href: waHref(ix, L, raw) });
+    return { r, dbg: { intent: 'delivery-town', entry: 'delivery-other-town', place: null, dynamic: 'delivery', handoff: 'offer' } };
+  }
   // a capitalised name after „in” / „naar” / „la” / „în” that is no town of the table, nor a word the shop uses
   const cand = [...String(raw).matchAll(/(?:^|\s)(?:in|naar|tot|te|la|în|spre|richting)\s+(\p{Lu}[\p{L}'’-]{2,})/gu)].map((m) => norm(m[1]));
   const unknown = unknownPc || cand.some((w) => w && !ix._stop.nl.has(w) && !ix._stop.ro.has(w) && !ix._bankWord.has(w) && !ix._productWord.has(w) && !MONTHS.has(w));

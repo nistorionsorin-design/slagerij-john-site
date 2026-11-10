@@ -7,10 +7,32 @@
 // setup (RESEND_API_KEY · ORDER_MAIL_FROM) to ORDER_MAIL_TO (default: entity.json e-mail). No rows, no token, no keys →
 // nothing is sent; the answer says which, never a value. Secrets only as Vercel environment variables (D-26).
 // QA_DIGEST_DRY_RUN=1 builds the mail and prints its subject without sending (a preview deployment).
+// Row 11d (D-65, §13.5): the mail also carries the week's table of the next-question buttons, read through
+// qa_paths_week(site, QA_DIGEST_TOKEN, 7) (docs/sql/qa-asks-11d.sql); until Dan runs that file, or on any error, the
+// mail goes as before, without the table. The mail still goes only in a week with an unanswered question.
 import { readFileSync } from 'node:fs';
 import { digestMail } from '../src/lib/assistant/misses.js';
 
 const entity = JSON.parse(readFileSync(new URL('../src/data/entity.json', import.meta.url), 'utf8'));
+// the buttons' Romanian labels, for the table (the mail is Romanian, lexicon §6)
+const paths = JSON.parse(readFileSync(new URL('../src/data/assistant-paths.json', import.meta.url), 'utf8'));
+const labels = Object.fromEntries(Object.entries(paths.buttons).map(([id, b]) => [id, b.label.ro]));
+/** the week's buttons, or null (no function yet, an error, a wrong token) — never in the way of the mail */
+async function pathsWeek(env, site) {
+  try {
+    const r = await fetch(`${env.METRICS_URL.replace(/\/+$/, '')}/rest/v1/rpc/qa_paths_week`, {
+      method: 'POST',
+      headers: { apikey: env.METRICS_KEY, authorization: `Bearer ${env.METRICS_KEY}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ p_site: site, p_token: env.QA_DIGEST_TOKEN, p_days: 7 }),
+      signal: AbortSignal.timeout(6000),
+    });
+    if (!r.ok) return null;
+    const j = await r.json();
+    return j && typeof j === 'object' && Array.isArray(j.buttons) ? j : null;
+  } catch {
+    return null;
+  }
+}
 const answer = (status, body) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
 const log = (o) => console.log(JSON.stringify({ event: 'qa-digest', ...o }));
 
@@ -45,7 +67,7 @@ export default {
       log({ sent: false, rows: 0 });
       return answer(200, { ok: true, sent: false, rows: 0 });
     }
-    const mail = digestMail(rows);
+    const mail = digestMail(rows, await pathsWeek(env, site), labels);
     if (env.QA_DIGEST_DRY_RUN === '1' || !env.RESEND_API_KEY || !env.ORDER_MAIL_FROM) {
       log({ sent: false, rows: rows.length, why: env.QA_DIGEST_DRY_RUN === '1' ? 'dry run' : 'mail keys', subject: mail.subject });
       return answer(200, { ok: true, sent: false, rows: rows.length });

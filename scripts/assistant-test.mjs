@@ -53,14 +53,24 @@ const say = (state, lang, t) => ask(ix, state, { text: t, pageLang: lang, page: 
 const results = [];
 const record = (kind, id, ok, why, got) => results.push({ kind, id, ok, why: ok ? undefined : why, got });
 
+// Row 11d (D-67 point 2; the bank's `_source` of 10.11 15:5x): seven entries of the 05.11 bank now carry an answer — by
+// Georgiana's word (products-colli-keep) or by logic, tagged [INFERRED] — instead of the hand-off the 05.11 cases expect.
+// For these the expected hand-off is the bank's own of 10.11, and the case's note says so; the entry expected is
+// unchanged. Named in the row-11d report, never applied silently.
+const faqNow = Object.fromEntries(ix.faq.map((e) => [e.id, e.h]));
+const HANDOFF_10_11 = new Set(['hours-annual-leave', 'order-someone-else', 'products-colli-keep', 'products-cut-to-order', 'traiteur-plates-cutlery', 'traiteur-tasting', 'season-easter']);
+
 // 1 — the answer bank
 for (const c of tests.faq) {
   const { reply, dbg } = say(newState(c.page_lang), c.page_lang, c.text);
   const why = [];
+  const changed = HANDOFF_10_11.has(c.expect.entry) && faqNow[c.expect.entry] !== c.expect.handoff;
+  const wantH = changed ? faqNow[c.expect.entry] : c.expect.handoff;
   if (dbg.entry !== c.expect.entry) why.push(`entry ${dbg.entry ?? dbg.intent} ≠ ${c.expect.entry}`);
-  if ((dbg.handoff ?? 'none') !== c.expect.handoff) why.push(`handoff ${dbg.handoff} ≠ ${c.expect.handoff}`);
+  if ((dbg.handoff ?? 'none') !== wantH) why.push(`handoff ${dbg.handoff} ≠ ${wantH}`);
   if (reply.lang !== c.page_lang) why.push(`answered in ${reply.lang}`);
   record('faq', c.id, !why.length, why.join('; '), { entry: dbg.entry, intent: dbg.intent, text: text(reply).slice(0, 160) });
+  if (changed) results[results.length - 1].note = `expected hand-off ${c.expect.handoff} → ${wantH}: the bank of 10.11 (D-67 point 2) answers this entry`;
 }
 
 // 2 — do you have

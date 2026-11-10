@@ -26,9 +26,11 @@ FACTS: you know nothing about the shop yourself. Every fact (product, price, hou
 
 ALLERGENS: for any question about allergens, ingredients a person cannot eat, or diets for medical reasons, call allergen_answer and write nothing else. Never answer such a question in your own words.
 
-CONTEXT: each message comes with the page, the section in view, the open product and the draft order. Use them to understand "this", "that one", "here". Do not mention that you can see them.
+CONTEXT: each message comes with the page, the section in view, the open product and the draft order. Use them to understand "this", "that one", "here". Do not mention that you can see them. One exception: when opened_from is "sheet", the box has already named that product in its opening line; refer to it by name and do not ask which product is meant.
 
 ANSWERS: the specific first (price, hour, date, kilometres), in at most three short sentences, then at most one next step. No greetings after the first message, no apologies, no exclamation marks, no emoji. Do not name the customer's feelings. Use present to show product cards and buttons; never write links or HTML.
+
+NEXT QUESTION: after your answer you may offer the next question a customer at this point usually asks: call present with chips = at most two ids from the list. Choose by where the customer is: looking at a product (what goes with it, how to cook it), weighing price or quantity (the colli that holds it, the discount, amounts per person), planning an occasion (prices per person, how long ahead), practical (the order deadline, delivery to their town). None after an allergen answer, a complaint, a handoff or the scope sentence; none that repeats what was just answered. Never write a chip text yourself.
 
 DOUBT: when the customer's words show doubt about price, quantity, choice, quality, timing or delivery cost, first give the fact that settles it. Then you may call offers once and mention at most one offer of that kind, with its condition, in one sentence. Never an offer that is not in the lookup result. Never urgency or scarcity. Never repeat an offer, never offer after a no, never in the same answer as a handoff.
 
@@ -114,6 +116,39 @@ export const TOOLS = [
 /** the lookups whose call needs no further model round: the answer of that round stands */
 export const TERMINAL = new Set(['present', 'handoff']);
 
+/** Row 11d (D-65 · D-69, docs/assistant.md §13.9): the tools with `present.chips` as the ids of the next-question
+ *  buttons (assistant-paths.json, carried in the index as `nq`) — an enum, each id with its Dutch label in the
+ *  description; the model picks ids, the server keeps the ones that pass the rules and draws the file's labels. Built
+ *  from the index once per index (byte-stable: it is the cached prefix with the system prompt). */
+const toolsCache = new WeakMap();
+export function toolsFor(nq) {
+  if (!nq?.b) return TOOLS;
+  if (toolsCache.has(nq)) return toolsCache.get(nq);
+  const ids = Object.keys(nq.b);
+  const tools = TOOLS.map((t) =>
+    t.name !== 'present'
+      ? t
+      : {
+          ...t,
+          description: 'Show product cards (ids from find_products or colli_and_menus, at most 3) and at most two next-question buttons under your answer (ids from the chips list; the box draws their labels). Name the offer id if your answer mentions an offer.',
+          input_schema: {
+            ...t.input_schema,
+            properties: {
+              ...t.input_schema.properties,
+              chips: {
+                type: 'array',
+                maxItems: 2,
+                items: { type: 'string', enum: ids },
+                description: `The next question as button ids, at most two: ${ids.map((id) => `${id} = „${nq.b[id].l.nl}”`).join(' · ')}`,
+              },
+            },
+          },
+        },
+  );
+  toolsCache.set(nq, tools);
+  return tools;
+}
+
 // ——— the conversation's words: families of doubt (§11.5), a no to an offer, a person-or-robot question ———
 
 const has = (T, list) => list.some((w) => (w.includes(' ') ? ` ${T.join(' ')} `.includes(` ${w} `) : T.includes(w)));
@@ -168,6 +203,8 @@ export function session(o) {
     results: [],
     cards: [],
     chips: [],
+    // row 11d: the next-question button ids the model asked for in present (≤ 2, unfiltered)
+    nqIds: [],
     acts: [],
     offerIds: new Set(),
     faqIds: new Set(),
@@ -340,7 +377,9 @@ export function session(o) {
     present({ cards = [], chips = [], offer = '' }) {
       const ids = (Array.isArray(cards) ? cards : []).filter((id) => typeof id === 'string' && product(id)).slice(0, 3);
       S.cards = ids.map((id) => kit.card(ix, product(id), L));
-      S.chips = (Array.isArray(chips) ? chips : []).filter((c) => typeof c === 'string' && c.trim().length >= 2 && c.length <= 60).slice(0, 2).map((c) => ({ label: c.trim(), ask: c.trim() }));
+      // row 11d: the chips are button ids now (the server filters them by the rules and draws the labels); no free text
+      S.nqIds = (Array.isArray(chips) ? chips : []).filter((c) => typeof c === 'string' && c.length <= 40).slice(0, 2);
+      S.chips = [];
       if (offer && typeof offer === 'string') S.offerDeclared = offer;
       return { ok: true, ...(cards.length > ids.length ? { dropped: cards.filter((x) => !ids.includes(x)) } : {}) };
     },

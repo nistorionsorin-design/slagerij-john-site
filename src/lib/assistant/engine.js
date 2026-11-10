@@ -12,11 +12,17 @@
 // Row 11b: after the person and allergen checks, the order helper (order.js: the draft, its quantities, pickup or
 // delivery, the day, the handover to the bestelbon or WhatsApp) and delivery to one named town get the message first;
 // the state's `draft` holds the order. The order's taps come back as picks add:<id> · qty:<n> · day:<date> · mode:<m>.
+// Row 11d (D-65, docs/assistant.md §13; next.js): after an answer, at most two next-question buttons (the reply's `nq`,
+// ids of assistant-paths.json with the file's labels); a tap comes back as the pick nq:<id> and is answered here at once,
+// with no model call — a bank answer, a line built from the data (the cooking line, the colli's contents, the colli
+// that hold a product, the town question), the order helper's pick, or the „Past erbij” cards (assistant-pairings.json
+// first, then the four data sources of §13.4). The state's `nq` keeps what the rules need (next.js).
 import { norm, words, same, find } from './normalize.js';
 import { brussels, chipState, hoursOn, weekday } from '../open-state-core.js';
 import { money } from '../order-core.js';
 import { fill, textLine, reply, listOf, handoff } from './say.js';
 import { orderTurn, orderPick, orderFor, townTurn, wasFilled } from './order.js';
+import { nextFor, withCards, underBank, inColliList, labelOf } from './next.js';
 
 const DAY_MS = 86400000;
 const addDays = (d, k) => new Date(d.getTime() + k * DAY_MS);
@@ -56,6 +62,16 @@ const FOLDS = new Set(['voor']);
 // shorthand customers type for the bank's words (per persoon · kilogram)
 const EQUIV = [['pp', 'persoon', 'personen', 'pers', 'persoana', 'persoane', 'persoană'], ['kg', 'kilo', 'kilogram', 'kilogramul']];
 const alike = (a, b) => same(a, b) || EQUIV.some((g) => g.includes(a) && g.includes(b));
+// row 11d (e-04 · e-05): the words that name the Romanian rubric itself (normalised), and the words that may stand beside
+// them in a question about it — „ce specialități românești aveți?”, „Welke Roemeense specialiteiten zijn er?” ask for
+// the rubric, never for a product missing from the list
+const RUBRIC_RO = new Set(['roemeens', 'roemeense', 'romanesti', 'romanesc', 'romaneasca']);
+const RUBRIC_WITH = new Set([...RUBRIC_RO, 'specialiteiten', 'specialiteit', 'specialitati', 'specialitate', 'producten', 'produse', 'welke', 'welk', 'wat', 'ce', 'care', 'zijn', 'er', 'aveti', 'hebben', 'jullie', 'voi']);
+// row 11d (e-06 · e-08): a cooking question with a product named — „hoe maak / bak / braad ik … klaar”, „cum se gătește”,
+// „cum gătesc”, „cum fac” — is that product's cooking answer, in both languages (language knowledge, not copy); an
+// order word makes it an order question („cum fac comanda”)
+const COOK = / hoe (maak|bak|braad|grill|gril|kook|bereid|stoof) | (klaarmaken|klaar maken|bakken|braden|grillen|bereiden|stoven) | cum (se )?(gatest\w*|gatesc|gatesti|gatim|gatiti|fac|faci|face|facem|prepar|prepari|prepara|pregatesc|pregatesti) /;
+const NOT_COOK = new Set(['comanda', 'comand', 'comenzi', 'bestel', 'bestellen', 'bestelling', 'bestelbon', 'bon', 'order']);
 // row 11b — the language of a message: units belong to neither; the order helper's words belong to one
 const NEUTRAL = ['kg', 'g', 'gr', 'km', 'l', 'pp', 'euro'];
 const ORDER_WORDS = {
@@ -144,7 +160,7 @@ export function explain(ix, text, lang) {
 
 /** A fresh conversation. `lang`: the language of the last answer; `last`: the product of the last answer;
  *  `pend`: a clarify question waiting for its pick; `miss`: misses in a row; `draft`: the order slot of row 11b. */
-export const newState = (lang) => ({ lang, last: null, pend: null, miss: 0, draft: null });
+export const newState = (lang) => ({ lang, last: null, pend: null, miss: 0, draft: null, nq: null });
 
 // ——— understanding ———
 
@@ -522,6 +538,13 @@ export function ask(ix, state, input) {
   else if (!T.length) out = { r: greet(ix, L), dbg: { intent: 'greeting' } };
   else out = route(ctx);
   const { r, dbg } = out;
+  // row 11d (§13.4, assistant-pairings.json `cards_under_bank`): a bank answer of the owners' pairings carries the first
+  // three cards of its row („Wat past er bij mici?” → braadworst, spiering, spek)
+  if (dbg.entry && !r.cards.length && dbg.dynamic !== 'allergen' && dbg.handoff !== 'always') {
+    const under = underBank(ix, dbg.entry);
+    for (const id of under) r.cards.push(card(ix, ix._byId.get(id), r.lang));
+    if (under.length) dbg.cards = under;
+  }
   // typed in the other language: the answer in theirs, and the offer to switch (§5.32 / §6)
   if (r.lang !== input.pageLang && !dbg.noSwitch) {
     r.lines.push(fill(ix.s[r.lang].t.switchAsk));
@@ -534,6 +557,14 @@ export function ask(ix, state, input) {
   else if (st.draft?.q) next.draft = { ...st.draft, q: null };
   delete dbg.draft;
   if (dbg.intent === 'restart') Object.assign(next, newState(r.lang));
+  else {
+    // row 11d: the next question — the buttons under this answer (next.js; none where the rules say so)
+    const nx = nextFor(ix, { st, reply: r, dbg, L: r.lang, today: iso(now.day), product: input.product ?? null, draft: next.draft });
+    r.nq = nx.chips;
+    next.nq = nx.nq;
+    dbg.nq = nx.ids;
+    if (nx.stage) dbg.stage = nx.stage;
+  }
   next.miss = dbg.intent === 'miss-1' ? 1 : dbg.intent === 'miss-2' ? 0 : 0;
   return { reply: r, state: next, dbg: { ...dbg, answer_lang: r.lang, handoff: dbg.handoff ?? 'none' } };
 }
@@ -546,6 +577,8 @@ function greet(ix, L) {
 
 function picked(ctx, id) {
   const { ix, st, L } = ctx;
+  // row 11d: a next-question button (nq:<id>) — answered here, no model call
+  if (id.startsWith('nq:')) return tapNext(ctx, id.slice(3));
   // row 11b: the order's taps — add:<id> (a card's „Zet in mijn bestelling”), qty:<n>, day:<date>, mode:<method>; a
   // tap whose question has gone (an old bubble) gets the start line
   if (/^(add|qty|day|mode):/.test(id)) {
@@ -561,6 +594,84 @@ function picked(ctx, id) {
   if (!p) return miss(ctx);
   const intent = st.pend?.intent ?? 'do-you-have';
   return productAnswer(ctx, p, intent);
+}
+
+/** Row 11d: a next-question button tapped (assistant-paths.json `buttons`), as the pick nq:<id>[@<product>]. The
+ *  product it refers to is the one the button was drawn for (its @product), else the one of the last buttons (the
+ *  state's nq.p), else the last one. A tap whose button or product has gone gets the order helper's start line. */
+function tapNext(ctx, pick) {
+  const { ix, st, L } = ctx;
+  const [id, drawn] = pick.split('@');
+  const b = ix.nq?.b[id];
+  const p = ix._byId.get(drawn ?? '') ?? ix._byId.get(st.nq?.p ?? '') ?? ix._byId.get(st.last ?? '') ?? null;
+  const gone = () => {
+    const r = reply(L);
+    r.lines.push(fill(ix.s[L].o.start));
+    return { r, dbg: { intent: 'order-start', tap: id } };
+  };
+  if (!b || (b.needs.includes('product') && !p)) return gone();
+  const base = { tap: id, ...(p ? { product: p.id } : {}) };
+  if (b.entry) {
+    const e = ix.faq.find((x) => x.id === b.entry);
+    if (!e) return gone();
+    const out = entryAnswer(ctx, e, { specific: [], generic: [], want: 'do-you-have' });
+    out.dbg = { ...out.dbg, ...base };
+    return out;
+  }
+  const r = reply(L);
+  if (b.say === 'cookLine' && p?.line?.[L]) {
+    r.lines.push(textLine(p.line[L]));
+    return { r, dbg: { intent: 'tap', say: 'cookLine', dynamic: 'do-you-have', ...base } };
+  }
+  if (b.say === 'colliContents' && p?.c === 'colli') {
+    if (p.line?.[L]) r.lines.push(textLine(p.line[L]));
+    r.lines.push(priceLine(ix, L, p));
+    return { r, dbg: { intent: 'tap', say: 'colliContents', dynamic: 'colli', ...base } };
+  }
+  if (b.say === 'inColli' && p?.inc?.length) {
+    r.lines.push(fill(ix.s[L].nq.inColli, { product: p.n[L], list: inColliList(ix, L, p) }));
+    return { r, dbg: { intent: 'tap', say: 'inColli', dynamic: 'colli', ...base } };
+  }
+  if (b.say === 'askTown') {
+    r.lines.push(fill(ix.s[L].nq.askTown));
+    return { r, dbg: { intent: 'tap', say: 'askTown', dynamic: 'delivery', tap: id, pend: { intent: 'town' } } };
+  }
+  if (b.pick && p) {
+    const out = orderPick(ctx, b.pick.replace('{product}', p.id));
+    if (!out) return gone();
+    out.dbg = { ...out.dbg, tap: id };
+    return out;
+  }
+  if (b.cards && p) {
+    // „Wat past erbij?”: the owners' pairing, else the four data sources (§13.4) — cards under „Past erbij”, or the row's
+    // own sentence where it shows none (with the WhatsApp button when the row orders by WhatsApp)
+    const w = withCards(ix, L, p);
+    if (w.text) r.lines.push(textLine(w.text));
+    if (w.ids.length) {
+      r.cardsLabel = ix.s[L].nq.cardsLabel;
+      for (const x of w.ids) r.cards.push(card(ix, ix._byId.get(x), L));
+    }
+    if (w.wa) handoff(ix, r, L, `${labelOf(ix, id, L, p)} (${p.n[L]})`, false);
+    if (!w.text && !w.ids.length) {
+      r.lines.push(fill(ix.s[L].t.noAlt));
+      handoff(ix, r, L, `${labelOf(ix, id, L, p)} (${p.n[L]})`, false);
+    }
+    return { r, dbg: { intent: 'tap', dynamic: 'do-you-have', cardsOf: p.id, pairing: w.row, basis: w.basis, cards: w.ids, ...base } };
+  }
+  return gone();
+}
+
+/** Row 11d (§13.6, D-65 point 3): the box opened from a product's sheet — the opening line „Over {product}: wat wilt u
+ *  weten?” (instead of the greeting) and the product's card, as before; the product is what „this” means next. */
+export function opening(ix, state, { product, pageLang }) {
+  prepare(ix);
+  const p = ix._byId.get(product ?? '');
+  if (!p) return null;
+  const L = pageLang === 'ro' ? 'ro' : 'nl';
+  const r = reply(L, { face: 'greet' });
+  r.lines.push(fill(ix.s[L].nq?.open ?? ix.s[L].t.greeting, { product: p.n[L] }));
+  r.cards.push(card(ix, p, L));
+  return { reply: r, state: { ...newState(L), ...state, last: p.id } };
 }
 
 function productAnswer(ctx, p, intent, entry = null) {
@@ -646,6 +757,12 @@ function route(ctx) {
   }
   if (only('greeting')) return { r: greet(ix, L), dbg: { intent: 'greeting' } };
 
+  // row 11d: after „Leveren jullie bij mij?” the next message is read as a town or a postcode (row 11b's answer)
+  if (st.pend?.intent === 'town') {
+    const town = townTurn(ctx, true);
+    if (town) return town;
+  }
+
   // a question back waiting: the next words pick among its products („afumați” → cârnați afumați); the holiday menu's
   // rows (row 11b) are picked by their chips only
   if (st.pend?.ids?.length && !st.pend.menu) {
@@ -709,6 +826,24 @@ function route(ctx) {
   const noProduct = outside.filter((x) => !productWord(ix, x.w) && !ix._qWord.has(x.w));
   const strong = best && best.score >= STRONG && !TEMPLATE.has(best.e.id);
 
+  // row 11d (e-06 · e-08): „cum se gătesc micii?”, „Hoe bak ik een spiering?” — a cooking question with one product
+  // named is the product's cooking answer (the bank's own for it where there is one: products-mici-cook)
+  const flat = ` ${T.join(' ')} `;
+  if (specific.length === 1 && !generic.length && COOK.test(flat) && !T.some((w) => NOT_COOK.has(w))) {
+    const p = ix._byId.get(specific[0].ids[0]);
+    const own = ix.faq.find((e) => e.id === `products-${p.id}-cook`);
+    if (own) {
+      const out = bankAnswer(ctx, own);
+      out.dbg.product = p.id;
+      return out;
+    }
+    return productAnswer(ctx, p, 'cooking');
+  }
+  // row 11d (e-04 · e-05): the Romanian rubric named in a do-you-have question is answered as the rubric
+  if (dyh && !specific.length && T.some((w) => RUBRIC_RO.has(w)) && T.every((w, i) => RUBRIC_WITH.has(w) || trig.has(i) || ix._stop.nl.has(w) || ix._stop.ro.has(w))) {
+    const e = ix.faq.find((x) => x.id === 'products-romanian');
+    if (e) return entryAnswer(ctx, e, { specific, generic, want });
+  }
   // „hebben jullie X?” — one product named and nothing else asked: the product's own answer, before any bank entry
   if (dyh && specific.length === 1 && !generic.length && outside.length === 0) return productAnswer(ctx, ix._byId.get(specific[0].ids[0]), 'do-you-have');
   // „aveți drob de miel?” — a kind of meat named, the thing itself not on the list
@@ -928,7 +1063,8 @@ function allergenRoute(ctx) {
     const c = ix.al.cats.find((x) => x.id === cats[0]);
     const r = reply(L);
     r.lines.push(fill(c.contains.length ? t.aContains : t.aNone, { category: c[L], allergen: c.contains.length ? alNames(ix, c.contains, L) : L === 'ro' ? 'alergeni' : 'allergenen' }));
-    if (c.may.length) r.lines.push(fill(t.aMay, { category: c[L], allergen: alNames(ix, c.may, L) }));
+    // row 11d (lexicon §5.37 / §6): the second sentence about the same group says the lead once — the same allergens
+    if (c.may.length) r.lines.push(fill(t.aMayShort ?? t.aMay, { category: c[L], allergen: alNames(ix, c.may, L) }));
     r.lines.push(notice);
     return done(r, { entry: null, category: c.id, product: pid, result: 'group-row' });
   }
@@ -943,14 +1079,22 @@ function allergenRoute(ctx) {
     for (const cid of cats.slice(0, 3)) {
       const c = ix.al.cats.find((x) => x.id === cid);
       let none = false;
+      // row 11d (lexicon §5.37 / §6): a „may contain” sentence after another one about the same group is the short line
+      // (the lead said once); one that stands alone keeps the full sentence
+      let said = 0;
+      const may = (slots) => fill(said++ && t.aMayShort ? t.aMayShort : t.aMay, slots);
       for (const aid of al.ids.slice(0, 3)) {
         const a = ix.al.list.find((x) => x.id === aid);
         const slots = { category: c[L], allergen: a[L].toLocaleLowerCase(L) };
         none ||= !c.contains.includes(aid) && !c.may.includes(aid);
-        r.lines.push(fill(c.contains.includes(aid) ? t.aContains : c.may.includes(aid) ? t.aMay : t.aNone, slots));
+        if (c.may.includes(aid) && !c.contains.includes(aid)) r.lines.push(may(slots));
+        else {
+          r.lines.push(fill(c.contains.includes(aid) ? t.aContains : t.aNone, slots));
+          said++;
+        }
       }
       // row 11f: never a bare „no” — beside it, what the group may contain (the owners' table, word for word)
-      if (none && c.may.length) r.lines.push(fill(t.aMay, { category: c[L], allergen: alNames(ix, c.may, L) }));
+      if (none && c.may.length) r.lines.push(may({ category: c[L], allergen: alNames(ix, c.may, L) }));
     }
     r.lines.push(notice);
     return done(r, { entry: null, category: cats[0], product: pid ?? undefined });

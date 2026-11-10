@@ -16,7 +16,15 @@
 // last 12 turns as plain text; the answer streams in as checked sentences and is drawn in the box's own shape. Any
 // failure (no layer, the cap, a timeout, an error, a check) answers with the local engine, as before — no error on
 // screen. A tap on a chip or a card's button stays local (the order helper's picks). Nothing else is sent or kept.
-import { ask, newState, prepare } from '../lib/assistant/engine.js';
+// Row 11d (D-65, docs/assistant.md §13): under an answer, at most two next-question buttons (the reply's `nq`, labels of
+// assistant-paths.json). A tap shows its label as the customer's bubble and is answered by the local engine at once —
+// no model call, also with the layer on; the turn joins the history the layer gets with the next typed question. With
+// the layer on (and only then), two kinds of numbers-only rows go to /api/ask as a beacon: a tap (the id tapped, the ids
+// shown under its answer) and a handover (a click on „Naar de bestelbon” / a WhatsApp button, with the ids tapped so far
+// in this conversation — kept in this page's memory, never stored). Opened from a product's sheet, the box opens with
+// „Over {product}: wat wilt u weten?” (§13.6). Row 11g (D-69): opened after the salute in the other language, the box
+// speaks that language — Mitică's or Jefke's greeting and the offer of the site in it.
+import { ask, newState, prepare, opening } from '../lib/assistant/engine.js';
 import { cleanMiss } from '../lib/assistant/misses.js';
 import chatCss from '../styles/qa-chat.css?raw';
 
@@ -25,9 +33,9 @@ type Card = { id: string; name: string; price: string; line: string; th: string 
 type Act = { kind: 'wa' | 'tel' | 'link' | 'switch' | 'form'; label: string; href?: string; lang?: string; order?: boolean };
 type Chip = { label: string; ask?: string; pick?: string };
 type Slip = { title: string; lines: string[]; when: string | null; total: string; notes: string[] };
-type Reply = { lang: 'nl' | 'ro' | 'en' | 'fr'; face: string; lines: Seg[][]; cards: Card[]; chips: Chip[]; acts: Act[]; link: Seg[] | null; slip?: Slip | null; foot?: Seg[][] };
+type Reply = { lang: 'nl' | 'ro' | 'en' | 'fr'; face: string; lines: Seg[][]; cards: Card[]; chips: Chip[]; acts: Act[]; link: Seg[] | null; slip?: Slip | null; foot?: Seg[][]; nq?: { id: string; label: string; p?: string }[]; cardsLabel?: string };
 type Hist = { r: 'u' | 'a'; t: string };
-type State = { lang: 'nl' | 'ro'; last: string | null; pend: unknown; miss: number; draft: { items?: unknown[] } | null; off?: string[]; no?: boolean; n?: number };
+type State = { lang: 'nl' | 'ro'; last: string | null; pend: unknown; miss: number; draft: { items?: unknown[] } | null; off?: string[]; no?: boolean; n?: number; nq?: unknown };
 type Ev = { t: 'wait' | 'delta' | 'reset' | 'done' | 'local' | 'fallback'; d?: string; reply?: Reply; st?: Partial<State>; why?: string; unanswered?: boolean };
 
 const KEY = 'qa-state';
@@ -100,6 +108,9 @@ function make(box: HTMLElement, ix: any) {
   // at once); a check that timed out or failed is asked again on the next typed question, so the layer can still come
   // on in this visit (the label switches then). A plain „off” from the server stays off.
   let aiCheck: Promise<boolean> | null = null;
+  // row 11d: whether the layer said „on” — the counts are sent only then; the ids tapped in this conversation (memory only)
+  let aiOn = false;
+  let tapped: string[] = [];
   const layer = (): Promise<boolean> =>
     (aiCheck ??= (() => {
       const t = timer(2500);
@@ -114,6 +125,7 @@ function make(box: HTMLElement, ix: any) {
             return false;
           }
           if (on) {
+            aiOn = true;
             const auto = box.querySelector<HTMLElement>('.qa__auto');
             if (auto) auto.textContent = ix.s[lang].ai.label;
             const np = box.querySelector<HTMLElement>('[data-qa-nopersonal]');
@@ -211,6 +223,8 @@ function make(box: HTMLElement, ix: any) {
       for (const n of r.slip.notes) box.append(el('p', 'qa__slip-n', n));
       bub.append(box);
     }
+    // row 11d: „Past erbij” / „Merge cu” over the cards of „what goes with it”
+    if (r.cards.length && r.cardsLabel) bub.append(el('span', 'qa__cards-t', r.cardsLabel));
     if (r.cards.length) {
       const ul = el('ul', 'qa__cards');
       for (const c of r.cards) {
@@ -261,6 +275,9 @@ function make(box: HTMLElement, ix: any) {
           b.rel = 'nofollow';
           if (waIcon) b.append(waIcon.cloneNode(true));
         }
+        // row 11d: „Naar de bestelbon” — its click is a handover (counted with the layer on)
+        if (a.kind === 'form') b.dataset.form = '';
+        if (a.kind === 'wa' && a.order) b.dataset.order = '';
         b.append(el('span', '', a.label));
         row.append(b);
       }
@@ -274,6 +291,19 @@ function make(box: HTMLElement, ix: any) {
         b.type = 'button';
         if (c.pick) b.dataset.pick = c.pick;
         else b.dataset.ask = c.ask ?? c.label;
+        row.append(b);
+      }
+      bub.append(row);
+    }
+    // row 11d: the next question — at most two buttons, the file's labels, after the whole answer
+    if (r.nq?.length) {
+      const row = el('div', 'qa__chips');
+      for (const c of r.nq) {
+        const b = el('button', 'qa__chip', c.label);
+        b.type = 'button';
+        // a pick like the order helper's (qa.ts reads data-pick): nq:<id>@<the product it was drawn for>
+        b.dataset.pick = `nq:${c.id}${c.p ? `@${c.p}` : ''}`;
+        b.dataset.nq = c.id;
         row.append(b);
       }
       bub.append(row);
@@ -300,6 +330,15 @@ function make(box: HTMLElement, ix: any) {
   };
 
   const plainOf = (r: Reply) => r.lines.map((l) => l.map((x) => x.t).join('')).join(' ').slice(0, 1200);
+  /** row 11d: one numbers-only row (§13.5) — with the layer on only; never a text, never an identifier */
+  const count = (row: { ev: 'tap' | 'handover'; id?: string; shown?: string[]; tapped?: string[]; kind?: 'order' | 'handoff' }) => {
+    if (!aiOn) return;
+    try {
+      navigator.sendBeacon?.('/api/ask', JSON.stringify({ ...row, lang, page: path }));
+    } catch {
+      /* not counted */
+    }
+  };
   /** the conversation after a typed question's answer: the state it left, one more message, the last 12 turns as text */
   const settle = (next: State, text: string, r: Reply) => {
     hist = [...hist, { r: 'u' as const, t: text.slice(0, 500) }, { r: 'a' as const, t: plainOf(r) }].slice(-24);
@@ -308,12 +347,19 @@ function make(box: HTMLElement, ix: any) {
   };
 
   /** the local engine's answer (rows 11a/11b) — also the Claude layer's fallback */
-  const local = (li: HTMLElement, input: { text?: string; pick?: string }, pause: boolean) => {
-    const res = ask(ix, state, { ...input, page, pageLang: lang, path, section: section(), now: new Date() });
+  const local = (li: HTMLElement, input: { text?: string; pick?: string; label?: string }, pause: boolean) => {
+    const res = ask(ix, state, { text: input.text, pick: input.pick, page, pageLang: lang, path, section: section(), product: sheetProduct, now: new Date() });
     if (input.text) settle(res.state as State, input.text, res.reply as Reply);
     else {
       state = res.state as State;
       write(state);
+    }
+    // row 11d: a next-question button — the turn joins the layer's history; the tap is counted (layer on)
+    if (input.pick?.startsWith('nq:')) {
+      const id = input.pick.slice(3).split('@')[0];
+      tapped = [...tapped, id].slice(-40);
+      hist = [...hist, { r: 'u' as const, t: (input.label ?? id).slice(0, 500) }, { r: 'a' as const, t: plainOf(res.reply as Reply) }].slice(-24);
+      count({ ev: 'tap', id, shown: ((res.reply as Reply).nq ?? []).map((c) => c.id) });
     }
     // row 11b (D-58 point 3): a second miss in a row — and only that, never an allergen answer, a hand-off or an order —
     // goes to /api/miss as {lang, page, q}, the text already cut of digits and e-mail addresses (misses.js)
@@ -397,7 +443,7 @@ function make(box: HTMLElement, ix: any) {
     }
   };
 
-  const turn = (input: { text?: string; pick?: string }) => {
+  const turn = (input: { text?: string; pick?: string; label?: string }) => {
     if (busy) return;
     busy = true;
     let li: HTMLElement | undefined;
@@ -430,9 +476,11 @@ function make(box: HTMLElement, ix: any) {
       me(text);
       turn({ text });
     },
+    /** a chip or a button tapped: its label is the customer's bubble (row 11d: and, for a next-question button, the
+     *  turn the layer's history gets) */
     pick(id: string, label: string) {
       me(label);
-      turn({ pick: id });
+      turn({ pick: id, label });
     },
     restart() {
       for (const li of [...log.children].slice(1)) li.remove();
@@ -441,27 +489,52 @@ function make(box: HTMLElement, ix: any) {
       state = newState(lang);
       sheetProduct = null;
       hist = [];
+      tapped = [];
       write(state);
       const li = bot('greet');
       draw(li, { lang, face: 'greet', lines: [[{ t: filled ? ix.s[lang].o.cleared : ix.s[lang].t.restart }]], cards: [], chips: [], acts: [], link: null });
       start.hidden = false;
       restartBtn.hidden = true;
     },
-    /** the sheet opened: the pig greets; from a product sheet, that product is what „this” means next */
+    /** the sheet opened: the pig greets; from a product sheet, the opening line names that product (row 11d, §13.6) and
+     *  it is what „this” means next; after the salute in the other language (row 11g), the box speaks that language */
     opened(product: string | null, from: 'button' | 'sheet' = 'button') {
+      // row 11g: the floating button carries the salute's language when it was the other one (qa-salute.ts)
+      const other = from === 'button' ? (document.querySelector<HTMLElement>('.qa-fab')?.dataset.qaLang ?? null) : null;
       const first = log.querySelector<HTMLElement>('.qa__msg--bot');
       if (first) setFace(first, 'greet');
       openedFrom = from;
       sheetProduct = product;
+      // nothing asked yet in this box: its first bubble is still the greeting, and the opening line takes its place
+      const fresh = !log.querySelector('.qa__msg--me') && log.children.length === 1;
+      const greet = first?.querySelector<HTMLElement>('.qa__bub > p') ?? null;
+      if (other !== lang && (other === 'nl' || other === 'ro') && !product) {
+        // Mitică on a Dutch page, Jefke on a Romanian one (the salute set the greeting's text before the box opened), and
+        // the box's own line that offers the site in that language — a box already in use keeps its conversation
+        if (fresh && greet) {
+          state = { ...state, lang: other };
+          write(state);
+          greet.textContent = ix.s[other].t.greeting;
+          greet.parentElement!.lang = other === 'ro' ? 'ro-BE' : 'nl-BE';
+          draw(bot('rest'), { lang: other, face: 'rest', lines: [[{ t: ix.s[other].t.switchAsk }]], cards: [], chips: [], acts: [{ kind: 'switch', label: ix.s[other].t.switchBtn, lang: other }], link: null });
+        }
+        return;
+      }
       if (!product) return;
-      const p = ix._byId.get(product);
-      if (!p) return;
-      state = { ...state, last: product };
+      const o = opening(ix, state, { product, pageLang: lang });
+      if (!o) return;
+      state = o.state as State;
       write(state);
-      const li = bot('rest');
-      draw(li, { lang, face: 'rest', lines: [], cards: [{ id: p.id, name: p.n[lang], price: p.pl?.[lang] ?? '', line: p.line?.[lang] ?? '', th: p.th, href: p.href[lang], more: ix.s[lang].t.more.replace('{product}', p.n[lang]), add: ix.s[lang].o.add }], chips: [], acts: [], link: null });
+      const r = o.reply as Reply;
+      if (fresh && greet) {
+        // the opening line instead of the greeting, then the card as before
+        greet.textContent = r.lines[0].map((x) => x.t).join('');
+        draw(bot('rest'), { ...r, face: 'rest', lines: [] });
+      } else draw(bot('rest'), { ...r, face: 'rest' });
     },
     act(a: HTMLElement) {
+      // row 11d: a handover — „Naar de bestelbon” or a WhatsApp button — with the ids tapped so far (layer on only)
+      if (a.dataset.wa !== undefined || a.dataset.form !== undefined) count({ ev: 'handover', kind: a.dataset.form !== undefined || a.dataset.order !== undefined ? 'order' : 'handoff', tapped });
       // after a handover to WhatsApp: the pig's goodbye (§5.33 „Tot aan de toog!”), in the conversation's language
       if (a.dataset.wa !== undefined) {
         const L = state.lang ?? lang;

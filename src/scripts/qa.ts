@@ -39,9 +39,10 @@ if (box && sheet && 'showModal' in sheet) {
     load().then((c) => (c ? c.ask(q) : (input.value ||= q)));
   });
   box.addEventListener('click', (e) => {
-    const el = (e.target as Element).closest?.<HTMLElement>('[data-ask],[data-pick],[data-qa-restart],[data-card],[data-switch],[data-wa]');
+    const el = (e.target as Element).closest?.<HTMLElement>('[data-ask],[data-pick],[data-qa-restart],[data-card],[data-switch],[data-wa],[data-form]');
     if (!el || (el instanceof HTMLAnchorElement && (e.ctrlKey || e.metaKey || e.shiftKey || e.button))) return;
     if (el.dataset.ask !== undefined) run((c) => c.ask(el.dataset.ask!));
+    // a pick: the order helper's (add: · qty: · day: · mode:) and, row 11d, a next-question button (nq:<id>@<product>)
     else if (el.dataset.pick) run((c) => c.pick(el.dataset.pick!, el.textContent ?? ''));
     else if (el.dataset.qaRestart !== undefined) run((c) => c.restart());
     else if (el.dataset.card) card(el as HTMLAnchorElement, e);
