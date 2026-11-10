@@ -19,6 +19,8 @@ export interface Photo {
   role?: string;
   /** row 14: the white-balance class applied before the crop (display · atelier) */
   wb?: string;
+  /** row 22x: across the full width of a two-tile row, 3:2 (/over-ons „Wat we maken”, the team at the stand) */
+  wide?: boolean;
   alt: L10n;
 }
 

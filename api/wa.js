@@ -33,6 +33,14 @@ export default {
   fetch(request) {
     const url = new URL(request.url);
     const src = (url.searchParams.get('src') ?? '').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 60) || 'none';
+    // row 11b (docs/assistant.md §10.4): the bestelbon opened from the assistant counts as `qa-order` — a POST from the
+    // page (navigator.sendBeacon), one row, no text, no redirect; only the assistant's own sources count this way
+    if (request.method === 'POST') {
+      if (!src.startsWith('qa-')) return new Response(null, { status: 405, headers: { allow: 'GET', 'cache-control': 'no-store' } });
+      console.log(JSON.stringify({ event: 'wa', src, open: true, at: new Date().toISOString() }));
+      afterResponse(insertRow('wa_clicks', { site_id: siteId(request), day: brusselsDay(), src, locale: pageLocale(request, url) }));
+      return new Response(null, { status: 204, headers: { 'cache-control': 'no-store' } });
+    }
     const fields = Object.fromEntries([...url.searchParams].filter(([k]) => !OWN.has(k)).slice(0, 12));
     const lang = url.searchParams.get('lang') === 'ro' ? 'ro' : 'nl';
     const text = fillQuote((url.searchParams.get('text') ?? '').slice(0, 1500), fields, lang);

@@ -25,3 +25,18 @@
 .qa__bub .qa__chip { background: var(--card); border-color: var(--tag-line); }
 .qa__log { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { .qa__log { scroll-behavior: auto; } }
+/* row 11b — the order helper: the slip in the conversation (the bestelbon's slip in small: title, lines, pickup or
+   delivery with the day, the total, the weighed-weight line), the card's „Zet in mijn bestelling”, the line under the
+   handover buttons. Paper and ink only; the one yellow stays WhatsApp's (D-33). */
+.qa__slip { margin-top: 8px; padding: 10px 12px; border-radius: var(--r-tag); background: var(--card); border: 1px dashed var(--tag-line); }
+.qa__slip-t { display: block; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.qa__slip ul { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 2px; font-variant-numeric: tabular-nums; }
+.qa__slip li, .qa__slip-w { font-size: 14px; line-height: 1.4; }
+.qa__slip-w { margin: 6px 0 0; font-weight: 600; }
+.qa__slip-sum { margin: 6px 0 0; padding-top: 6px; border-top: 1px solid var(--tag-line); font-weight: 700; font-variant-numeric: tabular-nums; }
+.qa__slip-n { margin: 4px 0 0; font-size: 12.5px; line-height: 1.4; color: var(--muted); }
+.qa__cards li { display: grid; gap: 6px; }
+.qa__add { justify-self: start; min-height: var(--touch); padding: 0 14px; border-radius: var(--r-chip); border: 1px solid var(--fg); background: var(--paper); color: var(--fg); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.qa__add:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+@media (hover: hover) { .qa__add:hover { background: var(--card); } }
+.qa__foot-l { margin: 8px 0 0; font-size: 13px; line-height: 1.4; color: var(--muted); }

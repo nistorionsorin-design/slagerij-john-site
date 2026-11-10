@@ -26,6 +26,7 @@ interface Data {
     done: { error: string; fix: string };
     details: { required: string };
     errors: { name: string; phone: string; email: string; address: string; items: string; when: string };
+    assist: { filled: string; missing: string };
   };
   discountNote: string;
 }
@@ -442,6 +443,62 @@ function init(form: HTMLFormElement, d: Data, hours: unknown) {
     else addEventListener('load', land, { once: true });
   }
 
+  // row 11b — opened from the assistant: ?add=<id>:<qty>,…&day=YYYY-MM-DD&mode=pickup|delivery (lib/assistant/order.js
+  // formHref; a menu order opens with menu=… first, OrderForm.season.js shows its section). Ids and numbers only: an
+  // id that is no row of this page is named in the notice and never added; each quantity goes through snapQty; a day or
+  // a method that does not fit is dropped and the customer picks; the hour is never set. One notice above the slip
+  // (lexicon §5.34); the open counts as `qa-order` (docs/assistant.md §10.4: POST /wa?src=qa-order, no text, skipped
+  // under automation like the page beacon). Without ?add the page is as before.
+  const qa = params.get('add');
+  let qaDay = '';
+  let qaNote: HTMLElement | null = null;
+  if (qa !== null) {
+    const missing: string[] = [];
+    let added = 0;
+    for (const part of qa.split(',').slice(0, 40)) {
+      const m = /^([a-z0-9-]{1,60}):(\d{1,3}(?:\.\d{1,3})?)$/.exec(part.trim());
+      if (!m) continue;
+      const p = byId.get(m[1]);
+      const f = p ? field(`q-${p.id}`) : null;
+      if (!p || !f) {
+        if (!missing.includes(m[1])) missing.push(m[1]);
+        continue;
+      }
+      const q = snapQty(p, m[2]);
+      if (!q) continue;
+      f.value = String(q);
+      const fold = f.closest('details');
+      if (fold) fold.open = true;
+      added++;
+    }
+    const mode = params.get('mode');
+    if (mode === 'pickup' || mode === 'delivery') {
+      const r = $<HTMLInputElement>(mode === 'delivery' ? '#m-delivery' : '#m-pickup');
+      if (r) r.checked = true;
+    }
+    const day = params.get('day') ?? '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(day)) qaDay = day;
+    qaNote = document.querySelector<HTMLElement>('[data-assist]');
+    if (qaNote && (added || missing.length)) {
+      qaNote.textContent = [added ? t.assist.filled : '', missing.length ? t.assist.missing.replace('{list}', missing.join(', ')) : ''].filter(Boolean).join(' ');
+      qaNote.hidden = false;
+    } else qaNote = null;
+    if (added && !navigator.webdriver) navigator.sendBeacon?.('/wa?src=qa-order');
+  }
+
   syncMethod();
+  // the assistant's day, once the method (and a menu's own days) is known — only a day the chips offer
+  if (qaDay && days.some((x) => x.date === qaDay)) {
+    state.date = qaDay;
+    renderDays();
+  }
   update();
+  if (qaNote) {
+    const note = qaNote;
+    const land = () => {
+      if (note.getBoundingClientRect().top > innerHeight - 80) note.scrollIntoView({ block: 'center', behavior: 'instant' });
+    };
+    if (document.readyState === 'complete') land();
+    else addEventListener('load', land, { once: true });
+  }
 }

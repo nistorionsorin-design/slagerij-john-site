@@ -55,6 +55,13 @@ export const bestellenNl = {
     closed: 'De besteltermijn voor het eindejaarsmenu is verstreken. Bel ons, dan kijken wij wat kan.',
   },
 
+  /** row 11b (lexicon §5.34): above the slip, once, when the page opens from the assistant (?add=…); {list} = the ids
+   *  the page did not find, as they stand in the address */
+  assist: {
+    filled: 'Ingevuld door de assistent. Kijk uw bestelling na en kies het uur.',
+    missing: 'Niet gevonden en niet toegevoegd: {list}.',
+  },
+
   /** free request (order-flow §2.3): §5.20 */
   request: {
     title: 'Niet gevonden wat u zoekt?',
@@ -205,6 +212,12 @@ export const bestellenRo = {
   menu: {
     note: 'Ridicare pe 24 sau 31 decembrie, între [ORA] și [ORA]. Comenzi până pe [DATA]. Cu avans, în magazin sau prin transfer bancar.', // row 15, §5.30 deposit
     closed: 'Termenul pentru meniul de sărbători a trecut. Sună-ne, vedem ce se poate.',
+  },
+
+  /** row 11b (§6 „Asistent, comanda, 10.11”) */
+  assist: {
+    filled: 'Completat de asistent. Verifică comanda și alege ora.',
+    missing: 'Negăsite și neadăugate: {list}.',
   },
 
   request: {

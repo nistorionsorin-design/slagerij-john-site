@@ -11,6 +11,16 @@
 
 import entity from '../data/entity.json';
 import { updatedOn } from '../lib/updated';
+import { KEEP_DAYS } from '../lib/assistant/misses.js';
+
+/** lexicon §5.34 / §6 (row 11b, D-58 point 3): the assistant's unanswered questions, one sentence at the end of the
+ *  retention block. Rendered while KEEP_DAYS (lib/assistant/misses.js) is set — the 90 days, D-62 (Dan 10.11 12:05);
+ *  the same switch lets api/miss.js keep a question. Row 11c replaces the last sentence with the §5.33 block. */
+export const missLine = {
+  nl: 'Een vraag waarop de assistent geen antwoord had, bewaren wij zonder cijfers en zonder e-mailadressen, om het antwoord toe te voegen; na 90 dagen wissen wij ze. Al het andere dat u de assistent vraagt, blijft in uw browser.',
+  ro: 'Întrebarea la care asistentul nu a avut răspuns o păstrăm fără cifre și fără adrese de e-mail, ca să adăugăm răspunsul; după 90 de zile o ștergem. Restul întrebărilor rămân în browserul dumneavoastră.',
+};
+const withMiss = (text: string, L: 'nl' | 'ro') => (KEEP_DAYS ? `${text} ${missLine[L]}` : text);
 
 export type Link = readonly [anchor: string, href: string];
 export interface LegalBlock { h2: string; text: string }
@@ -50,7 +60,7 @@ export const privacyNl: LegalPage = {
   blocks: [
     { h2: 'Welke gegevens wij ontvangen', text: 'Alleen wat u op de bestelbon invult: uw naam, telefoonnummer, e-mailadres, eventueel uw opmerkingen en, bij levering, uw adres. Geen account, geen nieuwsbrief.' },
     { h2: 'Waarvoor wij ze gebruiken', text: 'Om uw bestelling klaar te maken en te bevestigen: u krijgt een bevestiging per e-mail, de winkel krijgt dezelfde bestelling. De grondslag is de overeenkomst tussen ons (art. 6, lid 1, b AVG). Wij gebruiken uw gegevens niet voor reclame en verkopen ze niet.' },
-    { h2: 'Hoelang wij ze bewaren', text: '90 dagen na uw bestelling, daarna wissen wij ze. Boekhoudkundige stukken bewaren wij zolang de wet dat vraagt.' },
+    { h2: 'Hoelang wij ze bewaren', text: withMiss('90 dagen na uw bestelling, daarna wissen wij ze. Boekhoudkundige stukken bewaren wij zolang de wet dat vraagt.', 'nl') },
     { h2: 'Wie ze nog ziet', text: 'De website draait bij Vercel Inc.; de bestelfunctie draait in Frankfurt (EU). De bevestigingsmail vertrekt via een e-maildienst (Resend). Die leveranciers verwerken de gegevens alleen in onze opdracht en gebruiken ze niet voor zichzelf.' },
     { h2: 'WhatsApp', text: 'De knop „Bestel via WhatsApp” opent de app WhatsApp met een kant-en-klaar bericht. Vanaf dan gelden de regels van WhatsApp (Meta). Wij ontvangen niets vóór u op „verzenden” drukt.' },
     { h2: 'Op uw toestel', text: 'Vinkt u „Mijn gegevens onthouden op dit toestel” aan, dan blijven uw naam en telefoonnummer alleen in uw browser, op uw eigen telefoon of computer. Ze komen pas bij ons bij uw volgende bestelling.' },
@@ -77,7 +87,7 @@ export const privacyRo: LegalPage = {
   blocks: [
     { h2: 'Ce date primim', text: 'Doar ce completați în bonul de comandă: numele, telefonul, adresa de e-mail, eventual observațiile și, pentru livrare, adresa. Nu cerem cont, nu trimitem newsletter.' },
     { h2: 'La ce le folosim', text: 'Pentru a pregăti și a confirma comanda dumneavoastră: primiți o confirmare pe e-mail, iar magazinul primește aceeași comandă. Temeiul este contractul dintre noi (art. 6 alin. 1 lit. b GDPR). Nu le folosim pentru reclamă și nu le vindem.' },
-    { h2: 'Cât le păstrăm', text: '90 de zile după comandă, apoi le ștergem. Documentele contabile se păstrează cât cere legea.' },
+    { h2: 'Cât le păstrăm', text: withMiss('90 de zile după comandă, apoi le ștergem. Documentele contabile se păstrează cât cere legea.', 'ro') },
     { h2: 'Cine le mai vede', text: 'Site-ul este găzduit la Vercel Inc.; funcția de comandă rulează în Frankfurt (UE). E-mailul de confirmare pleacă printr-un serviciu de e-mail (Resend). Acești furnizori prelucrează datele doar în numele nostru și nu le folosesc pentru ei.' },
     { h2: 'WhatsApp', text: 'Butonul „Comandă pe WhatsApp” deschide aplicația WhatsApp cu un mesaj gata scris. Din acel moment se aplică regulile WhatsApp (Meta). Noi nu primim nimic până nu apăsați „trimite”.' },
     { h2: 'Pe dispozitivul dumneavoastră', text: 'Dacă bifați „Ține minte datele mele pe acest dispozitiv”, numele și telefonul rămân doar în browserul dumneavoastră, pe telefonul sau calculatorul dumneavoastră. Nu ajung la noi până la următoarea comandă.' },

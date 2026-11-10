@@ -23,16 +23,18 @@ const indexPath = join(root, 'dist/assistant-index.json');
 async function fromSource() {
   const { buildIndex } = await import('../src/lib/assistant/build-index.js');
   const { qaT } = await import('../src/i18n/assistant.ts');
-  const { nav, menu, footer } = await import('../src/i18n/ui.ts');
+  const { nav, menu, footer, ui } = await import('../src/i18n/ui.ts');
+  const { bestellenT } = await import('../src/i18n/bestellen.ts');
   const data = (f) => JSON.parse(readFileSync(join(root, 'src/data', f), 'utf8'));
   const pages = { nl: {}, ro: {} };
   for (const L of ['nl', 'ro']) for (const it of [...menu[L], ...nav[L], ...footer[L].legal]) pages[L][it.href] = it.label;
   return buildIndex({
     faq: data('assistant-faq.json'), syn: data('assistant-synonyms.json'), products: data('products.json'), photos: data('product-photos.json'),
     allergens: data('allergens.json'), hours: data('hours.json'), delivery: data('delivery.json'), menus: data('menus.json'), entity: data('entity.json'),
-    recipes: data('recipes.json').recipes.map((r) => r.id), strings: { nl: { ...qaT.nl, recipe: 'Recept →' }, ro: { ...qaT.ro, recipe: 'Rețetă →' } }, pages,
+    recipes: data('recipes.json').recipes.map((r) => r.id), strings: Object.fromEntries(['nl', 'ro'].map((L) => [L, { ...qaT[L], recipe: L === 'ro' ? 'Rețetă →' : 'Recept →', slip: { inStore: bestellenT[L].slip.inStore, tbc: bestellenT[L].slip.priceTbc, inStoreNote: bestellenT[L].slip.inStoreNote }, discount: ui[L].discountNote, menuClosed: bestellenT[L].menu.closed }])), pages,
     paths: { producten: { nl: '/producten', ro: '/ro/produse' }, colli: { nl: '/colli-vleespakketten', ro: '/ro/colli' }, recepten: { nl: '/recepten', ro: '/ro/retete' }, allergenen: { nl: '/allergenen', ro: '/ro/alergeni' } },
-    thumbs: {}, labels: {},
+    thumbs: {}, labels: {}, towns: data('towns.json'),
+    orderPaths: { bestellen: { nl: '/bestellen', ro: '/ro/comanda' }, eindejaar: { nl: '/feestmenu-eindejaar', ro: '/ro/sarbatori' } },
   });
 }
 if (!args.includes('--src') && !existsSync(indexPath)) throw new Error('dist/assistant-index.json missing — run npm run build first (or --src)');

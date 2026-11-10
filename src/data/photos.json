@@ -533,30 +533,40 @@
       }
     }
   ],
-  "_overons_source": "Row 14 (16.10): /over-ons „Wat we maken” — two `atelier` photos (#3 · #31); `optional` (#1, the half pig) built but not shown until the owners say so (Sunday review). Files in src/assets/overons/.",
+  "_overons_source": "Row 14 (16.10): /over-ons „Wat we maken” — two `atelier` photos (#3 · #31); `optional` (#1, the half pig) built but not shown until the owners say so (Sunday review). Files in src/assets/overons/. Row 22x (10.11, Dan 12:08 „take these ugly photos … put relevant nice ones here”, 12:11 „him with the meat and her serving”, 12:12 „j1 g2 and g5”): the meat grinder and the cutting board left src/assets/overons/; „Wat we maken” shows three `makers` photos — John in the cold room (byte-identical copy of the home loop's file, its alts and focal point), Georgiana at the buffet and the three of them at the stand (byte-identical copies of Cowork's cuts in design/overons-photos/: the guests behind Georgiana blurred, no guest recognisable; the stand 3:2, `wide`, across both tiles); alts lexicon §5.35 / §6 „Despre noi, 10.11”; no `wb` step.",
   "overons": [
     {
-      "src": "overons/vleesmolen-atelier-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-13-phone/20261009_174044.jpg",
-      "role": "atelier",
-      "wb": "atelier",
-      "focalX": 50,
+      "src": "overons/john-in-de-koelcel-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/WhatsApp Image 2026-10-05 at 22.48.12 1.jpeg",
+      "role": "makers",
+      "focalX": 65,
       "focalY": 40,
       "alt": {
-        "nl": "De vleesmolen in het atelier, gehakt komt eruit",
-        "ro": "Mașina de tocat din atelier, carnea tocată iese"
+        "nl": "John in de koelcel bij de rundskwartieren",
+        "ro": "John în camera frigorifică, lângă sferturile de vită"
       }
     },
     {
-      "src": "overons/varkensvlees-snijplank-atelier-slagerij-john.jpg",
-      "from": "assets/raw/2026-10-13-phone/20261009_181131.jpg",
-      "role": "atelier",
-      "wb": "atelier",
-      "focalX": 45,
-      "focalY": 55,
+      "src": "overons/georgiana-aan-het-buffet-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-30-chat/georgiana-bbq-buffet-event.jpg",
+      "role": "makers",
+      "focalX": 40,
+      "focalY": 40,
       "alt": {
-        "nl": "Varkensvlees op de snijplank in het atelier",
-        "ro": "Carne de porc pe planșetă, în atelier"
+        "nl": "Georgiana bedient de gasten aan een barbecuebuffet",
+        "ro": "Georgiana servește invitații la un bufet de grătar"
+      }
+    },
+    {
+      "src": "overons/team-voor-de-marktkraam-slagerij-john.jpg",
+      "from": "assets/raw/2026-10-05-whatsapp/familia.jpeg",
+      "role": "makers",
+      "wide": true,
+      "focalX": 62,
+      "focalY": 50,
+      "alt": {
+        "nl": "Het team van Slagerij John voor de eigen marktkraam",
+        "ro": "Echipa Măcelăriei John în fața standului propriu"
       }
     },
     {

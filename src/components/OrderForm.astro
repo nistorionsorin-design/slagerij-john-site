@@ -122,7 +122,7 @@ const scriptData = {
   delivery: { ...delivery, _source: undefined },
   menus: { menus: menus.menus },
   qtyUnit,
-  t: { slip: t.slip, when: t.when, send: t.send, done: t.done, details: { required: t.details.required }, errors: t.errors },
+  t: { slip: t.slip, when: t.when, send: t.send, done: t.done, details: { required: t.details.required }, errors: t.errors, assist: t.assist },
   /** row 21 (D-50 (2), lexicon §5.19 „23.10”): the note order.ts puts under a kg row from 3 kg — words only */
   discountNote: keepUnits(ui[locale].discountNote),
 };
@@ -313,6 +313,8 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
   </div>
 
   <div class="order__side">
+    {/* row 11b: filled by order.ts when the page opens from the assistant (?add=…), once; empty and hidden otherwise */}
+    <p class="assist" role="status" data-assist hidden></p>
     <OrderSlip t={t.slip} emptyTotal={money(0, locale, true)} />
     <div class="send">
       <p class="send__status" role="status" aria-live="polite" data-status></p>
@@ -353,6 +355,9 @@ const previewEmpty = waText({ ref: '…', locale, method: 'pickup', date: '', ti
   .order__trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
   .order__main { display: flex; flex-direction: column; gap: 26px; min-width: 0; }
   .order__side { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  /* row 11b: „Ingevuld door de assistent …” — a paper note with the ink rule, above the slip */
+  .assist { margin: 0; padding: 10px 14px; border-left: 3px solid var(--fg); border-radius: 0 var(--r-tag) var(--r-tag) 0; background: var(--card); font-size: 14px; line-height: 1.45; }
+  .assist[hidden] { display: none; }
 
   /* pickup / delivery */
   .om { margin: 0; padding: 0; border: 0; min-width: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }

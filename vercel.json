@@ -74,5 +74,8 @@
   ],
   "functions": {
     "api/*.js": { "includeFiles": "src/data/*.json", "maxDuration": 15 }
-  }
+  },
+  "crons": [
+    { "path": "/api/qa-digest", "schedule": "0 6 * * 1" }
+  ]
 }

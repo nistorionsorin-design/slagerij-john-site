@@ -12,7 +12,9 @@ import { fileURLToPath } from 'node:url';
 // Row 13b: /api/hit (the page-view beacon) too; without METRICS_URL / METRICS_KEY it prints the row it would insert.
 // The headers Vercel sets (x-forwarded-host, x-vercel-ip-country) and the Referer (/wa's locale) are passed on when a
 // request carries them, so a test can set them; a plain browser request has none of the first two → preview site_id.
-const apiRoutes = { '/api/order': 'api/order.js', '/api/wa': 'api/wa.js', '/wa': 'api/wa.js', '/api/gone': 'api/gone.js', '/api/hit': 'api/hit.js' };
+// Row 11b: /api/miss (the assistant's unanswered question; prints the row while the privacy line waits) and
+// /api/qa-digest (the weekly mail; 401 without CRON_SECRET, as on Vercel).
+const apiRoutes = { '/api/order': 'api/order.js', '/api/wa': 'api/wa.js', '/wa': 'api/wa.js', '/api/gone': 'api/gone.js', '/api/hit': 'api/hit.js', '/api/miss': 'api/miss.js', '/api/qa-digest': 'api/qa-digest.js' };
 const apiMiddleware = (load) => async (req, res, next) => {
   const file = apiRoutes[(req.url ?? '').split('?')[0]];
   if (!file) return next();

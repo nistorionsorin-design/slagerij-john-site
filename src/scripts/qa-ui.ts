@@ -5,15 +5,21 @@
 // textContent; every link is the engine's own (/producten#…, /wa?src=qa…, tel:). The conversation's state (language,
 // the last product, a question back, misses in a row, the draft slot of row 11b) is kept in sessionStorage, wrapped in
 // try/catch: it survives a page change in this tab, is gone when the tab closes, and is never sent anywhere.
+// Row 11b: the order helper — the draft travels in the same state; the box draws the slip, the card's „Zet in mijn
+// bestelling”, the two handover buttons (to the pre-filled bestelbon, or WhatsApp through /wa?src=qa-order) and the
+// line under them. One thing is sent, after a second miss in a row only: the question, cut of digits and e-mail
+// addresses, to /api/miss (D-58 point 3).
 import { ask, newState, prepare } from '../lib/assistant/engine.js';
+import { cleanMiss } from '../lib/assistant/misses.js';
 import chatCss from '../styles/qa-chat.css?raw';
 
 type Seg = { t: string; href?: string };
-type Card = { id: string; name: string; price: string; line: string; th: string | null; href: string; more: string };
-type Act = { kind: 'wa' | 'tel' | 'link' | 'switch'; label: string; href?: string; lang?: string };
+type Card = { id: string; name: string; price: string; line: string; th: string | null; href: string; more: string; add?: string };
+type Act = { kind: 'wa' | 'tel' | 'link' | 'switch' | 'form'; label: string; href?: string; lang?: string; order?: boolean };
 type Chip = { label: string; ask?: string; pick?: string };
-type Reply = { lang: 'nl' | 'ro'; face: string; lines: Seg[][]; cards: Card[]; chips: Chip[]; acts: Act[]; link: Seg[] | null };
-type State = { lang: 'nl' | 'ro'; last: string | null; pend: unknown; miss: number; draft: unknown };
+type Slip = { title: string; lines: string[]; when: string | null; total: string; notes: string[] };
+type Reply = { lang: 'nl' | 'ro'; face: string; lines: Seg[][]; cards: Card[]; chips: Chip[]; acts: Act[]; link: Seg[] | null; slip?: Slip | null; foot?: Seg[][] };
+type State = { lang: 'nl' | 'ro'; last: string | null; pend: unknown; miss: number; draft: { items?: unknown[] } | null };
 
 const KEY = 'qa-state';
 const read = (): State | null => {
@@ -136,6 +142,20 @@ function make(box: HTMLElement, ix: any) {
     const bub = li.querySelector<HTMLElement>('.qa__bub')!;
     if (r.lang !== lang) bub.lang = r.lang === 'ro' ? 'ro-BE' : 'nl-BE';
     for (const line of r.lines) bub.append(segs(el('p'), line));
+    // row 11b: the order so far, as the bestelbon's slip writes it
+    if (r.slip) {
+      const box = el('div', 'qa__slip');
+      box.append(el('b', 'qa__slip-t', r.slip.title));
+      if (r.slip.lines.length) {
+        const ul = el('ul');
+        for (const l of r.slip.lines) ul.append(el('li', '', l));
+        box.append(ul);
+      }
+      if (r.slip.when) box.append(el('p', 'qa__slip-w', r.slip.when));
+      box.append(el('p', 'qa__slip-sum', r.slip.total));
+      for (const n of r.slip.notes) box.append(el('p', 'qa__slip-n', n));
+      bub.append(box);
+    }
     if (r.cards.length) {
       const ul = el('ul', 'qa__cards');
       for (const c of r.cards) {
@@ -159,6 +179,13 @@ function make(box: HTMLElement, ix: any) {
         a.append(tx);
         const it = el('li');
         it.append(a);
+        // row 11b: „Zet in mijn bestelling” — a tap the engine reads as add:<id> (the quantity is asked next)
+        if (c.add) {
+          const b = el('button', 'qa__add', c.add);
+          b.type = 'button';
+          b.dataset.pick = `add:${c.id}`;
+          it.append(b);
+        }
         ul.append(it);
       }
       bub.append(ul);
@@ -167,6 +194,7 @@ function make(box: HTMLElement, ix: any) {
     if (r.acts.length) {
       const row = el('div', 'qa__acts');
       for (const a of r.acts) {
+        // WhatsApp stays the one primary (D-33); „Naar de bestelbon” is the secondary beside it
         const b = el('a', a.kind === 'wa' ? 'btn btn--primary btn--sm' : a.kind === 'link' ? 'link-arrow' : 'btn btn--secondary btn--sm');
         if (a.kind === 'switch') {
           const alt = document.querySelector<HTMLLinkElement>(`link[rel="alternate"][hreflang="${a.lang}-BE"]`);
@@ -183,6 +211,7 @@ function make(box: HTMLElement, ix: any) {
       }
       bub.append(row);
     }
+    for (const line of r.foot ?? []) bub.append(segs(el('p', 'qa__foot-l'), line));
     if (r.chips.length) {
       const row = el('div', 'qa__chips');
       for (const c of r.chips) {
@@ -215,6 +244,12 @@ function make(box: HTMLElement, ix: any) {
     const res = ask(ix, state, { ...input, page, pageLang: lang, path, section: section(), now: new Date() });
     state = res.state as State;
     write(state);
+    // row 11b (D-58 point 3): a second miss in a row — and only that, never an allergen answer, a hand-off or an order —
+    // goes to /api/miss as {lang, page, q}, the text already cut of digits and e-mail addresses (misses.js)
+    if ((res.dbg as { intent?: string }).intent === 'miss-2' && input.text) {
+      const row = cleanMiss({ lang: (res.reply as Reply).lang, page: path, q: input.text });
+      if (row) navigator.sendBeacon?.('/api/miss', JSON.stringify(row));
+    }
     // the face reads for a moment, then answers (the engine is instant; the pause lets the bubble be noticed)
     setTimeout(
       () => {
@@ -236,10 +271,12 @@ function make(box: HTMLElement, ix: any) {
     },
     restart() {
       for (const li of [...log.children].slice(1)) li.remove();
+      // row 11b: an order in the conversation goes with it (§5.34 „Uw bon is leeg. Wij beginnen opnieuw.”)
+      const filled = !!state.draft?.items?.length;
       state = newState(lang);
       write(state);
       const li = bot('greet');
-      draw(li, { lang, face: 'greet', lines: [[{ t: ix.s[lang].t.restart }]], cards: [], chips: [], acts: [], link: null });
+      draw(li, { lang, face: 'greet', lines: [[{ t: filled ? ix.s[lang].o.cleared : ix.s[lang].t.restart }]], cards: [], chips: [], acts: [], link: null });
       start.hidden = false;
       restartBtn.hidden = true;
     },
@@ -253,7 +290,7 @@ function make(box: HTMLElement, ix: any) {
       state = { ...state, last: product };
       write(state);
       const li = bot('rest');
-      draw(li, { lang, face: 'rest', lines: [], cards: [{ id: p.id, name: p.n[lang], price: p.pl?.[lang] ?? '', line: p.line?.[lang] ?? '', th: p.th, href: p.href[lang], more: ix.s[lang].t.more.replace('{product}', p.n[lang]) }], chips: [], acts: [], link: null });
+      draw(li, { lang, face: 'rest', lines: [], cards: [{ id: p.id, name: p.n[lang], price: p.pl?.[lang] ?? '', line: p.line?.[lang] ?? '', th: p.th, href: p.href[lang], more: ix.s[lang].t.more.replace('{product}', p.n[lang]), add: ix.s[lang].o.add }], chips: [], acts: [], link: null });
     },
     act(a: HTMLElement) {
       // after a handover to WhatsApp: the pig's goodbye (§5.33 „Tot aan de toog!”), in the conversation's language

@@ -9,9 +9,14 @@
 // Allergens (§4): the bank's answers and the allergens.json matrix, word for word, each ending with the workshop
 // notice. Until assistant-faq.json `allergen_category_map._status` reads „confirmed”, a question about a named
 // product's allergens hands off (build-plan row 11a, allergen gate); only a matrix category gets the §4 answer.
+// Row 11b: after the person and allergen checks, the order helper (order.js: the draft, its quantities, pickup or
+// delivery, the day, the handover to the bestelbon or WhatsApp) and delivery to one named town get the message first;
+// the state's `draft` holds the order. The order's taps come back as picks add:<id> · qty:<n> · day:<date> · mode:<m>.
 import { norm, words, same, find } from './normalize.js';
 import { brussels, chipState, hoursOn, weekday } from '../open-state.ts';
 import { money } from '../order-core.js';
+import { fill, textLine, reply, listOf, handoff } from './say.js';
+import { orderTurn, orderPick, orderFor, townTurn, wasFilled } from './order.js';
 
 const DAY_MS = 86400000;
 const addDays = (d, k) => new Date(d.getTime() + k * DAY_MS);
@@ -51,8 +56,13 @@ const FOLDS = new Set(['voor']);
 // shorthand customers type for the bank's words (per persoon · kilogram)
 const EQUIV = [['pp', 'persoon', 'personen', 'pers', 'persoana', 'persoane', 'persoană'], ['kg', 'kilo', 'kilogram', 'kilogramul']];
 const alike = (a, b) => same(a, b) || EQUIV.some((g) => g.includes(a) && g.includes(b));
+// row 11b — the language of a message: units belong to neither; the order helper's words belong to one
+const NEUTRAL = ['kg', 'g', 'gr', 'km', 'l', 'pp', 'euro'];
+const ORDER_WORDS = {
+  nl: 'zet graag bestel bestellen afhalen leveren levering toon haal eraf erbij stuks halve anderhalve klaar alles bestelbon'.split(' '),
+  ro: 'pune vreau ridicare livrare arata scoate bucati bucata jumatate gata atat bonul comanda'.split(' '),
+};
 
-const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
 const split = (s) => (s ? s.split(' ') : []);
 const uniq = (a) => [...new Set(a)];
 
@@ -92,6 +102,13 @@ export function prepare(ix) {
     nl: new Set([...vocab.nl].filter((w) => !vocab.ro.has(w) && w.length > 1)),
     ro: new Set([...vocab.ro].filter((w) => !vocab.nl.has(w) && w.length > 1)),
   };
+  // row 11b: a unit is no language („2 kg de mici” is Romanian), and the order helper's own words are („zet … klaar”,
+  // „pune …”, „ridicare”) — each only where the other language's vocabulary does not have it
+  for (const w of NEUTRAL) {
+    ix._only.nl.delete(w);
+    ix._only.ro.delete(w);
+  }
+  for (const [L, other] of [['nl', 'ro'], ['ro', 'nl']]) for (const w of ORDER_WORDS[L]) if (!vocab[other].has(w)) ix._only[L].add(w);
   const plain = () => (ph) => !(ph.length === 1 && FOLDS.has(ph[0]));
   for (const [k, v] of Object.entries(ix.intents)) ix.intents[k].w = { nl: v.nl.map(split).filter(plain()), ro: v.ro.map(split).filter(plain()) };
   ix._productWord = new Set(ix.p.flatMap((p) => p.phw.flat()));
@@ -134,7 +151,9 @@ export const newState = (lang) => ({ lang, last: null, pend: null, miss: 0, draf
 function langOf(ix, T, raw, fallback) {
   let nl = 0;
   let ro = 0;
-  for (const tok of String(raw).match(/[\p{L}\p{M}]+/gu) ?? []) if (/[ăâîșşțţ]/i.test(tok) && !ix._productWord.has(norm(tok))) ro += 2;
+  // a Romanian letter counts, except in a product's name typed on a Dutch page („tobă”) — a Romanian function word
+  // („și”) counts even when a product's name holds it (row 11b)
+  for (const tok of String(raw).match(/[\p{L}\p{M}]+/gu) ?? []) if (/[ăâîșşțţ]/i.test(tok) && (!ix._productWord.has(norm(tok)) || ix._stop.ro.has(norm(tok)))) ro += 2;
   for (const w of T) {
     if (ix._only.nl.has(w)) nl++;
     if (ix._only.ro.has(w)) ro++;
@@ -371,34 +390,6 @@ const TEMPLATE = new Set(['products-do-you-have', 'products-price-kg', 'products
 
 // ——— answers ———
 
-/** a template filled: segments of text, a slot may be a link ({ t, href }); the sentence starts with a capital */
-function fill(tpl, slots = {}) {
-  const segs = [];
-  let rest = tpl;
-  const re = /\{(\w+)\}/;
-  let m;
-  while ((m = re.exec(rest))) {
-    if (m.index) segs.push({ t: rest.slice(0, m.index) });
-    const v = slots[m[1]];
-    if (v && typeof v === 'object') segs.push(v);
-    else segs.push({ t: String(v ?? '') });
-    rest = rest.slice(m.index + m[0].length);
-  }
-  if (rest) segs.push({ t: rest });
-  if (segs[0]) segs[0] = { ...segs[0], t: cap(segs[0].t) };
-  return segs;
-}
-const textLine = (t) => [{ t }];
-
-function reply(lang, extra = {}) {
-  return { lang, face: 'answer', lines: [], cards: [], chips: [], acts: [], link: null, ...extra };
-}
-
-const listOf = (ix, L, names) => {
-  if (names.length <= 1) return names.join('');
-  return `${names.slice(0, -1).join(', ')} ${ix.s[L].or} ${names[names.length - 1]}`;
-};
-
 function card(ix, p, L) {
   return {
     id: p.id,
@@ -408,18 +399,11 @@ function card(ix, p, L) {
     th: p.th,
     href: p.href[L],
     more: fill(ix.s[L].t.more, { product: p.n[L] }).map((s) => s.t).join(''),
+    // row 11b: the card's button „Zet in mijn bestelling” (lexicon §5.34) — the box sends it back as the pick add:<id>
+    add: ix.s[L].o.add,
   };
 }
 
-function waHref(ix, L, question) {
-  const text = fill(ix.s[L].t.waText, { question: question.trim() }).map((s) => s.t).join('');
-  return `/wa?src=qa&text=${encodeURIComponent(text)}${L === 'ro' ? '&lang=ro' : ''}`;
-}
-function handoff(ix, r, L, question, call = true) {
-  const t = ix.s[L].t;
-  r.acts.push({ kind: 'wa', label: t.askWa, href: waHref(ix, L, question) });
-  if (call) r.acts.push({ kind: 'tel', label: t.call, href: `tel:${ix.tel}` });
-}
 function linkTo(ix, r, L, href, here) {
   if (!href || href === here) return;
   const page = ix.pages[L]?.[href.split('#')[0]];
@@ -523,7 +507,9 @@ export function ask(ix, state, input) {
   const raw = String(input.text ?? '').slice(0, 500);
   const T = words(raw);
   const { lang: L, sure } = langOf(ix, T, raw, st.lang ?? input.pageLang);
-  const ctx = { ix, st, now, raw, T, L, sure, input, here: input.path };
+  const ctx = { ix, st, now, at: input.now ?? new Date(), raw, T, L, sure, input, here: input.path };
+  // what the order helper (order.js, row 11b) borrows from the engine: the product spans, the question back, the days
+  ctx.kit = { spans: (W) => productSpans(ix, W), clarify: (ids) => clarify(ctx, ids, 'order'), days: (W) => daysIn(W, now) };
   let out;
   if (input.pick) out = picked(ctx, input.pick);
   else if (!T.length) out = { r: greet(ix, L), dbg: { intent: 'greeting' } };
@@ -535,6 +521,11 @@ export function ask(ix, state, input) {
     r.acts.push({ kind: 'switch', label: ix.s[r.lang].t.switchBtn, lang: r.lang });
   }
   const next = { ...st, lang: r.lang, pend: dbg.pend ?? null, last: dbg.product ?? (dbg.keepLast ? st.last : st.last) };
+  // row 11b: the draft order — the order helper's turn returns the new draft; any other turn keeps it as it was and
+  // lets go of the question it had waiting („Hoeveel …?”), so a later bare number is not read as its answer
+  if (dbg.draft !== undefined) next.draft = dbg.draft;
+  else if (st.draft?.q) next.draft = { ...st.draft, q: null };
+  delete dbg.draft;
   if (dbg.intent === 'restart') Object.assign(next, newState(r.lang));
   next.miss = dbg.intent === 'miss-1' ? 1 : dbg.intent === 'miss-2' ? 0 : 0;
   return { reply: r, state: next, dbg: { ...dbg, answer_lang: r.lang, handoff: dbg.handoff ?? 'none' } };
@@ -547,7 +538,18 @@ function greet(ix, L) {
 }
 
 function picked(ctx, id) {
-  const { ix, st } = ctx;
+  const { ix, st, L } = ctx;
+  // row 11b: the order's taps — add:<id> (a card's „Zet in mijn bestelling”), qty:<n>, day:<date>, mode:<method>; a
+  // tap whose question has gone (an old bubble) gets the start line
+  if (/^(add|qty|day|mode):/.test(id)) {
+    const out = orderPick(ctx, id);
+    if (out) return out;
+    const r = reply(L);
+    r.lines.push(fill(ix.s[L].o.start));
+    return { r, dbg: { intent: 'order-start' } };
+  }
+  // a product picked from „Welke bedoelt u?” while ordering (the holiday menu's rows too)
+  if (st.pend?.intent === 'order') return orderFor(ctx, id, st.pend.qty) ?? miss(ctx);
   const p = ix._byId.get(id);
   if (!p) return miss(ctx);
   const intent = st.pend?.intent ?? 'do-you-have';
@@ -556,6 +558,7 @@ function picked(ctx, id) {
 
 function productAnswer(ctx, p, intent, entry = null) {
   const { ix, L } = ctx;
+  if (intent === 'order') return orderFor(ctx, p.id, ctx.st.pend?.qty ?? null) ?? miss(ctx);
   const r = reply(L);
   if (intent === 'price') {
     r.lines.push(priceLine(ix, L, p));
@@ -622,7 +625,8 @@ function route(ctx) {
   // start over · hello · thanks (a message of those words only)
   if (T.length <= 4 && has(ix, T, 'restart') && T.every((w) => has(ix, [w], 'restart') || ix._stop.nl.has(w) || ix._stop.ro.has(w) || w === 'capat')) {
     const r = reply(L, { face: 'greet' });
-    r.lines.push(fill(t.restart));
+    // row 11b: with an order in the conversation, the slip is emptied too (§5.34 „Uw bon is leeg. Wij beginnen opnieuw.”)
+    r.lines.push(fill(wasFilled(st) ? ix.s[L].o.cleared : t.restart));
     return { r, dbg: { intent: 'restart', noSwitch: true } };
   }
   if (only('thanks')) {
@@ -632,8 +636,9 @@ function route(ctx) {
   }
   if (only('greeting')) return { r: greet(ix, L), dbg: { intent: 'greeting' } };
 
-  // a question back waiting: the next words pick among its products („afumați” → cârnați afumați)
-  if (st.pend?.ids?.length) {
+  // a question back waiting: the next words pick among its products („afumați” → cârnați afumați); the holiday menu's
+  // rows (row 11b) are picked by their chips only
+  if (st.pend?.ids?.length && !st.pend.menu) {
     const pool = st.pend.all ?? st.pend.ids;
     const hit = productSpans(ix, T, pool).find((s) => !s.generic && s.ids.length === 1);
     let id = hit?.ids[0];
@@ -670,6 +675,13 @@ function route(ctx) {
   // allergens: §4, word for word
   const al = allergenRoute(ctx);
   if (al) return al;
+
+  // row 11b: the order helper (order.js) — the draft, its quantities, pickup or delivery, the day, the handover —
+  // then delivery to one named town; a message about neither goes on to the answers of row 11a
+  const ord = orderTurn(ctx, best);
+  if (ord) return ord;
+  const town = townTurn(ctx);
+  if (town) return town;
 
   // what the message says about products
   const spans = productSpans(ix, T);

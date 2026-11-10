@@ -13,9 +13,11 @@ import delivery from '../../data/delivery.json';
 import menus from '../../data/menus.json';
 import entity from '../../data/entity.json';
 import recipes from '../../data/recipes.json';
+import towns from '../../data/towns.json';
 import type { Products } from '../../data/types';
 import { qaT } from '../../i18n/assistant';
-import { nav, menu, footer, type Locale } from '../../i18n/ui';
+import { nav, menu, footer, ui, type Locale } from '../../i18n/ui';
+import { bestellenT } from '../../i18n/bestellen';
 import { receptenT } from '../../i18n/recepten';
 import { colliT } from '../../i18n/colli';
 import { priceLabel, priceUnitLabel } from '../price';
@@ -49,7 +51,11 @@ export async function assistantIndex() {
   // the card's price as the tags print it: „€45/stuk”, „vanaf €10/pers”; a price in the shop alone, without a unit
   const label = (p: (typeof items)[number], L: Locale) => (p.priceInStore ? priceLabel(p, L) : `${priceLabel(p, L)}${priceUnitLabel(p, L)}`);
   const labels = Object.fromEntries(items.map((p) => [p.id, { nl: label(p, 'nl'), ro: label(p, 'ro') }]));
-  const strings = Object.fromEntries(locales.map((L) => [L, { ...qaT[L], recipe: receptenT[L].tagLink }]));
+  // row 11b: the words the slip in the conversation shares with the bestelbon (§5.20 / §5.19 / §5.22, read where they
+  // live): „prijs in de winkel” · „op aanvraag” for totalLabel, the volume-discount note, the menu's closed line
+  const strings = Object.fromEntries(
+    locales.map((L) => [L, { ...qaT[L], recipe: receptenT[L].tagLink, slip: { inStore: bestellenT[L].slip.inStore, tbc: bestellenT[L].slip.priceTbc, inStoreNote: bestellenT[L].slip.inStoreNote }, discount: ui[L].discountNote, menuClosed: bestellenT[L].menu.closed }]),
+  );
   return buildIndex({
     faq,
     syn,
@@ -71,5 +77,10 @@ export async function assistantIndex() {
     },
     thumbs,
     labels,
+    towns,
+    orderPaths: {
+      bestellen: { nl: '/bestellen', ro: '/ro/comanda' },
+      eindejaar: { nl: '/feestmenu-eindejaar', ro: '/ro/sarbatori' },
+    },
   });
 }

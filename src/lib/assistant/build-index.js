@@ -54,6 +54,8 @@ function categoryPhrases(cat) {
  * @param {object} d.paths         { producten, colli, recepten, allergenen } per locale
  * @param {object} d.thumbs        { productId: url } — the 56 px photo of a row that has its own (AVIF)
  * @param {object} d.labels        { productId: { nl, ro } } — the row's price + unit as the site prints it
+ * @param {object} d.towns         towns.json (row 11b: delivery by town)
+ * @param {object} d.orderPaths    { bestellen, eindejaar } per locale (row 11b: the handover and the menu page)
  */
 export function buildIndex(d) {
   const items = d.products.items;
@@ -88,6 +90,9 @@ export function buildIndex(d) {
       pl: d.labels[p.id] ?? null,
       pr: p.price,
       u: p.unit,
+      // row 11b: the bestelbon's quantity rule (order-core.js qtyRule), when the row sets its own
+      ...(p.min !== undefined ? { mn: p.min } : {}),
+      ...(p.step !== undefined ? { st: p.step } : {}),
       pf: !!p.priceFrom,
       ps: !!p.priceInStore,
       w: week.has(p.id),
@@ -153,6 +158,45 @@ export function buildIndex(d) {
 
   const menu = (d.menus.menus ?? [])[0] ?? null;
 
+  // Row 11b — the order helper. The holiday menu's rows as order lines (order-core.js menuRows / readOrder read this
+  // shape back), with their names as phrases; a word two rows of the menu share („fondue”, „gourmet”, „tapas”) asks
+  // which one, even when it is one row's whole name (on the Eindejaar page the menu rows win, build-plan row 11b).
+  const menuOrder = menu
+    ? (() => {
+        const rows = menu.items.map((i) => ({
+          id: i.id,
+          n: i.name,
+          u: i.unit,
+          pr: i.price,
+          ...(i.min !== undefined ? { mn: i.min } : {}),
+          ...(i.step !== undefined ? { st: i.step } : {}),
+          ...(i.priceInStore ? { ps: true } : {}),
+          ph: uniq([norm(i.name.nl), norm(i.name.ro)]),
+        }));
+        const shared = new Map();
+        for (const r of rows) for (const w of new Set(r.ph.flatMap((ph) => ph.split(' ')))) if (w.length >= 3 && !/^\d+$/.test(w)) shared.set(w, [...(shared.get(w) ?? []), r.id]);
+        return {
+          id: menu.id,
+          param: menu.param,
+          deadline: menu.deadline,
+          pickup: menu.pickup,
+          name: menu.name,
+          message: menu.message,
+          pickupOnly: menu.pickupOnly,
+          mail: menu.mail,
+          rows,
+          generic: Object.fromEntries([...shared].filter(([w, ids]) => ids.length >= 2 && !GENERAL.has(w) && !STOP.nl.includes(w) && !STOP.ro.includes(w))),
+        };
+      })()
+    : null;
+
+  // delivery by town (towns.json, [OBSERVED] road km to each town's centre): the place, its aliases as phrases, the
+  // postcode, km, and whether delivery.json already carries it as a zone (its ring there is the one that counts)
+  const towns = (d.towns?.towns ?? []).map((t) => {
+    const zone = d.delivery.zones.find((z) => z.postcode === t.postcode && z.place === t.place);
+    return { p: t.place, pc: t.postcode, km: t.km, ph: uniq([t.place, ...(t.alias ?? [])].map(norm)), ...(zone ? { z: zone.ring } : {}), ...(t.edge ? { e: true } : {}) };
+  });
+
   return {
     v: 1,
     phone: d.entity.telephoneDisplay,
@@ -171,5 +215,13 @@ export function buildIndex(d) {
     cutoff: d.delivery.pickup.cutoff,
     lead: d.delivery.pickup.leadDays,
     menu: menu ? { id: menu.id, deadline: menu.deadline, pickup: menu.pickup } : null,
+    // row 11b: the order helper's data — the menu as order lines, the delivery rules as the bestelbon reads them
+    // (order-core.js daysFor / readOrder), the towns, and the paths it hands over to and reads the page from
+    order: {
+      menu: menuOrder,
+      delivery: { minimumOrder: d.delivery.minimumOrder, rings: d.delivery.rings, days: d.delivery.days, times: d.delivery.times, zones: d.delivery.zones, pickup: d.delivery.pickup },
+      towns,
+      paths: d.orderPaths,
+    },
   };
 }
