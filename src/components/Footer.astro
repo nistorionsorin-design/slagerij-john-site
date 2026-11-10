@@ -64,8 +64,10 @@ const reviewLine = f.reviews(rating ?? f.ratingPh, count ?? f.countPh);
 const pages = [...menu[locale], { label: receptenT[locale].footer, href: locale === 'ro' ? '/ro/retete' : '/recepten' }];
 const stampText = hero[locale].stamp;
 const year = new Date().getFullYear();
-// the SVG file opens with a provenance comment (it mentions „<img>”); the page ships the <svg> only
-const creditMark = dgaMark.replace(/<!--[\s\S]*?-->\s*/g, '');
+// the SVG file opens with a provenance comment (it mentions „<img>”); the page ships the <svg> only. Row 11c (D-64):
+// its drawing carries id="dga-mark", so the assistant's credit line (QaBox.astro) shows the same mark with a <use>
+// instead of a second 12 kB copy on the page; the footer's look is unchanged.
+const creditMark = dgaMark.replace(/<!--[\s\S]*?-->\s*/g, '').replace('<g ', '<g id="dga-mark" ');
 
 const icons = {
   pin: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle>',

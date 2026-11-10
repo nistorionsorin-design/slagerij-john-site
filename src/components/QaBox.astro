@@ -15,6 +15,7 @@
 // another host. The engine answers in the browser; nothing is sent; the conversation's state sits in sessionStorage.
 import '../styles/mascot.css';
 import entity from '../data/entity.json';
+import dgaMark from '../assets/dga-mark.svg?raw';
 import { pigUse } from '../lib/mascot';
 import { qaT, type QaPage } from '../i18n/assistant';
 import { type Locale } from '../i18n/ui';
@@ -29,6 +30,11 @@ const t = qaT[locale];
 const chips = t.chips[page ?? 'home'];
 const waText = t.t.waText.replace('{question}', '[q]');
 const [failA, failB] = t.t.fail.split('{phone}');
+// row 11c (D-64, lexicon §5.36 / §6 „Creditul asistentului”): the DanGabriel Advisory line under the label, in the box
+// on the nine inline pages and in the sheet (the same box) — never on the floating button. The mark is the footer's own
+// drawing (Footer.astro, id="dga-mark") through a <use>, at the footer file's viewBox; the name is the link.
+const markBox = dgaMark.match(/viewBox="([^"]+)"/)?.[1] ?? '0 0 1411 1008';
+const [creditA, creditB] = t.credit.line.split('{name}');
 ---
 <section class="qa" aria-labelledby="qa-title" data-qa data-page={page ?? 'home'} data-lang={locale}>
   <div class="qa__head">
@@ -39,6 +45,10 @@ const [failA, failB] = t.t.fail.split('{phone}');
     </div>
   </div>
   <p class="qa__auto">{t.auto}</p>
+  <p class="qa__credit">
+    <svg class="qa__credit-mark" viewBox={markBox} aria-hidden="true" focusable="false"><use href="#dga-mark" /></svg>
+    <span>{creditA}<a href={t.credit.href} rel="noopener">{t.credit.name}</a>{creditB}</span>
+  </p>
   <div class="qa__log" role="log" aria-live="polite" aria-label={t.title} data-qa-log>
     <div class="qa__msg qa__msg--bot"><span class="qa__face" aria-hidden="true" set:html={pigUse} /><div class="qa__bub"><p>{t.t.greeting}</p></div></div>
   </div>
@@ -54,6 +64,8 @@ const [failA, failB] = t.t.fail.split('{phone}');
     <input class="qa__in" id="qa-input" name="q" type="text" autocomplete="off" enterkeyhint="send" maxlength="500" placeholder={t.placeholder} required />
     <button class="btn btn--ink btn--sm qa__send" type="submit">{t.submit}</button>
   </form>
+  {/* row 11c (lexicon §5.33): shown by qa-ui.ts once /api/ask says the Claude layer is on */}
+  <p class="qa__nopersonal" hidden data-qa-nopersonal>{t.ai.noPersonal}</p>
   <div class="qa__foot">
     <button type="button" class="qa__restart" data-qa-restart hidden>{t.t.restartBtn}</button>
   </div>
@@ -72,6 +84,13 @@ const [failA, failB] = t.t.fail.split('{phone}');
   .qa__title { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 24px; line-height: 1.05; letter-spacing: -0.01em; }
   .qa__can { margin: 4px 0 0; font-size: 14px; line-height: 1.4; }
   .qa__auto { margin: 10px 0 0; font-size: var(--fs-caption); line-height: 1.4; color: var(--muted); }
+  /* row 11c (D-64): the credit line — the mark ~16 px, the name an underlined link, in the label's own muted caption */
+  .qa__credit { display: flex; align-items: center; gap: 6px; margin: 4px 0 0; font-size: var(--fs-caption); line-height: 1.4; color: var(--muted); }
+  .qa__credit-mark { flex: none; display: block; height: 16px; width: auto; aspect-ratio: 1411 / 1008; fill: currentColor; color: var(--fg); }
+  .qa__credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+  .qa__credit a:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; border-radius: 2px; }
+  .qa__nopersonal { margin: 6px 0 0; font-size: 12px; line-height: 1.4; color: var(--muted); }
+  .qa__nopersonal[hidden] { display: none; }
   .qa__log { margin: 14px 0 0; display: flex; flex-direction: column; gap: 12px; max-height: 460px; overflow-y: auto; overscroll-behavior: contain; }
   .qa__msg { display: flex; align-items: flex-end; gap: 8px; min-width: 0; }
   .qa__face { --mascot: 36px; flex: none; width: 36px; }

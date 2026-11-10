@@ -9,6 +9,13 @@
 // bestelling”, the two handover buttons (to the pre-filled bestelbon, or WhatsApp through /wa?src=qa-order) and the
 // line under them. One thing is sent, after a second miss in a row only: the question, cut of digits and e-mail
 // addresses, to /api/miss (D-58 point 3).
+// Row 11c (D-59, docs/assistant.md §11): the Claude layer. On the first use the box asks GET /api/ask whether the layer
+// is on; if so the label becomes the AI label of lexicon §5.33 (before the first answer, AI Act art. 50) and the
+// personal-data line shows under the input. A typed question then goes to POST /api/ask with the context of §11.4 (the
+// page, the block in view, the product sheet it was opened from, how it was opened), the conversation's state and its
+// last 12 turns as plain text; the answer streams in as checked sentences and is drawn in the box's own shape. Any
+// failure (no layer, the cap, a timeout, an error, a check) answers with the local engine, as before — no error on
+// screen. A tap on a chip or a card's button stays local (the order helper's picks). Nothing else is sent or kept.
 import { ask, newState, prepare } from '../lib/assistant/engine.js';
 import { cleanMiss } from '../lib/assistant/misses.js';
 import chatCss from '../styles/qa-chat.css?raw';
@@ -18,8 +25,10 @@ type Card = { id: string; name: string; price: string; line: string; th: string 
 type Act = { kind: 'wa' | 'tel' | 'link' | 'switch' | 'form'; label: string; href?: string; lang?: string; order?: boolean };
 type Chip = { label: string; ask?: string; pick?: string };
 type Slip = { title: string; lines: string[]; when: string | null; total: string; notes: string[] };
-type Reply = { lang: 'nl' | 'ro'; face: string; lines: Seg[][]; cards: Card[]; chips: Chip[]; acts: Act[]; link: Seg[] | null; slip?: Slip | null; foot?: Seg[][] };
-type State = { lang: 'nl' | 'ro'; last: string | null; pend: unknown; miss: number; draft: { items?: unknown[] } | null };
+type Reply = { lang: 'nl' | 'ro' | 'en' | 'fr'; face: string; lines: Seg[][]; cards: Card[]; chips: Chip[]; acts: Act[]; link: Seg[] | null; slip?: Slip | null; foot?: Seg[][] };
+type Hist = { r: 'u' | 'a'; t: string };
+type State = { lang: 'nl' | 'ro'; last: string | null; pend: unknown; miss: number; draft: { items?: unknown[] } | null; off?: string[]; no?: boolean; n?: number };
+type Ev = { t: 'wait' | 'delta' | 'reset' | 'done' | 'local' | 'fallback'; d?: string; reply?: Reply; st?: Partial<State>; why?: string; unanswered?: boolean };
 
 const KEY = 'qa-state';
 const read = (): State | null => {
@@ -71,6 +80,25 @@ function make(box: HTMLElement, ix: any) {
   const slow = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let state: State = { ...newState(lang), ...(read() ?? {}) };
   let busy = false;
+  // row 11c: the last 12 turns as plain text, for the Claude layer — in memory only, never in sessionStorage, so nothing
+  // a customer typed (a name, an address) stays on the device; a page change starts the history afresh (the state with
+  // the draft and the last product goes on, as since row 11a)
+  let hist: Hist[] = [];
+  // the context of the next question — how the box was opened, and the product sheet it was opened from
+  let openedFrom: 'inline' | 'button' | 'sheet' = 'inline';
+  let sheetProduct: string | null = null;
+  // the Claude layer: asked once, on the first use; the label switches before the first answer
+  const aiOn: Promise<boolean> = fetch('/api/ask', { headers: { accept: 'application/json' } })
+    .then((r) => (r.ok ? r.json() : { on: false }))
+    .then((j: { on?: boolean }) => !!j.on)
+    .catch(() => false);
+  void aiOn.then((on) => {
+    if (!on) return;
+    const auto = box.querySelector<HTMLElement>('.qa__auto');
+    if (auto) auto.textContent = ix.s[lang].ai.label;
+    const np = box.querySelector<HTMLElement>('[data-qa-nopersonal]');
+    if (np) np.hidden = false;
+  });
 
   const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, text?: string) => {
     const n = document.createElement(tag);
@@ -113,6 +141,8 @@ function make(box: HTMLElement, ix: any) {
       else {
         const a = el('a', '', s.t);
         a.href = s.href;
+        // row 11c (D-64): the credit's link to dg-advisory.net under the „who made this” answer — a plain outbound link
+        if (/^https?:/.test(s.href)) a.rel = 'noopener';
         p.append(a);
       }
     }
@@ -140,7 +170,8 @@ function make(box: HTMLElement, ix: any) {
   const draw = (li: HTMLElement, r: Reply) => {
     li.classList.remove('qa__msg--wait');
     const bub = li.querySelector<HTMLElement>('.qa__bub')!;
-    if (r.lang !== lang) bub.lang = r.lang === 'ro' ? 'ro-BE' : 'nl-BE';
+    // row 11c: an answer in another language (English) is marked as such for screen readers
+    if (r.lang !== lang) bub.lang = r.lang === 'ro' ? 'ro-BE' : r.lang === 'en' || r.lang === 'fr' ? r.lang : 'nl-BE';
     for (const line of r.lines) bub.append(segs(el('p'), line));
     // row 11b: the order so far, as the bestelbon's slip writes it
     if (r.slip) {
@@ -228,22 +259,38 @@ function make(box: HTMLElement, ix: any) {
   };
 
   // the block of the page in view when the question is sent (row 11c reads it; 11a passes it along)
+  // row 11c: of the blocks across the middle line, the one nearest the screen's centre — two cards side by side on a
+  // desktop row (the colli) are told apart; the outer section that holds them loses to the card itself
   const section = () => {
     const mid = innerHeight / 2;
+    const cx = innerWidth / 2;
+    let best: { id: string | null; d: number; area: number } | null = null;
     for (const s of document.querySelectorAll<HTMLElement>('[data-qa-section]')) {
       const b = s.getBoundingClientRect();
-      if (b.top <= mid && b.bottom >= mid) return s.dataset.qaSection ?? null;
+      if (!(b.top <= mid && b.bottom >= mid) || !b.width) continue;
+      const d = Math.hypot((b.left + b.right) / 2 - cx, (b.top + b.bottom) / 2 - mid);
+      const area = b.width * b.height;
+      if (!best || area < best.area * 0.8 || (Math.abs(area - best.area) <= best.area * 0.2 && d < best.d)) best = { id: s.dataset.qaSection ?? null, d, area };
     }
-    return null;
+    return best?.id ?? null;
   };
 
-  const turn = (input: { text?: string; pick?: string }) => {
-    if (busy) return;
-    busy = true;
-    const li = bot('read');
-    const res = ask(ix, state, { ...input, page, pageLang: lang, path, section: section(), now: new Date() });
-    state = res.state as State;
+  const plainOf = (r: Reply) => r.lines.map((l) => l.map((x) => x.t).join('')).join(' ').slice(0, 1200);
+  /** the conversation after a typed question's answer: the state it left, one more message, the last 12 turns as text */
+  const settle = (next: State, text: string, r: Reply) => {
+    hist = [...hist, { r: 'u' as const, t: text.slice(0, 500) }, { r: 'a' as const, t: plainOf(r) }].slice(-24);
+    state = { ...next, n: (state.n ?? 0) + 1 };
     write(state);
+  };
+
+  /** the local engine's answer (rows 11a/11b) — also the Claude layer's fallback */
+  const local = (li: HTMLElement, input: { text?: string; pick?: string }, pause: boolean) => {
+    const res = ask(ix, state, { ...input, page, pageLang: lang, path, section: section(), now: new Date() });
+    if (input.text) settle(res.state as State, input.text, res.reply as Reply);
+    else {
+      state = res.state as State;
+      write(state);
+    }
     // row 11b (D-58 point 3): a second miss in a row — and only that, never an allergen answer, a hand-off or an order —
     // goes to /api/miss as {lang, page, q}, the text already cut of digits and e-mail addresses (misses.js)
     if ((res.dbg as { intent?: string }).intent === 'miss-2' && input.text) {
@@ -256,8 +303,76 @@ function make(box: HTMLElement, ix: any) {
         draw(li, res.reply as Reply);
         busy = false;
       },
-      slow ? 0 : 420,
+      slow || !pause ? 0 : 420,
     );
+  };
+
+  /** row 11c: the question to /api/ask; the stream drawn as it comes; any failure → the local engine, silently */
+  const remote = async (li: HTMLElement, text: string) => {
+    const bub = li.querySelector<HTMLElement>('.qa__bub')!;
+    const quiet = el('p', 'qa__writing', ix.s[lang].ai.writing);
+    bub.append(quiet);
+    const live = el('p');
+    let shown = '';
+    const back = () => {
+      bub.replaceChildren();
+      local(li, { text }, false);
+    };
+    try {
+      const res = await fetch('/api/ask', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ q: text, lang, page, ctx: { page: path, section: section(), sheet: sheetProduct, opened_from: openedFrom }, st: state, hist }),
+        signal: AbortSignal.timeout(12000),
+      });
+      if (!res.ok || !res.body) return back();
+      const reader = res.body.getReader();
+      const dec = new TextDecoder();
+      let buf = '';
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        let at;
+        while ((at = buf.indexOf('\n')) >= 0) {
+          const ev = JSON.parse(buf.slice(0, at)) as Ev;
+          buf = buf.slice(at + 1);
+          if (ev.t === 'delta' && ev.d) {
+            if (!shown) bub.replaceChildren(live);
+            shown += ev.d;
+            live.textContent = shown;
+            scroll();
+          } else if (ev.t === 'reset') {
+            shown = '';
+            bub.replaceChildren(quiet);
+          } else if (ev.t === 'done' && ev.reply) {
+            bub.replaceChildren();
+            settle({ ...state, miss: 0, ...(ev.st ?? {}), pend: null } as State, text, ev.reply);
+            // a question the Claude layer could not answer: to the weekly mail, as the local engine's second miss (D-58 point 3)
+            if (ev.unanswered) {
+              const row = cleanMiss({ lang: ev.reply.lang, page: path, q: text });
+              if (row) navigator.sendBeacon?.('/api/miss', JSON.stringify(row));
+            }
+            draw(li, ev.reply);
+            busy = false;
+            return;
+          } else if (ev.t === 'local' || ev.t === 'fallback') return back();
+        }
+      }
+      back();
+    } catch {
+      back();
+    }
+  };
+
+  const turn = (input: { text?: string; pick?: string }) => {
+    if (busy) return;
+    busy = true;
+    const li = bot('read');
+    // a typed question goes to the Claude layer when it is on; a tap (the order helper's picks) stays local
+    const text = input.text;
+    if (text) void aiOn.then((on) => (on ? remote(li, text) : local(li, input, true)));
+    else local(li, input, true);
   };
 
   return {
@@ -274,6 +389,8 @@ function make(box: HTMLElement, ix: any) {
       // row 11b: an order in the conversation goes with it (§5.34 „Uw bon is leeg. Wij beginnen opnieuw.”)
       const filled = !!state.draft?.items?.length;
       state = newState(lang);
+      sheetProduct = null;
+      hist = [];
       write(state);
       const li = bot('greet');
       draw(li, { lang, face: 'greet', lines: [[{ t: filled ? ix.s[lang].o.cleared : ix.s[lang].t.restart }]], cards: [], chips: [], acts: [], link: null });
@@ -281,9 +398,11 @@ function make(box: HTMLElement, ix: any) {
       restartBtn.hidden = true;
     },
     /** the sheet opened: the pig greets; from a product sheet, that product is what „this” means next */
-    opened(product: string | null) {
+    opened(product: string | null, from: 'button' | 'sheet' = 'button') {
       const first = log.querySelector<HTMLElement>('.qa__msg--bot');
       if (first) setFace(first, 'greet');
+      openedFrom = from;
+      sheetProduct = product;
       if (!product) return;
       const p = ix._byId.get(product);
       if (!p) return;

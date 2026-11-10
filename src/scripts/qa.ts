@@ -80,7 +80,7 @@ if (box && sheet && 'showModal' in sheet) {
     document.documentElement.classList.add('qa-lock');
     sheet.showModal();
     if (matchMedia('(hover: hover)').matches) input.focus({ preventScroll: true });
-    run((c) => c.opened(product));
+    run((c) => c.opened(product, fiche ? 'sheet' : 'button'));
   };
   document.addEventListener('click', (e) => {
     const a = (e.target as Element).closest?.<HTMLElement>('[data-qa-open]');

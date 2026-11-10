@@ -1,0 +1,212 @@
+{
+  "_source": "The offers the assistant's Claude layer may mention after it has answered a doubt (docs/assistant.md §11.5; D-59 points 3 and 4). Cowork 10.11.2026. Every row is a fact already on the site or in FACTS.md; the sentence the customer hears is the bank answer named in `faq` (docs/data/assistant-faq.json, verbatim) or, when `dynamic` is set, built from the data file named there — nothing is worded here. families = the doubts a row may follow (price · quantity · choice · quality · timing · delivery). once = at most once per conversation. from / until = the dates between which the lookup returns the row (until = the last day; null = no end). A new promo = the owners' word, dated in FACTS.md, then a row here with its end date. Never returned: in an allergen answer, a complaint, a handoff, or after the customer said no to an offer in this conversation.",
+  "never": [
+    "a discount, code, gift or price that is not a row of this file",
+    "stock or scarcity words: nog maar, laatste, op = op, alleen vandaag, bijna weg, doar azi, ultimele, se termină",
+    "a countdown or a time pressure other than a row's own date",
+    "more than one row in one answer",
+    "the same row twice in a conversation",
+    "any row after a no",
+    "naming the customer's feeling",
+    "a comparison with another shop"
+  ],
+  "offers": [
+    {
+      "id": "volume-discount",
+      "families": [
+        "price",
+        "quantity"
+      ],
+      "faq": "order-volume-discount",
+      "when": {
+        "unit": "kg"
+      },
+      "once": true,
+      "from": "2026-10-22",
+      "until": null,
+      "source": "FACTS.md Volumekorting [OWNER] Georgiana, WhatsApp 22.10.2026 11:30 + form q9 27.10 (meat only, on order)"
+    },
+    {
+      "id": "colli-for-this",
+      "families": [
+        "price",
+        "choice"
+      ],
+      "dynamic": "the colli of products.json (category colli) whose contents hold the product in the conversation: its name, what is in it, its price — as the bank entries products-colli-list / products-colli-john say them",
+      "when": {
+        "product_in_a_colli": true
+      },
+      "once": true,
+      "from": "2026-10-07",
+      "until": null,
+      "source": "site/src/data/products.json category colli (FACTS.md Colli, six packs)"
+    },
+    {
+      "id": "gourmet-per-person",
+      "families": [
+        "price",
+        "quantity"
+      ],
+      "faq": "products-gourmet-price",
+      "when": {
+        "topic": [
+          "gourmet",
+          "fondue"
+        ]
+      },
+      "once": true,
+      "from": "2026-10-13",
+      "until": null,
+      "source": "docs/data/price-list.json [OWNER] Georgiana 13.10"
+    },
+    {
+      "id": "delivery-free",
+      "families": [
+        "delivery"
+      ],
+      "faq": "delivery-free-from",
+      "once": true,
+      "from": "2026-10-07",
+      "until": null,
+      "source": "site/src/data/delivery.json rings (FACTS.md Delivery rules)"
+    },
+    {
+      "id": "deadline-next-day",
+      "families": [
+        "timing"
+      ],
+      "faq": "order-deadline",
+      "once": true,
+      "from": "2026-10-19",
+      "until": null,
+      "source": "site/src/data/delivery.json pickup.cutoff [OWNER] 19.10"
+    },
+    {
+      "id": "deadline-holiday-menu",
+      "families": [
+        "timing"
+      ],
+      "faq": "season-christmas-deadline",
+      "once": true,
+      "from": "2026-10-27",
+      "until": "2026-12-20",
+      "source": "site/src/data/menus.json eindejaar-2026 deadline"
+    },
+    {
+      "id": "deadline-christmas-pig",
+      "families": [
+        "timing"
+      ],
+      "faq": "season-christmas-pig",
+      "once": true,
+      "from": "2026-10-19",
+      "until": "2026-12-18",
+      "source": "FACTS.md Porc de Crăciun [OWNER]: order by 18 December"
+    },
+    {
+      "id": "google-rating",
+      "families": [
+        "quality"
+      ],
+      "dynamic": "site/src/data/reviews.json: the figure and the count in the trust strip's own form (home.ts `google`: „Google {rating} ({count} beoordelingen)” / the RO twin) + the link label „Bekijk alle beoordelingen op Google Maps.” to the shop's Maps profile",
+      "once": true,
+      "from": "2026-10-19",
+      "until": null,
+      "source": "site/src/data/reviews.json (hand-read 19.10; D-10)"
+    },
+    {
+      "id": "certified",
+      "families": [
+        "quality"
+      ],
+      "faq": "trust-certified",
+      "once": true,
+      "from": "2026-10-03",
+      "until": null,
+      "source": "FACTS.md „Erkend Beenhouwer-Spekslager” (the owners' own line)"
+    },
+    {
+      "id": "own-made",
+      "families": [
+        "quality"
+      ],
+      "faq": "products-own-made",
+      "once": true,
+      "from": "2026-10-19",
+      "until": null,
+      "source": "FACTS.md Own-made [OWNER] 19.10"
+    },
+    {
+      "id": "smoked",
+      "families": [
+        "quality"
+      ],
+      "faq": "products-smoked",
+      "when": {
+        "topic": [
+          "gerookt",
+          "afumat",
+          "roemeens"
+        ]
+      },
+      "once": true,
+      "from": "2026-10-19",
+      "until": null,
+      "source": "FACTS.md Own-made (smoking method)"
+    },
+    {
+      "id": "origin",
+      "families": [
+        "quality"
+      ],
+      "faq": "products-origin",
+      "once": true,
+      "from": "2026-10-19",
+      "until": null,
+      "source": "FACTS.md meat origin (D6: Belgium, no supplier names)"
+    },
+    {
+      "id": "bbq-pakket",
+      "families": [
+        "choice",
+        "quantity"
+      ],
+      "faq": "products-bbq-pakket",
+      "when": {
+        "persons_min": 10
+      },
+      "once": true,
+      "from": "2026-10-19",
+      "until": null,
+      "source": "FACTS.md BBQ-pakket (from 10 persons, price on request)"
+    },
+    {
+      "id": "bbq-at-home",
+      "families": [
+        "choice"
+      ],
+      "faq": "traiteur-bbq-home",
+      "when": {
+        "persons_min": 10
+      },
+      "once": true,
+      "from": "2026-10-19",
+      "until": null,
+      "source": "FACTS.md Grătar la domiciliu (John cooks, from 10 persons, quote within 24 h)"
+    },
+    {
+      "id": "this-week",
+      "families": [
+        "choice"
+      ],
+      "dynamic": "products.json rows with `week` (today: none) in the §5.32 form „Deze week aan de toog”",
+      "when": {
+        "week_list_not_empty": true
+      },
+      "once": true,
+      "from": "2026-10-23",
+      "until": null,
+      "source": "site/src/data/products.json week"
+    }
+  ]
+}

@@ -14,6 +14,8 @@ import menus from '../../data/menus.json';
 import entity from '../../data/entity.json';
 import recipes from '../../data/recipes.json';
 import towns from '../../data/towns.json';
+import reviews from '../../data/reviews.json';
+import { homeT } from '../../i18n/home';
 import type { Products } from '../../data/types';
 import { qaT } from '../../i18n/assistant';
 import { nav, menu, footer, ui, type Locale } from '../../i18n/ui';
@@ -82,5 +84,13 @@ export async function assistantIndex() {
       bestellen: { nl: '/bestellen', ro: '/ro/comanda' },
       eindejaar: { nl: '/feestmenu-eindejaar', ro: '/ro/sarbatori' },
     },
+    // row 11c: the live Google figure in the trust strip's own form + the reviews block's link (the `google-rating`
+    // offer of docs/data/assistant-offers.json; D-10: hand-read reviews.json, its date with it)
+    reviews: Object.fromEntries(
+      locales.map((L) => {
+        const rating = reviews.rating.toFixed(1).replace('.', ',');
+        return [L, { line: homeT[L].trust.google(rating, String(reviews.count)), link: homeT[L].reviews.link, href: homeT[L].reviews.href, read: reviews.fetchedAt }];
+      }),
+    ),
   });
 }

@@ -13,7 +13,7 @@ const GENERAL = new Set(['vlees', 'carne', 'stuk', 'stukje', 'bucata', 'bucati',
 /** The words a customer leaves out of a question when the meaning sits in the rest — dropped when a question of the
  *  bank is compared with the customer's text (keywords and product names keep every word). */
 export const STOP = {
-  nl: 'de het een en van in op te is zijn ben bent jullie u uw ik je jij jou wij we ons onze er dat dit die deze wat hoe of ook nog wel maar met aan om bij als dan kan kunnen mag moet zit zitten heb hebben heeft hebt hier daar wordt worden zo al me mijn mij iets graag even eens toch dus naar uit over voor'.split(' '),
+  nl: 'de het een en van in op te is zijn ben bent jullie u uw ik je jij jou wij we ons onze er dat dit die deze wat hoe of ook nog wel maar met aan om bij als dan kan kunnen mag moet zit zitten heb hebben heeft hebt hier daar wordt worden zo al me mijn mij iets graag even eens toch dus naar uit over voor eigenlijk'.split(' '),
   ro: 'de la pe in cu si sa ce cum e este sunt ai aveti am a al ale un o unei unui pentru mai din se ma te va voi noi eu tu ati asta acest aceasta acesta aici ne nu imi mi iti ti le li lui ei el ea ca daca sau dar fi fie vreau vrei pot poti puteti'.split(' '),
 };
 
@@ -56,6 +56,7 @@ function categoryPhrases(cat) {
  * @param {object} d.labels        { productId: { nl, ro } } — the row's price + unit as the site prints it
  * @param {object} d.towns         towns.json (row 11b: delivery by town)
  * @param {object} d.orderPaths    { bestellen, eindejaar } per locale (row 11b: the handover and the menu page)
+ * @param {object} [d.reviews]     { nl, ro: { line, link, href, read } } — the trust strip's Google line (row 11c offers)
  */
 export function buildIndex(d) {
   const items = d.products.items;
@@ -223,5 +224,7 @@ export function buildIndex(d) {
       towns,
       paths: d.orderPaths,
     },
+    // row 11c: the Google figure as the site prints it (the Claude layer's `google-rating` offer)
+    ...(d.reviews ? { reviews: d.reviews } : {}),
   };
 }

@@ -1,0 +1,159 @@
+{
+ "_source": "The blocks of each page the assistant can be told about (docs/assistant.md §11.4: `section` of the context). Read by Cowork 10.11.2026 from site/dist as built for row 11a (`data-qa-section` attributes, in page order). The function of row 11c accepts only these values for the page named; anything else is dropped. Regenerate after a page gains or loses a block (the gate of row 11c compares this file with dist).",
+ "pages": {
+  "/algemene-voorwaarden": [],
+  "/allergenen": [],
+  "/bbq-pakketten": [
+   "head",
+   "galerij",
+   "faq"
+  ],
+  "/bestellen": [
+   "bestelbon",
+   "faq"
+  ],
+  "/colli-vleespakketten": [
+   "head",
+   "colli-varken-1",
+   "colli-varken-2",
+   "colli-kip",
+   "colli-kip-varken",
+   "colli-bbq",
+   "colli-john",
+   "faq"
+  ],
+  "/contact": [
+   "head",
+   "hours",
+   "faq"
+  ],
+  "/feestmenu-eindejaar": [
+   "head",
+   "menu",
+   "faq"
+  ],
+  "/": [
+   "head",
+   "week",
+   "categories",
+   "season",
+   "reviews",
+   "loop",
+   "owners",
+   "hours",
+   "faq"
+  ],
+  "/over-ons": [
+   "hours"
+  ],
+  "/privacy": [],
+  "/producten": [
+   "head",
+   "rund",
+   "varken",
+   "kip",
+   "lam",
+   "bereidingen",
+   "marinades",
+   "charcuterie",
+   "roemeens",
+   "colli",
+   "gourmet",
+   "tapas",
+   "warm",
+   "dessert",
+   "faq"
+  ],
+  "/recepten": [
+   "head"
+  ],
+  "/ro": [
+   "head",
+   "week",
+   "categories",
+   "season",
+   "reviews",
+   "loop",
+   "owners",
+   "hours",
+   "faq"
+  ],
+  "/ro/alergeni": [],
+  "/ro/catering": [
+   "head",
+   "galerie",
+   "aperitive",
+   "offerte",
+   "faq"
+  ],
+  "/ro/colli": [
+   "head",
+   "colli-varken-1",
+   "colli-varken-2",
+   "colli-kip",
+   "colli-kip-varken",
+   "colli-bbq",
+   "colli-john",
+   "faq"
+  ],
+  "/ro/comanda": [
+   "bestelbon",
+   "faq"
+  ],
+  "/ro/confidentialitate": [],
+  "/ro/contact": [
+   "head",
+   "hours",
+   "faq"
+  ],
+  "/ro/despre-noi": [
+   "hours"
+  ],
+  "/ro/gratar": [
+   "head",
+   "galerie",
+   "faq"
+  ],
+  "/ro/mici-si-specialitati": [
+   "head",
+   "faq"
+  ],
+  "/ro/produse": [
+   "head",
+   "rund",
+   "varken",
+   "kip",
+   "lam",
+   "bereidingen",
+   "marinades",
+   "charcuterie",
+   "roemeens",
+   "colli",
+   "gourmet",
+   "tapas",
+   "warm",
+   "dessert",
+   "faq"
+  ],
+  "/ro/retete": [
+   "head"
+  ],
+  "/ro/sarbatori": [
+   "head",
+   "menu",
+   "faq"
+  ],
+  "/ro/termeni": [],
+  "/roemeense-specialiteiten": [
+   "head",
+   "faq"
+  ],
+  "/traiteur": [
+   "head",
+   "galerij",
+   "hapjes",
+   "offerte",
+   "faq"
+  ]
+ }
+}

@@ -8,6 +8,9 @@
 // `bestellen` and `colli`, and the `o` block (the draft, the slip, the day, the handover, delivery by town). Words the
 // slip shares with the bestelbon („Afhalen”, „Totaal”, „prijs in de winkel”, the discount note) are read from
 // bestellen.ts / ui.ts by lib/assistant/index.ts, not repeated here.
+// Row 11c (D-59 · D-64): lexicon §5.33 + §5.36 (NL) and §6 „Asistent cu AI, 10.11” + „Creditul asistentului, 10.11”
+// (RO), verbatim — `ai` (the AI label, the personal-data line, the writing line, the person / scope / 20-message lines)
+// and `credit` (the DanGabriel Advisory line under the label, and the link under the `site-made-by` answer).
 import type { Locale } from './ui';
 
 /** The pages with an inline box (lexicon §5.32 „Start chips per page”), by their two paths. Every other page has the
@@ -34,6 +37,18 @@ export const qaT = {
     title: 'Vraag het ons',
     can: 'Ik ken onze uren, producten en prijzen, levering en allergenen, en ik zet uw bestelling klaar.',
     auto: 'Automatische assistent. Antwoordt uit de gegevens van deze site; voor bestellingen gaat u naar de bestelbon of WhatsApp.',
+    /** row 11c (D-59) — lexicon §5.33: the fixed strings around the Claude layer's answers. `label` replaces `auto` while
+     *  the layer is on (AI Act art. 50, visible before the first message); `whoAmI` = the §5.36 wording (D-64). */
+    ai: {
+      label: 'Automatische assistent met AI. Antwoordt uit de gegevens van deze winkel; uw bestelling plaatst u zelf, op de bestelbon of via WhatsApp.',
+      noPersonal: 'Typ hier geen persoonlijke gegevens.',
+      writing: 'De assistent schrijft een antwoord.',
+      whoAmI: 'Ik ben de automatische assistent van Slagerij John, gemaakt door DanGabriel Advisory en gebouwd op Claude, een AI-model. Wilt u iemand van de winkel? Georgiana antwoordt op WhatsApp.',
+      scope: 'Daar kan ik u niet mee helpen. Ik help u met de winkel: producten, prijzen, bestellen en levering.',
+      limit: 'Vanaf hier helpt Georgiana u verder op WhatsApp.',
+    },
+    /** row 11c (D-64) — lexicon §5.36: the credit line under the label, the name is the link (the footer credit's href) */
+    credit: { line: 'Assistent gemaakt door {name}', name: 'DanGabriel Advisory', href: 'https://dg-advisory.net/' },
     placeholder: 'Stel uw vraag',
     inputLabel: 'Uw vraag',
     submit: 'Vraag',
@@ -151,6 +166,17 @@ export const qaT = {
     title: 'Întreabă-ne',
     can: 'Știu programul, produsele și prețurile, livrarea, alergenii și îți pregătesc comanda.',
     auto: 'Asistent automat. Răspunde din datele acestui site; pentru comenzi, mergi la bonul de comandă sau pe WhatsApp.',
+    /** §6 „Asistent cu AI, 10.11” (row 11c) + „Creditul asistentului, 10.11” (`whoAmI`, D-64) */
+    ai: {
+      label: 'Asistent automat cu inteligență artificială. Răspunde din datele acestui magazin; comanda o trimiți tu, din bonul de comandă sau pe WhatsApp.',
+      noPersonal: 'Nu scrie aici date personale.',
+      writing: 'Asistentul scrie răspunsul.',
+      whoAmI: 'Sunt asistentul automat al Măcelăriei John, făcut de DanGabriel Advisory și construit pe Claude, un model de inteligență artificială. Vrei să vorbești cu cineva din magazin? Georgiana răspunde pe WhatsApp.',
+      scope: 'Cu asta nu te pot ajuta. Te ajut cu magazinul: produse, prețuri, comandă și livrare.',
+      limit: 'De aici te ajută Georgiana, pe WhatsApp.',
+    },
+    /** §6 „Creditul asistentului, 10.11” (D-64) */
+    credit: { line: 'Asistent făcut de {name}', name: 'DanGabriel Advisory', href: 'https://dg-advisory.net/' },
     placeholder: 'Scrie întrebarea',
     inputLabel: 'Întrebarea ta',
     submit: 'Întreabă',

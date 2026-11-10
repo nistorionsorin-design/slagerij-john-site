@@ -40,3 +40,5 @@
 .qa__add:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
 @media (hover: hover) { .qa__add:hover { background: var(--card); } }
 .qa__foot-l { margin: 8px 0 0; font-size: 13px; line-height: 1.4; color: var(--muted); }
+/* row 11c: the quiet line while the Claude layer writes (lexicon §5.33 „De assistent schrijft een antwoord.”) */
+.qa__writing { margin: 0; font-size: 13px; color: var(--muted); }

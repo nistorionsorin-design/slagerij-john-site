@@ -14,7 +14,22 @@ import { fileURLToPath } from 'node:url';
 // request carries them, so a test can set them; a plain browser request has none of the first two → preview site_id.
 // Row 11b: /api/miss (the assistant's unanswered question; prints the row while the privacy line waits) and
 // /api/qa-digest (the weekly mail; 401 without CRON_SECRET, as on Vercel).
-const apiRoutes = { '/api/order': 'api/order.js', '/api/wa': 'api/wa.js', '/wa': 'api/wa.js', '/api/gone': 'api/gone.js', '/api/hit': 'api/hit.js', '/api/miss': 'api/miss.js', '/api/qa-digest': 'api/qa-digest.js' };
+// Row 11c: /api/ask (the assistant's Claude layer). Its answer is a stream: the body is passed on chunk by chunk. The
+// functions read site/.env.local (git-ignored, D-26) the way Vercel hands them its environment variables — under the dev
+// server only, never a value printed; a variable already set in the shell wins.
+const apiRoutes = { '/api/order': 'api/order.js', '/api/wa': 'api/wa.js', '/wa': 'api/wa.js', '/api/gone': 'api/gone.js', '/api/hit': 'api/hit.js', '/api/miss': 'api/miss.js', '/api/qa-digest': 'api/qa-digest.js', '/api/ask': 'api/ask.js' };
+const devEnv = () => {
+  let text = '';
+  try {
+    text = readFileSync(new URL('.env.local', import.meta.url), 'utf8');
+  } catch {
+    return;
+  }
+  for (const line of text.split(/\r?\n/)) {
+    const m = line.match(/^\s*([a-z_][a-z0-9_]*)\s*=\s*(.*?)\s*$/i);
+    if (m && m[2] && process.env[m[1]] === undefined) process.env[m[1]] = m[2].replace(/^(["'])(.*)\1$/, '$2');
+  }
+};
 const apiMiddleware = (load) => async (req, res, next) => {
   const file = apiRoutes[(req.url ?? '').split('?')[0]];
   if (!file) return next();
@@ -28,7 +43,8 @@ const apiMiddleware = (load) => async (req, res, next) => {
     const response = await mod.default.fetch(new Request(`http://${req.headers.host}${req.url}`, { method: req.method, headers, body }));
     res.statusCode = response.status;
     response.headers.forEach((v, k) => res.setHeader(k, v));
-    res.end(Buffer.from(await response.arrayBuffer()));
+    if (response.body) for await (const chunk of response.body) res.write(chunk);
+    res.end();
   } catch (e) {
     next(e);
   }
@@ -36,6 +52,7 @@ const apiMiddleware = (load) => async (req, res, next) => {
 const apiDev = {
   name: 'api-dev',
   configureServer(server) {
+    devEnv();
     server.middlewares.use(apiMiddleware((f) => server.ssrLoadModule(`/${f}`)));
   },
 };

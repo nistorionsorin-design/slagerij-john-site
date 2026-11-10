@@ -628,6 +628,45 @@
       ]
     },
     {
+      "id": "order-volume-discount",
+      "topic": "order",
+      "q": {
+        "nl": "Is er korting als ik veel bestel?",
+        "ro": "Aveți reducere la cantități mari?"
+      },
+      "keywords": {
+        "nl": [
+          "korting",
+          "volumekorting",
+          "grote hoeveelheid",
+          "veel bestellen",
+          "goedkoper",
+          "reductie"
+        ],
+        "ro": [
+          "reducere",
+          "discount",
+          "cantitate mare",
+          "mai ieftin",
+          "la kilogram mai mult"
+        ]
+      },
+      "a": {
+        "nl": "Vanaf 3 kg van hetzelfde product 5 % korting, vanaf 5 kg 10 %, enkel op vlees en enkel op bestelling. De korting wordt bij het afhalen verrekend.",
+        "ro": "De la 3 kg din același produs 5% reducere, de la 5 kg 10%, doar la carne și doar la comandă. Reducerea se face la ridicare."
+      },
+      "link": {
+        "nl": "/producten",
+        "ro": "/ro/produse"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Volumekorting [OWNER] Georgiana 22.10 + q9 27.10 („doar la carne, pe bază de comandă”)",
+        "site/src/i18n/producten.ts + ui.ts discountNote (verbatim, live since row 22g)"
+      ]
+    },
+    {
       "id": "order-pay-online",
       "topic": "order",
       "q": {
@@ -3253,6 +3292,50 @@
       ]
     },
     {
+      "id": "site-what-can-you-do",
+      "topic": "site",
+      "q": {
+        "nl": "Wat kunt u voor mij doen?",
+        "ro": "Ce știi să faci?"
+      },
+      "keywords": {
+        "nl": [
+          "wat kan je",
+          "wat kunt u",
+          "wat kun je doen",
+          "waarmee kan je helpen",
+          "wat doe je",
+          "wat weet je",
+          "wat kan ik vragen",
+          "help",
+          "hulp"
+        ],
+        "ro": [
+          "ce știi să faci",
+          "ce stii sa faci",
+          "ce știi",
+          "ce poți face",
+          "ce poti face",
+          "cu ce mă poți ajuta",
+          "cu ce ma ajuti",
+          "detalii despre ce știi",
+          "la ce ești bun",
+          "ajutor"
+        ]
+      },
+      "a": {
+        "nl": "Ik ken onze openingsuren, producten en prijzen, de levering en de allergenen. Ik zet ook uw bestelling klaar: u zegt wat u wilt en voor welke dag, en u plaatst ze daarna zelf, op de bestelbon of via WhatsApp. Vraag bijvoorbeeld: „Hebben jullie mici?”, „Leveren jullie in Tielt?” of „Wat zit er in Colli John?”",
+        "ro": "Știu programul, produsele și prețurile, livrarea și alergenii. Îți pregătesc și comanda: îmi spui ce vrei și pentru ce zi, apoi o trimiți tu, din bonul de comandă sau pe WhatsApp. Întreabă-mă, de exemplu: „Aveți mici?”, „Livrați în Tielt?” sau „Ce conține Colli John?”"
+      },
+      "link": null,
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "docs/lexicon.md §5.34 capability line (the same abilities, written out)",
+        "Dan's own first question to the box, 10.11 14:34 — it had no answer"
+      ]
+    },
+    {
       "id": "site-bot",
       "topic": "site",
       "q": {
@@ -3283,6 +3366,43 @@
       "dynamic": null,
       "facts": [
         "docs/assistant.md §5 label (AI Act art. 50)"
+      ]
+    },
+    {
+      "id": "site-made-by",
+      "topic": "site",
+      "q": {
+        "nl": "Wie heeft deze website en deze assistent gemaakt?",
+        "ro": "Cine a făcut site-ul și asistentul?"
+      },
+      "keywords": {
+        "nl": [
+          "wie heeft je gemaakt",
+          "wie maakte",
+          "gemaakt door",
+          "website gemaakt",
+          "webdesigner",
+          "wie bouwde",
+          "webbouwer"
+        ],
+        "ro": [
+          "cine te-a făcut",
+          "cine a făcut site-ul",
+          "făcut de",
+          "web designer",
+          "cine a construit"
+        ]
+      },
+      "a": {
+        "nl": "Deze website en deze assistent zijn gemaakt door DanGabriel Advisory.",
+        "ro": "Site-ul și asistentul sunt făcute de DanGabriel Advisory."
+      },
+      "link": null,
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "DECISIONS.md D-29 / D-55 (the credit) · D-64 (the credit in the assistant, Dan 10.11 13:26)",
+        "docs/lexicon.md §5.36"
       ]
     },
     {

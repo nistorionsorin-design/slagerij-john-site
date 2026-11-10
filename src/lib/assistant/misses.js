@@ -42,11 +42,16 @@ const count = (n) => (n % 100 >= 20 || (n >= 100 && n % 100 === 0) ? `${n} de` :
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 /** The weekly mail to the shop, in Romanian (lexicon §6 „Asistent, comanda, 10.11” — no Dutch version): subject,
- *  greeting, one line per question „{date} · {page} · {q}”, the close, the foot. `rows` = qa_misses_week(). */
+ *  greeting, one line per question „{date} · {page} · {q}”, the close, the foot. `rows` = qa_misses_week().
+ *  Row 11c (a): the intro's three number forms of the lexicon (10.11 13:2x) — one question (its own sentence), 2–19 and
+ *  any n ending in 01–19 („la 213 întrebări”), and from 20 with „de” („la 20 de întrebări”, „la 100 de întrebări”). */
 export function digestMail(rows) {
   const n = rows.length;
   const subject = `Întrebări fără răspuns pe site: ${n}`;
-  const intro = `Bună dimineața! Săptămâna trecută asistentul de pe site nu a știut să răspundă la ${count(n)} întrebări. Le găsiți mai jos, așa cum au fost scrise, fără cifre și fără adrese de e-mail.`;
+  const intro =
+    n === 1
+      ? 'Bună dimineața! Săptămâna trecută asistentul de pe site nu a știut să răspundă la o întrebare. O găsiți mai jos, așa cum a fost scrisă, fără cifre și fără adrese de e-mail.'
+      : `Bună dimineața! Săptămâna trecută asistentul de pe site nu a știut să răspundă la ${count(n)} întrebări. Le găsiți mai jos, așa cum au fost scrise, fără cifre și fără adrese de e-mail.`;
   const lines = rows.map((r) => `${day(r.day)} · ${r.page} · ${r.q}`);
   const close = 'Trimiteți-i lui Dan Gabriel răspunsurile pe WhatsApp și le adăugăm pe site.';
   const foot = 'Asistentul site-ului este făcut de DanGabriel Advisory.';

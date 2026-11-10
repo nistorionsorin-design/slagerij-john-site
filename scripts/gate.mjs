@@ -412,8 +412,9 @@ if (built) {
     for (const p of pages) scan(p.file, p.html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/gi, ' '));
     for (const f of walk(join(root, 'src/content')).filter((f) => /\.(md|mdx)$/.test(f))) scan(rel(f), read(f));
     // provenance is never shown: `_source`, and (row 11a) the answer bank's per-entry `facts` lists („FACTS.md: Too
-    // Good To Go [OBSERVED]”) — the index the box fetches carries neither
-    for (const f of walk(join(root, 'src/data')).filter((f) => f.endsWith('.json'))) scan(rel(f), read(f).replace(/"_source":\s*"(?:[^"\\]|\\.)*"/g, '').replace(/"facts":\s*\[[^\]]*\]/g, ''));
+    // Good To Go [OBSERVED]”) — the index the box fetches carries neither; (row 11c) the offers' `source` („FACTS.md
+    // Volumekorting [OWNER] …”) — the function's offers lookup returns a row's id and sentence only
+    for (const f of walk(join(root, 'src/data')).filter((f) => f.endsWith('.json'))) scan(rel(f), read(f).replace(/"_source":\s*"(?:[^"\\]|\\.)*"/g, '').replace(/"facts":\s*\[[^\]]*\]/g, '').replace(/"source":\s*"(?:[^"\\]|\\.)*"/g, ''));
     // the order mails (stage 5) are written by the functions, not the pages: their strings count too
     for (const f of walk(join(root, 'api')).filter((f) => f.endsWith('.js'))) scan(rel(f), read(f).replace(/^\s*\/\/.*$/gm, ''));
     const list = [...found].map(([k, v]) => `${k}: ${[...v].join(' ')}`);
@@ -596,6 +597,63 @@ if (built) {
       }
     }
     verdict('hero-tags', e, `${tags} hero tags: no placeholder`);
+  }
+
+  // 11c — the assistant's Claude layer (row 11c, docs/assistant.md §11.4; D-64): the context whitelist the function
+  // accepts (src/data/assistant-sections.json, Cowork's reading of dist) = the data-qa-section values the built pages
+  // carry, page by page, in page order; and the credit line's mark (<use href="#dga-mark">) finds the footer's drawing
+  // on every page that shows it
+  {
+    const e = [];
+    const want = json('assistant-sections.json').pages;
+    const seen = new Set();
+    for (const p of content) {
+      const path = new URL(p.url).pathname.replace(/(.)\/$/, '$1');
+      const got = [...new Set([...p.html.matchAll(/\sdata-qa-section="([^"]*)"/g)].map((m) => m[1]))];
+      seen.add(path);
+      if (!Object.hasOwn(want, path)) {
+        if (got.length) e.push(`${p.file}: sections ${got.join(', ')} — the page is not in assistant-sections.json`);
+        continue;
+      }
+      if (got.join(' ') !== want[path].join(' ')) e.push(`${p.file}: data-qa-section = [${got.join(', ')}], assistant-sections.json = [${want[path].join(', ')}]`);
+    }
+    for (const path of Object.keys(want)) if (!seen.has(path)) e.push(`assistant-sections.json names ${path}, which is not built`);
+    let credits = 0;
+    for (const p of pages)
+      if (/href="#dga-mark"/.test(p.html)) {
+        credits++;
+        if (!/\sid="dga-mark"/.test(p.html)) e.push(`${p.file}: the assistant's credit mark has no id="dga-mark" to draw`);
+      }
+    verdict('assistant-11c', e, `assistant-sections.json = dist (${Object.keys(want).length} pages); the credit line's mark resolves on ${credits} pages`);
+  }
+
+  // 13 — secrets (D-26, public repo): no key, token or password in the repo's own files or in dist/; .env files
+  // ignored by git and none tracked but .env.example
+  {
+    const e = [];
+    const PATTERNS = [
+      [/sk-ant-[a-z0-9_-]{8,}/i, 'an Anthropic key'],
+      [/\bre_[A-Za-z0-9]{20,}/, 'a Resend key'],
+      [/eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\./, 'a JWT'],
+      [/\bsb_(?:secret|publishable)_[A-Za-z0-9_-]{10,}/, 'a Supabase key'],
+      [/-----BEGIN [A-Z ]*PRIVATE KEY-----/, 'a private key'],
+      [/(?:api[_-]?key|secret|token|password|passwd)["']?\s*[:=]\s*["'][A-Za-z0-9_\-+/=]{24,}["']/i, 'a key-like assignment'],
+    ];
+    const TEXT = /\.(?:js|mjs|cjs|ts|astro|json|css|md|html|txt|svg|xml|yml|yaml)$/i;
+    const files = [
+      ...['src', 'api', 'scripts', 'public'].flatMap((d) => walk(join(root, d))),
+      ...walk(dist),
+      ...['astro.config.mjs', 'vercel.json', 'package.json', 'tsconfig.json', 'README.md', '.env.example'].map((f) => join(root, f)),
+    ].filter((f) => existsSync(f) && (TEXT.test(f) || /\.env\.example$/.test(f)));
+    for (const f of files) {
+      const text = read(f);
+      for (const [re, what] of PATTERNS) if (re.test(text)) e.push(`${rel(f)}: ${what}`);
+    }
+    const ignore = existsSync(join(root, '.gitignore')) ? read(join(root, '.gitignore')) : '';
+    if (!/^\.env$/m.test(ignore) || !/^\.env\.\*$/m.test(ignore)) e.push('.gitignore does not ignore .env and .env.*');
+    const tracked = spawnSync('git', ['ls-files', '--', '.env*'], { cwd: root, encoding: 'utf8' }).stdout?.split('\n').filter(Boolean) ?? [];
+    for (const f of tracked) if (f !== '.env.example') e.push(`${f} is tracked by git`);
+    verdict('secrets', e, `${files.length} files of the repo and dist/: no key, token or password; .env ignored, only .env.example tracked`);
   }
 
   // 12 — accessibility (static subset)

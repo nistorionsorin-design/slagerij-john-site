@@ -12,6 +12,7 @@
 import entity from '../data/entity.json';
 import { updatedOn } from '../lib/updated';
 import { KEEP_DAYS } from '../lib/assistant/misses.js';
+import { AI_LAYER } from '../lib/assistant/ai.js';
 
 /** lexicon §5.34 / §6 (row 11b, D-58 point 3): the assistant's unanswered questions, one sentence at the end of the
  *  retention block. Rendered while KEEP_DAYS (lib/assistant/misses.js) is set — the 90 days, D-62 (Dan 10.11 12:05);
@@ -20,7 +21,18 @@ export const missLine = {
   nl: 'Een vraag waarop de assistent geen antwoord had, bewaren wij zonder cijfers en zonder e-mailadressen, om het antwoord toe te voegen; na 90 dagen wissen wij ze. Al het andere dat u de assistent vraagt, blijft in uw browser.',
   ro: 'Întrebarea la care asistentul nu a avut răspuns o păstrăm fără cifre și fără adrese de e-mail, ca să adăugăm răspunsul; după 90 de zile o ștergem. Restul întrebărilor rămân în browserul dumneavoastră.',
 };
-const withMiss = (text: string, L: 'nl' | 'ro') => (KEEP_DAYS ? `${text} ${missLine[L]}` : text);
+/** row 11c (lexicon §5.34 note: „Row 11c replaces the last sentence with the §5.33 block”): with the Claude layer on
+ *  (AI_LAYER, lib/assistant/ai.js) a question no longer stays in the browser — the retention block keeps the first
+ *  sentence (the 90 days) and the §5.33 paragraph „De assistent” / „Asistentul” follows „Wie ze nog ziet”. */
+const missFirst = (L: 'nl' | 'ro') => missLine[L].slice(0, missLine[L].indexOf('.') + 1);
+const withMiss = (text: string, L: 'nl' | 'ro') => (KEEP_DAYS ? `${text} ${AI_LAYER ? missFirst(L) : missLine[L]}` : text);
+/** lexicon §5.33 / §6 „Asistent cu AI, 10.11” (RO: dumneavoastră, D4). The sentence on the transfer to the United States
+ *  stays off the page until the DPA is read (UNVERIFIED, §5.33). */
+export const aiBlock = {
+  nl: { h2: 'De assistent', text: 'Stelt u een vraag aan de assistent, dan gaat de tekst van uw vraag naar Anthropic, het bedrijf achter het AI-model Claude, dat het antwoord schrijft. Anthropic verwerkt die tekst alleen in onze opdracht, wist hem binnen 30 dagen en gebruikt hem niet om modellen te trainen. Wij bewaren uw gesprek niet; wij bewaren alleen een vraag waarop de assistent geen antwoord had, zonder cijfers en zonder e-mailadressen, zodat wij het antwoord kunnen toevoegen. Typ daarom geen naam, telefoonnummer of adres in de assistent; uw bestelling plaatst u op de bestelbon of via WhatsApp.' },
+  ro: { h2: 'Asistentul', text: 'Când puneți o întrebare asistentului, textul întrebării ajunge la Anthropic. Este compania care face Claude, modelul de inteligență artificială care scrie răspunsul. Anthropic prelucrează textul doar în numele nostru, îl șterge în cel mult 30 de zile și nu îl folosește la antrenarea modelelor. Noi nu păstrăm conversația. Păstrăm doar întrebarea la care asistentul nu a avut răspuns, fără cifre și fără adrese de e-mail, ca să putem adăuga răspunsul. De aceea, nu scrieți în asistent numele, telefonul sau adresa; comanda o trimiteți din bonul de comandă sau pe WhatsApp.' },
+};
+const ai = (L: 'nl' | 'ro') => (AI_LAYER ? [aiBlock[L]] : []);
 
 export type Link = readonly [anchor: string, href: string];
 export interface LegalBlock { h2: string; text: string }
@@ -62,6 +74,7 @@ export const privacyNl: LegalPage = {
     { h2: 'Waarvoor wij ze gebruiken', text: 'Om uw bestelling klaar te maken en te bevestigen: u krijgt een bevestiging per e-mail, de winkel krijgt dezelfde bestelling. De grondslag is de overeenkomst tussen ons (art. 6, lid 1, b AVG). Wij gebruiken uw gegevens niet voor reclame en verkopen ze niet.' },
     { h2: 'Hoelang wij ze bewaren', text: withMiss('90 dagen na uw bestelling, daarna wissen wij ze. Boekhoudkundige stukken bewaren wij zolang de wet dat vraagt.', 'nl') },
     { h2: 'Wie ze nog ziet', text: 'De website draait bij Vercel Inc.; de bestelfunctie draait in Frankfurt (EU). De bevestigingsmail vertrekt via een e-maildienst (Resend). Die leveranciers verwerken de gegevens alleen in onze opdracht en gebruiken ze niet voor zichzelf.' },
+    ...ai('nl'),
     { h2: 'WhatsApp', text: 'De knop „Bestel via WhatsApp” opent de app WhatsApp met een kant-en-klaar bericht. Vanaf dan gelden de regels van WhatsApp (Meta). Wij ontvangen niets vóór u op „verzenden” drukt.' },
     { h2: 'Op uw toestel', text: 'Vinkt u „Mijn gegevens onthouden op dit toestel” aan, dan blijven uw naam en telefoonnummer alleen in uw browser, op uw eigen telefoon of computer. Ze komen pas bij ons bij uw volgende bestelling.' },
     /** = the §5.5 statistics sentence, verbatim */
@@ -89,6 +102,7 @@ export const privacyRo: LegalPage = {
     { h2: 'La ce le folosim', text: 'Pentru a pregăti și a confirma comanda dumneavoastră: primiți o confirmare pe e-mail, iar magazinul primește aceeași comandă. Temeiul este contractul dintre noi (art. 6 alin. 1 lit. b GDPR). Nu le folosim pentru reclamă și nu le vindem.' },
     { h2: 'Cât le păstrăm', text: withMiss('90 de zile după comandă, apoi le ștergem. Documentele contabile se păstrează cât cere legea.', 'ro') },
     { h2: 'Cine le mai vede', text: 'Site-ul este găzduit la Vercel Inc.; funcția de comandă rulează în Frankfurt (UE). E-mailul de confirmare pleacă printr-un serviciu de e-mail (Resend). Acești furnizori prelucrează datele doar în numele nostru și nu le folosesc pentru ei.' },
+    ...ai('ro'),
     { h2: 'WhatsApp', text: 'Butonul „Comandă pe WhatsApp” deschide aplicația WhatsApp cu un mesaj gata scris. Din acel moment se aplică regulile WhatsApp (Meta). Noi nu primim nimic până nu apăsați „trimite”.' },
     { h2: 'Pe dispozitivul dumneavoastră', text: 'Dacă bifați „Ține minte datele mele pe acest dispozitiv”, numele și telefonul rămân doar în browserul dumneavoastră, pe telefonul sau calculatorul dumneavoastră. Nu ajung la noi până la următoarea comandă.' },
     { h2: 'Statistici', text: 'Site-ul măsoară vizitele fără cookie-uri și fără date personale. La fiecare vizită păstrăm doar pagina, limba, de unde ați venit (de exemplu Google), tipul de dispozitiv, țara și ziua. Nimic nu se salvează pe dispozitivul dumneavoastră; de aceea site-ul nu vă cere acordul.' },

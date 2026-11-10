@@ -53,8 +53,13 @@ async function callFunction(path, query, req, origin) {
   const mod = await import(pathToFileURL(path).href);
   const headers = {};
   for (const [k, val] of Object.entries(req.headers)) if (typeof val === 'string') headers[k] = val;
-  const r = await mod.default.fetch(new Request(`${origin}${query}`, { method: req.method, headers }));
-  return { status: r.status, headers: Object.fromEntries(r.headers), body: Buffer.from(await r.arrayBuffer()) };
+  // row 11c: a POST's body goes to the function (the box's /api/ask), and a streamed answer is passed on as it comes
+  const chunks = [];
+  if (req.method !== 'GET' && req.method !== 'HEAD') for await (const c of req) chunks.push(c);
+  const r = await mod.default.fetch(new Request(`${origin}${query}`, { method: req.method, headers, ...(chunks.length ? { body: Buffer.concat(chunks) } : {}) }));
+  const h = Object.fromEntries(r.headers);
+  if (/ndjson/.test(h['content-type'] ?? '')) return { status: r.status, headers: h, stream: r.body };
+  return { status: r.status, headers: h, body: Buffer.from(await r.arrayBuffer()) };
 }
 
 async function route(req, origin) {
@@ -91,6 +96,10 @@ function start(port) {
     try {
       const r = await route(req, `http://localhost:${server.address().port}`);
       res.writeHead(r.status, { ...r.headers, ...headersFor(new URL(req.url, 'http://x').pathname) });
+      if (r.stream && req.method !== 'HEAD') {
+        for await (const c of r.stream) res.write(c);
+        return res.end();
+      }
       res.end(req.method === 'HEAD' ? undefined : r.body);
     } catch (err) {
       res.writeHead(500);
@@ -104,6 +113,13 @@ if (!existsSync(join(dist, '404.html'))) throw new Error('dist/ is not built: np
 
 if (process.argv.includes('--serve')) {
   const port = Number(process.argv[process.argv.indexOf('--serve') + 1]) || 4330;
+  // --env (row 11c): the functions read site/.env.local (git-ignored) as the dev server hands it to them — the
+  // assistant's Claude layer then answers with the live key; never a value printed
+  if (process.argv.includes('--env') && existsSync(join(root, '.env.local')))
+    for (const line of readFileSync(join(root, '.env.local'), 'utf8').split(/\r?\n/)) {
+      const m = line.match(/^\s*([a-z_][a-z0-9_]*)\s*=\s*(.*?)\s*$/i);
+      if (m && m[2] && process.env[m[1]] === undefined) process.env[m[1]] = m[2];
+    }
   await start(port);
   console.log(`vercel.json replay on http://localhost:${port}`);
 } else {

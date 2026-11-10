@@ -13,7 +13,7 @@
 // delivery, the day, the handover to the bestelbon or WhatsApp) and delivery to one named town get the message first;
 // the state's `draft` holds the order. The order's taps come back as picks add:<id> · qty:<n> · day:<date> · mode:<m>.
 import { norm, words, same, find } from './normalize.js';
-import { brussels, chipState, hoursOn, weekday } from '../open-state.ts';
+import { brussels, chipState, hoursOn, weekday } from '../open-state-core.js';
 import { money } from '../order-core.js';
 import { fill, textLine, reply, listOf, handoff } from './say.js';
 import { orderTurn, orderPick, orderFor, townTurn, wasFilled } from './order.js';
@@ -341,14 +341,20 @@ const BOOST = {
   location: (e) => e.topic === 'place',
 };
 
+// row 11c (D-64): „who made this site” answers only a message that names the site, the assistant or „you” — never
+// „făcute de voi?” (made by you, the shop?), which is the own-made question
+const SITE_WORDS = new Set(['site', 'sites', 'website', 'websites', 'webdesigner', 'web', 'designer', 'webbouwer', 'webbouwers', 'pagina', 'assistent', 'asistent', 'asistentul', 'chatbot', 'bot', 'robot', 'je', 'jij', 'jou', 'te', 'tu']);
+
 function scoreFaq(ix, T, L, filter = null, intents = null) {
   const stop = ix._stop[L];
+  const siteAsked = T.some((w) => SITE_WORDS.has(w));
   const content = T.map((w, i) => ({ w, i })).filter((x) => !stop.has(x.w) && !/^\d+$/.test(x.w));
   const idf = (w) => ix._idf(L, w);
   const textMass = content.reduce((s, x) => s + idf(x.w), 0) || 1;
   const out = [];
   for (const e of ix.faq) {
     if (filter && !filter(e)) continue;
+    if (e.id === 'site-made-by' && !siteAsked) continue;
     const covered = new Set();
     let kHits = 0;
     for (const kp of e.kw[L]) {
@@ -375,7 +381,8 @@ function scoreFaq(ix, T, L, filter = null, intents = null) {
       }
     }
     const qCover = qMass ? qHit / qMass : 0;
-    const tCover = content.reduce((s, x) => s + (covered.has(x.i) ? idf(x.w) : 0), 0) / textMass;
+    // row 11c (g): a message of small words only („wat kan je?”) is covered by a multi-word keyword it holds whole
+    const tCover = content.length ? content.reduce((s, x) => s + (covered.has(x.i) ? idf(x.w) : 0), 0) / textMass : kHits >= 2 && covered.size ? 1 : 0;
     const lift = intents && [...intents].some((k) => BOOST[k]?.(e)) ? 0.12 : 0;
     const score = qCover * 0.5 + tCover * 0.5 + Math.min(0.3, kHits * 0.06) + (qCover > 0.99 && tCover > 0.99 ? 0.2 : 0) + lift;
     if (score > 0) out.push({ e, score, qCover, tCover, kHits, lift });
@@ -614,13 +621,16 @@ function bankAnswer(ctx, e, extra = {}) {
     handoff(ix, r, L, raw);
   } else if (e.h === 'offer') handoff(ix, r, L, raw, false);
   linkTo(ix, r, L, e.link?.[L], here);
+  // row 11c (D-64, lexicon §5.36): „who made this site” — the answer carries the credit line's link (its `link` is null)
+  if (e.id === 'site-made-by' && ix.s[L].credit) r.link = fill(ix.s[L].credit.line, { name: { t: ix.s[L].credit.name, href: ix.s[L].credit.href } });
   return { r, dbg: { intent: 'faq', entry: e.id, dynamic: e.d, handoff: e.h, ...extra } };
 }
 
 function route(ctx) {
   const { ix, st, T, L, raw } = ctx;
   const t = ix.s[L].t;
-  const only = (name) => T.every((w) => has(ix, [w], name) || ix._stop.nl.has(w) || ix._stop.ro.has(w));
+  // row 11c: at least one of the intent's own words — „wat zit hier in?” (small words only) is no „thanks”
+  const only = (name) => has(ix, T, name) && T.every((w) => has(ix, [w], name) || ix._stop.nl.has(w) || ix._stop.ro.has(w));
 
   // start over · hello · thanks (a message of those words only)
   if (T.length <= 4 && has(ix, T, 'restart') && T.every((w) => has(ix, [w], 'restart') || ix._stop.nl.has(w) || ix._stop.ro.has(w) || w === 'capat')) {
@@ -742,8 +752,15 @@ function route(ctx) {
 
   if (best && best.score >= WEAK && (best.tCover >= 0.5 || (best.lift && best.tCover >= 0.4))) return entryAnswer(ctx, best.e, { specific, generic, want });
   if (specific.length) return productTurn(ctx, specific, want, best);
+  // row 11c (g): „what can you do?” typed in English — the bank's answer in the page's language (the Claude layer
+  // answers it in English; the local engine has no English, only this question)
+  const en = ` ${T.join(' ')} `;
+  const can = ix.faq.find((e) => e.id === 'site-what-can-you-do');
+  if (can && EN_CAN.some((p) => en.includes(` ${p} `))) return bankAnswer({ ...ctx, L: ctx.input.pageLang }, can, { noSwitch: true });
   return miss(ctx);
 }
+// the English ways to ask what the assistant can do (language knowledge, not copy)
+const EN_CAN = ['what can you do', 'what do you do', 'what can i ask', 'how can you help', 'what do you know', 'what are you able to'];
 
 /** the product answers of one message: one per product named (at most three), each with the intent of its own clause */
 function productTurn(ctx, specific, want, best) {
@@ -913,4 +930,30 @@ function allergenRoute(ctx) {
   const top = scores[0];
   const e = top && top.score >= WEAK && (fit(top.e) || !al.ids.length) ? top.e : list;
   return done(bankAnswer(ctx, e).r, { entry: e.id, handoff: e.h });
+}
+
+// ——— row 11c: what the Claude layer's function reads with the engine's own logic ———
+// api/ask.js (through lib/assistant/lookups.js) answers its lookups from the same index and the same functions the box
+// uses, so the model gets the facts the local engine would give (docs/assistant.md §11.2 „one set of facts, two callers”).
+export const kit = { card, productSpans, scoreFaq, rank, openNow, dayLine, deadlineLine, priceLine, daysIn, dateWord, dayWord, langOf, words, DAYS, MONTHS };
+
+/** The §4 allergen answer for a message (docs/assistant.md §11.7 point 2): the engine's allergen route word for word;
+ *  a message it does not read as an allergen question (the model asked for it) gets the serious-allergy entry. */
+export function allergenAnswer(ix, state, input) {
+  prepare(ix);
+  const st = { ...newState(input.pageLang), ...state };
+  const now = brussels(input.now ?? new Date(), ix.hours.timeZone);
+  const raw = String(input.text ?? '').slice(0, 500);
+  const T = words(raw);
+  const { lang: L, sure } = langOf(ix, T, raw, st.lang ?? input.pageLang);
+  const ctx = { ix, st, now, at: input.now ?? new Date(), raw, T, L, sure, input, here: input.path };
+  let out = allergenRoute(ctx);
+  if (!out) {
+    const e = ix.faq.find((x) => x.id === 'allergen-serious') ?? ix.faq.find((x) => x.topic === 'allergens');
+    out = bankAnswer(ctx, e);
+    out.r.face = 'serious';
+    linkTo(ix, out.r, L, ix.al.href[L], ctx.here);
+    out.dbg = { ...out.dbg, intent: 'allergen', dynamic: 'allergen' };
+  }
+  return { reply: out.r, dbg: out.dbg };
 }
