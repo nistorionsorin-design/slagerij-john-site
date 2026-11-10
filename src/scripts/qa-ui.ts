@@ -45,6 +45,13 @@ const write = (s: State) => {
     /* private mode, storage off: the conversation still works on this page */
   }
 };
+/** row 11e (4): a deadline for a request that works in every browser — an AbortController with a timer (not
+ *  AbortSignal.timeout); `stop` once the answer is read */
+const timer = (ms: number) => {
+  const ac = new AbortController();
+  const id = setTimeout(() => ac.abort(), ms);
+  return { signal: ac.signal, stop: () => clearTimeout(id) };
+};
 
 let index: Promise<unknown> | null = null;
 const ctls = new WeakMap<HTMLElement, ReturnType<typeof make>>();
@@ -87,18 +94,35 @@ function make(box: HTMLElement, ix: any) {
   // the context of the next question — how the box was opened, and the product sheet it was opened from
   let openedFrom: 'inline' | 'button' | 'sheet' = 'inline';
   let sheetProduct: string | null = null;
-  // the Claude layer: asked once, on the first use; the label switches before the first answer
-  const aiOn: Promise<boolean> = fetch('/api/ask', { headers: { accept: 'application/json' } })
-    .then((r) => (r.ok ? r.json() : { on: false }))
-    .then((j: { on?: boolean }) => !!j.on)
-    .catch(() => false);
-  void aiOn.then((on) => {
-    if (!on) return;
-    const auto = box.querySelector<HTMLElement>('.qa__auto');
-    if (auto) auto.textContent = ix.s[lang].ai.label;
-    const np = box.querySelector<HTMLElement>('[data-qa-nopersonal]');
-    if (np) np.hidden = false;
-  });
+  // the Claude layer: asked on the first use; the label switches before the first answer. Row 11e (4) — the live fault of
+  // 10.11 15:17 (docs/data/measurements/2026-11-10/assistant-hang-repro.json): a check that never answered held every
+  // typed question for good. Now it gives up after 2,5 s and counts as „off” for that question (the local engine answers
+  // at once); a check that timed out or failed is asked again on the next typed question, so the layer can still come
+  // on in this visit (the label switches then). A plain „off” from the server stays off.
+  let aiCheck: Promise<boolean> | null = null;
+  const layer = (): Promise<boolean> =>
+    (aiCheck ??= (() => {
+      const t = timer(2500);
+      return fetch('/api/ask', { headers: { accept: 'application/json' }, signal: t.signal })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((j: { on?: boolean } | null) => (j && typeof j === 'object' ? !!j.on : null))
+        .catch(() => null)
+        .then((on) => {
+          t.stop();
+          if (on === null) {
+            aiCheck = null;
+            return false;
+          }
+          if (on) {
+            const auto = box.querySelector<HTMLElement>('.qa__auto');
+            if (auto) auto.textContent = ix.s[lang].ai.label;
+            const np = box.querySelector<HTMLElement>('[data-qa-nopersonal]');
+            if (np) np.hidden = false;
+          }
+          return on;
+        });
+    })());
+  void layer();
 
   const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, text?: string) => {
     const n = document.createElement(tag);
@@ -300,8 +324,11 @@ function make(box: HTMLElement, ix: any) {
     // the face reads for a moment, then answers (the engine is instant; the pause lets the bubble be noticed)
     setTimeout(
       () => {
-        draw(li, res.reply as Reply);
-        busy = false;
+        try {
+          draw(li, res.reply as Reply);
+        } finally {
+          busy = false;
+        }
       },
       slow || !pause ? 0 : 420,
     );
@@ -310,20 +337,23 @@ function make(box: HTMLElement, ix: any) {
   /** row 11c: the question to /api/ask; the stream drawn as it comes; any failure → the local engine, silently */
   const remote = async (li: HTMLElement, text: string) => {
     const bub = li.querySelector<HTMLElement>('.qa__bub')!;
-    const quiet = el('p', 'qa__writing', ix.s[lang].ai.writing);
-    bub.append(quiet);
-    const live = el('p');
-    let shown = '';
     const back = () => {
       bub.replaceChildren();
       local(li, { text }, false);
     };
+    // row 11e (4): 12 s for the whole answer, the stream included — an AbortController with a timer (AbortSignal.timeout
+    // is missing in older browsers: there it threw and the layer never answered)
+    const t = timer(12000);
     try {
+      const quiet = el('p', 'qa__writing', ix.s[lang].ai.writing);
+      bub.append(quiet);
+      const live = el('p');
+      let shown = '';
       const res = await fetch('/api/ask', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ q: text, lang, page, ctx: { page: path, section: section(), sheet: sheetProduct, opened_from: openedFrom }, st: state, hist }),
-        signal: AbortSignal.timeout(12000),
+        signal: t.signal,
       });
       if (!res.ok || !res.body) return back();
       const reader = res.body.getReader();
@@ -362,17 +392,37 @@ function make(box: HTMLElement, ix: any) {
       back();
     } catch {
       back();
+    } finally {
+      t.stop();
     }
   };
 
   const turn = (input: { text?: string; pick?: string }) => {
     if (busy) return;
     busy = true;
-    const li = bot('read');
-    // a typed question goes to the Claude layer when it is on; a tap (the order helper's picks) stays local
-    const text = input.text;
-    if (text) void aiOn.then((on) => (on ? remote(li, text) : local(li, input, true)));
-    else local(li, input, true);
+    let li: HTMLElement | undefined;
+    // row 11e (4): one guard — whatever throws in turn / remote / local, the local engine answers and the box is free
+    // again; if the engine itself fails, the empty bubble goes and the box still takes the next question
+    const rescue = () => {
+      try {
+        if (!li) throw new Error('no bubble');
+        li.querySelector('.qa__bub')?.replaceChildren();
+        local(li, input, false);
+      } catch {
+        li?.remove();
+        busy = false;
+      }
+    };
+    try {
+      li = bot('read');
+      const at = li;
+      // a typed question goes to the Claude layer when it is on; a tap (the order helper's picks) stays local
+      const text = input.text;
+      if (text) layer().then((on) => (on ? remote(at, text) : local(at, input, true))).catch(rescue);
+      else local(at, input, true);
+    } catch {
+      rescue();
+    }
   };
 
   return {

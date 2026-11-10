@@ -53,6 +53,8 @@ export const qaT = {
     inputLabel: 'Uw vraag',
     submit: 'Vraag',
     open: 'Vraag het ons',
+    /** row 11e (D-66, lexicon §5.38): the salute beside the floating button, once per visit — the butcher calling the next customer */
+    salute: 'Aan wie is \'t? Aan u.',
     openAria: 'Open de automatische assistent',
     close: 'Sluiten',
     sheetAsk: 'Vraag over dit product',
@@ -148,7 +150,8 @@ export const qaT = {
       human: 'Natuurlijk. Georgiana antwoordt op WhatsApp van 8 tot 20 uur; tijdens de openingsuren kunt u ook bellen.',
       switchAsk: 'Wilt u de site in het Nederlands?',
       switchBtn: 'Ja, in het Nederlands',
-      greeting: 'Dag! Zeg het maar.',
+      // row 11e (D-66, lexicon §5.38): the Dutch pages' pig is Jefke — the greeting names him, as the Romanian one names Mitică
+      greeting: 'Dag! Ik ben Jefke. Zeg het maar.',
       thanks: 'Graag gedaan. Smakelijk!',
       handover: 'Tot aan de toog!',
       restartBtn: 'Opnieuw',
@@ -181,6 +184,8 @@ export const qaT = {
     inputLabel: 'Întrebarea ta',
     submit: 'Întreabă',
     open: 'Întreabă-ne',
+    /** §6 „Mitică, salutul la încărcare, 10.11” (row 11e) */
+    salute: 'Cine urmează? Tu.',
     openAria: 'Deschide asistentul automat',
     close: 'Închide',
     sheetAsk: 'Întreabă despre produsul ăsta',

@@ -724,13 +724,14 @@ if (built) {
       ['AsSearch', /<form class="as-search[\s"]/],
       ['Rows', /<section class="rows[\s"]/],
       ['Base', /<html lang="(nl|ro)-BE"/], // Base → hit.ts, the beacon (row 13b)
+      ['QaSheet', /<a class="qa-fab[\s"]/], // QaSheet → qa-salute.ts, the salute on load (row 11e)
     ];
     for (const f of js.filter((f) => /[\\/]AsPills\./.test(f))) {
       const size = statSync(f).size;
       if (size > 1024) e.push(`${rel(f)}: ${size} B — the pill row's scroll-spy is ≤ 1 kB (row 18)`);
     }
     // row 22: the sheet ≤ 3 kB, the search ≤ 2 kB, each one file (no shared chunk pulled in); row 22b: the rows' folds ≤ 1 kB
-    for (const [name, max, what] of [['Fiche', 3072, 'the product sheet (fiche.ts)'], ['AsSearch', 2048, 'the search (search.ts)'], ['Rows', 1024, 'the rows\' folds (rows.ts)']]) {
+    for (const [name, max, what] of [['Fiche', 3072, 'the product sheet (fiche.ts)'], ['AsSearch', 2048, 'the search (search.ts)'], ['Rows', 1024, 'the rows\' folds (rows.ts)'], ['QaSheet', 1536, 'the salute (qa-salute.ts, row 11e)']]) {
       for (const f of js.filter((f) => new RegExp(`[\\\\/]${name}\\.`).test(f))) {
         const size = statSync(f).size;
         if (size > max) e.push(`${rel(f)}: ${size} B — ${what} is ≤ ${max / 1024} kB (row 22)`);
@@ -753,7 +754,7 @@ if (built) {
         const file = src.split('/').pop();
         const m = mounts.find(([name]) => file.startsWith(name + '.'));
         if (!src.startsWith('/_astro/')) e.push(`${p.file}: ${src} not served from /_astro/`);
-        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / Header / OpenChip / QaBox / OrderForm / QuoteForm / ProductTiles / Producten / Bbq / AsPills / Fiche / AsSearch / Rows / Base → hit.ts)`);
+        if (!m) e.push(`${p.file}: ${src} belongs to no allowed component (Hero / Header / OpenChip / QaBox / QaSheet / OrderForm / QuoteForm / ProductTiles / Producten / Bbq / AsPills / Fiche / AsSearch / Rows / Base → hit.ts)`);
         else if (!m[1].test(p.html)) e.push(`${p.file}: ships ${file} without its component`);
       }
     // row 11a (docs/assistant.md §10.4 budgets): the box's entry (qa.ts) ships on every page, ≤ 4 kB, names no host;

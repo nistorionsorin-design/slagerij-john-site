@@ -20,10 +20,12 @@ import { wa, type Locale } from '../i18n/ui';
 
 export interface Props {
   locale: Locale;
+  /** row 11e (D-66): the salute beside the floating button on load — false on the order form (/bestellen, /ro/comanda) */
+  salute?: boolean;
   /** the page has no inline box: it lives here */
   withBox: boolean;
 }
-const { locale, withBox } = Astro.props;
+const { locale, withBox, salute = true } = Astro.props;
 const t = qaT[locale];
 ---
 {/* the pig, drawn once per page; every face refers to it (lib/mascot.ts) */}
@@ -33,6 +35,9 @@ const t = qaT[locale];
   <span class="qa-fab__pig" aria-hidden="true" set:html={pigUse} />
   <span class="qa-fab__l">{t.open}</span>
 </a>
+{/* row 11e (D-66, lexicon §5.38 / §6): the salute — one bubble beside the button, once per visit, ≈ 5 s, then gone; shown
+    by src/scripts/qa-salute.ts, decorative for assistive tech (the button keeps its own label); not on the order form */}
+{salute && <div class="qa-salute" hidden aria-hidden="true" data-qa-salute>{t.salute}</div>}
 <dialog class="qa-sheet" aria-label={t.title} data-qa-sheet>
   <form method="dialog" class="qa-sheet__bar"><span class="qa-sheet__grab" aria-hidden="true"></span><button class="qa-sheet__close" aria-label={t.close}>×</button></form>
   <div class="qa-sheet__body" data-qa-slot>
@@ -111,4 +116,39 @@ const t = qaT[locale];
   @media (prefers-reduced-motion: reduce) { .qa-sheet[open] { animation: none; } }
   /* the page behind keeps its place while the sheet is open */
   html.qa-lock { overflow: hidden; }
+  /* row 11e (D-66): the salute, left of the floating button and level with it (qa-salute.ts sets right / bottom from the
+     button's box), so it covers neither the bottom bar nor a hero's pause control; a paper card with a tail pointing at
+     the pig; opacity + transform only, < 0,3 s each way; reduced motion: it appears and leaves without moving */
+  .qa-salute {
+    position: fixed;
+    z-index: 14;
+    max-width: min(220px, calc(100vw - 32px));
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 14px 14px 4px 14px;
+    background: var(--card);
+    color: var(--fg);
+    font-family: var(--f-ui);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.25;
+    /* one line where it fits; on a narrow phone it wraps, balanced, inside the room left of the button (the script
+       sets max-width from the button's box) */
+    width: max-content;
+    text-wrap: balance;
+    box-shadow: 0 10px 24px -12px rgba(21, 17, 13, 0.45);
+    cursor: pointer;
+    opacity: 0;
+    transform: translateX(6px);
+    transition: opacity 0.26s var(--ease-paper), transform 0.26s var(--ease-paper);
+  }
+  /* a narrow phone (360–380 px): a size smaller, so „Aan wie is 't? Aan u.” stays one line beside the Dutch button and
+     the bubble hides at most one line of the page (measured, row 11e) */
+  @media (max-width: 380px) { .qa-salute { padding: 7px 10px; font-size: 13px; } }
+  .qa-salute[hidden] { display: none; }
+  .qa-salute.is-on { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .qa-salute { transition: none; transform: none; } }
 </style>
+<script>
+  import '../scripts/qa-salute.ts';
+</script>

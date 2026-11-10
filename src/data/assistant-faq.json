@@ -3543,7 +3543,7 @@
     }
   ],
   "allergen_category_map": {
-    "_status": "PROPOSED by Cowork 05.11 — not a fact yet. allergens.json has the matrix per category but no product → category link (per_product: not available). Mapped from the matrix's own category names (Vers vlees (onbewerkt) · Gemarineerd vlees · Worst & charcuterie · Huisbereide gerechten & traiteur · Gourmet & steengrill · Broodjes & snacks). null = unknown → the assistant hands off (§4.3), never guesses: minced meat and américain (seasoning not on file), colli (mixed contents), desserts (not in the matrix). The owners confirm this map before row 11a ships (release blocker §4).",
+    "_status": "CONFIRMED by the owners — reported by Dan 10.11.2026 15:46 („yes they confirmed to me”, after Cowork set out at 15:5x that the old site carried the table, not this list); FACTS.md „Owners' answers — WhatsApp 10.11.2026”, D-68. No written message of theirs on file. null = no group → the assistant hands off (§4.3), never guesses: minced meat and américain, colli, desserts (21 products). History: PROPOSED by Cowork 05.11 — not a fact yet. allergens.json has the matrix per category but no product → category link (per_product: not available). Mapped from the matrix's own category names (Vers vlees (onbewerkt) · Gemarineerd vlees · Worst & charcuterie · Huisbereide gerechten & traiteur · Gourmet & steengrill · Broodjes & snacks). null = unknown → the assistant hands off (§4.3), never guesses: minced meat and américain (seasoning not on file), colli (mixed contents), desserts (not in the matrix). The owners confirm this map before row 11a ships (release blocker §4).",
     "map": {
       "rundsgebraad": "vers-vlees",
       "entrecote": "vers-vlees",

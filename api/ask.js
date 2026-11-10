@@ -31,7 +31,7 @@ import { prepare, ask as engineAsk, newState, kit } from '../src/lib/assistant/e
 import { prepareOrder } from '../src/lib/assistant/order.js';
 import { words as normWords } from '../src/lib/assistant/normalize.js';
 import { fill, reply as newReply, handoff as handoffActs } from '../src/lib/assistant/say.js';
-import { SYSTEM, TOOLS, TERMINAL, session, familyOf, saidNo, asksWhatItIs, allowedOf, numberCheck, textCheck, tidy, offerIn, offerAllowed, formCheck, rude, otherLang, asksToWhatsApp } from '../src/lib/assistant/lookups.js';
+import { SYSTEM, TOOLS, TERMINAL, session, familyOf, saidNo, asksWhatItIs, allowedOf, numberCheck, textCheck, wordingCheck, tidy, offerIn, offerAllowed, formCheck, rude, otherLang, asksToWhatsApp } from '../src/lib/assistant/lookups.js';
 import { AI_LAYER, DAILY_CAP, MAX_MESSAGES } from '../src/lib/assistant/ai.js';
 import { siteId, afterResponse } from '../src/lib/metrics.js';
 
@@ -430,7 +430,7 @@ async function turn(request, m, send, log, site) {
       const { done } = sentencesDone(all);
       if (done.length <= shown.length) return;
       const next = done.slice(shown.length);
-      if (numberCheck(next, allowedNow()).length || textCheck(next).bad.length || textCheck(next).leak) return;
+      if (numberCheck(next, allowedNow()).length || textCheck(next).bad.length || textCheck(next).leak || wordingCheck(next, S).length) return;
       shown = done;
       send({ t: 'delta', d: next });
     };
@@ -569,6 +569,8 @@ function checks(text, S, allowed) {
   const factOf = (id) => S.faqIds.has(offersFile.offers.find((r) => r.id === id)?.faq ?? '');
   if (offer && S.handoff && (['complaint', 'allergy'].includes(S.handoff) || !factOf(offer))) why.push('no offer in the same answer as a handoff');
   why.push(...formCheck(text, S.L));
+  // row 11e (3): nothing passed on, no apology on a complaint, the order form only for its rows, no Romanian „per”
+  why.push(...wordingCheck(text, S, true));
   if (S.langCheck) why.push(...S.langCheck(text));
   if (!text && !S.draft) why.push('no answer text: write the answer in words');
   return why;

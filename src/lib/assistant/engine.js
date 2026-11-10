@@ -863,12 +863,20 @@ function entryAnswer(ctx, e, { specific, generic, want }) {
   return out;
 }
 
+/** row 11f: allergen ids as the owners' table names them, lower case, joined „a, b en c” / „a, b și c” */
+function alNames(ix, ids, L) {
+  const n = ids.map((id) => ix.al.list.find((x) => x.id === id)?.[L].toLocaleLowerCase(L)).filter(Boolean);
+  return n.length < 2 ? n.join('') : `${n.slice(0, -1).join(', ')} ${L === 'ro' ? 'și' : 'en'} ${n[n.length - 1]}`;
+}
+
 function allergenRoute(ctx) {
   const { ix, st, T, L, raw, here } = ctx;
   const t = ix.s[L].t;
   const al = allergensIn(ix, T, L);
   const cue = T.some((w) => CUES.some((c) => same(c, w) || (w.length > c.length && w.startsWith(c) && c.length >= 5)) || /vrij$/.test(w)) || (L === 'ro' && T.some((w) => w === 'au' || w === 'are'));
-  const allergyWord = T.some((w) => /^(allerg|alerg|kruisbesmet|contaminar)/.test(w));
+  // Dutch compounds count too: „notenallergie”, „glutenallergie” (row 11f: „Ik heb een ernstige notenallergie, mag ik
+  // kipbrochette eten?” went to the order flow)
+  const allergyWord = T.some((w) => /allerg|^alerg|^kruisbesmet|^contaminar/.test(w));
   // a message that is only an allergen word („mosterd?”, „mustar?”, „lactosevrij?”) asks about that allergen
   const bare = al.ids.length > 0 && T.every((w) => ix._stop.nl.has(w) || ix._stop.ro.has(w) || ix.al.list.some((a) => a.w.some((x) => same(x, w) || w.startsWith(x))));
   if (!(al.strong.length || (al.ids.length && (cue || bare)) || allergyWord)) return null;
@@ -883,7 +891,9 @@ function allergenRoute(ctx) {
   const spans = productSpans(ix, T).filter((s) => !s.generic && s.ids.length === 1);
   const catWords = new Set();
   for (const c of ix.al.cats) for (const ph of c.phw) for (const m of find(T, ph)) for (let k = 0; k < m.len; k++) catWords.add(m.at + k);
-  const named = spans.filter((s) => ![...Array(s.len).keys()].some((k) => catWords.has(s.at + k)));
+  // a product named only by a group's own words is the group; a longer name that shares one of them („cârnați proaspeți
+  // de porc” beside „cârnați”) is the product (row 11f)
+  const named = spans.filter((s) => ![...Array(s.len).keys()].every((k) => catWords.has(s.at + k)));
   const back = !named.length && !cats.length && st.last && T.some((w) => BACK.has(w));
   const pid = named[0]?.ids[0] ?? (back ? st.last : null);
 
@@ -904,9 +914,24 @@ function allergenRoute(ctx) {
   const fit = (e) => cats.every((c) => e.alCats.includes(c)) && al.ids.every((a) => e.alIds.includes(a)) && (cats.length ? e.alCats.length > 0 : e.alCats.length === 0) && (al.ids.length ? e.alIds.length > 0 : e.alIds.length === 0);
   const fitting = scores.filter((s) => fit(s.e));
   // the serious-allergy entry and the cross-contamination entry win on their own words
-  const special = scores.find((s) => (s.e.id === 'allergen-serious' || s.e.id === 'allergen-cross') && s.kHits > 0);
+  // „ernstig” / „gravă” beside an allergy word is the serious-allergy entry too, compounds included („ernstige
+  // notenallergie”, row 11f) — its keywords are the two-word phrases
+  const grave = allergyWord && T.some((w) => /^(ernstig|levensbedreig|anafyla|grav|sever)/.test(w));
+  const seriousE = grave ? scores.find((s) => s.e.id === 'allergen-serious') ?? { e: bank.find((x) => x.id === 'allergen-serious'), kHits: 1 } : null;
+  const special = scores.find((s) => (s.e.id === 'allergen-serious' || s.e.id === 'allergen-cross') && s.kHits > 0) ?? (seriousE?.e ? { ...seriousE, kHits: 1 } : undefined);
   if (special && !al.ids.length) return done(bankAnswer(ctx, special.e).r, { entry: special.e.id, handoff: special.e.h });
   if (special?.e.id === 'allergen-serious') return done(bankAnswer(ctx, special.e).r, { entry: special.e.id, handoff: special.e.h });
+  // row 11f (D-68): the owners confirmed the product → group map. A named product with no allergen named gets its group's
+  // row of the owners' table — what it contains, what it may contain — and the notice (§4), never another group's entry
+  // (10.11: „Ce alergeni are frigăruia de pui?” got the fresh-meat „nu conține alergeni” for a marinated product)
+  if (pid && !al.ids.length) {
+    const c = ix.al.cats.find((x) => x.id === cats[0]);
+    const r = reply(L);
+    r.lines.push(fill(c.contains.length ? t.aContains : t.aNone, { category: c[L], allergen: c.contains.length ? alNames(ix, c.contains, L) : L === 'ro' ? 'alergeni' : 'allergenen' }));
+    if (c.may.length) r.lines.push(fill(t.aMay, { category: c[L], allergen: alNames(ix, c.may, L) }));
+    r.lines.push(notice);
+    return done(r, { entry: null, category: c.id, product: pid, result: 'group-row' });
+  }
   if (fitting.length && fitting[0].score >= 0.3) {
     const e = fitting[0].e;
     const out = bankAnswer(ctx, e);
@@ -917,18 +942,24 @@ function allergenRoute(ctx) {
     const r = reply(L);
     for (const cid of cats.slice(0, 3)) {
       const c = ix.al.cats.find((x) => x.id === cid);
+      let none = false;
       for (const aid of al.ids.slice(0, 3)) {
         const a = ix.al.list.find((x) => x.id === aid);
         const slots = { category: c[L], allergen: a[L].toLocaleLowerCase(L) };
+        none ||= !c.contains.includes(aid) && !c.may.includes(aid);
         r.lines.push(fill(c.contains.includes(aid) ? t.aContains : c.may.includes(aid) ? t.aMay : t.aNone, slots));
       }
+      // row 11f: never a bare „no” — beside it, what the group may contain (the owners' table, word for word)
+      if (none && c.may.length) r.lines.push(fill(t.aMay, { category: c[L], allergen: alNames(ix, c.may, L) }));
     }
     r.lines.push(notice);
     return done(r, { entry: null, category: cats[0], product: pid ?? undefined });
   }
   const list = bank.find((e) => e.id === 'allergen-list');
   const top = scores[0];
-  const e = top && top.score >= WEAK && (fit(top.e) || !al.ids.length) ? top.e : list;
+  // row 11f: a bank entry about another group never answers for this one (the category named or the product's group)
+  const sameGroup = (e) => !cats.length || !e.alCats.length || cats.every((c) => e.alCats.includes(c));
+  const e = top && top.score >= WEAK && (fit(top.e) || !al.ids.length) && sameGroup(top.e) ? top.e : list;
   return done(bankAnswer(ctx, e).r, { entry: e.id, handoff: e.h });
 }
 

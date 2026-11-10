@@ -184,7 +184,8 @@ const jsonld = entity.name
     />
     {/* row 11a: the assistant's sheet and, on the phone, its floating button; on the nine pages of lexicon §5.32 the box
         itself sits under the FAQ (Faq.astro) */}
-    <QaSheet locale={locale} withBox={!qaPageOf(path)} />
+    {/* row 11e: the salute on load, never on the order form (D-66) */}
+    <QaSheet locale={locale} withBox={!qaPageOf(path)} salute={qaPageOf(path) !== 'bestellen'} />
     {/* row 13b: one same-origin sendBeacon to /api/hit after load (docs/metrics-spine.md §4) — an external file from
         /_astro/ like every script (CSP script-src 'self'); the gate allows it as „Base → hit.ts” */}
     <script>
