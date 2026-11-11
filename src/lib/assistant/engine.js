@@ -373,11 +373,15 @@ function scoreFaq(ix, T, L, filter = null, intents = null) {
     if (e.id === 'site-made-by' && !siteAsked) continue;
     const covered = new Set();
     let kHits = 0;
+    // row 11i (i-03 · i-06): a keyword of two or more words that holds every content word of the message is the bank's
+    // own wording of that question („wie ben je”, „ce ești”) — it counts as much as a bank question matched in full
+    let whole = false;
     for (const kp of e.kw[L]) {
       const ms = find(T, kp);
       if (!ms.length) continue;
       kHits += kp.length > 1 ? 2 : 1;
       for (const m of ms) for (let k = 0; k < m.len; k++) covered.add(m.at + k);
+      if (kp.length > 1 && ms.some((m) => content.every((x) => x.i >= m.at && x.i < m.at + m.len))) whole = true;
     }
     let qMass = 0;
     let qHit = 0;
@@ -400,7 +404,7 @@ function scoreFaq(ix, T, L, filter = null, intents = null) {
     // row 11c (g): a message of small words only („wat kan je?”) is covered by a multi-word keyword it holds whole
     const tCover = content.length ? content.reduce((s, x) => s + (covered.has(x.i) ? idf(x.w) : 0), 0) / textMass : kHits >= 2 && covered.size ? 1 : 0;
     const lift = intents && [...intents].some((k) => BOOST[k]?.(e)) ? 0.12 : 0;
-    const score = qCover * 0.5 + tCover * 0.5 + Math.min(0.3, kHits * 0.06) + (qCover > 0.99 && tCover > 0.99 ? 0.2 : 0) + lift;
+    const score = qCover * 0.5 + tCover * 0.5 + Math.min(0.3, kHits * 0.06) + ((qCover > 0.99 && tCover > 0.99) || whole ? 0.2 : 0) + lift;
     if (score > 0) out.push({ e, score, qCover, tCover, kHits, lift });
   }
   return out.sort((a, b) => b.score - a.score);
