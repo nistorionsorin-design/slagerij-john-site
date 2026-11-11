@@ -27,15 +27,22 @@
 }
 
 /* far below the fold: skip layout and paint until near (and keep their lazy photos from competing with the hero's
-   fonts during load); the intrinsic sizes are the measured heights, so the scrollbar does not jump */
-.cats, .loop, .visit, .faq { content-visibility: auto; }
+   fonts during load); the intrinsic sizes are the measured heights (content box: the section's padding comes on top),
+   so the scrollbar does not jump.
+   Row 11h (6), measured 11.11 on the built page at 412 × 823 and 1350 × 940 [MEASURED-OURS] local
+   (docs/data/measurements/2026-11-11/row11h-heights.json): the loop 689 px and „Bezoek ons” 601 px NL / 582 px RO on the
+   phone (they reserved 712 and 668), „Bezoek ons” 456 px on the desktop (it reserved 560). The FAQ block renders from
+   the start (no content-visibility): since the assistant's box sits in it its height follows the text — 938 px NL /
+   918 px RO at 412, 1 003 px at 360, 670 px at 1350 — no one reserved height fits, and the 450 px it reserved let its
+   content reach into the footer before it rendered (axe read the footer as the credit link's background: PSI
+   Accessibility 97 on `/`, audit 11.11). */
+.cats, .loop, .visit { content-visibility: auto; }
 .cats { contain-intrinsic-size: auto 600px; }
-.loop { contain-intrinsic-size: auto 660px; }
-.visit { contain-intrinsic-size: auto 620px; }
-.faq { contain-intrinsic-size: auto 450px; }
+.loop { contain-intrinsic-size: auto 637px; }
+.visit { contain-intrinsic-size: auto 553px; }
+:root:lang(ro) .visit { contain-intrinsic-size: auto 534px; }
 @media (min-width: 960px) {
   .cats { contain-intrinsic-size: auto 630px; }
   .loop { contain-intrinsic-size: auto 820px; }
-  .visit { contain-intrinsic-size: auto 480px; }
-  .faq { contain-intrinsic-size: auto 560px; }
+  .visit, :root:lang(ro) .visit { contain-intrinsic-size: auto 376px; }
 }

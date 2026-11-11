@@ -790,7 +790,7 @@ function route(ctx) {
 
   const intents = new Set(Object.keys(ix.intents).filter((k) => has(ix, T, k)));
   const scores = scoreFaq(ix, T, L, (e) => e.topic !== 'allergens', intents);
-  const best = scores[0];
+  let best = scores[0];
 
   if (hw >= 2 || (hw >= 1.5 && (!best || best.score < STRONG))) {
     const r = reply(L, { face: 'serious' });
@@ -816,6 +816,9 @@ function route(ctx) {
   const generic = spans.filter((s) => s.generic);
   const inSpan = (i) => spans.some((s) => i >= s.at && i < s.at + s.len);
   const dyh = intents.has('do-you-have');
+  // row 11h (h-07): a template entry stands for a question about a named product; with no product named, an entry of the
+  // bank that scores the same and is no template answers („wat verkopen jullie?” = the assortment, not „do you have X”)
+  if (best && TEMPLATE.has(best.e.id) && !spans.length) best = scores.find((s) => !TEMPLATE.has(s.e.id) && s.score >= best.score - 1e-9) ?? best;
   const want = intents.has('price') ? 'price' : intents.has('cooking') ? 'cooking' : 'do-you-have';
   // the message is only product words („mici?”, „carnati afumati”)
   const pure = spans.length > 0 && T.every((w, i) => inSpan(i) || ix._stop.nl.has(w) || ix._stop.ro.has(w));
@@ -843,6 +846,17 @@ function route(ctx) {
   if (dyh && !specific.length && T.some((w) => RUBRIC_RO.has(w)) && T.every((w, i) => RUBRIC_WITH.has(w) || trig.has(i) || ix._stop.nl.has(w) || ix._stop.ro.has(w))) {
     const e = ix.faq.find((x) => x.id === 'products-romanian');
     if (e) return entryAnswer(ctx, e, { specific, generic, want });
+  }
+  // row 11h (h-13 · h-21 · h-23 · h-42): a category named alone in a do-you-have question („aveți pui?”, „Hebben jullie
+  // kip?”, „Hebben jullie burgers?”) is answered as the category — its bank entry (products-cat-…) — not as the one
+  // product whose synonyms carry the word, nor as a question back among the products that share it. Alone = the
+  // entry's keywords cover every word of the message outside the question's own words; a longer product name („piept de
+  // pui”, „pastramă de miel”, „salam de casă”) leaves a word uncovered and stays a product.
+  const cat = dyh ? scores.find((s) => s.e.id.startsWith('products-cat-') && s.kHits > 0) : null;
+  if (cat && content.length && !spans.some((s) => !s.generic && s.len > 1)) {
+    const covered = new Set();
+    for (const kp of cat.e.kw[L]) for (const m of find(T, kp)) for (let k = 0; k < m.len; k++) covered.add(m.at + k);
+    if (content.every((x) => covered.has(x.i))) return entryAnswer(ctx, cat.e, { specific: [], generic, want });
   }
   // „hebben jullie X?” — one product named and nothing else asked: the product's own answer, before any bank entry
   if (dyh && specific.length === 1 && !generic.length && outside.length === 0) return productAnswer(ctx, ix._byId.get(specific[0].ids[0]), 'do-you-have');

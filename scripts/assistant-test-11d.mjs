@@ -479,15 +479,17 @@ if (want('--layer')) {
     if (textish.length) why.push(`text fields ${textish}`);
     record('counts', 'c-01', why, rows);
   }
-  // c-02 — qa_ask_log_v2 not there yet (404): the answer is shown, the row goes through qa_ask_log
+  // c-02 — qa_ask_log_v2 not there yet (404): the answer is shown, the row goes through qa_ask_log. Row 11h: the chain
+  // starts at qa_ask_log_v3 (docs/sql/qa-asks-11h.sql), so in this case's world (the 11d file not run) v3 is missing too
   {
     hooks.model = double(say2('Ja, mici staat op onze lijst.', { cards: ['mici'], chips: ['with'] }));
     const calls = [];
     const saveLog = hooks.log;
     hooks.log = null;
+    api.logMemo?.reset();
     hooks.rpc = async (name, args) => {
       calls.push({ name, keys: Object.keys(args) });
-      return name === 'qa_ask_log_v2' ? { error: 404 } : { value: null };
+      return name === 'qa_ask_log_v2' || name === 'qa_ask_log_v3' ? { error: 404 } : { value: null };
     };
     const cv = conv('nl');
     const r = await typed(cv, 'Hebben jullie mici?');
@@ -500,7 +502,8 @@ if (want('--layer')) {
     const v1 = calls.find((x) => x.name === 'qa_ask_log');
     if (!calls.some((x) => x.name === 'qa_ask_log_v2')) why.push('v2 not tried');
     if (!v1) why.push('no fallback to qa_ask_log');
-    else if (v1.keys.some((k) => /shown|tapped|first/.test(k))) why.push(`qa_ask_log got the new fields ${v1.keys}`);
+    else if (v1.keys.some((k) => /shown|tapped|first|why/.test(k))) why.push(`qa_ask_log got the new fields ${v1.keys}`);
+    api.logMemo?.reset();
     record('counts', 'c-02', why, calls);
   }
   // c-03 · c-04 — the weekly mail with the table (qa_paths_week answering two buttons, then none)

@@ -24,6 +24,8 @@ WHO YOU TALK TO: customers of the shop. Answer in the language of the customer's
 
 FACTS: you know nothing about the shop yourself. Every fact (product, price, hour, date, distance, rule, offer) comes from a lookup result in this conversation. If no lookup gives it, say you are not sure and call handoff. Never estimate, never use general knowledge about food, shops or Belgium for a fact about this shop. Never say something is in stock: say it is on our list, and for today to call or send a WhatsApp. Write prices, hours, dates, distances and durations exactly as the lookup result writes them.
 
+ASSORTMENT: a question about what the shop sells or which meat it has, all of it or one kind (beef, pork, chicken, lamb, charcuterie …), is answered from the faq answer products-assortment or products-cat-… as it stands: its kinds or its names, in its order. find_products with such a word gives the category, how many products it holds and its first names. Never answer it with the few products whose name carries the word. Never call an earlier answer of yours incomplete or correct it with a shorter list. A price per kilogram is never on the site: it is at the counter.
+
 ALLERGENS: for any question about allergens, ingredients a person cannot eat, or diets for medical reasons, call allergen_answer and write nothing else. Never answer such a question in your own words.
 
 CONTEXT: each message comes with the page, the section in view, the open product and the draft order. Use them to understand "this", "that one", "here". Do not mention that you can see them. One exception: when opened_from is "sheet", the box has already named that product in its opening line; refer to it by name and do not ask which product is meant.
@@ -49,7 +51,7 @@ const str = (description) => ({ type: 'string', description });
 export const TOOLS = [
   {
     name: 'find_products',
-    description: "Find up to 5 products of the shop's list by name or kind (Dutch or Romanian words). Returns id, name, the price as the site writes it (or that the price per kilogram is at the counter), unit, the cooking line, category, whether it is on this week's list, the colli that contain it.",
+    description: "Find up to 5 products of the shop's list by name or kind (Dutch or Romanian words). Returns id, name, the price as the site writes it (or that the price per kilogram is at the counter), unit, the cooking line, category, whether it is on this week's list, the colli that contain it. A kind of meat (vlees, carne, rund, vită, varken, porc, kip, pui, lam, miel, charcuterie, mezeluri …) first returns its category: name, how many products, the first names.",
     input_schema: { type: 'object', properties: { words: str('product words, e.g. "mici", "gehakt", "kip", "gerookte worst", "colli john"') }, required: ['words'] },
   },
   {
@@ -216,6 +218,8 @@ export function session(o) {
     st: { ...newState(o.pageLang), ...o.st },
     // the customer's question, for the wording check (row 11e (3b): is the Christmas pig the subject?)
     text: String(o.text ?? ''),
+    // row 11h (3b): the products whose price stands on the site (a clause that names one may say so)
+    pricedNames: pricedNames(ix),
   };
   const moment = brussels(o.at, ix.hours.timeZone);
   /** the BBQ-pakket and the barbecue at home, as the bank says them (both from 10 persons) */
@@ -230,14 +234,25 @@ export function session(o) {
   const run = {
     find_products({ words = '' }) {
       const T = kit.words(String(words));
-      let ids = uniq(kit.productSpans(ix, T).flatMap((s) => s.ids));
-      // „deze week”, „weekaanbod”, „săptămâna asta”: the products on this week's list
-      if (!ids.length && T.some((w) => /^(week|weekaanbod|weeklijst|saptamana|saptamanii)$/.test(w))) ids = ix.p.filter((p) => p.w).map((p) => p.id);
-      if (!ids.length) ids = ix.p.filter((p) => p.phw.some((ph) => ph.some((w) => w.length >= 3 && T.includes(w)))).map((p) => p.id);
-      const list = kit.rank(ix, ids).slice(0, 5);
+      // row 11h: a kind of meat named („carne”, „porc”, „kip”, „mezeluri” …) is its category first — name, how many
+      // products, the first names — not the 3–5 products whose name happens to carry the word (audit 11.11). A word inside
+      // a product's own name of several words („piept de pui”, „carne tocată”) is that product, not a kind.
+      const kinds = kindsIn(ix, T);
+      const categories = kinds.keys.map((k) => categoryOf(ix, L, k));
+      let ids;
+      if (kinds.pure) ids = kinds.keys.length === 1 ? categories[0]._ids.slice(0, 5) : [];
+      // two kinds named („frigărui de pui”, „kip en lam”): the categories first, then today's search
+      else {
+        ids = uniq(kit.productSpans(ix, T).flatMap((s) => s.ids));
+        // „deze week”, „weekaanbod”, „săptămâna asta”: the products on this week's list
+        if (!ids.length && T.some((w) => /^(week|weekaanbod|weeklijst|saptamana|saptamanii)$/.test(w))) ids = ix.p.filter((p) => p.w).map((p) => p.id);
+        if (!ids.length) ids = ix.p.filter((p) => p.phw.some((ph) => ph.some((w) => w.length >= 3 && T.includes(w)))).map((p) => p.id);
+      }
+      const list = kinds.pure ? ids.map((id) => product(id)).filter(Boolean) : kit.rank(ix, ids).slice(0, 5);
       // a barbecue or a party of 10 or more: the BBQ-pakket and the barbecue at home are answers of the bank, not rows
       const party = T.some((w) => /^(bbq|barbecue|grill|gratar|feest|party|petrecere)$/.test(w)) || personsIn(kit.words(o.text)) >= 10;
       return {
+        ...(categories.length ? { categories: categories.map(({ _ids, ...c }) => c) } : {}),
         ...(party ? { for_10_persons_or_more: partyFacts() } : {}),
         products: list.map((p) => ({
           id: p.id,
@@ -250,7 +265,7 @@ export function session(o) {
           on_this_weeks_list: !!p.w,
           in_colli: p.inc.map((id) => product(id)?.n[L]).filter(Boolean),
         })),
-        ...(list.length ? {} : { note: 'not on our list' }),
+        ...(list.length || categories.length ? {} : { note: 'not on our list' }),
       };
     },
     shop_hours({ day = '' }) {
@@ -388,17 +403,21 @@ export function session(o) {
    *  answers, and the lookup that fits the local engine's own reading of the message (the products it named, a colli, a
    *  town, a day's hours, an order deadline) — so a general question gets the bank's answer and a specific one its
    *  specific fact, in one round fewer. They are lookup results like any other (the number check counts them). */
-  S.prefetch = ({ products = null, colli = null, place = null, hours = false, deadline = null } = {}) => {
+  S.prefetch = ({ kind = null, products = null, colli = null, place = null, hours = false, deadline = null } = {}) => {
     const out = { faq: JSON.parse(S.call('faq', { words: o.text }, true)) };
-    // the local engine's own answer of the bank, when the word match above missed it (English, typos)
-    if (S.engineEntry && !(out.faq.answers ?? []).some((x) => x.id === S.engineEntry)) {
+    // the local engine's own answer of the bank, when the word match above missed it (English, typos); row 11h: for an
+    // assortment or a category question it stands first (it is the base of the answer)
+    const at = (out.faq.answers ?? []).findIndex((x) => x.id === S.engineEntry);
+    if (S.engineEntry && (at < 0 || (kind && at > 0))) {
       const e = ix.faq.find((x) => x.id === S.engineEntry);
       if (e) {
-        out.faq.answers = [{ id: e.id, question: e.q[L], answer: e.a[L] }, ...(out.faq.answers ?? [])].slice(0, 3);
+        out.faq.answers = [{ id: e.id, question: e.q[L], answer: e.a[L] }, ...(out.faq.answers ?? []).filter((x) => x.id !== e.id)].slice(0, 3);
         S.faqIds.add(e.id);
         S.results.push(JSON.stringify(out.faq));
       }
     }
+    // row 11h: the category of an assortment or category question — its name, count and first names (find_products)
+    if (kind && !products) out.find_products = JSON.parse(S.call('find_products', { words: KIND_WORD[kind]?.[L] ?? KIND_WORD['*'][L] }, true));
     // a dated bank answer (the holiday menu's or the Christmas pig's last day) comes with the date-aware lookup, which
     // says „closed” once the day has passed — the bank's own text does not
     const ids = (out.faq.answers ?? []).map((x) => x.id);
@@ -428,6 +447,53 @@ export function session(o) {
     return text;
   };
   return S;
+}
+
+// row 11h: the words that name a kind of meat (normalised, as kit.words gives them) → a category of products.json, with
+// its group where the word names one („curcan” = the kalkoen group of Kip & kalkoen); „vlees” / „carne” = all the meat
+// categories. The row's list (build-plan row 11h item 2) and the „-vlees” compounds of the same words.
+const KIND = {
+  vlees: '*', carne: '*',
+  rund: 'rund', rundvlees: 'rund', rundsvlees: 'rund', vita: 'rund',
+  varken: 'varken', varkensvlees: 'varken', porc: 'varken',
+  kip: 'kip', kippenvlees: 'kip', pui: 'kip', kalkoen: 'kip/kalkoen', curcan: 'kip/kalkoen',
+  lam: 'lam', lamsvlees: 'lam', miel: 'lam',
+  charcuterie: 'charcuterie', mezeluri: 'charcuterie',
+  bereidingen: 'bereidingen', preparate: 'bereidingen',
+  brochettes: 'marinades/brochettes', frigarui: 'marinades/brochettes', marinades: 'marinades', marinate: 'marinades',
+  // the Romanian rubric (as engine.js RUBRIC_RO): „mezeluri românești” is its charcuterie group, not the Belgian one
+  roemeens: 'roemeens', roemeense: 'roemeens', romanesti: 'roemeens', romanesc: 'roemeens', romaneasca: 'roemeens',
+};
+const MEAT_KINDS = ['rund', 'varken', 'kip', 'lam', 'bereidingen', 'marinades', 'charcuterie', 'roemeens'];
+// the word the server's own category lookup uses for a bank entry products-cat-<kind> (products-assortment = '*')
+const KIND_WORD = {
+  '*': { nl: 'vlees', ro: 'carne' }, rund: { nl: 'rundvlees', ro: 'vită' }, varken: { nl: 'varkensvlees', ro: 'porc' }, kip: { nl: 'kip', ro: 'pui' }, lam: { nl: 'lamsvlees', ro: 'miel' },
+  bereidingen: { nl: 'bereidingen', ro: 'preparate' }, marinades: { nl: 'marinades', ro: 'marinate' }, charcuterie: { nl: 'charcuterie', ro: 'mezeluri' },
+};
+// the words of the question itself beside a kind („welke soorten vlees”, „ce feluri de carne”) — no product words there
+const ASKING = new Set(['welk', 'welke', 'wat', 'soort', 'soorten', 'fel', 'feluri', 'tip', 'tipuri', 'alle', 'toate', 'hebben', 'hebt', 'heeft', 'verkopen', 'verkoopt', 'aveti', 'vindeti', 'vindem', 'ce', 'care', 'assortiment', 'aanbod', 'sortiment']);
+/** the kinds of meat a lookup's words name, and whether they name nothing else (`pure`: one kind, or meat in general,
+ *  and no other product word — then the category's own first products follow it; else today's search does) */
+function kindsIn(ix, T) {
+  const stop = (w) => ix._stop.nl.has(w) || ix._stop.ro.has(w) || /^\d+$/.test(w) || ASKING.has(w);
+  // a product's own name of several words that holds a word of its own beside the kind („piept de pui”) is the product
+  const own = kit.productSpans(ix, T).filter((s) => !s.generic && s.len > 1 && T.slice(s.at, s.at + s.len).some((w) => !KIND[w] && !stop(w)));
+  let hit = uniq(T.map((w, i) => (!own.some((s) => i >= s.at && i < s.at + s.len) && KIND[w]) || null));
+  if (hit.includes('roemeens')) hit = hit.includes('charcuterie') ? ['roemeens/mezeluri'] : hit.filter((k) => k !== '*');
+  const named = hit.filter((k) => k !== '*');
+  const keys = named.length ? named : hit.length ? MEAT_KINDS : [];
+  const rest = T.filter((w) => !KIND[w] && !stop(w));
+  return { keys, pure: (named.length === 1 || (!named.length && keys.length > 0)) && !own.length && !kit.productSpans(ix, rest).length };
+}
+/** one category as find_products returns it: name, how many products, the first names — the owners' best sellers in
+ *  their order (product-photos.json, form q10), then the file's order; a group's own products first when the word named
+ *  the group. `_ids` (the same order) stays on the server. */
+function categoryOf(ix, L, key) {
+  const [c, g] = key.split('/');
+  const all = ix.p.filter((p) => p.c === c);
+  const best = (ix.nq?.best?.[c] ?? all.filter((p) => p.b).map((p) => p.id)).map((id) => ix._byId.get(id)).filter((p) => p?.c === c);
+  const order = uniq([...(g ? [...best.filter((p) => p.g === g), ...all.filter((p) => p.g === g)] : []), ...best, ...all]);
+  return { id: c, name: ix.cats[c]?.[L] ?? c, products: all.length, first: order.slice(0, 6).map((p) => p.n[L]), _ids: order.map((p) => p.id) };
 }
 
 /** the days a lookup's `day` names: the engine's own reading, or an ISO date */
@@ -558,7 +624,47 @@ export function wordingCheck(text, S, final = false) {
     if (pig || !row) why.push(pig ? 'the Christmas pig is ordered by WhatsApp or phone, as its answer says — not with the order form' : 'name the order form only for a product a lookup returned; otherwise the way to order as the lookup gives it');
   }
   if (S.L === 'ro' && /(^|[^a-z])per([^a-z]|$)/.test(t)) why.push('Romanian: never "per" — "Colli John costă 100 €", "la kilogram", "de persoană"');
+  // row 11h (3): the audit's two faults (11.11) — an answer never corrects an earlier list of its own (hl-04), and a
+  // price per kilogram is never „on the site” (hl-05; D-39: the counter's price is in the shop)
+  if (SELF_FIX.some((re) => re.test(t))) why.push('never call an earlier answer of yours incomplete or correct it: give the faq answer as it stands');
+  if (kiloOnSite(t, S.pricedNames ?? [])) why.push('a price per kilogram is never on the site: it is at the counter (only the colli, platters and dishes with a price stand on the site)');
   return why;
+}
+// row 11h (3a): „Mijn vorige lijst was niet volledig, dus deze drie zijn de juiste.” (live 11.11) — the assistant's own
+// earlier answer named and corrected (folded text: lower case, no diacritics)
+const SELF_FIX = [
+  /\b(mijn|het) (vorige|eerdere) (lijst|antwoord|bericht)\b/,
+  /\b(was|is|waren) niet (volledig|compleet|juist|correct)\b/,
+  /\bdeze (\w+ )?zijn de juiste\b/,
+  /\bik (heb|had) (me|mij) vergist\b|\bik corrigeer\b/,
+  /\blista (mea )?(de mai (devreme|inainte|sus)|anterioara|precedenta)\b|\braspunsul (meu )?(anterior|de mai (devreme|inainte|sus))\b/,
+  /\bnu (era|a fost) (completa|complet|corecta|corect)\b/,
+  /\b(am gresit|ma corectez)\b/,
+];
+// row 11h (3b): „… pentru carne tocată și restul de vită, pe site sau la tejghea” (live 11.11). Two readings, each on
+// the folded text: the site and the counter as the two places to see something (either order), or a clause that puts
+// a price on the site — unless it names what does have its price there (the colli, the platters and dishes, a product
+// whose price the site shows: `priced`, from the index)
+const SITE = /\b(op (de|onze) (web)?site|op de webshop|online|pe site|pe site-ul|de pe site|pe website)\b/;
+const COUNTER = /(aan de toog|in de winkel|in onze winkel|la tejghea|in magazin)/;
+const OR = /\b(of|ofwel|sau|ori)\b/;
+const PRICE_WORD = /\b(prijs|prijzen|kost|kosten|kilo|kilogram|kg|pret|preturi|pretul|preturile|costa|costul)\b/;
+const NOT_OR_IF = /\b(niet|geen|nooit|als|indien|nu|nici|niciun|nicio|daca)\b/;
+const PRICED = /\b(colli|schotel|schotels|platou|platouri|platourile|tapas|gourmet|fondue|menu|meniu|meniul|buffet|bufet|bufetul|pakket|pachet|dessert|desert|hapjes|aperitive|broodjes)/;
+function kiloOnSite(t, priced) {
+  for (const s of t.split(/[.!?]+/)) {
+    const both = SITE.test(s) && COUNTER.test(s);
+    if (both && new RegExp(`${SITE.source}[^.?!]{0,24}${OR.source}[^.?!]{0,24}${COUNTER.source}|${COUNTER.source}[^.?!]{0,24}${OR.source}[^.?!]{0,24}${SITE.source}`).test(s) && !PRICED.test(s)) return true;
+    // a clause that says it is NOT on the site, or only if it is, is true („de prijs per kilo staat niet op de site”)
+    for (const c of s.split(/[,;:]|\s(?:iar|maar|dar|en)\s/)) if (SITE.test(c) && PRICE_WORD.test(c) && !NOT_OR_IF.test(c) && !PRICED.test(c) && !priced.some((n) => c.includes(n))) return true;
+  }
+  return false;
+}
+/** the folded names (NL, RO) of the products whose price the site shows — a clause that names one may put it there */
+const pricedCache = new WeakMap();
+function pricedNames(ix) {
+  if (!pricedCache.has(ix)) pricedCache.set(ix, uniq(ix.p.filter((p) => !p.ps && p.pr !== null).flatMap((p) => [fold(p.n.nl), fold(p.n.ro)]).filter((n) => n.length >= 4)));
+  return pricedCache.get(ix);
 }
 /** the model's text as the box shows it: plain sentences (markdown emphasis and bullets dropped), one per paragraph */
 export function tidy(text) {

@@ -1,5 +1,5 @@
 {
-  "_source": "Assistant v2 answer bank for build-plan row 11a (docs/assistant.md §3 + §3 legal bullet + §10; D-58). Cowork 05.11.2026. Facts only from FACTS.md and site/src/data; entries reused from site/src/data/faq.json are verbatim (facts tag). handoff: none = answer only · offer = answer + WhatsApp button · always = straight to WhatsApp/phone (not-on-file facts use the miss line, never a guess). dynamic = computed by the island at answer time; `a` is the static fallback. Allergen answers = the matrix sentence + allergens.json workshop notice verbatim (its last sentence is the §4.2 serious-allergy call line, so it is not repeated). Language: NL u-form, RO tu-form (lexicon D3/D4). site/src/data/faq.json is NOT replaced: it feeds the visible FAQ blocks. · 10.11.2026 15:5x (Cowork): Georgiana's WhatsApp answers of 15:20–15:28 in (products-bbq-amount, products-colli-keep + 3 new: products-mici-with, products-gourmet-sides, season-platters-with); 6 hand-off answers now carry an answer by logic on Dan's instruction (facts tag [INFERRED]): hours-annual-leave, order-someone-else, products-cut-to-order, traiteur-plates-cutlery, traiteur-tasting, season-easter (the last from products.json). Still hand-off: products-voucher, products-fresh-frozen, the deposit amount. NOT yet in site/src/data — rides with row 11d. · 10.11.2026 16:3x (Cowork): keywords corrected after a run of the live engine — „Wanneer zijn jullie open?” was answered with trust-since („Sinds 1 februari 2025”) and „ce specialități românești aveți?” with „nu e pe lista noastră”: trust-since loses „geopend / opening / deschis / deschidere”, hours-open-now, products-mici-cook and products-romanian gain the phrases customers type.",
+  "_source": "Assistant v2 answer bank for build-plan row 11a (docs/assistant.md §3 + §3 legal bullet + §10; D-58). Cowork 05.11.2026. Facts only from FACTS.md and site/src/data; entries reused from site/src/data/faq.json are verbatim (facts tag). handoff: none = answer only · offer = answer + WhatsApp button · always = straight to WhatsApp/phone (not-on-file facts use the miss line, never a guess). dynamic = computed by the island at answer time; `a` is the static fallback. Allergen answers = the matrix sentence + allergens.json workshop notice verbatim (its last sentence is the §4.2 serious-allergy call line, so it is not repeated). Language: NL u-form, RO tu-form (lexicon D3/D4). site/src/data/faq.json is NOT replaced: it feeds the visible FAQ blocks. · 10.11.2026 15:5x (Cowork): Georgiana's WhatsApp answers of 15:20–15:28 in (products-bbq-amount, products-colli-keep + 3 new: products-mici-with, products-gourmet-sides, season-platters-with); 6 hand-off answers now carry an answer by logic on Dan's instruction (facts tag [INFERRED]): hours-annual-leave, order-someone-else, products-cut-to-order, traiteur-plates-cutlery, traiteur-tasting, season-easter (the last from products.json). Still hand-off: products-voucher, products-fresh-frozen, the deposit amount. NOT yet in site/src/data — rides with row 11d. · 10.11.2026 16:3x (Cowork): keywords corrected after a run of the live engine — „Wanneer zijn jullie open?” was answered with trust-since („Sinds 1 februari 2025”) and „ce specialități românești aveți?” with „nu e pe lista noastră”: trust-since loses „geopend / opening / deschis / deschidere”, hours-open-now, products-mici-cook and products-romanian gain the phrases customers type. · 11.11.2026 09:3x (Cowork, row 11h, after the audit of the live assistant): 8 new entries for the assortment questions that failed on the live site — products-assortment + products-cat-rund · -varken · -kip · -lam · -bereidingen · -marinades · -charcuterie (names read from site/src/data/products.json 11.11; the first names of each list are the owners' best sellers, FACTS form 27.10 q10); keywords added to products-bbq-amount and products-colli-list. 107 → 115 entries. Run against the engine built from site/src with the live index + these entries: docs/data/assistant-tests-11h.json (39/45 by the bank alone; the 6 left are engine cases).",
   "miss": {
     "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
     "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
@@ -1368,12 +1368,22 @@
         "nl": [
           "welke colli",
           "colli prijzen",
-          "alle colli"
+          "alle colli",
+          "wat kost een colli",
+          "kost een colli",
+          "prijs colli",
+          "prijs van een colli",
+          "hoeveel kost een colli"
         ],
         "ro": [
           "ce colli",
           "prețuri colli",
-          "toate pachetele"
+          "toate pachetele",
+          "cât costă un colli",
+          "cat costa un colli",
+          "preț colli",
+          "cât e un colli",
+          "cât costă colli"
         ]
       },
       "a": {
@@ -1600,12 +1610,25 @@
           "hoeveel vlees",
           "per persoon",
           "bbq hoeveelheid",
-          "gram per persoon"
+          "gram per persoon",
+          "raadt u aan",
+          "wat raad je aan",
+          "bbq met",
+          "bbq voor",
+          "barbecue voor",
+          "barbecue met",
+          "personen bbq"
         ],
         "ro": [
           "câtă carne",
           "de persoană",
-          "grătar cantitate"
+          "grătar cantitate",
+          "ce îmi recomanzi",
+          "ce recomandați",
+          "grătar de",
+          "grătar pentru",
+          "pentru grătar",
+          "persoane grătar"
         ]
       },
       "a": {
@@ -2102,6 +2125,331 @@
       "dynamic": "do-you-have",
       "facts": [
         "site/src/data/products.json line"
+      ]
+    },
+    {
+      "id": "products-assortment",
+      "topic": "products",
+      "q": {
+        "nl": "Welk vlees hebben jullie?",
+        "ro": "Ce fel de carne aveți?"
+      },
+      "keywords": {
+        "nl": [
+          "welk vlees",
+          "welke soorten vlees",
+          "wat voor vlees",
+          "soorten vlees",
+          "wat verkopen jullie",
+          "wat hebben jullie",
+          "assortiment",
+          "aanbod",
+          "welke producten",
+          "wat hebt u"
+        ],
+        "ro": [
+          "ce fel de carne",
+          "ce carne",
+          "ce tipuri de carne",
+          "ce vindeți",
+          "ce aveți",
+          "sortiment",
+          "ce produse",
+          "ce fel de produse",
+          "ce aveți la carne",
+          "ce ai"
+        ]
+      },
+      "a": {
+        "nl": "Rund, varken, kip en kalkoen en lam. Daarnaast bereidingen, marinades en brochettes, charcuterie en Roemeense specialiteiten zoals mici. Ook colli, gourmet, tapas en warme gerechten. De volledige lijst staat op de pagina Producten.",
+        "ro": "Vită, porc, pui și curcan și miel. Pe lângă ele, preparate de casă, marinate și frigărui, mezeluri și specialități românești, în frunte cu micii. Avem și colli, gourmet, tapas și preparate calde. Lista întreagă e pe pagina Produse."
+      },
+      "link": {
+        "nl": "/producten",
+        "ro": "/ro/produse"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/products.json categories (13, read 11.11.2026)"
+      ]
+    },
+    {
+      "id": "products-cat-rund",
+      "topic": "products",
+      "q": {
+        "nl": "Welk rundvlees hebben jullie?",
+        "ro": "Ce carne de vită aveți?"
+      },
+      "keywords": {
+        "nl": [
+          "rundvlees",
+          "rundsvlees",
+          "welk rund",
+          "vlees van rund",
+          "rund"
+        ],
+        "ro": [
+          "carne de vită",
+          "vită",
+          "de vită",
+          "carne de vita",
+          "ce vită"
+        ]
+      },
+      "a": {
+        "nl": "Rundvlees: onder meer biefstuk, chateaubriand en côte à l'os, maar ook stoofvlees, soepvlees en gehakt. De prijs per kilogram ziet u aan de toog. De hele lijst staat op de pagina Producten.",
+        "ro": "La vită: biftec, chateaubriand și cotlet cu os (côte à l'os), dar și carne pentru tocăniță, carne pentru supă și carne tocată. Prețul pe kilogram îl vezi la tejghea. Lista întreagă e pe pagina Produse."
+      },
+      "link": {
+        "nl": "/producten",
+        "ro": "/ro/produse"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/products.json rund (23 names, read 11.11.2026)",
+        "FACTS.md: form 27.10 q10 [OWNER] vită: biefstuk · chateaubriand · côte à l'os",
+        "FACTS.md: Per-kg prices"
+      ]
+    },
+    {
+      "id": "products-cat-varken",
+      "topic": "products",
+      "q": {
+        "nl": "Welk varkensvlees hebben jullie?",
+        "ro": "Ce carne de porc aveți?"
+      },
+      "keywords": {
+        "nl": [
+          "varkensvlees",
+          "welk varken",
+          "vlees van varken",
+          "varken"
+        ],
+        "ro": [
+          "carne de porc",
+          "porc",
+          "de porc",
+          "ce porc"
+        ]
+      },
+      "a": {
+        "nl": "Varkensvlees: onder meer spiering, filetkotelet en braadworst, maar ook ribbetjes, varkenshaasje, spek en gebraad. De prijs per kilogram ziet u aan de toog. De hele lijst staat op de pagina Producten.",
+        "ro": "La porc: ceafă, cotlet și cârnați proaspeți, dar și coaste, mușchiuleț, piept de porc și fripturi. Prețul pe kilogram îl vezi la tejghea. Lista întreagă e pe pagina Produse."
+      },
+      "link": {
+        "nl": "/producten",
+        "ro": "/ro/produse"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/products.json varken (35 names, read 11.11.2026)",
+        "FACTS.md: form 27.10 q10 [OWNER] porc: mici · ceafă · cotlet · cârnați",
+        "FACTS.md: Per-kg prices"
+      ]
+    },
+    {
+      "id": "products-cat-kip",
+      "topic": "products",
+      "q": {
+        "nl": "Welke kip en kalkoen hebben jullie?",
+        "ro": "Ce aveți la pui și curcan?"
+      },
+      "keywords": {
+        "nl": [
+          "kip",
+          "kippenvlees",
+          "kalkoen",
+          "gevogelte",
+          "welke kip"
+        ],
+        "ro": [
+          "pui",
+          "carne de pui",
+          "curcan",
+          "carne de curcan",
+          "pasăre",
+          "ce pui"
+        ]
+      },
+      "a": {
+        "nl": "Kip en kalkoen: onder meer kipfilet, kippenboutjes, kippenvleugels en hoevekip, en kalkoenfilet en kalkoengebraad. De prijs per kilogram ziet u aan de toog. De hele lijst staat op de pagina Producten.",
+        "ro": "La pui și curcan: piept de pui, pulpe, aripioare și pui de fermă întreg, plus piept și friptură de curcan. Prețul pe kilogram îl vezi la tejghea. Lista întreagă e pe pagina Produse."
+      },
+      "link": {
+        "nl": "/producten",
+        "ro": "/ro/produse"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/products.json kip (18 names, read 11.11.2026)",
+        "FACTS.md: form 27.10 q10 [OWNER] pui: piept · curcan: file",
+        "FACTS.md: Per-kg prices"
+      ]
+    },
+    {
+      "id": "products-cat-lam",
+      "topic": "products",
+      "q": {
+        "nl": "Welk lamsvlees hebben jullie?",
+        "ro": "Ce carne de miel aveți?"
+      },
+      "keywords": {
+        "nl": [
+          "lamsvlees",
+          "lam",
+          "welk lam",
+          "schaap"
+        ],
+        "ro": [
+          "carne de miel",
+          "miel",
+          "de miel",
+          "oaie",
+          "carne de oaie"
+        ]
+      },
+      "a": {
+        "nl": "Lamsvlees: onder meer lamspastrami, lamskotelet en lamsbout, maar ook lamsschouder, lamsrib en een half of een heel lam. De prijs per kilogram ziet u aan de toog. De hele lijst staat op de pagina Producten.",
+        "ro": "La miel: pastramă de miel, cotlete și pulpă, dar și spată, coaste și miel întreg sau jumătate. Prețul pe kilogram îl vezi la tejghea. Lista întreagă e pe pagina Produse."
+      },
+      "link": {
+        "nl": "/producten",
+        "ro": "/ro/produse"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/products.json lam (12 names, read 11.11.2026)",
+        "FACTS.md: form 27.10 q10 [OWNER] miel: lamspastrami · lamskotelet · lamsbout; q8 no sheep list, the lamb list covers",
+        "FACTS.md: Per-kg prices"
+      ]
+    },
+    {
+      "id": "products-cat-bereidingen",
+      "topic": "products",
+      "q": {
+        "nl": "Welke bereidingen hebben jullie?",
+        "ro": "Ce preparate de casă aveți?"
+      },
+      "keywords": {
+        "nl": [
+          "bereidingen",
+          "burgers",
+          "hamburgers",
+          "schnitzel",
+          "cordon bleu",
+          "gehaktbrood",
+          "gepaneerd"
+        ],
+        "ro": [
+          "preparate de casă",
+          "preparate",
+          "burgeri",
+          "burger",
+          "șnițel",
+          "șnițele",
+          "cordon bleu",
+          "pane"
+        ]
+      },
+      "a": {
+        "nl": "Bereidingen: schnitzels van kip en varken, burgers in vele soorten, cordon bleu, vogelnestjes en gehaktbrood. De prijs ziet u aan de toog. De hele lijst staat op de pagina Producten.",
+        "ro": "Preparate de casă: șnițele de pui și de porc, burgeri de multe feluri, cordon bleu, vogelnestjes și gehaktbrood (carne tocată la cuptor). Prețul îl vezi la tejghea. Lista întreagă e pe pagina Produse."
+      },
+      "link": {
+        "nl": "/producten",
+        "ro": "/ro/produse"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/products.json bereidingen (21 names, read 11.11.2026)",
+        "FACTS.md: form 27.10 q10 [OWNER] șnițel de pui",
+        "FACTS.md: Per-kg prices"
+      ]
+    },
+    {
+      "id": "products-cat-marinades",
+      "topic": "products",
+      "q": {
+        "nl": "Welke brochettes en marinades hebben jullie?",
+        "ro": "Ce frigărui și marinate aveți?"
+      },
+      "keywords": {
+        "nl": [
+          "brochettes",
+          "brochette",
+          "marinades",
+          "gemarineerd",
+          "gyros",
+          "satés"
+        ],
+        "ro": [
+          "frigărui",
+          "frigăruie",
+          "marinate",
+          "marinat",
+          "gyros"
+        ]
+      },
+      "a": {
+        "nl": "Marinades en brochettes: brochettes van kip, kalkoen, varken, rund en lam, kipgyros en varkensgyros, en gemarineerde koteletten en spek. De prijs ziet u aan de toog. De hele lijst staat op de pagina Producten.",
+        "ro": "Marinate și frigărui: frigărui de pui, curcan, porc, vită și miel, gyros de pui și de porc, cotlete și piept de porc marinate. Prețul îl vezi la tejghea. Lista întreagă e pe pagina Produse."
+      },
+      "link": {
+        "nl": "/producten",
+        "ro": "/ro/produse"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/products.json marinades (29 names, read 11.11.2026)",
+        "FACTS.md: form 27.10 q10 [OWNER] frigărui · kipgyros · curcan bucăți marinate",
+        "FACTS.md: Per-kg prices"
+      ]
+    },
+    {
+      "id": "products-cat-charcuterie",
+      "topic": "products",
+      "q": {
+        "nl": "Welke charcuterie hebben jullie?",
+        "ro": "Ce mezeluri aveți?"
+      },
+      "keywords": {
+        "nl": [
+          "charcuterie",
+          "beleg",
+          "vleeswaren",
+          "salami",
+          "paté",
+          "hesp"
+        ],
+        "ro": [
+          "mezeluri",
+          "mezel",
+          "salam",
+          "pateu",
+          "șuncă",
+          "parizer"
+        ]
+      },
+      "a": {
+        "nl": "Charcuterie: onder meer hespenworst, parijzer worst, paté, salami, boerenhesp, serrano en gerookte ham, plus vleessalade en krabsalade. De prijs ziet u aan de toog. De hele lijst staat op de pagina Producten.",
+        "ro": "Mezeluri: hespenworst, parizer, pateu, salamuri, șuncă țărănească, jambon serrano și șuncă afumată, plus salată de carne și salată de crab. Prețul îl vezi la tejghea. Lista întreagă e pe pagina Produse."
+      },
+      "link": {
+        "nl": "/producten",
+        "ro": "/ro/produse"
+      },
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "site/src/data/products.json charcuterie (27 names, read 11.11.2026)",
+        "FACTS.md: Per-kg prices"
       ]
     },
     {

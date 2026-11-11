@@ -176,7 +176,8 @@ async function runScripts() {
         for (const s of e.state_must_not_contain) if (kept.includes(s)) why.push(`the box's stored state holds „${s}”`);
       }
       if (t.row?.p_offer) offers.push(t.row.p_offer);
-      turns.push({ text: tu.text, via: t.via, why_fallback: t.via === 'fallback' ? t.why : undefined, ok: !why.length, fails: why, shown: t.shown.slice(0, 600), family: t.row?.p_family, lookups: t.row?.p_lookups, offer: t.row?.p_offer ?? null, tokens: t.row ? { in: t.row.p_in, out: t.row.p_out, cache: t.row.p_cache, write: t.row._write } : null, cost: +cost(t.row).toFixed(6), first_ms: t.first, ms: t.ms });
+      // row 11h (5): `retry` = the kinds of check the first answer failed (number · text · offer · form · wording · lang · empty)
+      turns.push({ text: tu.text, via: t.via, why_fallback: t.via === 'fallback' ? t.why : undefined, retry: t.row?._retry ?? null, ...(t.row?._retryWhy ? { first_answer: t.row._retryWhy } : {}), ok: !why.length, fails: why, shown: t.shown.slice(0, 600), family: t.row?.p_family, lookups: t.row?.p_lookups, offer: t.row?.p_offer ?? null, tokens: t.row ? { in: t.row.p_in, out: t.row.p_out, cache: t.row.p_cache, write: t.row._write } : null, cost: +cost(t.row).toFixed(6), first_ms: t.first, ms: t.ms });
     }
     const ok = turns.every((x) => x.ok);
     console.log(`${ok ? '✓' : '✗'} ${c.id}  ${turns.map((x) => `[${x.via}${x.why_fallback ? `:${x.why_fallback}` : ''} ${x.first_ms}ms] ${x.shown.slice(0, 150)}${x.ok ? '' : `  ← ${x.fails.join('; ')}`}`).join('  ‖  ')}`);
@@ -346,7 +347,7 @@ async function runBank() {
       const t = await turn(conv, tu.text, null, null);
       t.conv = conv;
       const why = gradeBank({ ...c, expect: tu.expect ?? {} }, t);
-      turns.push({ text: tu.text, via: t.via, why_fallback: t.via === 'fallback' ? t.why : undefined, ok: !why.length, fails: why, shown: t.shown.slice(0, 300), lookups: t.row?.p_lookups, family: t.row?.p_family, cost: +cost(t.row).toFixed(6), first_ms: t.first, ms: t.ms, tokens: t.row ? { in: t.row.p_in, out: t.row.p_out, cache: t.row.p_cache, write: t.row._write } : null });
+      turns.push({ text: tu.text, via: t.via, why_fallback: t.via === 'fallback' ? t.why : undefined, retry: t.row?._retry ?? null, ...(t.row?._retryWhy ? { first_answer: t.row._retryWhy } : {}), ok: !why.length, fails: why, shown: t.shown.slice(0, 300), lookups: t.row?.p_lookups, family: t.row?.p_family, cost: +cost(t.row).toFixed(6), first_ms: t.first, ms: t.ms, tokens: t.row ? { in: t.row.p_in, out: t.row.p_out, cache: t.row.p_cache, write: t.row._write } : null });
     }
     const ok = turns.every((x) => x.ok);
     if (++done % 50 === 0) console.log(`  … ${done}/${flat.length}`);
@@ -369,6 +370,13 @@ const sumTurns = (list) => {
     turns: ts.length,
     by: Object.fromEntries(['model', 'local', 'fallback'].map((k) => [k, ts.filter((x) => x.via === k).length])),
     fallback_why: ts.filter((x) => x.via === 'fallback').reduce((o, x) => ({ ...o, [x.why_fallback]: (o[x.why_fallback] ?? 0) + 1 }), {}),
+    // row 11h (5): how often the first answer failed a check, on which check, and how long the turns with a retry took
+    first_answer_failed: {
+      turns: ts.filter((x) => x.retry).length,
+      of_turns_with_a_model_call: ts.filter((x) => (x.tokens?.in ?? 0) > 0).length,
+      by_check: ts.filter((x) => x.retry).flatMap((x) => x.retry).reduce((o, k) => ({ ...o, [k]: (o[k] ?? 0) + 1 }), {}),
+      retry_path_ms: { p50: q(ts.filter((x) => x.retry).map((x) => x.ms), 0.5), p95: q(ts.filter((x) => x.retry).map((x) => x.ms), 0.95), max: ts.some((x) => x.retry) ? Math.max(...ts.filter((x) => x.retry).map((x) => x.ms)) : null },
+    },
     first_text_ms: { p50: q(model.map((x) => x.first_ms), 0.5), p95: q(model.map((x) => x.first_ms), 0.95) },
     whole_answer_ms: { p50: q(model.map((x) => x.ms), 0.5), p95: q(model.map((x) => x.ms), 0.95) },
     tokens: model.reduce((o, x) => ({ in: o.in + (x.tokens?.in ?? 0), out: o.out + (x.tokens?.out ?? 0), cache: o.cache + (x.tokens?.cache ?? 0), write: o.write + (x.tokens?.write ?? 0) }), { in: 0, out: 0, cache: 0, write: 0 }),
@@ -397,6 +405,8 @@ if (args.includes('--scripts')) {
   const s = await runScripts();
   report.scripts = { pass: s.filter((x) => x.ok).length, total: s.length, by_kind: Object.fromEntries(['doubt', 'abuse', 'context'].map((k) => [k, `${s.filter((x) => x.kind === k && x.ok).length}/${s.filter((x) => x.kind === k).length}`])), ...sumTurns(s), results: s };
   console.log(`scripts ${report.scripts.pass}/${report.scripts.total} · ${JSON.stringify(report.scripts.by_kind)} · ${JSON.stringify(report.scripts.by)} · first text p50 ${report.scripts.first_text_ms.p50} ms p95 ${report.scripts.first_text_ms.p95} ms · $${report.scripts.cost_usd} ($${report.scripts.cost_per_conversation_usd}/conversation)`);
+  const fa = report.scripts.first_answer_failed;
+  console.log(`first answer failed a check: ${fa.turns} of ${fa.of_turns_with_a_model_call} turns with a model call ${JSON.stringify(fa.by_check)} · retry path p50 ${fa.retry_path_ms.p50} ms p95 ${fa.retry_path_ms.p95} ms · fallbacks ${JSON.stringify(report.scripts.fallback_why)}`);
   if (report.scripts.pass < report.scripts.total) exit = 1;
 }
 if (args.includes('--bank')) {

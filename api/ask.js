@@ -17,6 +17,9 @@
 // carries shown · tapped · first_turn (docs/sql/qa-asks-11d.sql, qa_ask_log_v2; until Dan runs that file, the 11c
 // function qa_ask_log, without an error anywhere). `handover` = a click on a handover button (§11.7 point 5 „handover
 // clicked”), counted by the click's own row; a model answer that only shows the buttons no longer sets it.
+// Row 11h (audit 11.11): an assortment or category question gets its bank answer first and the category lookup up front;
+// the reason of a fallback goes on the row as one word of the list (`why`: check:number · timeout · cap …), through
+// qa_ask_log_v3 (docs/sql/qa-asks-11h.sql), falling back to _v2, then qa_ask_log, without an error anywhere.
 // The server's own checks (§11.7): in — ≤ 500 characters, e-mail addresses and digit runs of 9+ cut, the context
 // whitelisted (assistant-sections.json, products.json ids), 12 turns of history, 20 messages a conversation; the
 // allergen gate (no model call; the §4 text word for word); out — every price, percentage, hour, date, distance and
@@ -302,7 +305,7 @@ export default {
     const { readable, writable } = new TransformStream();
     const w = writable.getWriter();
     const send = (o) => w.write(enc.encode(`${JSON.stringify(o)}\n`)).catch(() => {});
-    const log = { lang: 'other', page: null, family: 'other', lookups: [], in: 0, out: 0, cache: 0, write: 0, model: false, fallback: false, offer: null, handover: false, shown: [], tapped: [], first: false, why: null };
+    const log = { lang: 'other', page: null, family: 'other', lookups: [], in: 0, out: 0, cache: 0, write: 0, model: false, fallback: false, offer: null, handover: false, shown: [], tapped: [], first: false, why: null, retry: null };
     const site = siteId(request);
     const work = (async () => {
       send({ t: 'wait' });
@@ -310,9 +313,10 @@ export default {
         await turn(request, m, send, log, site);
       } catch (e) {
         log.fallback = true;
-        log.why = e?.why ?? 'error';
+        // row 11h (4): the reason goes on the numbers-only row — one word of the list, never text
+        log.why = whyWord(e?.why ?? 'error');
         console.log(JSON.stringify({ event: 'ask', fallback: e?.why ?? e?.type ?? e?.name ?? 'error', status: e?.status ?? null }));
-        send({ t: 'fallback', why: e?.why ?? 'error' });
+        send({ t: 'fallback', why: log.why });
       }
       await w.close().catch(() => {});
       await logRow(site, log);
@@ -418,7 +422,11 @@ async function turn(request, m, send, log, site) {
   const products = named.filter((id) => ix._byId.get(id)?.c !== 'colli').map((id) => ix._byId.get(id)?.n[L]).filter(Boolean).join(' ');
   // the engine's own best bank answer always goes along (a question in English, a typo the bank lookup misses)
   if (d.entry && ix.faq.some((e) => e.id === d.entry && e.topic !== 'allergens')) S.engineEntry = d.entry;
+  // row 11h: an assortment or a category question (the engine read products-assortment / products-cat-…): that bank
+  // answer comes first, and the category lookup (its count and first names) comes along — the answer in one round
+  const kind = /^products-(?:assortment|cat-([a-z]+))$/.exec(d.entry ?? '');
   const pre = S.prefetch({
+    kind: kind ? (kind[1] ?? '*') : null,
     products: products || null,
     colli,
     place: d.intent === 'delivery-town' ? (d.place ?? q) : log.family === 'delivery' ? townIn(ix, q) : null,
@@ -486,14 +494,19 @@ async function turn(request, m, send, log, site) {
       final = textNow;
       break;
     }
-    if (retries >= 1) throw fail('check');
+    // row 11h (4): the second failure ends the turn with the failed check on the row („check:number”); (5) the first
+    // failure's kinds are kept for the retry count of the test run (not on the row)
+    if (retries >= 1) throw fail(`check:${why[0].k}`);
+    log.retry = [...new Set(why.map((x) => x.k))];
+    // the test run's own record of the first answer (hooks.log only — never on the row, never in a log line)
+    if (hooks.test) log.retryWhy = { why: why.map((x) => `${x.k}: ${x.m}`), text: textNow, tools: res.blocks.filter((b) => b.type === 'tool_use').map((b) => b.name) };
     retries++;
     if (shown) {
       send({ t: 'reset' });
       shown = '';
     }
-    console.log(JSON.stringify({ event: 'ask', retry: why.map((x) => x.replace(/\d/g, '#')) }));
-    messages.push({ role: 'assistant', content: res.blocks.map(strip) }, { role: 'user', content: [...results, { type: 'text', text: `Not shown to the customer: ${why.join('; ')}. Answer again: use only figures that stand in a lookup result (call the lookup), or leave them out.` }] });
+    console.log(JSON.stringify({ event: 'ask', retry: why.map((x) => `${x.k}: ${x.m.replace(/\d/g, '#')}`) }));
+    messages.push({ role: 'assistant', content: res.blocks.map(strip) }, { role: 'user', content: [...results, { type: 'text', text: `Not shown to the customer: ${why.map((x) => x.m).join('; ')}. Answer again: use only figures that stand in a lookup result (call the lookup), or leave them out.` }] });
     S.cards = [];
     S.chips = [];
     S.nqIds = [];
@@ -588,26 +601,34 @@ const strip = (b) => {
 };
 
 /** what keeps an answer from the customer (§11.7 point 3): a figure on no lookup, a link or a scarcity word, an offer
- *  without its lookup or beside a handoff */
+ *  without its lookup or beside a handoff. Row 11h: each reason with its kind — the word after „check:” on the row
+ *  (number · text · offer · form · wording · lang · empty); the model's retry gets the reasons' text. */
 function checks(text, S, allowed) {
   const why = [];
+  const add = (k, list) => {
+    for (const m of list) why.push({ k, m });
+  };
   const bad = numberCheck(text, allowed);
-  if (bad.length) why.push(`the figures ${bad.join(', ')} stand in no lookup result`);
+  if (bad.length) add('number', [`the figures ${bad.join(', ')} stand in no lookup result`]);
   const tc = textCheck(text);
-  if (tc.bad.length) why.push(`not allowed: ${tc.bad.join(', ')}`);
+  if (tc.bad.length) add('text', [`not allowed: ${tc.bad.join(', ')}`]);
   const offer = offerIn(text, S, offersFile);
-  if (offer && !offerAllowed(offer, S, offersFile)) why.push(`the offer ${offer} was not returned by a lookup in this turn`);
+  if (offer && !offerAllowed(offer, S, offersFile)) add('offer', [`the offer ${offer} was not returned by a lookup in this turn`]);
   // an offer (from the offers lookup, not the bank's answer to the question) beside a hand-off; a complaint or an
   // allergy gets none at all (§11.5 „never … in an allergen answer, a complaint, or a handoff”)
   const factOf = (id) => S.faqIds.has(offersFile.offers.find((r) => r.id === id)?.faq ?? '');
-  if (offer && S.handoff && (['complaint', 'allergy'].includes(S.handoff) || !factOf(offer))) why.push('no offer in the same answer as a handoff');
-  why.push(...formCheck(text, S.L));
-  // row 11e (3): nothing passed on, no apology on a complaint, the order form only for its rows, no Romanian „per”
-  why.push(...wordingCheck(text, S, true));
-  if (S.langCheck) why.push(...S.langCheck(text));
-  if (!text && !S.draft) why.push('no answer text: write the answer in words');
+  if (offer && S.handoff && (['complaint', 'allergy'].includes(S.handoff) || !factOf(offer))) add('offer', ['no offer in the same answer as a handoff']);
+  add('form', formCheck(text, S.L));
+  // row 11e (3): nothing passed on, no apology on a complaint, the order form only for its rows, no Romanian „per”;
+  // row 11h (3): no correction of an earlier list of its own, no per-kg price „on the site”
+  add('wording', wordingCheck(text, S, true));
+  if (S.langCheck) add('lang', S.langCheck(text));
+  if (!text && !S.draft) add('empty', ['no answer text: write the answer in words']);
   return why;
 }
+/** the reason of a fallback as the row stores it (docs/sql/qa-asks-11h.sql): one word of the function's own list, the
+ *  failed check after a colon; anything else (an API error type the list does not know) = „other”. Never text. */
+const whyWord = (s) => (typeof s === 'string' && /^[a-z_:-]{1,32}$/.test(s) ? s : 'other');
 
 // ——— the metrics spine: the cap before, the row after (docs/sql/qa-asks-11c.sql) ———
 
@@ -635,23 +656,27 @@ async function callsToday(site) {
     return null;
   }
 }
-// row 11d: qa_ask_log_v2 (docs/sql/qa-asks-11d.sql) until it answers „not found” — then the 11c qa_ask_log for 15
-// minutes, and v2 is tried again (Dan runs the SQL file before the push; a warm function finds it within 15 minutes)
-let v2Missing = 0;
+// row 11h: qa_ask_log_v3 (docs/sql/qa-asks-11h.sql: + `why`) until it answers „not found” — then qa_ask_log_v2 (row 11d),
+// then the 11c qa_ask_log, each remembered as missing for 15 minutes and tried again after that (Dan runs the SQL file
+// before the push; a warm function finds it within 15 minutes). No error reaches anyone: a failed row is one log line.
+export const logMemo = { v3: 0, v2: 0, reset() { this.v3 = 0; this.v2 = 0; } };
+const MISSING_MS = 15 * 60000;
 async function logRow(site, l) {
   const row = { p_site: site, p_lang: l.lang === 'nl' || l.lang === 'ro' ? l.lang : 'other', p_page: l.page, p_family: l.family, p_lookups: [...new Set(l.lookups)], p_in: l.in, p_out: l.out, p_cache: l.cache, p_model: l.model, p_fallback: l.fallback, p_offer: l.offer, p_handover: l.handover };
   const v2 = { ...row, p_shown: (l.shown ?? []).slice(0, 2), p_tapped: (l.tapped ?? []).slice(0, 40), p_first: !!l.first };
-  if (hooks.log) return hooks.log({ ...v2, _write: l.write, _why: l.why }, l.id ?? null);
+  const v3 = { ...v2, p_why: l.fallback && l.why ? whyWord(l.why) : null };
+  if (hooks.log) return hooks.log({ ...v3, _write: l.write, _why: l.why, _retry: l.retry ?? null, _retryWhy: l.retryWhy ?? null }, l.id ?? null);
   try {
-    if (Date.now() - v2Missing > 15 * 60000) {
-      const r = await rpc('qa_ask_log_v2', v2, 3000);
+    for (const [name, args, memo] of [['qa_ask_log_v3', v3, 'v3'], ['qa_ask_log_v2', v2, 'v2']]) {
+      if (Date.now() - logMemo[memo] <= MISSING_MS) continue;
+      const r = await rpc(name, args, 3000);
       if (r.skipped) {
-        if (!process.env.VERCEL) console.log(JSON.stringify({ event: 'ask', dryRun: true, row: v2 }));
+        if (!process.env.VERCEL) console.log(JSON.stringify({ event: 'ask', dryRun: true, row: v3 }));
         return;
       }
       if (!r.error) return;
       if (r.error !== 404) return console.log(JSON.stringify({ event: 'ask', log: `http ${r.error}` }));
-      v2Missing = Date.now();
+      logMemo[memo] = Date.now();
     }
     const r = await rpc('qa_ask_log', row, 3000);
     if (r.error) console.log(JSON.stringify({ event: 'ask', log: `http ${r.error}` }));
