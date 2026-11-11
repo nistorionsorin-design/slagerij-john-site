@@ -421,7 +421,13 @@ export function session(o) {
     // a dated bank answer (the holiday menu's or the Christmas pig's last day) comes with the date-aware lookup, which
     // says „closed” once the day has passed — the bank's own text does not
     const ids = (out.faq.answers ?? []).map((x) => x.id);
-    if (!deadline && ids.includes('season-christmas-pig')) deadline = 'christmas-pig';
+    // row 11h follow-up (Dan 11.11 „Yes, fix it”): the Christmas pig's deadline comes along only when the pig IS the
+    // answer — the bank's first answer or the engine's own reading — not when it is one of three („hoe bestel ik?” lists
+    // it): that lookup's result tells the wording check of row 11e (3b) that the pig is the subject, and the check then
+    // refused the order form twice for the plain how-to-order question (the local engine answered; 4–6 of 625 bank
+    // questions on 10.11 and 11.11). The check itself is unchanged.
+    const pigIs = ids[0] === 'season-christmas-pig' || S.engineEntry === 'season-christmas-pig' || PIG_NAMED.test(fold(o.text ?? ''));
+    if (!deadline && pigIs) deadline = 'christmas-pig';
     else if (!deadline && ids.some((id) => /^season-christmas-deadline$|^season-.*deadline/.test(id))) deadline = 'holiday-menu';
     if (products) out.find_products = JSON.parse(S.call('find_products', { words: products }, true));
     if (colli) out.colli_and_menus = JSON.parse(S.call('colli_and_menus', { id: colli }, true));
@@ -603,6 +609,8 @@ const PASS_ON = [
   /\b(notez|am notat|o sa notez|voi nota)\b|\b(ii|le) (voi )?spun\b|\bo sa (ii|le) spun\b|\b(anunt|o sa anunt|voi anunta) (magazinul|pe georgiana|pe john|echipa)\b/,
 ];
 const SORRY = /\b(het spijt (me|ons)|sorry|excuses|excuseer|onze excuses|(imi|ne) pare rau|scuze(le)?)\b/;
+// (b) the customer's own words that name the Christmas pig (folded) — also why the server brings its deadline along
+const PIG_NAMED = /kerstvarken|(heel|half) varken|porc de craciun|porc(ul)? intreg|jumatate de porc/;
 // (b) the order form, named
 const FORM_NAMED = /\bbestelbon\b|\bbestelformulier\b|\bonline bestel|\bbestel(t)?( u)? online\b|\bop de site bestel|\bbon(ul)? de comanda\b|\bbonul de pe site\b|\bbonul tau\b|\bformular(ul)?\b|\bcomanzi (online|pe site|de pe site)\b|\bcomanda (online|pe site|de pe site)\b/;
 /** what the wording of an answer may not do (row 11e (3)); `final` adds what only a whole answer can show. Text in
@@ -619,7 +627,7 @@ export function wordingCheck(text, S, final = false) {
     const facts = fold(S.results.join(' '));
     // the Christmas pig is the subject: the customer names it, or its deadline was looked up (the bank lookup listing
     // its entry among three is not enough: „hoe bestel ik?” lists it too)
-    const pig = facts.includes('"christmas_pig"') || /kerstvarken|(heel|half) varken|porc de craciun|porc(ul)? intreg|jumatate de porc/.test(fold(S.text ?? ''));
+    const pig = facts.includes('"christmas_pig"') || PIG_NAMED.test(fold(S.text ?? ''));
     const row = /"(products|colli)":\[\{/.test(facts) || !!S.draft || facts.includes('"holiday_menu"') || FORM_NAMED.test(facts);
     if (pig || !row) why.push(pig ? 'the Christmas pig is ordered by WhatsApp or phone, as its answer says — not with the order form' : 'name the order form only for a product a lookup returned; otherwise the way to order as the lookup gives it');
   }
