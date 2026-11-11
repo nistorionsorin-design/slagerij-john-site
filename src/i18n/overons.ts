@@ -46,6 +46,23 @@ export const overOnsNl = {
     ],
   },
 
+  /** §5.39 „Een woord van ons” (row 22y, D-71 A, 11.11): the owners' own block, a signed letter — eyebrow · H2 · one
+   *  paragraph · three points (a bold lead-in + one sentence) · the closing line · their slogan · the signature. u-form. */
+  letter: {
+    eyebrow: 'Een woord van ons',
+    title: 'Welkom in de familie van Slagerij John',
+    text: 'Voor ons is een slagerij: goed vlees, respect voor elke klant en de smaak van thuis, elke dag opnieuw. Wij hebben ze met hard werk opgebouwd en willen dat iedereen die binnenkomt zich welkom voelt en tevreden vertrekt.',
+    points: [
+      { lead: 'Kwaliteit en versheid.', text: 'Wij kiezen met zorg wat in de toog ligt en letten op elk detail.' },
+      { lead: 'Voor elke smaak.', text: 'Vlees, bereidingen en specialiteiten die mensen rond de tafel brengen, voor elke dag en voor elke gelegenheid.' },
+      { lead: 'Elke klant telt.', text: 'Een goede slagerij is ook vertrouwen. Wij waarderen elk bezoek, elke bestelling en elke aanbeveling.' },
+    ],
+    closing: 'Wij willen samen met u groeien en de slagerij blijven waar u komt voor kwaliteit, betrouwbaarheid en smaak.',
+    slogan: 'De smaak van kwaliteit, de passie voor versheid.',
+    thanks: 'Dank u dat u deel uitmaakt van ons verhaal.',
+    signed: 'John en Georgiana',
+  },
+
   /** §5.17 „Wat we maken” — three lines, their own list */
   make: {
     eyebrow: 'Wat we maken',
@@ -120,6 +137,23 @@ export const overOnsRo: typeof overOnsNl = {
       { date: '2024-08-20', when: '20 august 2024', what: 'înființăm Slager John SComm' },
       { date: '2025-02-01', when: '1 februarie 2025', what: 'deschidem magazinul în fosta brutărie, Bruggestraat 146A' },
     ],
+  },
+
+  /** §6 „Despre noi, un cuvânt de la noi, 11.11” (row 22y). D-71 A: the owners speak to their customers in the plural
+   *  („voi”) — the one exception to D4, inside this block only; never „corrected” to tu. */
+  letter: {
+    eyebrow: 'Un cuvânt de la noi',
+    title: 'Bine ați venit în familia Măcelăriei John',
+    text: 'Pentru noi, măcelăria înseamnă carne bună, respect pentru fiecare client și gustul de acasă, zi de zi. Am clădit-o prin muncă și vrem ca oricine ne trece pragul să se simtă binevenit și să plece mulțumit.',
+    points: [
+      { lead: 'Calitate și prospețime.', text: 'Alegem cu grijă ce punem în vitrină și suntem atenți la fiecare detaliu.' },
+      { lead: 'Pentru toate gusturile.', text: 'Carne, preparate și specialități care adună oamenii în jurul mesei, pentru fiecare zi și pentru fiecare ocazie.' },
+      { lead: 'Fiecare client contează.', text: 'O măcelărie bună înseamnă și încredere. Prețuim fiecare vizită, fiecare comandă și fiecare recomandare.' },
+    ],
+    closing: 'Vrem să creștem împreună cu voi și să rămânem măcelăria la care veniți pentru calitate, seriozitate și gust.',
+    slogan: 'Gustul calității, pasiunea pentru prospețime.',
+    thanks: 'Vă mulțumim că faceți parte din povestea noastră.',
+    signed: 'John și Georgiana',
   },
 
   make: {

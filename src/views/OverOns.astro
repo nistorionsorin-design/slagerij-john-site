@@ -1,7 +1,8 @@
 ---
 // /over-ons — Over ons (row 10b, 15.10). The canvas board `OverOns` is the concept; built the /traiteur way (D-30):
 // head on paper (eyebrow · H1 + accent · lead, the owners' portrait as a print with its caption) · the quotes ·
-// „Sinds wanneer” (two dated facts) · „Wat we maken” · „Waar u op kunt rekenen” · „Kom langs” (the line from
+// „Sinds wanneer” (two dated facts) · „Een woord van ons” (row 22y, D-71: the owners' signed letter, lexicon §5.39 /
+// §6; the RO block speaks in the plural) · „Wat we maken” · „Waar u op kunt rekenen” · „Kom langs” (the line from
 // hours.json, Bestel via WhatsApp, the hours card with Route) · byline.
 // Desktop derived (D-30): the head is text 7fr beside the print 5fr; every block below puts its eyebrow heading left
 // (5fr) and its content right (7fr), the FAQ's grid; „Kom langs” sets the hours card in the right column.
@@ -127,6 +128,23 @@ const icons = {
       </ol>
     </section>
 
+    <section class="container ob ow" aria-labelledby="ow-title">
+      <div class="ow__head">
+        <p class="eyebrow">{t.letter.eyebrow}</p>
+        <h2 class="ow__title" id="ow-title">{t.letter.title}</h2>
+      </div>
+      <p class="ow__text">{t.letter.text}</p>
+      <ul class="ow__points">
+        {t.letter.points.map((p) => <li><strong class="ow__lead">{p.lead}</strong> {p.text}</li>)}
+      </ul>
+      <div class="ow__end">
+        <p class="ow__text">{t.letter.closing}</p>
+        <p class="ow__slogan">{t.letter.slogan}</p>
+        <p class="ow__thanks">{t.letter.thanks}</p>
+        <p class="ow__names">{t.letter.signed}</p>
+      </div>
+    </section>
+
     <section class="container ob" aria-labelledby="om-title">
       <h2 class="eyebrow ob__title" id="om-title">{t.make.eyebrow}</h2>
       <ul class="om__list">
@@ -211,6 +229,34 @@ const icons = {
   .ot__when { font-family: var(--f-display); font-weight: 600; font-size: 20px; line-height: 1.15; color: var(--ox); font-variant-numeric: tabular-nums; }
   .ot__what { margin: 0; font-size: 15px; line-height: 1.45; }
 
+  /* row 22y — „Een woord van ons” / „Un cuvânt de la noi”, the owners' letter on the page's paper: the eyebrow and an
+     H2 (the global h2), the text in the page's body size, the three points as the hairline list of „Wat we maken” with
+     the timeline's Fraunces lead-in, the slogan as the quotes (Fraunces italic, the oxblood rule), the names as the
+     quotes' byline. Tokens only; no photo, no motion. */
+  .ow { gap: 16px; }
+  .ow__head { display: flex; flex-direction: column; gap: 10px; }
+  .ow__title { margin: 0; max-width: 22ch; }
+  .ow__text { margin: 0; font-size: 15px; line-height: 1.45; max-width: 60ch; }
+  .ow__points { list-style: none; margin: 4px 0 0; padding: 0; border-top: 1px solid var(--line); }
+  .ow__points li { padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 15px; line-height: 1.45; }
+  .ow__lead { display: block; margin-bottom: 4px; font-family: var(--f-display); font-optical-sizing: auto; font-weight: 600; font-size: 19px; line-height: 1.2; color: var(--ox); }
+  .ow__end { display: flex; flex-direction: column; gap: 14px; padding-top: 2px; }
+  .ow__slogan {
+    margin: 6px 0 0;
+    padding-left: 18px;
+    border-left: 2px solid var(--ox);
+    font-family: var(--f-display);
+    font-optical-sizing: auto;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    max-width: 30ch;
+  }
+  .ow__thanks { margin: 6px 0 0; font-size: 15px; line-height: 1.45; }
+  .ow__names { margin: 0; font-size: var(--fs-eyebrow); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+
   .om__list, .or__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
   .om__list li { padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; line-height: 1.45; }
   /* row 14: the atelier photos under the list, two 4:5 prints */
@@ -263,6 +309,19 @@ const icons = {
     .ob__title { padding-top: 16px; }
     .ot__item { flex-direction: row; align-items: baseline; gap: 24px; padding: 18px 0; }
     .ot__when { flex: 0 0 220px; font-size: 24px; }
+    /* row 22y: head left, the text right (the page's grid); the three points across the full width, three columns; the
+       closing, the slogan and the signature back in the right column */
+    .ow { row-gap: 28px; }
+    .ow__head { grid-column: 1; gap: 14px; padding-top: 4px; }
+    .ow__text { font-size: var(--fs-body); line-height: 1.5; }
+    .ow > .ow__text { grid-column: 2; padding-top: 6px; }
+    .ow__points { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 32px; margin-top: 0; border-top: 0; }
+    .ow__points li { padding: 16px 0 0; border-top: 1px solid var(--line); border-bottom: 0; font-size: var(--fs-body); line-height: 1.5; }
+    .ow__lead { font-size: 22px; margin-bottom: 6px; }
+    .ow__end { grid-column: 2; gap: 16px; }
+    .ow__slogan { font-size: clamp(28px, 2.4vw, 36px); line-height: 1.15; padding-left: 24px; }
+    .ow__thanks { font-size: var(--fs-body); line-height: 1.5; }
+
     .ot__what, .om__list li, .or__list li { font-size: var(--fs-body); line-height: 1.5; }
     .om__list li, .or__list li { padding: 16px 0; }
     .om__photos { grid-column: 2; margin-top: -32px; gap: 14px; }
