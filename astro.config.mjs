@@ -107,7 +107,8 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      filter: (page) => !/\/404\/?$/.test(new URL(page).pathname) && !/^\/(wa|api)(\/|$)/.test(new URL(page).pathname),
+      // row 12: the private pages (/admin, /admin/pas, /bestelling — noindex) are never listed either
+      filter: (page) => !/\/404\/?$/.test(new URL(page).pathname) && !/^\/(wa|api|admin|bestelling)(\/|$)/.test(new URL(page).pathname),
       serialize(item) {
         const pathname = new URL(item.url).pathname.replace(/\/$/, '') || '/';
         const date = lastmod(pathname);

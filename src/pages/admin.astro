@@ -1,0 +1,7 @@
+---
+// /admin — the shop's order screen (row 12; D-24 · D-70; docs/admin.md). Noindex, robots Disallow /admin, no beacon.
+import Private from '../layouts/Private.astro';
+import Admin from '../components/Admin.astro';
+import { SHOP } from '../lib/order-text.js';
+---
+<Private title={SHOP.title} description={SHOP.foot} locale="ro"><Admin /></Private>

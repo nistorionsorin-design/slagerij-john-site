@@ -2,8 +2,7 @@
 // directory, Web handler); locally the same handler runs inside `npm run dev` (astro.config.mjs, plugin „api-dev”).
 // Steps: read + check the order (src/lib/order-core.js — prices from products.json, never from the browser) → mail to
 // the shop → WhatsApp notice to the shop → confirmation mail to the customer → the reference back.
-// Not here yet: storing the order for the admin (Vercel Blob, 90 days) — D-24 decides whether an orders screen exists
-// (stage 12); the running number SJ-2026-0001 needs that store too, so the reference is random until then.
+// Storing the order for the shop's screen (Vercel Blob, 90 days) and the running number SJ-2026-0001: row 12, below.
 // Secrets only as Vercel environment variables (D-26, public repo) — names in .env.example, values never in the repo:
 //   RESEND_API_KEY · ORDER_MAIL_FROM · ORDER_MAIL_TO (default: entity.json email)
 //   TWILIO_ACCOUNT_SID · TWILIO_AUTH_TOKEN · TWILIO_WHATSAPP_FROM · ORDER_WHATSAPP_TO (default: entity.json whatsapp)
@@ -12,8 +11,22 @@
 //   the function also dry-runs outside Vercel (npm run dev); on Vercel it then answers 503 and the page offers
 //   WhatsApp — it never tells a customer an order went out when it did not.
 // Answers: JSON for the page script; for the no-script form a 303 back to the page (#bedankt or #fout).
+// Row 12 (D-24 · D-70, docs/admin.md §2–§3): with the order store on (src/lib/order-store.js storeFor: a Blob token, the
+// production deployment, ADMIN_SECRET) the order is stored before the shop's mail and gets the running number
+// SJ-<year>-0001 (the server's number wins over the page's random one); the shop's mail carries the three signed step
+// buttons, the customer's confirmation the §5.40 line and the link „Volg uw bestelling”. The shop's mail fails → the
+// order is deleted again and the customer gets today's „not sent, use WhatsApp”. A claim that fails → the order goes out
+// as today (random reference, not stored): an order is never lost to the store. No token, ORDER_DRY_RUN=1 or a preview
+// deployment → exactly today's behaviour, byte for byte (scripts/admin-test.mjs compares it with the stage-5 function).
+//   + BLOB_READ_WRITE_TOKEN (the store, connected in the Vercel panel) · ADMIN_SECRET (link signatures, row 12)
 import { readFileSync } from 'node:fs';
 import { readOrder, waText, dayLabel, money, lineText, addressLine, totalLabel } from '../src/lib/order-core.js';
+import { storeFor, claim, unclaim, sweep } from '../src/lib/order-store.js';
+import { signStep, signStatus } from '../src/lib/order-sign.js';
+import { CUSTOMER, SHOP, MAIL_STEPS } from '../src/lib/order-text.js';
+
+/** test doubles (scripts/admin-test.mjs only): the store, the clock */
+export const hooks = { store: null, now: null };
 
 const json = (f) => JSON.parse(readFileSync(new URL(`../src/data/${f}`, import.meta.url), 'utf8'));
 const data = () => ({ products: json('products.json'), hours: json('hours.json'), delivery: json('delivery.json'), menus: json('menus.json') });
@@ -155,7 +168,12 @@ const madeByBlock = (line) =>
   `<td style="width:86px;padding:12px 14px 0 0;vertical-align:middle"><img src="${entity.url}/mail/dga-advisory@3x.png" width="86" height="62" alt="DanGabriel Advisory" style="display:block;border:0"></td>` +
   `<td style="padding:12px 0 0;vertical-align:middle;font-size:12px;line-height:1.4;color:#6B5E52">${esc(line)}<br><a href="https://dg-advisory.net" style="color:#6B5E52">dg-advisory.net</a></td></tr></table>`;
 
-function mails(o, hours) {
+// row 12: the three step buttons under the slip in the shop's mail (lexicon §6: Am primit-o · O pregătim · E gata),
+// each a signed link to /admin/pas (the tap there is a POST); as text, one line each
+const stepButtons = (steps) =>
+  `<p style="margin:16px 0 0">${steps.map((s, i) => `<a href="${esc(s.href)}" style="display:inline-block;margin:0 6px 8px 0;padding:12px 18px;border-radius:999px;${i === steps.length - 1 ? 'background:#1A1511;color:#F4EDE0' : 'border:1px solid #1A1511;color:#1A1511'};font-weight:700;text-decoration:none">${esc(s.label)}</a>`).join('')}</p>`;
+
+function mails(o, hours, links) {
   const t = T[o.locale];
   const s = slip(o, t);
   const p = slip(o, t, { print: true });
@@ -168,34 +186,97 @@ function mails(o, hours) {
   const shop = {
     subject: t.subjectShop(o),
     replyTo: o.email,
-    text: [header, '', o.name, p.text, '', ...who, remarks, '', `${t.call}: tel:${o.phone.replace(/[^\d+]/g, '')}`, `${t.whatsapp}: https://wa.me/${intl(o.phone)}`, '', T.ro.madeBy, 'dg-advisory.net'].filter((x) => x !== '').join('\n'),
+    text: [header, '', o.name, p.text, ...(links ? ['', ...links.steps.map((x) => `${x.label}: ${x.href}`)] : []), '', ...who, remarks, '', `${t.call}: tel:${o.phone.replace(/[^\d+]/g, '')}`, `${t.whatsapp}: https://wa.me/${intl(o.phone)}`, '', T.ro.madeBy, 'dg-advisory.net'].filter((x) => x !== '').join('\n'),
     html:
       `<div style="font-family:Arial,sans-serif;color:#1A1511">` +
       `<table role="presentation" height="${SHEET_PX}" style="border-collapse:collapse;width:100%;max-width:640px;height:${SHEET_PX}px"><tr><td style="padding:0;vertical-align:top">` +
       `<table role="presentation" style="border-collapse:collapse;width:100%;margin:0 0 16px"><tr><td style="width:76px;padding:0 14px 0 0;vertical-align:top">${shopLogo}</td><td style="padding:0;vertical-align:top">` +
       `<p style="margin:0 0 8px;font-size:17px;font-weight:700">${esc(header)}</p>` +
       `<p style="margin:0 0 4px;font-size:24px;line-height:1.2;font-weight:700">${esc(o.name)}</p>` +
-      `<p style="margin:0;font-size:20px;line-height:1.3;font-weight:700">${esc(p.when)}</p></td></tr></table>${p.html}` +
+      `<p style="margin:0;font-size:20px;line-height:1.3;font-weight:700">${esc(p.when)}</p></td></tr></table>${p.html}${links ? stepButtons(links.steps) : ''}` +
       `<p style="margin:16px 0 0;font-size:16px;line-height:1.5">${who.map(esc).join('<br>')}${remarks ? `<br>${esc(remarks).replace(/\n/g, '<br>')}` : ''}</p>` +
       `<p style="margin:20px 0 0"><a href="tel:${esc(o.phone.replace(/[^\d+]/g, ''))}" style="display:inline-block;padding:12px 20px;border-radius:999px;background:#F2C12E;color:#1A1511;font-weight:700;text-decoration:none">${esc(t.call)}</a> ` +
       `<a href="https://wa.me/${intl(o.phone)}" style="display:inline-block;padding:12px 20px;border-radius:999px;border:1px solid #1A1511;color:#1A1511;font-weight:700;text-decoration:none">${esc(t.whatsapp)}</a></p>` +
       `</td></tr><tr><td style="height:1px;padding:0;vertical-align:bottom">${madeByBlock(T.ro.madeBy)}</td></tr></table></div>`,
   };
-  const foot = [o.method === 'delivery' ? t.payDelivery : t.pay, t.legal, `${entity.name} · ${entity.address.streetAddress}, ${entity.address.postalCode} ${entity.address.addressLocality} · ${entity.telephoneDisplay}`, `${t.hours}: ${hoursText(hours, o.locale)}`];
+  const foot = footOf(o, t, hours);
+  // row 12, lexicon §5.40: with the store on, the confirmation's line says the two mails to come, and the link follows
+  const confirm = links ? CUSTOMER[o.locale].confirmStore : t.confirm;
   const customer = {
     subject: t.subjectCustomer(o),
     replyTo: entity.email,
-    text: [o.ref, '', s.text, '', t.confirm, '', ...foot, '', t.madeBy, 'dg-advisory.net'].join('\n'),
+    text: [o.ref, '', s.text, '', confirm, ...(links ? [`${CUSTOMER[o.locale].track}: ${links.status}`] : []), '', ...foot, '', t.madeBy, 'dg-advisory.net'].join('\n'),
     html:
       `<div style="font-family:Arial,sans-serif;color:#1A1511">` +
       `<p style="margin:0 0 16px;font-size:17px;font-weight:700">${esc(o.ref)}</p>${s.html}` +
-      `<p style="margin:16px 0 0">${esc(t.confirm)}</p>` +
+      `<p style="margin:16px 0 0">${esc(confirm)}</p>${links ? trackLink(CUSTOMER[o.locale].track, links.status) : ''}` +
       `<p style="margin:16px 0 0;font-size:13px;line-height:1.5;color:#5E534A">${foot.map(esc).join('<br>')}</p>${madeByBlock(t.madeBy)}</div>`,
   };
   return { shop, customer };
 }
 
-async function sendMail(env, to, m) {
+/** the foot of the customer's mails (§5.20): payment, art. VI.53 4°, the shop's address and phone, the hours */
+const footOf = (o, t, hours) => [o.method === 'delivery' ? t.payDelivery : t.pay, t.legal, `${entity.name} · ${entity.address.streetAddress}, ${entity.address.postalCode} ${entity.address.addressLocality} · ${entity.telephoneDisplay}`, `${t.hours}: ${hoursText(hours, o.locale)}`];
+/** row 12: „Volg uw bestelling” / „Urmărește comanda” → the status page */
+const trackLink = (label, href) => `<p style="margin:12px 0 0"><a href="${esc(href)}" style="color:#7B2420;font-weight:700">${esc(label)}</a></p>`;
+
+/** Row 12 (lexicon §5.40 / §6): the customer's mail of a step — „confirmed” (confirmată) or „ready” (gata) — in the
+ *  order's language: subject, the line with the pickup or delivery moment, the link to the status page, then the foot
+ *  as the confirmation has it and the credit. `rec` = the stored order. */
+export function stepMail(rec, which, statusHref, hours) {
+  const t = T[rec.locale];
+  const c = CUSTOMER[rec.locale];
+  const day = dayLabel(rec.date, rec.locale, 'long');
+  const subject = which === 'gata' ? c.readySubject(rec.ref) : c.confirmedSubject(rec.ref);
+  const line = which === 'gata' ? (rec.method === 'delivery' ? c.readyDelivery(day, rec.time) : c.readyPickup(day, rec.time)) : c.confirmedLine(day, rec.time);
+  const foot = footOf(rec, t, hours);
+  return {
+    subject,
+    replyTo: entity.email,
+    text: [rec.ref, '', line, '', `${c.track}: ${statusHref}`, '', ...foot, '', t.madeBy, 'dg-advisory.net'].join('\n'),
+    html:
+      `<div style="font-family:Arial,sans-serif;color:#1A1511">` +
+      `<p style="margin:0 0 16px;font-size:17px;font-weight:700">${esc(rec.ref)}</p>` +
+      `<p style="margin:0;font-size:16px;line-height:1.5">${esc(line)}</p>${trackLink(c.track, statusHref)}` +
+      `<p style="margin:16px 0 0;font-size:13px;line-height:1.5;color:#5E534A">${foot.map(esc).join('<br>')}</p>${madeByBlock(t.madeBy)}</div>`,
+  };
+}
+
+/** Row 12: the signed links of a stored order — the three step buttons (30 days) and the customer's status page. On the
+ *  production deployment they name the shop's own host (entity.json url), elsewhere the request's origin. */
+export function linksFor(env, origin, ref, now = Date.now()) {
+  const base = env.VERCEL_ENV === 'production' ? entity.url : origin;
+  const q = (o) => new URLSearchParams(o).toString();
+  return {
+    steps: MAIL_STEPS.map((s) => ({ step: s, label: SHOP.next[s], href: `${base}/admin/pas?${q(signStep(env.ADMIN_SECRET, ref, s, now))}` })),
+    status: `${base}/bestelling?${q(signStatus(env.ADMIN_SECRET, ref))}`,
+  };
+}
+
+/** Row 12: the order as it is kept (docs/admin.md §2), before the store adds ref · n · year · receivedAt · status ·
+ *  history: the order's own fields, the slip's lines as the shop's mail writes them, the total as its label */
+const kept = (o) => {
+  const t = T[o.locale];
+  return {
+    locale: o.locale,
+    method: o.method,
+    date: o.date,
+    time: o.time,
+    name: o.name,
+    phone: o.phone,
+    email: o.email,
+    address: o.address ?? null,
+    remarks: o.remarks,
+    menu: o.menu ? { id: o.menu.id, name: o.menu.name } : null,
+    lines: o.lines.map(({ id, name, unit, qty, sum, inStore, menu }) => ({ id, name, unit, qty, sum, inStore, menu })),
+    requests: o.requests,
+    slip: [...o.lines.map((l) => lineText(l, o.locale)), ...o.requests.map((r) => `„${r}”`)],
+    totalLabel: totalLabel(o, { tbc: t.unknownPrice, inStore: t.inStore }),
+    quote: o.quote,
+  };
+};
+
+export async function sendMail(env, to, m) {
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { authorization: `Bearer ${env.RESEND_API_KEY}`, 'content-type': 'application/json' },
@@ -289,16 +370,37 @@ export default {
       console.error('order: not configured (RESEND_API_KEY / ORDER_MAIL_FROM)');
       return answer(503, { ok: false, errors: ['send'] });
     }
+    // row 12: the store, when it is on — claim the running number and keep the order (status nouă) before the shop's mail
+    let store = null;
+    let rec = null;
     try {
-      await sendMail(env, env.ORDER_MAIL_TO || entity.email, m.shop);
+      store = await storeFor(env, hooks.store);
+      if (store) rec = await claim(store, kept(order), hooks.now?.() ?? Date.now());
+    } catch (e) {
+      console.error('order store: not stored — sent as without the store', order.ref, e.message);
+      rec = null;
+    }
+    let mail = m;
+    let waMsg = wa;
+    if (rec) {
+      order.ref = rec.ref;
+      mail = mails(order, d.hours, linksFor(env, new URL(request.url).origin, rec.ref, hooks.now?.() ?? Date.now()));
+      waMsg = waText(order);
+    }
+    try {
+      await sendMail(env, env.ORDER_MAIL_TO || entity.email, mail.shop);
     } catch (e) {
       console.error('order: shop mail failed', order.ref, e.message);
+      // never an order on the shop's screen that the customer was told failed
+      if (rec) await unclaim(store, rec).catch((x) => console.error('order store: unclaim failed', rec.ref, x.message));
       return answer(502, { ok: false, errors: ['send'] });
     }
     // the shop has the order; the two notices below are best effort and never undo a sent order
     const extra = [];
-    if (env.TWILIO_ACCOUNT_SID && env.TWILIO_AUTH_TOKEN && env.TWILIO_WHATSAPP_FROM) extra.push(sendWhatsApp(env, wa).catch((e) => console.error('order: whatsapp failed', order.ref, e.message)));
-    extra.push(sendMail(env, order.email, m.customer).catch((e) => console.error('order: confirmation failed', order.ref, e.message)));
+    if (env.TWILIO_ACCOUNT_SID && env.TWILIO_AUTH_TOKEN && env.TWILIO_WHATSAPP_FROM) extra.push(sendWhatsApp(env, waMsg).catch((e) => console.error('order: whatsapp failed', order.ref, e.message)));
+    extra.push(sendMail(env, order.email, mail.customer).catch((e) => console.error('order: confirmation failed', order.ref, e.message)));
+    // row 12: the light sweep (orders older than 90 days, from the index; no list) rides each stored order
+    if (rec) extra.push(sweep(store, hooks.now?.() ?? Date.now()).catch((e) => console.error('order store: sweep failed', e.message)));
     await Promise.all(extra);
     console.log(JSON.stringify({ event: 'order', ref: order.ref, method: order.method, date: order.date, lines: order.lines.length, requests: order.requests.length }));
     return answer(200, { ok: true, ref: order.ref });

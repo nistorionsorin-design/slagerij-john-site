@@ -33,6 +33,13 @@
       ]
     },
     {
+      "source": "/(admin|admin/pas|bestelling)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex" },
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    },
+    {
       "source": "/(.*)\\.pdf",
       "headers": [
         { "key": "X-Robots-Tag", "value": "noindex" },
@@ -76,6 +83,7 @@
     "api/*.js": { "includeFiles": "src/data/*.json", "maxDuration": 15 }
   },
   "crons": [
-    { "path": "/api/qa-digest", "schedule": "0 6 * * 1" }
+    { "path": "/api/qa-digest", "schedule": "0 6 * * 1" },
+    { "path": "/api/admin?op=sweep", "schedule": "0 3 * * 1" }
   ]
 }

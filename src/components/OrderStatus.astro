@@ -1,0 +1,46 @@
+---
+// /bestelling — the customer's status page (row 12; docs/admin.md §3.5; lexicon §5.40 / §6): the link in the customer's
+// mails („Volg uw bestelling” / „Urmărește comanda”, signed) opens it; three steps — Ontvangen · In bereiding · Klaar
+// (Primită · În lucru · Gata) — and the pickup or delivery moment. Never the name, phone, e-mail or address: the page
+// shows what /api/bestelling returns, and that is the status and the moment only. Dutch in the HTML; a Romanian order
+// switches the page to its Romanian strings (src/scripts/order-status.ts). The §5.3 Bel · WhatsApp buttons below.
+import WaIcon from './WaIcon.astro';
+import entity from '../data/entity.json';
+import { CUSTOMER } from '../lib/order-text.js';
+import { wa } from '../i18n/ui';
+
+const t = CUSTOMER.nl;
+---
+<main class="ost" id="main">
+  <h1 class="ost__title" data-title>{t.track}</h1>
+  <ol class="ost__steps" data-steps hidden>
+    {t.steps.map((s) => <li class="ost__step"><span class="ost__dot" aria-hidden="true"></span><span data-step-label>{s}</span></li>)}
+  </ol>
+  <p class="ost__moment" data-moment hidden></p>
+  <p class="ost__invalid" data-invalid hidden>{t.invalid}</p>
+  <p class="ost__help" data-help>{t.help}</p>
+  <p class="ost__acts">
+    <a class="btn btn--primary" href={`tel:${entity.telephone}`} data-call>{t.call}</a>
+    <a class="btn btn--secondary" href={wa('bestelling')} data-wa rel="nofollow"><WaIcon /><span>{t.whatsapp}</span></a>
+  </p>
+</main>
+
+<script>
+  import '../scripts/order-status.ts';
+</script>
+
+<style>
+  .ost [hidden] { display: none !important; }
+  .ost { width: 100%; box-sizing: border-box; max-width: 560px; margin: 0 auto; padding: 32px 20px 48px; display: flex; flex-direction: column; gap: 18px; }
+  .ost__title { margin: 0; font-size: 30px; line-height: 1.08; }
+  .ost__steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--line); }
+  .ost__step { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 17px; color: var(--muted); }
+  .ost__dot { flex: 0 0 auto; width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--line); background: var(--paper); }
+  .ost__step[data-on] { color: var(--fg); font-weight: 600; }
+  .ost__step[data-on] .ost__dot { border-color: var(--open); background: var(--open); }
+  .ost__step[aria-current='step'] { color: var(--fg); }
+  .ost__moment { margin: 0; font-family: var(--f-display); font-weight: 500; font-size: 22px; line-height: 1.2; }
+  .ost__invalid { margin: 0; font-size: 17px; }
+  .ost__help { margin: 0; color: var(--muted); }
+  .ost__acts { margin: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+</style>

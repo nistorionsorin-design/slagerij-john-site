@@ -1,0 +1,30 @@
+---
+// /admin/pas — one step from the shop's order mail (row 12; docs/admin.md §3.2; lexicon §6 „Comenzi și pașii comenzii,
+// 11.11”): the mail's button (Am primit-o · O pregătim · E gata) opens this page with a signed link; the page shows the
+// order's reference and name and one big button, and the tap is a POST — a mail scanner that follows the link changes
+// nothing. No password for this one step; the list still needs it. A static shell: src/scripts/admin-step.ts asks
+// /api/admin for the order after the link's check.
+import WaIcon from './WaIcon.astro';
+import { SHOP } from '../lib/order-text.js';
+---
+<main class="aps" id="main">
+  <h1 class="aps__title" data-title>{SHOP.title}</h1>
+  <button type="button" class="btn btn--primary btn--lg aps__go" data-go hidden></button>
+  <p class="aps__msg" data-msg role="status" hidden></p>
+  <a class="btn btn--secondary btn--lg aps__wa" data-wa hidden rel="noopener"><WaIcon /><span>{SHOP.writeWa}</span></a>
+  <a class="aps__all" href="/admin">{SHOP.seeAll}</a>
+</main>
+
+<script>
+  import '../scripts/admin-step.ts';
+</script>
+
+<style>
+  .aps [hidden] { display: none !important; }
+  .aps { width: 100%; box-sizing: border-box; max-width: 520px; margin: 0 auto; padding: 28px 16px 40px; display: flex; flex-direction: column; gap: 18px; }
+  .aps__title { margin: 0; font-size: 28px; line-height: 1.1; }
+  .aps__go { width: 100%; min-height: 64px; font-size: 20px; }
+  .aps__msg { margin: 0; font-size: 18px; font-weight: 600; }
+  .aps__wa { width: 100%; }
+  .aps__all { color: var(--ox); font-weight: 600; }
+</style>

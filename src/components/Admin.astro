@@ -1,0 +1,95 @@
+---
+// /admin — „Comenzi”, the shop's screen (row 12; D-24 · D-70; docs/admin.md §3.6 · §4; lexicon §6 „Comenzi și pașii
+// comenzii, 11.11”). A static shell in Romanian: the passphrase form, the tabs, the order, the list, the foot and the
+// maker's credit. No order is in this HTML or in its script: src/scripts/admin.ts asks /api/admin after the checks and
+// draws the cards with textContent only. Refreshes each minute while the page is in view (docs/admin.md §3.6) — one read
+// of the store's index each time (the Hobby plan's Blob reads, src/lib/order-store.js).
+import WaIcon from './WaIcon.astro';
+import { SHOP } from '../lib/order-text.js';
+import dgaMark from '../assets/dga-mark.svg?raw';
+
+const mark = dgaMark.replace(/<!--[\s\S]*?-->\s*/g, '').replace('class="credit__mark"', 'class="adm__mark"');
+const tabs = ['noua', 'confirmata', 'in-lucru', 'gata', 'done', 'all'] as const;
+---
+<main class="adm" id="main">
+  <header class="adm__head">
+    <h1 class="adm__title">{SHOP.title}</h1>
+    <button type="button" class="btn btn--secondary btn--sm" data-logout hidden>{SHOP.logout}</button>
+  </header>
+
+  <form class="adm__login" data-login hidden>
+    <label class="adm__label" for="adm-pass">{SHOP.pass}</label>
+    <input class="adm__input" id="adm-pass" name="pass" type="password" autocomplete="current-password" maxlength="200" required />
+    <button type="submit" class="btn btn--primary btn--lg">{SHOP.enter}</button>
+    <p class="adm__msg" data-login-msg role="alert"></p>
+  </form>
+
+  <section class="adm__board" data-board hidden aria-label={SHOP.title}>
+    <div class="adm__tabs">
+      {tabs.map((id, i) => (
+        <button type="button" class="adm__tab" data-tab={id} aria-pressed={i === 0 ? 'true' : 'false'}>
+          {SHOP.tabs[id]} <span class="adm__count" data-count={id}></span>
+        </button>
+      ))}
+    </div>
+    <div class="adm__sort">
+      <label><input type="radio" name="adm-sort" value="new" checked /> {SHOP.newest}</label>
+      <label><input type="radio" name="adm-sort" value="pickup" /> {SHOP.byPickup}</label>
+    </div>
+    <p class="adm__state"><span data-state aria-live="polite"></span> <button type="button" class="btn btn--secondary btn--sm" data-reload>{SHOP.reload}</button></p>
+    <p class="adm__msg" data-board-msg role="alert" hidden></p>
+    <ol class="adm__list" data-list></ol>
+    <p class="adm__empty" data-empty hidden>{SHOP.none}</p>
+  </section>
+
+  <footer class="adm__foot">
+    <p>{SHOP.foot}</p>
+    <a class="adm__credit" href="https://dg-advisory.net/" rel="noopener"><Fragment set:html={mark} /><span>{SHOP.credit}</span></a>
+  </footer>
+  <template data-wa-icon><WaIcon /></template>
+</main>
+
+<script>
+  import '../scripts/admin.ts';
+</script>
+
+<style>
+  /* the script shows and hides the login, the board and the messages with `hidden`: it wins over the display below */
+  .adm [hidden] { display: none !important; }
+  /* width 100%: centred with auto margins in the body's flex column, the main would size to its content (the tab row) */
+  .adm { width: 100%; box-sizing: border-box; max-width: 760px; margin: 0 auto; padding: 20px 16px 40px; display: flex; flex-direction: column; gap: 18px; }
+  .adm__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .adm__title { margin: 0; font-size: 32px; line-height: 1.05; }
+  .adm__login { display: flex; flex-direction: column; gap: 10px; max-width: 420px; }
+  .adm__label { font-weight: 600; }
+  .adm__input { min-height: 48px; padding: 0 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--fg); font-size: 18px; }
+  .adm__msg { margin: 0; color: var(--ox); font-weight: 600; min-height: 1.4em; }
+  /* the column's children may shrink below their content: the tab row then scrolls sideways instead of widening the page */
+  .adm > *, .adm__board > * { min-width: 0; }
+  .adm__board { display: flex; flex-direction: column; gap: 12px; }
+  .adm__tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; max-width: 100%; }
+  .adm__tab { flex: 0 0 auto; min-height: 44px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--fg); font: inherit; font-weight: 600; cursor: pointer; }
+  .adm__tab[aria-pressed='true'] { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+  .adm__count:not(:empty)::before { content: '· '; }
+  .adm__sort { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 15px; }
+  .adm__sort label { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; }
+  .adm__state { margin: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 14px; }
+  .adm__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .adm__empty { margin: 0; color: var(--muted); }
+  .adm__foot { display: flex; flex-direction: column; gap: 12px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.5; color: var(--muted); }
+  .adm__foot p { margin: 0; }
+  .adm__credit { display: inline-flex; align-items: center; gap: 10px; color: var(--muted); text-decoration: none; }
+  .adm__credit :global(.adm__mark) { width: 34px; height: auto; color: var(--fg); }
+
+  /* the cards (drawn by src/scripts/admin.ts) */
+  .adm__list :global(.card) { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-tile); padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+  .adm__list :global(.card__top) { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .adm__list :global(.card__name) { margin: 0; font-size: 24px; line-height: 1.1; }
+  .adm__list :global(.card__when) { margin: 0; font-weight: 700; font-size: 17px; }
+  .adm__list :global(.card__lines) { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .adm__list :global(.card__lines li) { padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .adm__list :global(.card__total) { font-weight: 700; }
+  .adm__list :global(.card__note) { margin: 0; font-size: 15px; white-space: pre-line; }
+  .adm__list :global(.card__acts) { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px; }
+  .adm__list :global(.card__msg) { margin: 0; color: var(--ox); font-weight: 600; }
+</style>

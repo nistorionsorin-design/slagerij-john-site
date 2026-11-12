@@ -1,0 +1,7 @@
+---
+// /bestelling — the customer's status page (row 12; docs/admin.md §3.5; lexicon §5.40 / §6). Noindex, signed link.
+import Private from '../layouts/Private.astro';
+import OrderStatus from '../components/OrderStatus.astro';
+import { CUSTOMER } from '../lib/order-text.js';
+---
+<Private title={`${CUSTOMER.nl.track} | Slagerij John`} description={CUSTOMER.nl.help} locale="nl"><OrderStatus /></Private>

@@ -1,0 +1,49 @@
+---
+// Row 12 (docs/admin.md §3–§4): the frame of the three private pages — /admin and /admin/pas (the shop's own, Romanian)
+// and /bestelling (the customer's status page). Noindex, no canonical or hreflang pair, no JSON-LD, outside the sitemap
+// (astro.config.mjs) — the gate treats them as it treats the 404s. The site's fonts, tokens and buttons; no header,
+// menu, footer, bottom bar, assistant or page-view beacon (docs/admin.md §4: „noindex, robots, no beacon”). The link
+// preview is the locale's brand card (every page has one, gate 6b). No order is ever in this HTML: the page's script
+// asks its function after the checks.
+import '../styles/fonts.css';
+import '../styles/tokens.css';
+import '../styles/buttons.css';
+import { ui, type Locale } from '../i18n/ui';
+import { brandCard } from '../lib/og-image';
+import interTight from '../assets/fonts/inter-tight-latin-wght-normal.woff2?url';
+import interTightRo from '../assets/fonts/inter-tight-ro-wght-normal.woff2?url';
+
+export interface Props {
+  title: string;
+  description: string;
+  locale: Locale;
+}
+const { title, description, locale } = Astro.props;
+const og = brandCard(locale);
+const abs = (p: string) => `https://slagerij-john.be${p}`;
+const preloads = locale === 'ro' ? [interTight, interTightRo] : [interTight];
+---
+<!doctype html>
+<html lang={locale === 'ro' ? 'ro-BE' : 'nl-BE'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    {preloads.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin fetchpriority="low" />)}
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#F4EDE0" />
+    <meta name="robots" content="noindex" />
+    <meta name="referrer" content="no-referrer" />
+    <meta property="og:image" content={abs(og.src)} />
+    <meta property="og:image:width" content={String(og.width)} />
+    <meta property="og:image:height" content={String(og.height)} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:alt" content={ui[locale].ogCard} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={abs(og.src)} />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

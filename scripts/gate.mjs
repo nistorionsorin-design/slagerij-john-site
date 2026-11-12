@@ -13,6 +13,8 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const RELEASE = process.argv.includes('--release');
 const dist = join(root, 'dist');
 const OWN_HOST = 'slagerij-john.be';
+/** row 12: the private pages (docs/admin.md §3–§4) — built shells, noindex, outside the sitemap */
+const PRIVATE = ['admin.html', 'admin/pas.html', 'bestelling.html'];
 const GEO = { latitude: 51.041, longitude: 3.2185 };
 
 const results = [];
@@ -116,9 +118,11 @@ if (built) {
       const html = read(f);
       const file = rel(f).replace(/^dist\//, '');
       const url = 'https://' + OWN_HOST + '/' + file.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '');
-      return { file, url: url.endsWith('/') && file !== 'index.html' ? url.slice(0, -1) : url, html, is404: file === '404.html' || file === 'ro/404.html' };
+      return { file, url: url.endsWith('/') && file !== 'index.html' ? url.slice(0, -1) : url, html, is404: file === '404.html' || file === 'ro/404.html', isPrivate: PRIVATE.includes(file) };
     });
-  const content = pages.filter((p) => !p.is404);
+  // row 12: the private pages (the shop's /admin and /admin/pas, the customer's /bestelling) stand outside the site as the
+  // 404s do — no canonical or hreflang pair, no JSON-LD, never in the sitemap; check 10 holds them to noindex instead
+  const content = pages.filter((p) => !p.is404 && !p.isPrivate);
   const byUrl = new Map(content.map((p) => [p.url, p]));
 
   // 2 — one h1, title ≤ 60, meta description ≤ 155
@@ -445,7 +449,8 @@ if (built) {
     };
     const md = walk(join(root, 'src/content/ro')).filter((f) => /\.(md|mdx)$/.test(f));
     for (const f of md) lint(rel(f), read(f).replace(/^---[\s\S]*?---/, '').replace(/```[\s\S]*?```/g, '').replace(/\]\([^)]*\)/g, ']'));
-    const roPages = content.filter((p) => /<html[^>]*lang="ro/i.test(p.html));
+    // row 12: the shop's Romanian screens (/admin, /admin/pas) are linted too
+    const roPages = [...content, ...pages.filter((p) => p.isPrivate)].filter((p) => /<html[^>]*lang="ro/i.test(p.html));
     for (const p of roPages) lint(p.file, decode(visibleText(p.html)), decode(visibleText(p.html.replace(/<title>[\s\S]*?<\/title>/i, ' '))));
     verdict('ro-lint', e, `${md.length} RO content files + ${roPages.length} built RO pages: diacritics, quotes, dashes, „de”`);
     warn('ro-lint-manual', 'calque / kitsch lists (LR-C, LR-K) live in the Romanian bible outside this repo — reviewed by hand');
@@ -482,6 +487,16 @@ if (built) {
         if (/rel="canonical"/i.test(p.html)) e.push(`${file} carries a canonical`);
       }
     }
+    // row 12: the private pages — each built, noindex, no canonical, no hreflang, no JSON-LD, no page-view beacon
+    for (const file of PRIVATE) {
+      const p = pages.find((x) => x.file === file);
+      if (!p) e.push(`dist/${file} missing (row 12)`);
+      else {
+        if (!/<meta name="robots" content="noindex"/i.test(p.html)) e.push(`${file} is not noindex`);
+        if (/rel="canonical"|rel="alternate"|application\/ld\+json/i.test(p.html)) e.push(`${file} carries a canonical, an hreflang or JSON-LD`);
+        if (/[\\/]Base\.[^"]*\.js"/.test(p.html)) e.push(`${file} ships the page-view beacon (docs/admin.md §4: no beacon)`);
+      }
+    }
     const maps = walk(dist).filter((f) => /sitemap-\d+\.xml$/.test(f));
     if (!existsSync(join(dist, 'sitemap-index.xml')) || !maps.length) e.push('sitemap missing');
     const entries = maps.flatMap((f) => [...read(f).matchAll(/<url>([\s\S]*?)<\/url>/g)].map((m) => m[1]));
@@ -505,7 +520,7 @@ if (built) {
         if (Number.isNaN(t) || t > Date.now() + 60_000) e.push(`sitemap ${loc}: lastmod ${lm} is not a past date`);
       }
     }
-    for (const l of locs) if (/^\/(wa|api)(\/|$)|\/404$/.test(new URL(l).pathname)) e.push(`sitemap lists ${l}`);
+    for (const l of locs) if (/^\/(wa|api|admin|bestelling)(\/|$)|\/404$/.test(new URL(l).pathname)) e.push(`sitemap lists ${l}`);
     const robots = existsSync(join(dist, 'robots.txt')) ? read(join(dist, 'robots.txt')) : '';
     const dis = [...robots.matchAll(/^Disallow:\s*(.*)$/gim)].map((m) => m[1].trim()).filter(Boolean);
     if (dis.join(' ') !== '/wa /api/ /admin') e.push(`robots.txt Disallow = [${dis}] (want /wa, /api/, /admin)`);
@@ -726,6 +741,10 @@ if (built) {
       ['Rows', /<section class="rows[\s"]/],
       ['Base', /<html lang="(nl|ro)-BE"/], // Base → hit.ts, the beacon (row 13b)
       ['QaSheet', /<a class="qa-fab[\s"]/], // QaSheet → qa-salute.ts, the salute on load (row 11e)
+      // row 12: the private pages' own scripts — each only on its page (no order in the HTML: they ask their function)
+      ['AdminStep', /<main class="aps[\s"]/],
+      ['Admin', /<main class="adm[\s"]/],
+      ['OrderStatus', /<main class="ost[\s"]/],
     ];
     for (const f of js.filter((f) => /[\\/]AsPills\./.test(f))) {
       const size = statSync(f).size;

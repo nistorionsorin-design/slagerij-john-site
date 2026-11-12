@@ -1,0 +1,7 @@
+---
+// /admin/pas — one step from the shop's order mail (row 12; docs/admin.md §3.2). Noindex, under robots' Disallow /admin.
+import Private from '../../layouts/Private.astro';
+import AdminStep from '../../components/AdminStep.astro';
+import { SHOP } from '../../lib/order-text.js';
+---
+<Private title={SHOP.title} description={SHOP.foot} locale="ro"><AdminStep /></Private>
