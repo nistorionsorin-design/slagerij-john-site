@@ -44,7 +44,7 @@ async function mailOf(env, store, origin, res) {
     return true;
   } catch (e) {
     console.error('admin: step mail failed', rec.ref, res.mail, e.message);
-    await unsend(store, rec.ref, res.mail).catch(() => {});
+    await unsend(store, rec.ref, res.mail).catch((e2) => console.error('admin: unsend failed', rec.ref, res.mail, e2.message));
     return false;
   }
 }

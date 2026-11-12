@@ -30,23 +30,60 @@ export const parseRef = (ref) => {
   return m ? { year: Number(m[1]), n: Number(m[2]) } : null;
 };
 
+/** a conditional write needs an ETag: without one it would be a plain overwrite (row 12a) — never silently */
+const tagged = (path, opts) => {
+  if ('ifMatch' in opts && !opts.ifMatch) throw new Error(`order store: a conditional write without an ETag (${path})`);
+};
+
 /** @vercel/blob (private store). `create` = put without overwrite (an existing pathname → Exists); `ifMatch` = a write
- *  only when the ETag still matches (else Conflict). Reads bypass the CDN cache (useCache false: a status just changed). */
+ *  only when the ETag still matches (else Conflict). Reads bypass the CDN cache (useCache false: a status just changed).
+ *  `read(path, { etag: true })` = a read before a conditional write: the ETag comes from head() — the store API's own
+ *  value, the one put()'s x-if-match is compared with (Vercel's example for conditional writes) — never from get().
+ *  Measured 12.11 on the live store (row 12a, docs/data/measurements/2026-11-12/row12a-etag-probe.json): get() delivers
+ *  JSON from about 1 kB up Brotli-compressed and its etag header turns weak, W/"<hash>", while head() and put() name
+ *  "<hash>" — a conditional put with the weak one is refused („ETag mismatch”); an order (≈ 2,3 kB) and the index are
+ *  always above that size. head first, then the body: a write in between leaves an older ETag with newer content → the
+ *  write is refused and retried, never the other way round. Plain reads (the list, an order shown, the brake's check)
+ *  stay one get() — head() is a simple operation of its own.
+ *  Two writes racing on one pathname can also be refused with „The conditional request cannot succeed due to a
+ *  conflicting operation against this resource” (a plain BlobError, not retried by the SDK; measured 12.11, three orders
+ *  at once on the index) → Conflict too, so the caller reads again. `refused` counts both kinds (the contract reads it). */
 export async function blobAdapter(token) {
   const sdk = await import('@vercel/blob');
-  const read = async (path) => {
+  const read = async (path, { etag: forWrite = false } = {}) => {
+    let etag;
+    if (forWrite) {
+      try {
+        etag = (await sdk.head(path, { token })).etag;
+      } catch (e) {
+        if (e instanceof sdk.BlobNotFoundError) return null;
+        throw e;
+      }
+      if (!etag) throw new Error(`order store: head() gave no ETag (${path})`);
+    }
     const r = await sdk.get(path, { access: 'private', token, useCache: false });
     if (!r || r.statusCode !== 200 || !r.stream) return null;
-    return { etag: r.blob.etag, json: JSON.parse(await new Response(r.stream).text()) };
+    return { etag, json: JSON.parse(await new Response(r.stream).text()) };
   };
+  const refused = { etag: 0, racing: 0 };
   return {
     read,
-    async write(path, json, { create = false, ifMatch } = {}) {
+    refused,
+    async write(path, json, opts = {}) {
+      const { create = false, ifMatch } = opts;
+      tagged(path, opts);
       try {
         const r = await sdk.put(path, JSON.stringify(json), { access: 'private', token, contentType: 'application/json', addRandomSuffix: false, allowOverwrite: !create, ...(ifMatch ? { ifMatch } : {}) });
         return { etag: r.etag };
       } catch (e) {
-        if (e instanceof sdk.BlobPreconditionFailedError) throw new Conflict(path);
+        if (e instanceof sdk.BlobPreconditionFailedError) {
+          refused.etag++;
+          throw new Conflict(path);
+        }
+        if (e instanceof sdk.BlobError && /conflicting operation/i.test(e.message)) {
+          refused.racing++;
+          throw new Conflict(path);
+        }
         // an existing pathname without allowOverwrite: the SDK names no class for it (docs, 11.11) → look
         if (create && (await sdk.head(path, { token }).then(() => true, () => false))) throw new Exists(path);
         throw e;
@@ -69,25 +106,37 @@ export async function blobAdapter(token) {
 }
 
 /** The test double: a Map with the same rules, every call a turn of the event loop (so concurrent calls interleave as
- *  requests do), the calls counted (the quota). `fail` = { write: (path) => bool } to make a write throw. */
+ *  requests do), the calls counted (the quota; `head` = the extra simple operation of a read before a conditional
+ *  write). As in the real store, only a read that asks for it carries the ETag a conditional write is compared with: a
+ *  path that forgets to ask cannot write. `fail` = { write: (path) => bool } to make a write throw. */
 export function memoryAdapter({ now = () => Date.now() } = {}) {
   const m = new Map();
   let tag = 0;
-  const ops = { read: 0, write: 0, list: 0, remove: 0 };
+  const ops = { read: 0, head: 0, write: 0, list: 0, remove: 0 };
   const tick = () => new Promise((r) => setImmediate(r));
   return {
     map: m,
     ops,
     fail: {},
-    async read(path) {
+    async read(path, { etag: forWrite = false } = {}) {
       await tick();
+      let etag;
+      if (forWrite) {
+        // head, then the body a turn later — as the two requests of the real adapter, another write can land between
+        ops.head++;
+        etag = m.get(path)?.etag;
+        if (!etag) return null;
+        await tick();
+      }
       ops.read++;
       const x = m.get(path);
-      return x ? { etag: x.etag, json: JSON.parse(x.body) } : null;
+      return x ? { etag, json: JSON.parse(x.body) } : null;
     },
-    async write(path, json, { create = false, ifMatch } = {}) {
+    async write(path, json, opts = {}) {
+      const { create = false, ifMatch } = opts;
       await tick();
       ops.write++;
+      tagged(path, opts);
       if (this.fail.write?.(path)) throw new Error(`store down (${path})`);
       const x = m.get(path);
       if (create && x) throw new Exists(path);
@@ -133,7 +182,7 @@ const card = (rec) => {
 };
 async function indexEdit(store, edit) {
   for (let i = 0; i < 8; i++) {
-    const cur = await store.read(INDEX);
+    const cur = await store.read(INDEX, { etag: true });
     const ix = cur?.json ?? { v: 1, orders: {} };
     if (edit(ix) === false) return ix;
     try {
@@ -164,7 +213,8 @@ export async function claim(store, rec, now = Date.now()) {
     try {
       await store.write(pathOf(year, n), kept, { create: true });
     } catch (e) {
-      if (e instanceof Exists) continue;
+      // taken, or another order creating the same number at this moment (a racing write, row 12a) → the next number
+      if (e instanceof Exists || e instanceof Conflict) continue;
       throw e;
     }
     // the list's card; if the index write fails the order still stands (the weekly sweep puts it back in the index)
@@ -195,7 +245,7 @@ export async function step(store, ref, to, now = Date.now()) {
   if (!p) return null;
   const at = new Date(now).toISOString();
   for (let i = 0; i < 6; i++) {
-    const cur = await store.read(pathOf(p.year, p.n));
+    const cur = await store.read(pathOf(p.year, p.n), { etag: true });
     if (!cur) return null;
     const rec = cur.json;
     let mail = null;
@@ -228,12 +278,12 @@ export async function step(store, ref, to, now = Date.now()) {
 export async function unsend(store, ref, which) {
   const p = parseRef(ref);
   for (let i = 0; p && i < 6; i++) {
-    const cur = await store.read(pathOf(p.year, p.n));
+    const cur = await store.read(pathOf(p.year, p.n), { etag: true });
     if (!cur?.json.sent?.[which]) return;
     delete cur.json.sent[which];
     try {
       await store.write(pathOf(p.year, p.n), cur.json, { ifMatch: cur.etag });
-      await indexPut(store, cur.json).catch(() => {});
+      await indexPut(store, cur.json).catch((e) => console.error('order index: put failed', cur.json.ref, e.message));
       return;
     } catch (e) {
       if (!(e instanceof Conflict)) throw e;
@@ -313,10 +363,25 @@ export async function loginFailed(store, key, now = Date.now()) {
     flood.closedUntil = now + WINDOW;
     return true;
   }
-  const cur = await store.read(counterPath(key));
-  const fails = [...(cur?.json.fails ?? []).filter((t) => now - t < WINDOW), now];
-  const until = fails.length >= 5 ? now + WINDOW : 0;
-  await store.write(counterPath(key), { fails, until }, cur ? { ifMatch: cur.etag } : {}).catch(() => {});
+  // read → count → write only if no other wrong try landed in between (a first try: create, never an overwrite); a
+  // refused write is counted again on the fresh counter. A write that fails for any other reason is logged, never
+  // swallowed (row 12a: a refused write used to leave the counter at one try and the brake open), and this answer still
+  // follows the count it made.
+  let until = 0;
+  for (let i = 0; i < 4; i++) {
+    const cur = await store.read(counterPath(key), { etag: true });
+    const fails = [...(cur?.json.fails ?? []).filter((t) => now - t < WINDOW), now];
+    until = fails.length >= 5 ? now + WINDOW : 0;
+    try {
+      await store.write(counterPath(key), { fails, until }, cur ? { ifMatch: cur.etag } : { create: true });
+      return until > now;
+    } catch (e) {
+      if (e instanceof Conflict || e instanceof Exists) continue;
+      console.error('login brake: counter write failed', e.message);
+      return until > now;
+    }
+  }
+  console.error('login brake: counter busy (four refused writes)');
   return until > now;
 }
 export const loginPassed = (store, key) => store.remove(counterPath(key)).catch(() => {});
