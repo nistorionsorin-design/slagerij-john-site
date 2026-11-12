@@ -1,5 +1,5 @@
 {
-  "_source": "Assistant v2 answer bank for build-plan row 11a (docs/assistant.md §3 + §3 legal bullet + §10; D-58). Cowork 05.11.2026. Facts only from FACTS.md and site/src/data; entries reused from site/src/data/faq.json are verbatim (facts tag). handoff: none = answer only · offer = answer + WhatsApp button · always = straight to WhatsApp/phone (not-on-file facts use the miss line, never a guess). dynamic = computed by the island at answer time; `a` is the static fallback. Allergen answers = the matrix sentence + allergens.json workshop notice verbatim (its last sentence is the §4.2 serious-allergy call line, so it is not repeated). Language: NL u-form, RO tu-form (lexicon D3/D4). site/src/data/faq.json is NOT replaced: it feeds the visible FAQ blocks. · 10.11.2026 15:5x (Cowork): Georgiana's WhatsApp answers of 15:20–15:28 in (products-bbq-amount, products-colli-keep + 3 new: products-mici-with, products-gourmet-sides, season-platters-with); 6 hand-off answers now carry an answer by logic on Dan's instruction (facts tag [INFERRED]): hours-annual-leave, order-someone-else, products-cut-to-order, traiteur-plates-cutlery, traiteur-tasting, season-easter (the last from products.json). Still hand-off: products-voucher, products-fresh-frozen, the deposit amount. NOT yet in site/src/data — rides with row 11d. · 10.11.2026 16:3x (Cowork): keywords corrected after a run of the live engine — „Wanneer zijn jullie open?” was answered with trust-since („Sinds 1 februari 2025”) and „ce specialități românești aveți?” with „nu e pe lista noastră”: trust-since loses „geopend / opening / deschis / deschidere”, hours-open-now, products-mici-cook and products-romanian gain the phrases customers type. · 11.11.2026 09:3x (Cowork, row 11h, after the audit of the live assistant): 8 new entries for the assortment questions that failed on the live site — products-assortment + products-cat-rund · -varken · -kip · -lam · -bereidingen · -marinades · -charcuterie (names read from site/src/data/products.json 11.11; the first names of each list are the owners' best sellers, FACTS form 27.10 q10); keywords added to products-bbq-amount and products-colli-list. 107 → 115 entries. Run against the engine built from site/src with the live index + these entries: docs/data/assistant-tests-11h.json (39/45 by the bank alone; the 6 left are engine cases). · 11.11.2026 11:1x (Cowork, row 11i; Dan 11:06 on the live answer to „ce faci?”: „also it is made by dg advisory”): site-what-can-you-do and site-bot now open with the DanGabriel Advisory credit (D-64); keywords „ce faci · cine ești · ce ești · wie ben je · wat ben je” added to site-what-can-you-do. Still 115 entries.",
+  "_source": "Assistant v2 answer bank for build-plan row 11a (docs/assistant.md §3 + §3 legal bullet + §10; D-58). Cowork 05.11.2026. Facts only from FACTS.md and site/src/data; entries reused from site/src/data/faq.json are verbatim (facts tag). handoff: none = answer only · offer = answer + WhatsApp button · always = straight to WhatsApp/phone (not-on-file facts use the miss line, never a guess). dynamic = computed by the island at answer time; `a` is the static fallback. Allergen answers = the matrix sentence + allergens.json workshop notice verbatim (its last sentence is the §4.2 serious-allergy call line, so it is not repeated). Language: NL u-form, RO tu-form (lexicon D3/D4). site/src/data/faq.json is NOT replaced: it feeds the visible FAQ blocks. · 10.11.2026 15:5x (Cowork): Georgiana's WhatsApp answers of 15:20–15:28 in (products-bbq-amount, products-colli-keep + 3 new: products-mici-with, products-gourmet-sides, season-platters-with); 6 hand-off answers now carry an answer by logic on Dan's instruction (facts tag [INFERRED]): hours-annual-leave, order-someone-else, products-cut-to-order, traiteur-plates-cutlery, traiteur-tasting, season-easter (the last from products.json). Still hand-off: products-voucher, products-fresh-frozen, the deposit amount. NOT yet in site/src/data — rides with row 11d. · 10.11.2026 16:3x (Cowork): keywords corrected after a run of the live engine — „Wanneer zijn jullie open?” was answered with trust-since („Sinds 1 februari 2025”) and „ce specialități românești aveți?” with „nu e pe lista noastră”: trust-since loses „geopend / opening / deschis / deschidere”, hours-open-now, products-mici-cook and products-romanian gain the phrases customers type. · 11.11.2026 09:3x (Cowork, row 11h, after the audit of the live assistant): 8 new entries for the assortment questions that failed on the live site — products-assortment + products-cat-rund · -varken · -kip · -lam · -bereidingen · -marinades · -charcuterie (names read from site/src/data/products.json 11.11; the first names of each list are the owners' best sellers, FACTS form 27.10 q10); keywords added to products-bbq-amount and products-colli-list. 107 → 115 entries. Run against the engine built from site/src with the live index + these entries: docs/data/assistant-tests-11h.json (39/45 by the bank alone; the 6 left are engine cases). · 11.11.2026 11:1x (Cowork, row 11i; Dan 11:06 on the live answer to „ce faci?”: „also it is made by dg advisory”): site-what-can-you-do and site-bot now open with the DanGabriel Advisory credit (D-64); keywords „ce faci · cine ești · ce ești · wie ben je · wat ben je” added to site-what-can-you-do. Still 115 entries. · 12.11.2026 15:5x (Cowork, row 11j): the owners' answers of the link (form_answers section 9, Georgiana 12.11 12:37–12:47, 16 of 21 answered) worked in — the three [INFERRED] entries she confirmed (order-someone-else, products-cut-to-order, + products-colli-keep's wording) now carry her word; products-voucher, products-fresh-frozen, traiteur-plates-cutlery, traiteur-tasting, season-easter, delivery-other-town, products-gourmet-amount answer from her; hours-annual-leave and products-gourmet-sides keep their text with her answer as the source; season-platters-with gains the wine line; new entry products-drinks. 115 → 116 entries.",
   "miss": {
     "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
     "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
@@ -223,7 +223,7 @@
       "handoff": "offer",
       "dynamic": null,
       "facts": [
-        "[INFERRED] by Cowork on Dan's instruction 10.11 15:36 („answer yourself … based on the logic”) — not the owners' word; they can correct it (FACTS.md „Answered by logic”)",
+        "FACTS.md: Owners' answers — form 12.11.2026 [OWNER] Georgiana (section 9, 12:37–12:47) b5: „Acum nu știm. Este in funcție si de perioada si evenimente.” — no dates yet; the answer below stays",
         "site/src/data/hours.json `special` (how closing days reach the site); annual leave itself: still not on file"
       ]
     },
@@ -892,7 +892,7 @@
       "handoff": "none",
       "dynamic": null,
       "facts": [
-        "[INFERRED] by Cowork on Dan's instruction 10.11 15:36 („answer yourself … based on the logic”) — not the owners' word; they can correct it (FACTS.md „Answered by logic”)",
+        "FACTS.md: Owners' answers — form 12.11.2026 [OWNER] Georgiana (section 9, 12:37–12:47) a1: „Da, e corect” — the answer below, as she read it",
         "FACTS.md: payment at pickup (bank order-pay-online)"
       ]
     },
@@ -987,23 +987,35 @@
           "ardooie",
           "ruddervoorde",
           "andere gemeente",
-          "verder"
+          "verder",
+          "gent",
+          "kortrijk",
+          "hoe ver leveren",
+          "tot hoe ver",
+          "maximum afstand"
         ],
         "ro": [
           "brugge",
           "torhout",
           "altă localitate",
-          "mai departe"
+          "mai departe",
+          "gent",
+          "kortrijk",
+          "până unde livrați",
+          "cât de departe",
+          "limită de km"
         ]
       },
       "a": {
-        "nl": "Die gemeente staat niet in onze vaste leverzone. Stuur ons uw postcode op WhatsApp; wij zeggen u of het kan en wat het kost.",
-        "ro": "Localitatea asta nu e în zona noastră obișnuită de livrare. Trimite-ne codul poștal pe WhatsApp și îți spunem dacă se poate și cât costă."
+        "nl": "Buiten onze vaste zone leveren wij ook, tegen betaling: €1 per km boven 20 km, zonder afstandsgrens. Stuur ons uw postcode op WhatsApp; wij bevestigen het bedrag.",
+        "ro": "Livrăm și în afara zonei obișnuite, contra cost: 1 € pe km peste 20 km, fără limită de distanță. Trimite-ne codul poștal pe WhatsApp și îți confirmăm suma."
       },
       "link": null,
       "handoff": "offer",
       "dynamic": "delivery",
       "facts": [
+        "FACTS.md: Owners' answers — form 12.11.2026 [OWNER] Georgiana (section 9, 12:37–12:47) b7: „Contra cost nu avem limita de km”",
+        "FACTS.md: Delivery [OWNER] 19.10 (€1/km beyond 20 km)",
         "site/src/data/delivery.json zones (any other postcode → ask)"
       ]
     },
@@ -1527,6 +1539,7 @@
       "handoff": "offer",
       "dynamic": null,
       "facts": [
+        "FACTS.md: Owners' answers — form 12.11.2026 [OWNER] Georgiana (section 9, 12:37–12:47) a3: „Da, e corect” — this wording confirmed",
         "FACTS.md: Owners' answers — WhatsApp 10.11.2026 [OWNER] Georgiana 15:20–15:28 q4 (freeze what is not eaten in the next days; no day figure on file — none written; worded on the quantity, not on age, at her ask)"
       ]
     },
@@ -1570,22 +1583,36 @@
       "id": "products-gourmet-amount",
       "topic": "products",
       "q": {
-        "nl": "Hoeveel gourmet reken ik per persoon?",
-        "ro": "Câtă carne socotesc de persoană la gourmet?"
+        "nl": "Hoeveel gourmet of fondue reken ik per persoon?",
+        "ro": "Câtă carne socotesc de persoană la gourmet sau fondue?"
       },
       "keywords": {
         "nl": [
           "hoeveel gourmet",
-          "gram per persoon gourmet"
+          "gram per persoon gourmet",
+          "fondue per persoon",
+          "hoeveel fondue",
+          "genoeg gourmet",
+          "per persoon bij gourmet",
+          "per persoon gourmet",
+          "per persoon fondue"
         ],
         "ro": [
           "câtă carne gourmet",
-          "grame de persoană"
+          "grame de persoană",
+          "fondue de persoană",
+          "câtă carne la fondue",
+          "ajunge gourmet",
+          "de persoană la gourmet",
+          "persoană la gourmet",
+          "persoană la fondue",
+          "carne la gourmet",
+          "gourmet de persoană"
         ]
       },
       "a": {
-        "nl": "U bestelt gourmet per persoon; wij stellen de schotel samen op het aantal personen dat u opgeeft.",
-        "ro": "Platoul gourmet se comandă de persoană; noi îl alcătuim după numărul de persoane pe care ni-l spui."
+        "nl": "Per persoon krijgt u één stuk van elke soort. U bestelt per persoon; wij stellen de schotel samen op het aantal personen dat u opgeeft.",
+        "ro": "De persoană e câte o bucată din fiecare sortiment. Platoul se comandă de persoană; noi îl alcătuim după numărul de persoane pe care ni-l spui."
       },
       "link": {
         "nl": "/bbq-pakketten",
@@ -1594,8 +1621,8 @@
       "handoff": "offer",
       "dynamic": null,
       "facts": [
-        "site/src/data/products.json gourmet unit pers",
-        "docs/lexicon.md §5.11 (gram figure not on file)"
+        "FACTS.md: Owners' answers — form 12.11.2026 [OWNER] Georgiana (section 9, 12:37–12:47) c3: „Este cate o bucata din fiecare sortiment” (pieces, not grams)",
+        "site/src/data/products.json gourmet unit pers"
       ]
     },
     {
@@ -1717,6 +1744,7 @@
       "handoff": "offer",
       "dynamic": null,
       "facts": [
+        "FACTS.md: Owners' answers — form 12.11.2026 [OWNER] Georgiana (section 9, 12:37–12:47) c1: „Fără preț” — the sides have no fixed price → they stay with WhatsApp",
         "FACTS.md: Owners' answers — WhatsApp 10.11.2026 [OWNER] Georgiana 15:20–15:28 q3 („Puteți face comenzi”)",
         "none of these sides is in products.json: no price, not on the order form → WhatsApp"
       ]
@@ -1950,14 +1978,14 @@
         ]
       },
       "a": {
-        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
-        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+        "nl": "Het vlees is vers en wij versnijden het in de winkel. Diepgevroren vlees verkopen wij niet.",
+        "ro": "Carnea e proaspătă și o tăiem în magazin. Nu vindem carne congelată."
       },
       "link": null,
-      "handoff": "always",
+      "handoff": "none",
       "dynamic": null,
       "facts": [
-        "not on file: fresh vs frozen statement"
+        "FACTS.md: Owners' answers — form 12.11.2026 [OWNER] Georgiana (section 9, 12:37–12:47) b2: „Da, exact așa” to the sentence put to her („Carnea e proaspătă și o tăiem în magazin. Nu vindem carne congelată.”)"
       ]
     },
     {
@@ -1991,7 +2019,7 @@
       "handoff": "none",
       "dynamic": null,
       "facts": [
-        "[INFERRED] by Cowork on Dan's instruction 10.11 15:36 („answer yourself … based on the logic”) — not the owners' word; they can correct it (FACTS.md „Answered by logic”)",
+        "FACTS.md: Owners' answers — form 12.11.2026 [OWNER] Georgiana (section 9, 12:37–12:47) a2: „Da, e corect”",
         "site/src/i18n/bestellen.ts remarks: „Opmerkingen” / „Observații”"
       ]
     },
@@ -2006,23 +2034,28 @@
         "nl": [
           "cadeaubon",
           "cadeaukaart",
-          "geschenkbon"
+          "geschenkbon",
+          "cadeaubonnen",
+          "waardebon"
         ],
         "ro": [
           "card cadou",
           "voucher",
-          "cadou"
+          "cadou",
+          "vouchere",
+          "carduri cadou",
+          "voucher cadou"
         ]
       },
       "a": {
-        "nl": "Dat staat nog niet op onze site. Vraag het ons even op WhatsApp; Georgiana antwoordt van 8 tot 20 uur.",
-        "ro": "Asta nu e încă pe site. Întreabă-ne pe WhatsApp; răspunde Georgiana, între 8 și 20."
+        "nl": "Ja, wij hebben cadeaubonnen, vanaf €10 en voor elk bedrag dat u wenst. Vraag ernaar in de winkel of via WhatsApp.",
+        "ro": "Da, avem vouchere cadou, de la 10 € la orice sumă dorești. Întreabă în magazin sau pe WhatsApp."
       },
       "link": null,
-      "handoff": "always",
+      "handoff": "offer",
       "dynamic": null,
       "facts": [
-        "not on file: gift vouchers"
+        "FACTS.md: Owners' answers — form 12.11.2026 [OWNER] Georgiana (section 9, 12:37–12:47) b1: „Da” + „De la 10 la orice suma se dorește” (where they are bought: not said)"
       ]
     },
     {
@@ -2450,6 +2483,47 @@
       "facts": [
         "site/src/data/products.json charcuterie (27 names, read 11.11.2026)",
         "FACTS.md: Per-kg prices"
+      ]
+    },
+    {
+      "id": "products-drinks",
+      "topic": "products",
+      "q": {
+        "nl": "Verkopen jullie ook drank?",
+        "ro": "Vindeți și băuturi?"
+      },
+      "keywords": {
+        "nl": [
+          "drank",
+          "dranken",
+          "wijn",
+          "bier",
+          "frisdrank",
+          "iets te drinken",
+          "alcohol",
+          "sterkedrank"
+        ],
+        "ro": [
+          "băuturi",
+          "băutură",
+          "vin",
+          "bere",
+          "suc",
+          "sucuri",
+          "de băut",
+          "alcool"
+        ]
+      },
+      "a": {
+        "nl": "Ja, in de winkel: witte, rode en rosé wijn, sterkedrank, Roemeens en Belgisch bier en frisdrank. Op de bestelbon staan ze niet.",
+        "ro": "Da, în magazin: vin alb, roșu și rosé, băuturi spirtoase, bere românească și belgiană și sucuri. Pe bonul de comandă nu sunt."
+      },
+      "link": null,
+      "handoff": "none",
+      "dynamic": null,
+      "facts": [
+        "FACTS.md: Owners' answers — form 12.11.2026 [OWNER] Georgiana (section 9, 12:37–12:47) c2: „Vin alb, rosu, roze, coniac, wischi, Gina, vodcă, alexandrion, vișinată, afinata, căsătorie, bere românească si belgiană jupiler, suc, cola, fanta, Sprite, frutifresh” — brand names left out of the answer; one word („căsătorie”) unread",
+        "site/src/data/products.json: no drink on the order form"
       ]
     },
     {
@@ -3147,8 +3221,8 @@
         ]
       },
       "a": {
-        "nl": "Dat spreken wij af in de offerte. Zet het in uw aanvraag; u krijgt binnen 24 uur antwoord.",
-        "ro": "Asta se stabilește în ofertă. Scrie-o în cerere; primești răspuns în 24 de ore."
+        "nl": "Ja, tegen betaling. Zet het in uw aanvraag; de prijs staat in de offerte, die u binnen 24 uur krijgt.",
+        "ro": "Da, contra cost. Scrie-o în cerere; prețul vine în ofertă, pe care o primești în 24 de ore."
       },
       "link": {
         "nl": "/traiteur",
@@ -3157,7 +3231,7 @@
       "handoff": "offer",
       "dynamic": null,
       "facts": [
-        "[INFERRED] by Cowork on Dan's instruction 10.11 15:36 („answer yourself … based on the logic”) — not the owners' word; they can correct it (FACTS.md „Answered by logic”) — no yes or no is given, only where it is settled",
+        "FACTS.md: Owners' answers — form 12.11.2026 [OWNER] Georgiana (section 9, 12:37–12:47) b3: „Da, contra cost” (the amount: not said → the quote)",
         "FACTS.md: Offerte answered within 24 h [OWNER] 27.10"
       ]
     },
@@ -3180,8 +3254,8 @@
         ]
       },
       "a": {
-        "nl": "Vraag het in uw offerteaanvraag; wij antwoorden binnen 24 uur.",
-        "ro": "Cere asta în cererea de ofertă; răspundem în 24 de ore."
+        "nl": "Ja, dat kan, tegen betaling: wij maken het bord dat u wilt proeven. Vraag het in uw offerteaanvraag; wij antwoorden binnen 24 uur.",
+        "ro": "Da, se poate, contra cost: îți pregătim farfuria pe care vrei s-o guști. Cere asta în cererea de ofertă; răspundem în 24 de ore."
       },
       "link": {
         "nl": "/traiteur",
@@ -3190,7 +3264,7 @@
       "handoff": "offer",
       "dynamic": null,
       "facts": [
-        "[INFERRED] by Cowork on Dan's instruction 10.11 15:36 („answer yourself … based on the logic”) — not the owners' word; they can correct it (FACTS.md „Answered by logic”) — no yes or no is given",
+        "FACTS.md: Owners' answers — form 12.11.2026 [OWNER] Georgiana (section 9, 12:37–12:47) b4: „Da” + „Depinde de ce feriți si contra cost se poate face farfuria dorita” (one word of hers is unclear — „feriți”; read as „depends on what you want”; the paid plate is her word)",
         "FACTS.md: Offerte answered within 24 h [OWNER] 27.10"
       ]
     },
@@ -3482,17 +3556,28 @@
         "nl": [
           "pasen",
           "paaslam",
-          "paasmenu"
+          "paasmenu",
+          "paasbestelling",
+          "lam voor pasen",
+          "lam voor pasen bestellen",
+          "paaslam bestellen"
         ],
         "ro": [
           "paște",
           "miel de paște",
-          "drob"
+          "drob",
+          "paste",
+          "miel pentru paște",
+          "meniu de paște",
+          "mielul de paște",
+          "comand mielul",
+          "miel paște",
+          "mielul"
         ]
       },
       "a": {
-        "nl": "Een paasmenu staat nog niet op de site. Lamsvlees bestelt u wel met de bestelbon: lamsbout, lamskoteletten, een half of een heel lam.",
-        "ro": "Un meniu de Paște nu e încă pe site. Carnea de miel o poți comanda de pe acum: pulpă, cotlete, jumătate de miel sau miel întreg."
+        "nl": "Voor Pasen bestelt u ten laatste 5 dagen vooraf. Het paasmenu is ons feestmenu, en u kunt ook bestellen wat niet op het menu staat. Lamsvlees: lamsbout, lamskoteletten, een half of een heel lam.",
+        "ro": "Pentru Paște se comandă cu cel puțin 5 zile înainte. Meniul de Paște e cel de sărbători de până acum și poți comanda și ce nu e în meniu. La miel: pulpă, cotlete, jumătate de miel sau miel întreg."
       },
       "link": {
         "nl": "/producten",
@@ -3501,8 +3586,8 @@
       "handoff": "offer",
       "dynamic": null,
       "facts": [
-        "site/src/data/products.json: lamsbout · lamskotelet · lam-half · lam-heel (on the order form; price in the shop)",
-        "Easter menu: not on file"
+        "FACTS.md: Owners' answers — form 12.11.2026 [OWNER] Georgiana (section 9, 12:37–12:47) b6: „Cu 5 zile înainte, meniul de Paște rămâne ca cel de pana acum de sărbători si se poate comanda orice doriti inafara de ce scrie in meniu” (no date named; „inafara de” read as „besides”)",
+        "site/src/data/products.json: lamsbout · lamskotelet · lam-half · lam-heel (on the order form; price in the shop)"
       ]
     },
     {
@@ -3529,8 +3614,8 @@
         ]
       },
       "a": {
-        "nl": "Bij de feestschotels raden wij bijgerechten aan en een goede fles rode, witte of rosé wijn.",
-        "ro": "Lângă platourile de sărbători recomandăm garnituri și o sticlă bună de vin roșu, alb sau rosé."
+        "nl": "Bij de feestschotels raden wij bijgerechten aan en een goede fles rode, witte of rosé wijn. Wijn vindt u bij ons in de winkel.",
+        "ro": "Lângă platourile de sărbători recomandăm garnituri și o sticlă bună de vin roșu, alb sau rosé. Vinul îl găsești la noi, în magazin."
       },
       "link": {
         "nl": "/feestmenu-eindejaar",
@@ -3539,7 +3624,8 @@
       "handoff": "none",
       "dynamic": null,
       "facts": [
-        "FACTS.md: Owners' answers — WhatsApp 10.11.2026 [OWNER] Georgiana 15:20–15:28 q5 — advice only; whether the shop sells wine is not on file, so the answer does not say it"
+        "FACTS.md: Owners' answers — form 12.11.2026 [OWNER] Georgiana (section 9, 12:37–12:47) c2: the shop sells wine (white, red, rosé)",
+        "FACTS.md: Owners' answers — WhatsApp 10.11.2026 [OWNER] Georgiana 15:20–15:28 q5"
       ]
     },
     {
