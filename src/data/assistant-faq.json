@@ -482,7 +482,9 @@
         "nl": [
           "account",
           "registreren",
-          "inloggen"
+          "inloggen",
+          "account nodig",
+          "moet ik registreren"
         ],
         "ro": [
           "cont",
@@ -491,8 +493,8 @@
         ]
       },
       "a": {
-        "nl": "Nee. Naam, telefoon en e-mail volstaan; wij bewaren ze 90 dagen, alleen voor uw bestelling.",
-        "ro": "Nu. Ajung numele, telefonul și e-mailul; le păstrăm 90 de zile, doar pentru comanda ta."
+        "nl": "Nee. Naam, telefoon en e-mail volstaan; wij bewaren ze bij uw bestelling tot u ons vraagt ze te wissen.",
+        "ro": "Nu. Ajung numele, telefonul și e-mailul; le păstrăm împreună cu comanda ta până ne ceri să le ștergem."
       },
       "link": {
         "nl": "/bestellen",
@@ -1595,7 +1597,10 @@
           "genoeg gourmet",
           "per persoon bij gourmet",
           "per persoon gourmet",
-          "per persoon fondue"
+          "per persoon fondue",
+          "hoeveel vlees reken ik per persoon bij gourmet",
+          "reken ik per persoon bij gourmet",
+          "reken ik per persoon bij fondue"
         ],
         "ro": [
           "câtă carne gourmet",
@@ -1607,7 +1612,12 @@
           "persoană la gourmet",
           "persoană la fondue",
           "carne la gourmet",
-          "gourmet de persoană"
+          "gourmet de persoană",
+          "câtă carne socotesc de persoană la gourmet",
+          "socotesc de persoană la gourmet",
+          "câtă carne socotesc la gourmet",
+          "câtă carne socotesc la fondue",
+          "socotesc de persoană la fondue"
         ]
       },
       "a": {
@@ -3840,17 +3850,28 @@
           "privacy",
           "gegevens",
           "persoonsgegevens",
-          "gdpr"
+          "gdpr",
+          "hoe lang bewaren",
+          "bewaren jullie mijn gegevens",
+          "gegevens wissen",
+          "laten wissen",
+          "gegevens verwijderen",
+          "mijn gegevens"
         ],
         "ro": [
           "date personale",
           "confidențialitate",
-          "gdpr"
+          "gdpr",
+          "cât păstrați datele",
+          "cât timp păstrați",
+          "ștergeți datele",
+          "șterge datele mele",
+          "ștergerea datelor"
         ]
       },
       "a": {
-        "nl": "Wij gebruiken alleen wat u op de bestelbon invult, en alleen voor uw bestelling; wij bewaren het 90 dagen. Geen cookies, geen account, geen nieuwsbrief.",
-        "ro": "Folosim doar ce completezi în bonul de comandă și doar pentru comanda ta; le păstrăm 90 de zile. Fără cookie-uri, fără cont, fără newsletter."
+        "nl": "Wij gebruiken alleen wat u op de bestelbon invult, en alleen voor uw bestelling; wij bewaren het tot u ons vraagt het te wissen. Geen cookies, geen account, geen nieuwsbrief.",
+        "ro": "Folosim doar ce completezi în bonul de comandă și doar pentru comanda ta; le păstrăm până ne ceri să le ștergem. Fără cookie-uri, fără cont, fără newsletter."
       },
       "link": {
         "nl": "/privacy",
@@ -3859,7 +3880,7 @@
       "handoff": "none",
       "dynamic": null,
       "facts": [
-        "docs/lexicon.md §5.26"
+        "docs/lexicon.md §5.26 + §5.41 (D-72, 12.11)"
       ]
     },
     {

@@ -1,7 +1,7 @@
 ---
 // /privacy · /ro/confidentialitate and /algemene-voorwaarden · /ro/termeni (row 10c, 16.10). The /over-ons shell (D-30):
 // head on paper (eyebrow · H1 + accent · lead) · one block per H2, the eyebrow heading left and the text right on
-// desktop · the version line · the byline. Strings: src/i18n/legal.ts (lexicon §5.26 · §5.27 · §6 „Confidențialitate”
+// desktop · the version line (+ its dated change notes, row 12c) · the byline. Strings: src/i18n/legal.ts (lexicon §5.26 · §5.27 · §6 „Confidențialitate”
 // · „Condiții de comandă”, the RO pages in dumneavoastră, D4). Styles: src/styles/legal.css (shared with /allergenen).
 // JSON-LD: BreadcrumbList (§8.4, the gate's rule for every sub-page, as /over-ons) + WebPage isPartOf #website; privacy
 // also `about` the shop (§5.26). No FAQPage, no invented PrivacyPolicy type (S-03). No script.
@@ -65,6 +65,7 @@ const jsonld = [
 
     <div class="container lg-end">
       <p class="lg-end__version">{t.closing}</p>
+      {t.notes?.map((n) => <p class="lg-end__version">{n}</p>)}
       <p class="lg-end__by">{t.byline}</p>
     </div>
   </main>

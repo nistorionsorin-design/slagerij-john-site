@@ -1,6 +1,6 @@
 // /bestelling — the customer's status page (row 12; docs/admin.md §3.5; lexicon §5.40 / §6). Asks /api/bestelling with
 // the signed link's r · k; draws the three steps and the moment in the order's language. The answer holds the status and
-// the moment only (no name, phone, e-mail or address). A link that is not ours, or an order gone after 90 days →
+// the moment only (no name, phone, e-mail or address). A link that is not ours, or an order erased (row 12c) →
 // „Deze link is niet meer geldig.” / „Linkul nu mai e valabil.”
 import { CUSTOMER } from '../lib/order-text.js';
 

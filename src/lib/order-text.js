@@ -87,7 +87,14 @@ export const SHOP = {
   loadFailed: 'Nu am putut încărca comenzile. Verifică internetul și apasă Reîncarcă.',
   saveFailed: 'Nu s-a salvat. Mai apasă o dată.',
   expired: 'A trecut prea mult timp. Scrie din nou parola.',
-  foot: 'Aici apar comenzile trimise prin bonul de pe site. Cele scrise pe WhatsApp rămân în WhatsApp. O comandă stă aici 90 de zile, apoi se șterge.',
+  /** lexicon §6 „Păstrarea comenzilor, 12.11” (row 12c, D-72 A) */
+  foot: 'Aici apar comenzile trimise prin bonul de pe site. Cele scrise pe WhatsApp rămân în WhatsApp. Comenzile rămân aici. Ștergi una doar când clientul o cere.',
+  /** the erase on request (§6 „Păstrarea comenzilor”): in the tab „Toate” only */
+  erase: 'Șterge comanda',
+  eraseAsk: (ref) => `Ștergi comanda ${ref}? Nu se mai poate recupera.`,
+  eraseYes: 'Șterge',
+  eraseNo: 'Renunță',
+  erased: 'Comanda a fost ștearsă.',
   credit: 'Pagină făcută de DanGabriel Advisory',
   // /admin/pas — the step page from the shop's mail
   stepTitle: (ref, name) => `Comanda ${ref} · ${name}`,

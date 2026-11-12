@@ -3,7 +3,8 @@
 // comenzii, 11.11”). A static shell in Romanian: the passphrase form, the tabs, the order, the list, the foot and the
 // maker's credit. No order is in this HTML or in its script: src/scripts/admin.ts asks /api/admin after the checks and
 // draws the cards with textContent only. Refreshes each minute while the page is in view (docs/admin.md §3.6) — one read
-// of the store's index each time (the Hobby plan's Blob reads, src/lib/order-store.js).
+// of the store's index each time (the Hobby plan's Blob reads, src/lib/order-store.js); the tabs Ridicate and Toate add
+// the archive pages one read at a time as the list reaches its end (`data-more`, row 12c).
 import WaIcon from './WaIcon.astro';
 import { SHOP } from '../lib/order-text.js';
 import dgaMark from '../assets/dga-mark.svg?raw';
@@ -39,6 +40,7 @@ const tabs = ['noua', 'confirmata', 'in-lucru', 'gata', 'done', 'all'] as const;
     <p class="adm__state"><span data-state aria-live="polite"></span> <button type="button" class="btn btn--secondary btn--sm" data-reload>{SHOP.reload}</button></p>
     <p class="adm__msg" data-board-msg role="alert" hidden></p>
     <ol class="adm__list" data-list></ol>
+    <div class="adm__more" data-more aria-hidden="true" hidden></div>
     <p class="adm__empty" data-empty hidden>{SHOP.none}</p>
   </section>
 
@@ -92,4 +94,11 @@ const tabs = ['noua', 'confirmata', 'in-lucru', 'gata', 'done', 'all'] as const;
   .adm__list :global(.card__note) { margin: 0; font-size: 15px; white-space: pre-line; }
   .adm__list :global(.card__acts) { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px; }
   .adm__list :global(.card__msg) { margin: 0; color: var(--ox); font-weight: 600; }
+  /* row 12c: „Șterge comanda” (tab Toate) — the question in the card, the line after; the list's end (archive pages) */
+  .adm__list :global(.card__acts[hidden]) { display: none; }
+  .adm__list :global(.card__ask) { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-top: 4px; }
+  .adm__list :global(.card__q) { flex: 1 0 100%; margin: 0; font-weight: 700; }
+  .adm__list :global(.card--gone) { gap: 4px; }
+  .adm__list :global(.card--gone .card__note) { font-weight: 600; }
+  .adm__more { min-height: 1px; }
 </style>

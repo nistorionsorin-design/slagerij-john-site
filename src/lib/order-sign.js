@@ -2,7 +2,7 @@
 // ADMIN_SECRET (32 random bytes, a Vercel environment variable, never in the repo — D-26), signs three things, each with
 // its own purpose word so one can never stand in for another:
 //   step   the three buttons in the shop's mail: reference + step + expiry (30 days) → /admin/pas
-//   status the customer's link: reference → /bestelling (valid while the order exists, 90 days)
+//   status the customer's link: reference → /bestelling (valid while the order exists: until it is erased, row 12c)
 //   session the shop's cookie: expiry (30 days on her phone)
 // The passphrase is checked against ADMIN_PASS_HASH (scrypt, made by scripts/admin-pass.mjs on Dan's machine).
 import { createHmac, createHash, scrypt, timingSafeEqual, randomBytes } from 'node:crypto';

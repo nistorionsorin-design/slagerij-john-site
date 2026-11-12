@@ -1,7 +1,11 @@
 // /api/admin — the shop's order screen (row 12; D-24 · D-70; docs/admin.md §3 · §4). A Vercel Function (Web handler).
 // The page /admin is a static shell (src/components/Admin.astro): no order in its HTML or script; everything comes from
 // here, after the checks. Romanian strings: src/lib/order-text.js (lexicon §6 „Comenzi și pașii comenzii”).
-//   GET  ?op=list                    the cookie → the cards of the store's index, newest first (+ the light sweep)
+//   GET  ?op=list                    the cookie → the cards of the store's index (the open orders, and those received
+//                                    before the switch day until their 90 days end), newest first, + `done`: the archive
+//                                    pages and how many cards each holds (+ the light sweep) — one read
+//   GET  ?op=page&p=2026-001         the cookie → one archive page's cards (kept orders picked up or delivered; row 12c:
+//                                    the tabs Ridicate and Toate load them one page at a time) — one read
 //   GET  ?op=step&r&s&e&k            a signed step link (the shop's mail) → the order's reference, name and status only;
 //                                    a GET never changes anything (a mail scanner may follow links)
 //   GET  ?op=sweep                   the weekly cron (vercel.json, Mondays 03:00 UTC; Authorization: Bearer CRON_SECRET) → the full sweep
@@ -9,13 +13,15 @@
 //                                    one address → 15 minutes closed (429)
 //   POST {op:'logout'}               the cookie ends („Ieși”)
 //   POST {op:'next'|'back', ref}     the cookie → the card's next step, or Înapoi
+//   POST {op:'erase', ref}           the cookie → the order erased on the customer's request („Șterge comanda”, tab Toate;
+//                                    row 12c, D-72): its blob and its card; a second tap answers erased: false; no mail
 //   POST {op:'step', r, s, e, k}     the signed step link's button (/admin/pas) → that step, no password
 // Every POST: content-type application/json and the header x-admin: 1 (no cross-site form can send it) + the cookie
 // HttpOnly · Secure · SameSite=Strict, 30 days. The customer's mail of a step (confirmată, gata) goes once per order.
 // Secrets only as Vercel environment variables (D-26): ADMIN_PASS_HASH · ADMIN_SECRET · BLOB_READ_WRITE_TOKEN ·
 // CRON_SECRET (+ the order mails' RESEND_API_KEY · ORDER_MAIL_FROM). Without the store every op answers 503.
 import { readFileSync } from 'node:fs';
-import { storeFor, readIndex, readOrder, step, unsend, sweep, loginClosed, loginFailed, loginPassed, nextOf } from '../src/lib/order-store.js';
+import { storeFor, readIndex, readOrder, readPage, isPageKey, step, unsend, erase, sweep, loginClosed, loginFailed, loginPassed, nextOf } from '../src/lib/order-store.js';
 import { checkStep, checkSession, sessionValue, checkPass, addressKey, signStatus, SESSION_DAYS, DAY } from '../src/lib/order-sign.js';
 import { rank } from '../src/lib/order-text.js';
 import { stepMail, sendMail } from './order.js';
@@ -82,11 +88,19 @@ export default {
         if (who !== 'ok') return answer(401, { error: who === 'expired' ? 'expired' : 'login' });
         if (!store) return answer(503, { error: 'off' });
         // one read of the index per refresh (a simple operation of the Hobby plan's 10 000 a month): the light sweep
-        // reads it and hands back the cards it kept; only when the sweep fails is it read again
-        const kept = await sweep(store, now).then((s) => s.cards, (e) => void console.error('admin: sweep failed', e.message));
-        const cards = kept ?? (await readIndex(store)).orders;
-        const orders = Object.values(cards).sort((a, b) => (a.receivedAt < b.receivedAt ? 1 : -1));
-        return answer(200, { orders, at: new Date(now).toISOString() });
+        // reads it and hands back the cards and pages it kept; only when the sweep fails is it read again
+        const ix = (await sweep(store, now).catch((e) => void console.error('admin: sweep failed', e.message))) ?? (await readIndex(store).then((x) => ({ cards: x.orders, done: x.done })));
+        const orders = Object.values(ix.cards).sort((a, b) => (a.receivedAt < b.receivedAt ? 1 : -1));
+        return answer(200, { orders, done: ix.done, at: new Date(now).toISOString() });
+      }
+      if (op === 'page') {
+        const who = checkSession(env.ADMIN_SECRET, cookieOf(request), now);
+        if (who !== 'ok') return answer(401, { error: who === 'expired' ? 'expired' : 'login' });
+        const key = url.searchParams.get('p');
+        if (!isPageKey(key)) return answer(400, { error: 'page' });
+        if (!store) return answer(503, { error: 'off' });
+        const pg = await readPage(store, key);
+        return answer(200, { page: key, orders: Object.values(pg.orders) });
       }
       return answer(404, { error: 'op' });
     }
@@ -135,7 +149,17 @@ export default {
       const res = await step(store, m.ref, to, now);
       if (!res) return answer(404, { error: 'gone' });
       const mailed = await mailOf(env, store, url.origin, res);
-      return answer(200, { ok: true, changed: res.changed, mailed, order: cardOf(res.rec) });
+      return answer(200, { ok: true, changed: res.changed, mailed, order: cardOf(res.rec), ...(res.done ? { done: res.done } : {}) });
+    }
+    if (m.op === 'erase') {
+      // the customer asked (the privacy page's right to erasure): logged in only, in the tab Toate of the screen
+      const who = checkSession(env.ADMIN_SECRET, cookieOf(request), now);
+      if (who !== 'ok') return answer(401, { error: who === 'expired' ? 'expired' : 'login' });
+      if (typeof m.ref !== 'string') return answer(400, { error: 'ref' });
+      const res = await erase(store, m.ref);
+      if (!res) return answer(400, { error: 'ref' });
+      console.log(JSON.stringify({ event: 'erase', ref: m.ref, erased: res.erased }));
+      return answer(200, { ok: true, erased: res.erased, done: res.done });
     }
     return answer(400, { error: 'op' });
   },

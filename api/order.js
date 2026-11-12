@@ -2,7 +2,7 @@
 // directory, Web handler); locally the same handler runs inside `npm run dev` (astro.config.mjs, plugin „api-dev”).
 // Steps: read + check the order (src/lib/order-core.js — prices from products.json, never from the browser) → mail to
 // the shop → WhatsApp notice to the shop → confirmation mail to the customer → the reference back.
-// Storing the order for the shop's screen (Vercel Blob, 90 days) and the running number SJ-2026-0001: row 12, below.
+// Storing the order for the shop's screen (Vercel Blob; kept until the customer asks since row 12c, D-72) and the running number SJ-2026-0001: row 12, below.
 // Secrets only as Vercel environment variables (D-26, public repo) — names in .env.example, values never in the repo:
 //   RESEND_API_KEY · ORDER_MAIL_FROM · ORDER_MAIL_TO (default: entity.json email)
 //   TWILIO_ACCOUNT_SID · TWILIO_AUTH_TOKEN · TWILIO_WHATSAPP_FROM · ORDER_WHATSAPP_TO (default: entity.json whatsapp)
@@ -399,7 +399,7 @@ export default {
     const extra = [];
     if (env.TWILIO_ACCOUNT_SID && env.TWILIO_AUTH_TOKEN && env.TWILIO_WHATSAPP_FROM) extra.push(sendWhatsApp(env, waMsg).catch((e) => console.error('order: whatsapp failed', order.ref, e.message)));
     extra.push(sendMail(env, order.email, mail.customer).catch((e) => console.error('order: confirmation failed', order.ref, e.message)));
-    // row 12: the light sweep (orders older than 90 days, from the index; no list) rides each stored order
+    // row 12: the light sweep (orders received before the switch day and older than 90 days, from the index; no list) rides each stored order
     if (rec) extra.push(sweep(store, hooks.now?.() ?? Date.now()).catch((e) => console.error('order store: sweep failed', e.message)));
     await Promise.all(extra);
     console.log(JSON.stringify({ event: 'order', ref: order.ref, method: order.method, date: order.date, lines: order.lines.length, requests: order.requests.length }));

@@ -1,5 +1,7 @@
 // Row 12 — Dan's local look at the order screen (D-22), with no Blob store and no mail service:
-//   npm run build && node scripts/admin-local.mjs [port]        (default 4340)
+//   npm run build && node scripts/admin-local.mjs [port] [--archive N]        (default 4340; N default 60)
+// Row 12c: N more demo orders go straight into the double (no mail printed) and are walked to „ridicată”, so the tabs
+// Ridicate and Toate have archive pages to load (50 running numbers a page) and „Șterge comanda” has cards to erase.
 // Serves dist/ (cleanUrls) and the three functions — /api/order, /api/admin, /api/bestelling — over the local double
 // of the store (src/lib/order-store.js memoryAdapter, in this process's memory only). Four demo orders go in through the
 // real /api/order; the mails it would send are printed here, never sent (Resend is stubbed). A throwaway passphrase
@@ -15,10 +17,12 @@ import { randomInt } from 'node:crypto';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
-const port = Number(process.argv[2] ?? 4340);
+const args = process.argv.slice(2);
+const port = Number(args.find((a) => /^\d+$/.test(a) && args[args.indexOf(a) - 1] !== '--archive') ?? 4340);
+const archiveN = args.includes('--archive') ? Number(args[args.indexOf('--archive') + 1]) : 60;
 for (const k of ['BLOB_READ_WRITE_TOKEN', 'RESEND_API_KEY', 'METRICS_URL', 'METRICS_KEY', 'VERCEL', 'VERCEL_ENV', 'ORDER_DRY_RUN']) delete process.env[k];
 
-const { memoryAdapter } = await import('../src/lib/order-store.js');
+const { memoryAdapter, claim, step, readOrder } = await import('../src/lib/order-store.js');
 const { hashPass, newSecret, signStep, signStatus } = await import('../src/lib/order-sign.js');
 const { daysFor } = await import('../src/lib/order-core.js');
 const data = (f) => JSON.parse(readFileSync(join(root, 'src/data', f), 'utf8'));
@@ -62,6 +66,15 @@ for (const [i, o] of demo.entries()) {
   const r = await api.order.default.fetch(new Request(`http://localhost:${port}/api/order`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-forwarded-for': `10.0.0.${i + 1}` }, body: JSON.stringify(o) }));
   refs.push((await r.json()).ref);
 }
+// row 12c: the archive — copies of the first demo order, picked up (straight into the double: no mail, no print)
+{
+  const { v, ref, n, year, receivedAt, status, history, sent, changedAt, ...base } = await readOrder(store, refs[0]);
+  void [v, ref, n, year, receivedAt, status, history, sent, changedAt];
+  for (let i = 1; i <= archiveN; i++) {
+    const o = await claim(store, { ...base, name: `Demo Archief ${i}`, email: `archief${i}@example.invalid`, remarks: '' });
+    for (const to of ['confirmata', 'in-lucru', 'gata', 'ridicata']) await step(store, o.ref, to);
+  }
+}
 
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.avif': 'image/avif', '.webp': 'image/webp', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml', '.pdf': 'application/pdf' };
 const fileFor = (path) => {
@@ -104,6 +117,7 @@ createServer(async (req, res) => {
   console.log(`\nLocal order screen (a store double in memory — nothing is stored or sent):`);
   console.log(`  http://localhost:${port}/admin              passphrase (this server only): ${pass}`);
   console.log(`  demo orders: ${refs.join(' · ')}`);
+  if (archiveN) console.log(`  + ${archiveN} demo orders already picked up (tabs Ridicate / Toate, loaded page by page)`);
   console.log(`  step link „E gata” of ${refs[0]}:  http://localhost:${port}/admin/pas?${q(signStep(process.env.ADMIN_SECRET, refs[0], 'gata'))}`);
   console.log(`  status page of ${refs[0]}:        http://localhost:${port}/bestelling?${q(signStatus(process.env.ADMIN_SECRET, refs[0]))}`);
   console.log(`  status page of ${refs[1]} (RO):   http://localhost:${port}/bestelling?${q(signStatus(process.env.ADMIN_SECRET, refs[1]))}`);

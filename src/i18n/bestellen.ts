@@ -98,8 +98,9 @@ export const bestellenNl = {
     remember: 'Mijn gegevens onthouden op dit toestel',
     /** §5.15 form basics */
     required: 'Verplicht veld',
-    /** §5.20 privacy line (order-flow §5, GDPR art. 13); its last two words link to the privacy page */
-    privacy: 'Uw gegevens gebruiken wij alleen voor deze bestelling en bewaren wij 90 dagen. Geen account, geen nieuwsbrief. Meer in',
+    /** §5.20 privacy line (order-flow §5, GDPR art. 13); its last two words link to the privacy page. §5.41 (row 12c,
+     *  D-72 A): kept until the customer asks */
+    privacy: 'Uw gegevens gebruiken wij alleen voor uw bestelling en bewaren wij tot u ons vraagt ze te wissen. Geen account, geen nieuwsbrief. Meer in',
     privacyLink: 'ons privacybeleid',
     /** §5.15 legal link (the page comes at stage 10) */
     privacyHref: '/privacy',
@@ -252,8 +253,8 @@ export const bestellenRo = {
     place: 'Localitatea',
     remember: 'Ține minte datele mele pe acest dispozitiv',
     required: 'Câmp obligatoriu',
-    /** §6 privacy line; its last words link to the privacy page (§6 legal link, stage 10) */
-    privacy: 'Datele tale le folosim doar pentru comanda asta și le păstrăm 90 de zile. Fără cont, fără newsletter. Mai mult în',
+    /** §6 privacy line; its last words link to the privacy page (§6 legal link, stage 10). §5.41 (row 12c, D-72 A) */
+    privacy: 'Datele tale le folosim doar pentru comanda ta și le păstrăm până ne ceri să le ștergem. Fără cont, fără newsletter. Mai mult în',
     privacyLink: 'politica de confidențialitate',
     privacyHref: '/ro/confidentialitate',
   },

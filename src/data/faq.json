@@ -112,7 +112,7 @@
       "nl": [
         {
           "q": "Moet ik een account maken?",
-          "a": "Nee. Naam, telefoon en e-mail volstaan; wij bewaren ze 90 dagen, alleen voor uw bestelling."
+          "a": "Nee. Naam, telefoon en e-mail volstaan; wij bewaren ze bij uw bestelling tot u ons vraagt ze te wissen."
         },
         {
           "q": "Kan ik vandaag nog afhalen?",
@@ -126,7 +126,7 @@
       "ro": [
         {
           "q": "Trebuie să-mi fac cont?",
-          "a": "Nu. Ajung numele, telefonul și e-mailul; le păstrăm 90 de zile, doar pentru comanda ta."
+          "a": "Nu. Ajung numele, telefonul și e-mailul; le păstrăm împreună cu comanda ta până ne ceri să le ștergem."
         },
         {
           "q": "Pot ridica azi?",

@@ -11,6 +11,7 @@
 
 import entity from '../data/entity.json';
 import { updatedOn } from '../lib/updated';
+import { KEEP_FROM } from '../lib/order-keep.js';
 import { KEEP_DAYS } from '../lib/assistant/misses.js';
 import { AI_LAYER } from '../lib/assistant/ai.js';
 
@@ -45,6 +46,9 @@ export interface LegalPage {
   lead?: string;
   blocks: LegalBlock[];
   closing: string;
+  /** dated change notes, one line each under the version line (the closing promises them: „Verandert er iets, dan
+   *  schrijven wij hier wat en wanneer”) */
+  notes?: string[];
   byline: string;
   links: Link[];
   crumbs: { home: string; page: string };
@@ -58,13 +62,21 @@ export const auto: Link[] = [
   ['consumentenombudsdienst.be', 'https://consumentenombudsdienst.be/'],
 ];
 
-const bylineNl = `Door John en Georgiana, Slagerij John · bijgewerkt op ${updatedOn('nl')}.`;
-const bylineRo = `De John și Georgiana, Măcelăria John · actualizat la ${updatedOn('ro')}.`;
+const byline = {
+  nl: (day: string) => `Door John en Georgiana, Slagerij John · bijgewerkt op ${day}.`,
+  ro: (day: string) => `De John și Georgiana, Măcelăria John · actualizat la ${day}.`,
+};
+const bylineNl = byline.nl(updatedOn('nl'));
+const bylineRo = byline.ro(updatedOn('ro'));
+/** row 12c (D-72 A, lexicon §5.41): the privacy page changed on the switch day — its version line and byline carry that
+ *  day (src/lib/updated.ts `since`), and the change note names it; the terms keep the site's date */
+const privacyDay = (L: 'nl' | 'ro') => updatedOn(L, KEEP_FROM);
 
 /** §5.26 Privacy */
 export const privacyNl: LegalPage = {
   title: 'Privacybeleid: hoe wij uw gegevens gebruiken, Zwevezele',
-  description: 'Slagerij John in Zwevezele gebruikt uw gegevens alleen voor uw bestelling en bewaart ze 90 dagen. Geen cookies, geen account, geen nieuwsbrief. Lees hoe.',
+  /** §5.41 (D-72 A, 12.11) */
+  description: 'Slagerij John in Zwevezele gebruikt uw gegevens alleen voor uw bestelling en wist ze op uw vraag. Geen cookies, geen account, geen nieuwsbrief. Lees hoe.',
   eyebrow: 'Privacy',
   h1: 'Privacy: hoe wij uw gegevens gebruiken.',
   accent: 'Geen cookies, geen account, geen nieuwsbrief.',
@@ -72,7 +84,8 @@ export const privacyNl: LegalPage = {
   blocks: [
     { h2: 'Welke gegevens wij ontvangen', text: 'Alleen wat u op de bestelbon invult: uw naam, telefoonnummer, e-mailadres, eventueel uw opmerkingen en, bij levering, uw adres. Geen account, geen nieuwsbrief.' },
     { h2: 'Waarvoor wij ze gebruiken', text: 'Om uw bestelling klaar te maken en te bevestigen: u krijgt een bevestiging per e-mail, de winkel krijgt dezelfde bestelling. De grondslag is de overeenkomst tussen ons (art. 6, lid 1, b AVG). Wij gebruiken uw gegevens niet voor reclame en verkopen ze niet.' },
-    { h2: 'Hoelang wij ze bewaren', text: withMiss('90 dagen na uw bestelling, daarna wissen wij ze. Boekhoudkundige stukken bewaren wij zolang de wet dat vraagt.', 'nl') },
+    /** §5.41 the orders sentence (D-72 A, 12.11); the D-62 sentence about the assistant's questions follows unchanged */
+    { h2: 'Hoelang wij ze bewaren', text: withMiss('Uw bestelling bewaren wij in ons bestellingenoverzicht tot u ons vraagt ze te wissen. Zo vinden wij uw vorige bestellingen terug. Wissen kan altijd: mail naar info@slagerij-john.be of bel 0466 18 64 57. Boekhoudkundige stukken bewaren wij zolang de wet dat vraagt.', 'nl') },
     { h2: 'Wie ze nog ziet', text: 'De website draait bij Vercel Inc.; de bestelfunctie draait in Frankfurt (EU). De bevestigingsmail vertrekt via een e-maildienst (Resend). Die leveranciers verwerken de gegevens alleen in onze opdracht en gebruiken ze niet voor zichzelf.' },
     ...ai('nl'),
     { h2: 'WhatsApp', text: 'De knop „Bestel via WhatsApp” opent de app WhatsApp met een kant-en-klaar bericht. Vanaf dan gelden de regels van WhatsApp (Meta). Wij ontvangen niets vóór u op „verzenden” drukt.' },
@@ -82,8 +95,10 @@ export const privacyNl: LegalPage = {
     { h2: 'Google en de kaart', text: 'De Google-score op de site lezen wij op onze server; uw browser stuurt niets naar Google. De kaart op de contactpagina is een afbeelding op onze eigen server.' },
     { h2: 'Uw rechten', text: 'U kunt altijd vragen welke gegevens wij van u hebben, ze laten verbeteren of wissen. Mail naar info@slagerij-john.be; wij antwoorden binnen 30 dagen. Een klacht kunt u indienen bij de Gegevensbeschermingsautoriteit, Drukpersstraat 35, 1000 Brussel, www.gegevensbeschermingsautoriteit.be.' },
   ],
-  closing: `Versie van ${updatedOn('nl')}. Verandert er iets, dan schrijven wij hier wat en wanneer.`,
-  byline: bylineNl,
+  closing: `Versie van ${privacyDay('nl')}. Verandert er iets, dan schrijven wij hier wat en wanneer.`,
+  /** §5.41 the change note, {DATUM} = the switch day */
+  notes: [`${privacyDay('nl')}: bestellingen bewaren wij voortaan tot u ons vraagt ze te wissen; vroeger was dat 90 dagen. Bestellingen van vóór die datum wissen wij na 90 dagen, zoals beloofd.`],
+  byline: byline.nl(privacyDay('nl')),
   /** §5.26: de bestelbon · de contactpagina · Allergenen — the text names no „Allergenen” (the footer links it) */
   links: [['de bestelbon', '/bestellen'], ['de contactpagina', '/contact'], ['Allergenen', '/allergenen']],
   crumbs: { home: 'Home', page: 'Privacy' },
@@ -92,7 +107,8 @@ export const privacyNl: LegalPage = {
 /** §6 „Confidențialitate” = the italic RO lines of §5.26, verbatim (Statistici: the dumneavoastră version) */
 export const privacyRo: LegalPage = {
   title: 'Confidențialitate: cum folosim datele dumneavoastră',
-  description: 'Măcelăria John din Zwevezele folosește datele dumneavoastră doar pentru comandă și le păstrează 90 de zile. Fără cookie-uri, fără cont, fără newsletter.',
+  /** §5.41 (D-72 A, 12.11) */
+  description: 'Măcelăria John din Zwevezele folosește datele dumneavoastră doar pentru comandă și le șterge la cerere. Fără cookie-uri, fără cont, fără newsletter.',
   eyebrow: 'Confidențialitate',
   h1: 'Confidențialitate. Cum folosim datele dumneavoastră.',
   accent: 'Fără cookie-uri, fără cont, fără newsletter.',
@@ -100,7 +116,8 @@ export const privacyRo: LegalPage = {
   blocks: [
     { h2: 'Ce date primim', text: 'Doar ce completați în bonul de comandă: numele, telefonul, adresa de e-mail, eventual observațiile și, pentru livrare, adresa. Nu cerem cont, nu trimitem newsletter.' },
     { h2: 'La ce le folosim', text: 'Pentru a pregăti și a confirma comanda dumneavoastră: primiți o confirmare pe e-mail, iar magazinul primește aceeași comandă. Temeiul este contractul dintre noi (art. 6 alin. 1 lit. b GDPR). Nu le folosim pentru reclamă și nu le vindem.' },
-    { h2: 'Cât le păstrăm', text: withMiss('90 de zile după comandă, apoi le ștergem. Documentele contabile se păstrează cât cere legea.', 'ro') },
+    /** §5.41 the orders sentence (D-72 A, 12.11), dumneavoastră (D4) */
+    { h2: 'Cât le păstrăm', text: withMiss('Comanda dumneavoastră rămâne în evidența noastră de comenzi până când ne cereți să o ștergem. Așa găsim comenzile dumneavoastră anterioare. O ștergem oricând la cerere: scrieți la info@slagerij-john.be sau sunați la 0466 18 64 57. Documentele contabile se păstrează cât cere legea.', 'ro') },
     { h2: 'Cine le mai vede', text: 'Site-ul este găzduit la Vercel Inc.; funcția de comandă rulează în Frankfurt (UE). E-mailul de confirmare pleacă printr-un serviciu de e-mail (Resend). Acești furnizori prelucrează datele doar în numele nostru și nu le folosesc pentru ei.' },
     ...ai('ro'),
     { h2: 'WhatsApp', text: 'Butonul „Comandă pe WhatsApp” deschide aplicația WhatsApp cu un mesaj gata scris. Din acel moment se aplică regulile WhatsApp (Meta). Noi nu primim nimic până nu apăsați „trimite”.' },
@@ -109,8 +126,10 @@ export const privacyRo: LegalPage = {
     { h2: 'Google și harta', text: 'Nota Google de pe site o citim noi, de pe serverul nostru; browserul dumneavoastră nu trimite nimic la Google. Harta de pe pagina Contact este o imagine de pe serverul nostru.' },
     { h2: 'Drepturile dumneavoastră', text: 'Puteți cere oricând ce date avem despre dumneavoastră, corectarea sau ștergerea lor. Scrieți la info@slagerij-john.be; răspundem în 30 de zile. Puteți depune o plângere la Autoritatea pentru Protecția Datelor, Drukpersstraat 35, 1000 Bruxelles, www.gegevensbeschermingsautoriteit.be.' },
   ],
-  closing: `Versiunea din ${updatedOn('ro')}. Dacă schimbăm ceva, scriem aici ce și când.`,
-  byline: bylineRo,
+  closing: `Versiunea din ${privacyDay('ro')}. Dacă schimbăm ceva, scriem aici ce și când.`,
+  /** §5.41 the change note, {DATA} = the switch day */
+  notes: [`${privacyDay('ro')}: păstrăm comenzile până când ne cereți să le ștergem; înainte le păstram 90 de zile. Comenzile primite înainte de această dată se șterg după 90 de zile, cum am promis.`],
+  byline: byline.ro(privacyDay('ro')),
   links: [['bonul de comandă', '/ro/comanda'], ['pagina Contact', '/ro/contact'], ['Alergeni', '/ro/alergeni']],
   crumbs: { home: 'Acasă', page: 'Confidențialitate' },
 };

@@ -1,28 +1,37 @@
 // Row 12 (D-24 · D-70, docs/admin.md §2) — the order store: one private Vercel Blob store in the owners' project, one JSON
-// per order at orders/<year>/<0001>.json, the running number SJ-<year>-0001, the five statuses, 90 days, the login brake.
-// Server side only (the functions api/order.js · api/admin.js · api/bestelling.js); no order ever reaches the repo, the
-// built HTML or a script.
+// per order at orders/<year>/<0001>.json, the running number SJ-<year>-0001, the five statuses, the login brake.
+// Row 12c (D-72 A, lexicon §5.41): orders received from the switch day on (KEEP_FROM, src/lib/order-keep.js) are kept
+// until the customer asks — erase() on the shop's „Șterge comanda” — and never erased by age; orders received before it
+// keep their 90 days. Server side only (the functions api/order.js · api/admin.js · api/bestelling.js); no order ever
+// reaches the repo, the built HTML or a script.
 //
 // The Hobby plan's Blob allowance (read 11.11 on vercel.com/docs/vercel-blob/usage-and-pricing, [OFFICIAL]): 1 GB, the
 // first 10 000 simple operations (reads) and 2 000 advanced operations (uploads, lists) a month; beyond that „you will not
 // be able to access Vercel Blob … until 30 days have passed” — the order store would stop. So the shop's list (refreshed
-// each minute while open) reads ONE blob, orders/index.json (the live orders' cards), never list() + every order; list()
-// runs once per order (the running number) and once a day (the sweep cron). The index is a copy inside the same store,
-// swept with the orders; the order's own blob stays the truth (status changes are written there first, with ifMatch).
+// each minute while open) reads ONE blob, orders/index.json, never list() + every order; list() runs once per order (the
+// running number) and once a week (the sweep cron). Since row 12c the index holds only the cards the shop works with
+// (open orders, and orders received before KEEP_FROM until their 90 days end): a kept order picked up or delivered moves
+// to its archive page orders/done/<year>-<page>.json (order-keep.js), which the tabs Ridicate and Toate read one page at
+// a time. The index and the pages are copies inside the same store; the order's own blob stays the truth (status changes
+// are written there first, with ifMatch).
 //
 // Adapters (same rules both): blobAdapter(token) — @vercel/blob, private access, loaded only when a token is set (the
 // install is Dan's step: it needs his dev server stopped, CLAUDE.md) · memoryAdapter() — the test double.
 import { brussels } from './order-core.js';
 import { rank, nextOf } from './order-text.js';
+import { kept, DAYS_KEPT_BEFORE, pageOf, inPage } from './order-keep.js';
 
 export class Exists extends Error {}
 export class Conflict extends Error {}
 
-export const DAYS_KEPT = 90;
 const DAY = 86400000;
 export const INDEX = 'orders/index.json';
 const pad = (n) => String(n).padStart(4, '0');
 export const pathOf = (year, n) => `orders/${year}/${pad(n)}.json`;
+export const pagePath = (key) => `orders/done/${key}.json`;
+/** an archive page's key as the screen asks for it (order-keep.js pageOf): 2026-001 */
+export const isPageKey = (key) => /^\d{4}-\d{3}$/.test(String(key ?? ''));
+export { pageOf };
 export const refOf = (year, n) => `SJ-${year}-${pad(n)}`;
 /** a running number's year and number; null for anything else (a random page reference SJ-2026-AB7K among them) */
 export const parseRef = (ref) => {
@@ -173,63 +182,142 @@ export async function storeFor(env, test = null) {
   return blobAdapter(token);
 }
 
-// ——— the index: the cards of the list, one read ———
+// ——— the index and the archive pages: the cards of the list ———
 /** an order's card for the shop's list = the record without the customer's e-mail (the list never shows it) */
 const card = (rec) => {
   const { email, ...rest } = rec;
   void email;
   return rest;
 };
-async function indexEdit(store, edit) {
+/** the index since row 12c: { v: 2, orders: { ref: card }, done: { pageKey: cards in that page }, last: { year: the
+ *  highest running number ever given } } — `last` keeps an erased order's number from being given again (its old
+ *  links are signed with it). An index of row 12 ({ v: 1, orders }) reads as one with no pages yet. */
+const shape = (ix) => Object.assign(ix, { v: 2, orders: ix.orders ?? {}, done: ix.done ?? {}, last: ix.last ?? {} });
+const blankIndex = () => shape({});
+const blankPage = () => ({ v: 1, orders: {} });
+/** read → change → write only if no other write landed in between (ifMatch; a first write: create, never an
+ *  overwrite); a refused write is retried on the fresh copy. `change` returning false = nothing to write. */
+async function edit(store, path, blank, change, what) {
   for (let i = 0; i < 8; i++) {
-    const cur = await store.read(INDEX, { etag: true });
-    const ix = cur?.json ?? { v: 1, orders: {} };
-    if (edit(ix) === false) return ix;
+    const cur = await store.read(path, { etag: true });
+    const doc = cur ? cur.json : blank();
+    if (change(doc) === false) return doc;
     try {
-      await store.write(INDEX, ix, cur ? { ifMatch: cur.etag } : { create: true });
-      return ix;
+      await store.write(path, doc, cur ? { ifMatch: cur.etag } : { create: true });
+      return doc;
     } catch (e) {
       if (!(e instanceof Conflict) && !(e instanceof Exists)) throw e;
     }
   }
-  throw new Error('order index: busy');
+  throw new Error(`${what}: busy`);
 }
-const indexPut = (store, rec) => indexEdit(store, (ix) => void (ix.orders[rec.ref] = card(rec)));
-const indexDrop = (store, refs) => indexEdit(store, (ix) => (refs.some((r) => r in ix.orders) ? void refs.forEach((r) => delete ix.orders[r]) : false));
+const indexEdit = (store, change) => edit(store, INDEX, blankIndex, (ix) => change(shape(ix)), 'order index');
+const pageEdit = (store, key, change) => edit(store, pagePath(key), blankPage, change, 'order page');
 export async function readIndex(store) {
-  return (await store.read(INDEX))?.json ?? { v: 1, orders: {} };
+  return shape((await store.read(INDEX))?.json ?? {});
+}
+/** one archive page's cards (a page not written yet: none); null for a key that is not a page's */
+export async function readPage(store, key) {
+  if (!isPageKey(key)) return null;
+  return (await store.read(pagePath(key)))?.json ?? blankPage();
+}
+
+/** Put an order's card where it lies (order-keep.js inPage) and take it out of the other place: its archive page first,
+ *  then the index (the page's count, the year's last number). `was` = where the card lay before this write ('page',
+ *  'index', or null = not known: the page is looked at) — a step between open statuses never reads a page. Returns the
+ *  index as written (its `done` goes back to the screen). */
+async function place(store, rec, { was = null } = {}) {
+  const key = pageOf(rec.year, rec.n);
+  const there = inPage(rec);
+  let delta = 0;
+  if (there || was !== 'index')
+    await pageEdit(store, key, (pg) => {
+      const had = rec.ref in pg.orders;
+      if (there) {
+        pg.orders[rec.ref] = card(rec);
+        delta = had ? 0 : 1;
+        return;
+      }
+      delta = had ? -1 : 0;
+      if (!had) return false;
+      delete pg.orders[rec.ref];
+    });
+  return indexEdit(store, (ix) => {
+    const before = JSON.stringify([ix.orders[rec.ref], ix.done[key], ix.last[rec.year]]);
+    if (there) delete ix.orders[rec.ref];
+    else ix.orders[rec.ref] = card(rec);
+    const count = (ix.done[key] ?? 0) + delta;
+    if (count > 0) ix.done[key] = count;
+    else delete ix.done[key];
+    ix.last[rec.year] = Math.max(ix.last[rec.year] ?? 0, rec.n);
+    if (JSON.stringify([ix.orders[rec.ref], ix.done[key], ix.last[rec.year]]) === before) return false;
+  });
 }
 
 // ——— the running number (docs/admin.md §2) ———
-/** Claim SJ-<year>-<max+1> for the order and store it (status nouă): list the year, take max + 1, put without overwrite;
+/** Claim SJ-<year>-<max+1> for the order and store it (status nouă): list the year, take max + 1 — and never below the
+ *  index's `last` + 1, so the number of an erased order is not given again (row 12c) —, put without overwrite;
  *  „already exists” → the next number, five tries. The year is Brussels time (0001 again each January). Numbers are
  *  references, not invoices: a gap is allowed. `rec` = the order as it is kept. */
 export async function claim(store, rec, now = Date.now()) {
   const year = brussels(new Date(now)).day.getUTCFullYear();
   const taken = (await store.list(`orders/${year}/`)).map((b) => Number(/\/(\d+)\.json$/.exec(b.path)?.[1])).filter(Number.isFinite);
-  let n = (taken.length ? Math.max(...taken) : 0) + 1;
+  const last = (await readIndex(store)).last[year] ?? 0;
+  let n = Math.max(taken.length ? Math.max(...taken) : 0, last) + 1;
   for (let i = 0; i < 5; i++, n++) {
-    const kept = { ...rec, v: 1, ref: refOf(year, n), n, year, receivedAt: new Date(now).toISOString(), status: 'noua', history: [{ to: 'noua', at: new Date(now).toISOString() }], sent: {} };
+    const stored = { ...rec, v: 1, ref: refOf(year, n), n, year, receivedAt: new Date(now).toISOString(), status: 'noua', history: [{ to: 'noua', at: new Date(now).toISOString() }], sent: {} };
     try {
-      await store.write(pathOf(year, n), kept, { create: true });
+      await store.write(pathOf(year, n), stored, { create: true });
     } catch (e) {
       // taken, or another order creating the same number at this moment (a racing write, row 12a) → the next number
       if (e instanceof Exists || e instanceof Conflict) continue;
       throw e;
     }
     // the list's card; if the index write fails the order still stands (the weekly sweep puts it back in the index)
-    await indexPut(store, kept).catch((e) => console.error('order index: put failed', kept.ref, e.message));
-    return kept;
+    await place(store, stored, { was: 'index' }).catch((e) => console.error('order index: put failed', stored.ref, e.message));
+    return stored;
   }
   throw new Error('order store: five numbers in a row were taken');
 }
 /** the order and its card, gone (the shop's mail failed: never an order on the screen the customer was told failed) */
 export async function unclaim(store, rec) {
   await store.remove(pathOf(rec.year, rec.n));
-  await indexDrop(store, [rec.ref]).catch((e) => console.error('order index: drop failed', rec.ref, e.message));
+  await indexEdit(store, (ix) => (rec.ref in ix.orders ? void delete ix.orders[rec.ref] : false)).catch((e) => console.error('order index: drop failed', rec.ref, e.message));
 }
 
-/** one order, fresh from the store (null: no such order, or gone after 90 days) */
+/** Erase one order on the customer's request (row 12c; the privacy page's right to erasure; „Șterge comanda” on
+ *  /admin): the order's blob first — the customer's status link and the shop's step links answer as a wrong link from
+ *  that moment —, then its card wherever it lies (its archive page, the index). No mail to anyone. A second tap finds
+ *  nothing and writes nothing: { erased: false }. Returns { erased, done } (the index's pages, for the screen), or null
+ *  for a reference that is not a running number. */
+export async function erase(store, ref) {
+  const p = parseRef(ref);
+  if (!p) return null;
+  const path = pathOf(p.year, p.n);
+  const rec = (await store.read(path))?.json ?? null;
+  if (rec) await store.remove(path);
+  const key = pageOf(p.year, p.n);
+  let delta = 0;
+  await pageEdit(store, key, (pg) => {
+    delta = ref in pg.orders ? -1 : 0;
+    if (!delta) return false;
+    delete pg.orders[ref];
+  });
+  let inIndex = false;
+  const ix = await indexEdit(store, (x) => {
+    inIndex = ref in x.orders;
+    if (!inIndex && !delta && (x.last[p.year] ?? 0) >= p.n) return false;
+    delete x.orders[ref];
+    const count = (x.done[key] ?? 0) + delta;
+    if (count > 0) x.done[key] = count;
+    else delete x.done[key];
+    x.last[p.year] = Math.max(x.last[p.year] ?? 0, p.n);
+  });
+  return { erased: !!(rec || inIndex || delta), done: ix.done };
+}
+
+/** one order, fresh from the store (null: no such order — erased on request, or an order received before KEEP_FROM
+ *  gone after its 90 days) */
 export async function readOrder(store, ref) {
   const p = parseRef(ref);
   return p ? (await store.read(pathOf(p.year, p.n)))?.json ?? null : null;
@@ -238,8 +326,10 @@ export async function readOrder(store, ref) {
 // ——— the steps (docs/admin.md §3) ———
 /** Move an order to `to` (a later status only: a step link tapped twice, or after a later step, changes nothing), or one
  *  step `back` (Înapoi: the last step undone). The customer's mail of a step (confirmată, gata) is claimed in the same
- *  conditional write, once per order: a repeated tap — even after Înapoi — sends none. Returns { rec, changed, mail }
- *  or null (no such order). */
+ *  conditional write, once per order: a repeated tap — even after Înapoi — sends none. Then the card is put where it
+ *  lies (place: a kept order picked up or delivered → its archive page; Înapoi from there → the index). Returns
+ *  { rec, changed, mail, done } (done: the index's pages after the move; undefined if the card's write failed) or null
+ *  (no such order). */
 export async function step(store, ref, to, now = Date.now()) {
   const p = parseRef(ref);
   if (!p) return null;
@@ -248,6 +338,7 @@ export async function step(store, ref, to, now = Date.now()) {
     const cur = await store.read(pathOf(p.year, p.n), { etag: true });
     if (!cur) return null;
     const rec = cur.json;
+    const was = inPage(rec) ? 'page' : 'index';
     let mail = null;
     if (to === 'back') {
       if (rec.history.length < 2) return { rec, changed: false, mail };
@@ -263,14 +354,15 @@ export async function step(store, ref, to, now = Date.now()) {
         mail = to;
       }
     }
+    rec.changedAt = at;
     try {
       await store.write(pathOf(p.year, p.n), rec, { ifMatch: cur.etag });
     } catch (e) {
       if (e instanceof Conflict) continue;
       throw e;
     }
-    await indexPut(store, rec).catch((e) => console.error('order index: put failed', rec.ref, e.message));
-    return { rec, changed: true, mail };
+    const ix = await place(store, rec, { was }).catch((e) => void console.error('order index: put failed', rec.ref, e.message));
+    return { rec, changed: true, mail, done: ix?.done };
   }
   throw new Error('order store: busy');
 }
@@ -283,7 +375,7 @@ export async function unsend(store, ref, which) {
     delete cur.json.sent[which];
     try {
       await store.write(pathOf(p.year, p.n), cur.json, { ifMatch: cur.etag });
-      await indexPut(store, cur.json).catch((e) => console.error('order index: put failed', cur.json.ref, e.message));
+      await place(store, cur.json, { was: inPage(cur.json) ? 'page' : 'index' }).catch((e) => console.error('order index: put failed', cur.json.ref, e.message));
       return;
     } catch (e) {
       if (!(e instanceof Conflict)) throw e;
@@ -292,55 +384,113 @@ export async function unsend(store, ref, which) {
 }
 export { nextOf };
 
-// ——— 90 days (docs/admin.md §2) ———
-const old = (iso, now) => now - new Date(iso).getTime() > DAYS_KEPT * DAY;
-/** The sweep. Light (each stored order, each opening of the list): the index's cards older than 90 days after
- *  receivedAt — their orders and cards deleted (deletes are free); no list(). Full (the weekly cron, docs/admin.md §2): one list() of
- *  orders/ — every order blob checked by its own receivedAt (an order missing from the index is read and put back in it,
- *  a card whose order is gone is dropped), and the login brake's counters older than a day. */
+// ——— how long an order stays (docs/admin.md §2; row 12c, order-keep.js) ———
+/** an order received before KEEP_FROM, more than 90 days ago — the only order the sweeps erase */
+const expired = (rec, now) => !kept(rec.receivedAt) && now - new Date(rec.receivedAt).getTime() > DAYS_KEPT_BEFORE * DAY;
+/** the full sweep re-checks what was written in the last two weeks (it runs weekly: every write gets two looks) */
+const RECENT = 14 * DAY;
+/** The sweep. Light (each stored order, each opening of the list; one read of the index, no list()): the index's cards
+ *  of orders received before KEEP_FROM and older than 90 days — their orders and cards deleted (deletes are free); a
+ *  kept order picked up or delivered that still lies in the index (an index of row 12) moved to its page, once. Returns
+ *  the index's cards and pages for the list (api/admin.js reads the index once per refresh).
+ *  Full (the weekly cron): one list() of orders/ (one advanced operation per 1 000 blobs) —
+ *    · an order blob written in the last 14 days (or last written before the switch day) that lies neither in the index
+ *      nor in its page (a card's write that failed) is read and put back where it lies — or erased, if it is an order
+ *      received before the switch day past its 90 days; one older than that was placed when it was last written and
+ *      looked at by an earlier sweep, so the sweep does not read the archive;
+ *    · an index card whose order is gone is dropped (cards younger than the list() itself are left alone);
+ *    · an archive page written in the last 14 days is read: cards of orders that are gone dropped, its count in the
+ *      index set to what it holds; a page key the index names but the store does not have is dropped;
+ *    · the index's last number of each year raised to the highest order blob listed;
+ *    · the login brake's counters older than a day. */
 export async function sweep(store, now = Date.now(), { full = false } = {}) {
   const ix = await readIndex(store);
   const gone = [];
-  for (const [ref, c] of Object.entries(ix.orders)) if (old(c.receivedAt, now)) gone.push(ref);
+  const move = [];
+  for (const [ref, c] of Object.entries(ix.orders)) {
+    if (expired(c, now)) gone.push(ref);
+    else if (inPage(c)) move.push(c);
+  }
   for (const ref of gone) {
     const p = parseRef(ref);
     if (p) await store.remove(pathOf(p.year, p.n));
   }
-  if (!full) {
-    if (gone.length) await indexDrop(store, gone);
-    // the cards that stay, for the list (api/admin.js): the index is read once per refresh
-    const cards = Object.fromEntries(Object.entries(ix.orders).filter(([ref]) => !gone.includes(ref)));
-    return { removed: gone.length, cards };
-  }
-  const blobs = (await store.list('orders/')).filter((b) => b.path !== INDEX && /^orders\/\d{4}\/\d+\.json$/.test(b.path));
-  const live = new Set();
-  for (const b of blobs) {
-    const [, year, n] = /^orders\/(\d{4})\/(\d+)\.json$/.exec(b.path);
-    const ref = refOf(Number(year), Number(n));
-    if (gone.includes(ref)) continue;
-    const c = ix.orders[ref];
-    if (c && !old(c.receivedAt, now)) {
-      live.add(ref);
+  let cur = ix;
+  if (gone.length) cur = await indexEdit(store, (x) => (gone.some((r) => r in x.orders) ? void gone.forEach((r) => delete x.orders[r]) : false));
+  for (const c of move) cur = (await place(store, c, { was: 'index' }).catch((e) => void console.error('order index: move failed', c.ref, e.message))) ?? cur;
+  if (!full) return { removed: gone.length, moved: move.length, cards: cur.orders, done: cur.done };
+
+  const started = now;
+  const blobs = [];
+  const pages = new Map();
+  for (const b of await store.list('orders/')) {
+    let m = /^orders\/(\d{4})\/(\d+)\.json$/.exec(b.path);
+    if (m) {
+      const year = Number(m[1]);
+      const n = Number(m[2]);
+      blobs.push({ ...b, year, n, ref: refOf(year, n) });
       continue;
     }
-    const rec = c ? null : (await store.read(b.path))?.json;
-    if (c || (rec && old(rec.receivedAt, now))) {
-      await store.remove(b.path);
-      gone.push(ref);
-    } else if (rec) {
-      await indexPut(store, rec);
-      live.add(ref);
-    }
+    m = /^orders\/done\/(\d{4}-\d{3})\.json$/.exec(b.path);
+    if (m) pages.set(m[1], b.at);
   }
-  const stale = Object.keys(ix.orders).filter((r) => !live.has(r));
-  if (stale.length) await indexDrop(store, stale);
+  const listed = new Set(blobs.map((b) => b.ref).filter((r) => !gone.includes(r)));
+  const seen = new Map();
+  const pageOnce = async (key) => {
+    if (!seen.has(key)) seen.set(key, await readPage(store, key));
+    return seen.get(key);
+  };
+  let restored = 0;
+  for (const b of blobs) {
+    // looked at: written in the last two weeks, or last written before the switch day (an order received before it,
+    // never changed since: few, and only until their 90 days end)
+    if (gone.includes(b.ref) || b.ref in cur.orders || (now - b.at > RECENT && kept(new Date(b.at).toISOString()))) continue;
+    if (pages.has(pageOf(b.year, b.n)) && b.ref in (await pageOnce(pageOf(b.year, b.n))).orders) continue;
+    const rec = (await store.read(b.path))?.json;
+    if (!rec) continue;
+    if (expired(rec, now)) {
+      await store.remove(b.path);
+      gone.push(b.ref);
+      listed.delete(b.ref);
+      continue;
+    }
+    cur = (await place(store, rec)) ?? cur;
+    if (inPage(rec)) pages.set(pageOf(rec.year, rec.n), now);
+    restored++;
+  }
+  const counts = {};
+  for (const [key, at] of pages) {
+    if (now - at > RECENT) continue;
+    const pg = await pageEdit(store, key, (x) => {
+      const drop = Object.keys(x.orders).filter((r) => !listed.has(r));
+      if (!drop.length) return false;
+      for (const r of drop) delete x.orders[r];
+    });
+    counts[key] = Object.keys(pg.orders).length;
+  }
+  const top = {};
+  for (const b of blobs) top[b.year] = Math.max(top[b.year] ?? 0, b.n);
+  const stale = Object.entries(cur.orders)
+    .filter(([r, c]) => !listed.has(r) && new Date(c.changedAt ?? c.receivedAt).getTime() < started - 60000)
+    .map(([r]) => r);
+  await indexEdit(store, (x) => {
+    const before = JSON.stringify(x);
+    for (const r of [...stale, ...gone]) delete x.orders[r];
+    for (const [key, c] of Object.entries(counts)) {
+      if (c) x.done[key] = c;
+      else delete x.done[key];
+    }
+    for (const key of Object.keys(x.done)) if (!pages.has(key)) delete x.done[key];
+    for (const [y, n] of Object.entries(top)) x.last[y] = Math.max(x.last[y] ?? 0, n);
+    if (JSON.stringify(x) === before) return false;
+  });
   let counters = 0;
   for (const b of await store.list('limits/'))
     if (now - b.at > DAY) {
       await store.remove(b.path);
       counters++;
     }
-  return { removed: gone.length, counters };
+  return { removed: gone.length, moved: move.length, restored, stale: stale.length, pages: Object.keys(counts).length, counters };
 }
 
 // ——— the login brake (docs/admin.md §4) ———

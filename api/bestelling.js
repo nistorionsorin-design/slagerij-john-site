@@ -2,7 +2,7 @@
 // in the customer's mails (/bestelling?r=…&k=…, signed with ADMIN_SECRET) is the permission: no login.
 //   GET ?r&k → { ref, locale, method, step (0 Ontvangen · 1 In bereiding · 2 Klaar), moment } — the status and the pickup
 //   or delivery moment only: never the name, phone, e-mail or address (docs/admin.md §3.5). A link that is not ours, or
-//   an order gone after 90 days → 404 („Deze link is niet meer geldig”).
+//   an order erased on request (or received before the switch day and gone after 90 days, row 12c) → 404 („Deze link is niet meer geldig”).
 import { storeFor, readOrder } from '../src/lib/order-store.js';
 import { checkStatus } from '../src/lib/order-sign.js';
 import { dayLabel } from '../src/lib/order-core.js';

@@ -18,8 +18,9 @@ const VERBOSE = args.includes('--v');
 
 // a clean environment: no real key can be used by accident (the store is the double, Resend is the stub)
 for (const k of ['BLOB_READ_WRITE_TOKEN', 'RESEND_API_KEY', 'ORDER_MAIL_FROM', 'ORDER_MAIL_TO', 'METRICS_URL', 'METRICS_KEY', 'TWILIO_ACCOUNT_SID', 'VERCEL', 'VERCEL_ENV', 'ORDER_DRY_RUN', 'ADMIN_PASS_HASH', 'ADMIN_SECRET', 'CRON_SECRET']) delete process.env[k];
-const { memoryAdapter, sweep, parseRef, pathOf, INDEX, _flood } = await import('../src/lib/order-store.js');
-const { hashPass, newSecret, signStep, signStatus } = await import('../src/lib/order-sign.js');
+const { memoryAdapter, sweep, parseRef, pathOf, pagePath, pageOf, INDEX, _flood } = await import('../src/lib/order-store.js');
+const { hashPass, newSecret, signStep, signStatus, sessionValue } = await import('../src/lib/order-sign.js');
+const { KEEP_FROM } = await import('../src/lib/order-keep.js');
 const { daysFor } = await import('../src/lib/order-core.js');
 const data = (f) => JSON.parse(readFileSync(join(root, 'src/data', f), 'utf8'));
 const hours = data('hours.json');
@@ -389,6 +390,270 @@ const blobOf = (ref) => store.map.get(pathOf(parseRef(ref).year, parseRef(ref).n
   record('§6 sweep: 91 days gone, 89 stays', why, { old: old.ref, young: young.ref, cron });
 }
 
+// ——— row 12c (D-72 A): kept until the customer asks · the erase · the list that does not read a growing file ———
+const DAYMS = 86400000;
+const SWITCH = Date.parse(`${KEEP_FROM}T00:00:00+01:00`);
+const cookieAt = (t) => `sj_admin=${sessionValue(SECRET, t)}`;
+const blobAt = (ref) => store.map.get(pathOf(parseRef(ref).year, parseRef(ref).n));
+const ixNow = () => JSON.parse(store.map.get(INDEX).body);
+const pageNow = (ref) => {
+  const p = parseRef(ref);
+  const x = store.map.get(pagePath(pageOf(p.year, p.n)));
+  return x ? JSON.parse(x.body) : null;
+};
+/** the store's calls of one action: simple = reads + heads, advanced = writes + lists (Hobby: 10 000 · 2 000 a month) */
+const opsOf = async (fn) => {
+  const a = { ...store.ops };
+  const r = await fn();
+  const d = Object.fromEntries(Object.keys(store.ops).map((k) => [k, store.ops[k] - a[k]]));
+  return { r, calls: { simple: d.read + d.head, advanced: d.write + d.list, removes: d.remove, ...d } };
+};
+const walk = async (ref, c) => {
+  for (let i = 0; i < 4; i++) await adminPost({ op: 'next', ref }, { cookie: c });
+};
+const calls = {};
+
+// 12 — a 91-day and a 400-day order received after the switch day stay; one received before it goes at day 91
+{
+  const why = [];
+  const real = clock;
+  clock = SWITCH + 1 * DAYMS + 9 * 3600000;
+  const k91 = await body(await post(orderApi, orderInput()));
+  clock = SWITCH + 2 * DAYMS + 9 * 3600000;
+  const k400 = await body(await post(orderApi, orderInput()));
+  // the 400-day one is picked up: it leaves the index for its archive page and must stay there too
+  await walk(k400.ref, cookieAt(clock));
+  clock = SWITCH - 1 * DAYMS + 9 * 3600000;
+  const before = await body(await post(orderApi, orderInput()));
+  clock = SWITCH - 1 * DAYMS + 9 * 3600000 + 89 * DAYMS;
+  let list = await body(await adminGet({ op: 'list' }, { cookie: cookieAt(clock) }));
+  if (!list.orders.some((o) => o.ref === before.ref)) why.push(`the order received before the switch day is gone at day 89 (${before.ref})`);
+  clock = SWITCH - 1 * DAYMS + 9 * 3600000 + 91 * DAYMS;
+  list = await body(await adminGet({ op: 'list' }, { cookie: cookieAt(clock) }));
+  if (list.orders.some((o) => o.ref === before.ref) || blobAt(before.ref)) why.push(`the order received before the switch day stayed past day 91 (${before.ref})`);
+  if (!list.orders.some((o) => o.ref === k91.ref) || !blobAt(k91.ref)) why.push(`the order received after the switch day is gone at day 90 (${k91.ref})`);
+  clock = SWITCH + 1 * DAYMS + 9 * 3600000 + 91 * DAYMS;
+  list = await body(await adminGet({ op: 'list' }, { cookie: cookieAt(clock) }));
+  if (!list.orders.some((o) => o.ref === k91.ref) || !blobAt(k91.ref)) why.push(`a 91-day order received after the switch day is gone (${k91.ref})`);
+  clock = SWITCH + 2 * DAYMS + 9 * 3600000 + 400 * DAYMS;
+  await adminGet({ op: 'list' }, { cookie: cookieAt(clock) });
+  const cron = await body(await adminGet({ op: 'sweep' }, { headers: { authorization: `Bearer ${CRON}` } }));
+  list = await body(await adminGet({ op: 'list' }, { cookie: cookieAt(clock) }));
+  const pg = pageOf(parseRef(k400.ref).year, parseRef(k400.ref).n);
+  const page = await body(await adminGet({ op: 'page', p: pg }, { cookie: cookieAt(clock) }));
+  if (!blobAt(k400.ref)) why.push(`a 400-day order received after the switch day lost its blob (${k400.ref})`);
+  if (!page.orders?.some((o) => o.ref === k400.ref)) why.push(`a 400-day order picked up is not in its page ${pg}`);
+  if (list.done?.[pg] !== page.orders?.length) why.push(`the list's count of ${pg} = ${list.done?.[pg]}, the page holds ${page.orders?.length}`);
+  if (!list.orders.some((o) => o.ref === k91.ref) || !blobAt(k91.ref)) why.push(`after the full sweep at day 400 the kept order ${k91.ref} is gone`);
+  clock = real;
+  record('12c a 91-day and a 400-day order received after the switch day stay; one received before it goes at day 91', why, { KEEP_FROM, before: before.ref, k91: k91.ref, k400: k400.ref, cron });
+}
+
+// 13 — the list: the index holds the open work only; a kept order picked up moves to its page and back on Înapoi; the
+// list is one read, a page is one read; 120 picked-up orders leave the index as small as it was
+{
+  const why = [];
+  const real = clock;
+  clock = SWITCH + 3 * DAYMS;
+  const c = cookieAt(clock);
+  const fresh = await opsOf(() => post(orderApi, orderInput()).then(body));
+  calls['a new order (claim + card + light sweep)'] = fresh.calls;
+  const ref = fresh.r.ref;
+  const steps = [];
+  for (let i = 0; i < 3; i++) steps.push((await opsOf(() => adminPost({ op: 'next', ref }, { cookie: c }).then(body))).calls);
+  calls['a step between open statuses (Am primit-o · O pregătim · E gata, + its mail where it has one)'] = steps[0];
+  const toDone = await opsOf(() => adminPost({ op: 'next', ref }, { cookie: c }).then(body));
+  calls['the last step (A fost ridicată / livrată): the card to its page'] = toDone.calls;
+  if (ref in ixNow().orders) why.push('a kept order picked up still lies in the index');
+  if (!pageNow(ref)?.orders?.[ref]) why.push('a kept order picked up is not in its page');
+  if (!toDone.r.done || toDone.r.done[pageOf(parseRef(ref).year, parseRef(ref).n)] !== Object.keys(pageNow(ref).orders).length) why.push(`the step's answer carries no right page count: ${JSON.stringify(toDone.r.done)}`);
+  const back = await opsOf(() => adminPost({ op: 'back', ref }, { cookie: c }).then(body));
+  calls['Înapoi from Ridicate: the card back to the index'] = back.calls;
+  if (!(ref in ixNow().orders) || pageNow(ref)?.orders?.[ref]) why.push('Înapoi did not bring the card back to the index');
+  await adminPost({ op: 'next', ref }, { cookie: c });
+  const list = await opsOf(() => adminGet({ op: 'list' }, { cookie: c }).then(body));
+  calls['a refresh of the list (each minute while open)'] = list.calls;
+  if (list.calls.simple !== 1 || list.calls.advanced !== 0) why.push(`a list refresh = ${JSON.stringify(list.calls)} (want one read)`);
+  const key = pageOf(parseRef(ref).year, parseRef(ref).n);
+  const pg = await opsOf(() => adminGet({ op: 'page', p: key }, { cookie: c }).then(body));
+  calls['one archive page (Ridicate / Toate, as the list is scrolled)'] = pg.calls;
+  if (pg.calls.simple !== 1 || pg.calls.advanced !== 0) why.push(`a page = ${JSON.stringify(pg.calls)} (want one read)`);
+  if ((await adminGet({ op: 'page', p: key })).status !== 401) why.push('a page without the cookie is not 401');
+  if ((await adminGet({ op: 'page', p: '../index' }, { cookie: c })).status !== 400) why.push('a page key that is not a page is not 400');
+  // 120 kept orders, all picked up: the index the list reads stays the size of the open work
+  const sizeBefore = store.map.get(INDEX).body.length;
+  const many = [];
+  for (let i = 0; i < 120; i++) many.push(await body(await post(orderApi, orderInput())));
+  const sizeOpen = store.map.get(INDEX).body.length;
+  for (const o of many) await walk(o.ref, c);
+  const sizeAfter = store.map.get(INDEX).body.length;
+  const ix = ixNow();
+  const listed = await body(await adminGet({ op: 'list' }, { cookie: c }));
+  const shownDone = Object.values(listed.done).reduce((a, b) => a + b, 0);
+  if (many.some((o) => o.ref in ix.orders)) why.push('a picked-up kept order still lies in the index');
+  if (sizeAfter > sizeBefore + 200) why.push(`the index grew from ${sizeBefore} to ${sizeAfter} B with 120 picked-up orders`);
+  let inPages = 0;
+  for (const [k, n] of Object.entries(ix.done)) {
+    const p = JSON.parse(store.map.get(pagePath(k)).body);
+    if (Object.keys(p.orders).length !== n) why.push(`page ${k}: index says ${n}, the page holds ${Object.keys(p.orders).length}`);
+    inPages += n;
+  }
+  if (shownDone !== inPages) why.push(`the list's Ridicate count ${shownDone} ≠ ${inPages}`);
+  const biggest = Math.max(...Object.keys(ix.done).map((k) => store.map.get(pagePath(k)).body.length));
+  clock = real;
+  record('12c the list: one read of the index (open work only), pages of 50 for Ridicate / Toate, Înapoi back', why, { index_bytes: { before: sizeBefore, with_120_open: sizeOpen, after_120_picked_up: sizeAfter }, pages: ix.done, biggest_page_bytes: biggest, last: ix.last });
+}
+
+// 14 — the store as row 12 leaves it (index v1, every card in it, no pages): the first list reads it as v2, moves a kept
+// card picked up to its page, leaves an order received before the switch day (picked up too) in the index. A store of
+// its own: the shared one keeps its pages.
+{
+  const why = [];
+  const real = clock;
+  const old = memoryAdapter({ now: () => clock });
+  for (const h of [orderApi.hooks, adminApi.hooks, statusApi.hooks]) h.store = old;
+  const at = (t) => new Date(t).toISOString();
+  const mk = (n, t, status) => ({ v: 1, ref: `SJ-2026-${String(n).padStart(4, '0')}`, n, year: 2026, receivedAt: at(t), locale: 'nl', method: 'pickup', date: '2026-11-14', time: '10:00', name: `Testklant v1-${n}`, phone: '0470 00 00 99', email: `v1-${n}@example.invalid`, remarks: '', slip: [], totalLabel: '', quote: false, status, history: [{ to: 'noua', at: at(t) }, ...(status === 'noua' ? [] : [{ to: status, at: at(t + 3600000) }])], sent: {} });
+  const orders = [mk(1, SWITCH - 1 * DAYMS, 'ridicata'), mk(2, SWITCH + 2 * 3600000, 'ridicata'), mk(3, SWITCH + 3 * 3600000, 'noua')];
+  for (const o of orders) await old.write(pathOf(2026, o.n), o, { create: true });
+  const cards = Object.fromEntries(orders.map(({ email: _e, ...c }) => [c.ref, c]));
+  await old.write(INDEX, { v: 1, orders: cards }, { create: true });
+  clock = SWITCH + 1 * DAYMS;
+  const c = cookieAt(clock);
+  const list = await body(await adminGet({ op: 'list' }, { cookie: c }));
+  const ix = JSON.parse(old.map.get(INDEX).body);
+  const pk = pagePath(pageOf(2026, 2));
+  const pg = old.map.get(pk) ? JSON.parse(old.map.get(pk).body) : null;
+  if (ix.v !== 2 || !ix.done || !ix.last) why.push(`the index after the first list: ${JSON.stringify({ v: ix.v, done: ix.done, last: ix.last })}`);
+  if ('SJ-2026-0002' in ix.orders || !pg?.orders['SJ-2026-0002']) why.push('the kept order picked up did not move to its page');
+  if (!('SJ-2026-0001' in ix.orders) || pg?.orders['SJ-2026-0001']) why.push('the order received before the switch day left the index');
+  if (!('SJ-2026-0003' in ix.orders)) why.push('the open order left the index');
+  if (ix.done[pageOf(2026, 2)] !== 1 || list.done?.[pageOf(2026, 2)] !== 1) why.push(`the page count: index ${JSON.stringify(ix.done)}, list ${JSON.stringify(list.done)}`);
+  if (list.orders.some((x) => x.ref === 'SJ-2026-0002')) why.push('the first list still listed it among the index cards');
+  if (list.orders.some((x) => 'email' in x)) why.push('the list shows an e-mail address');
+  for (const h of [orderApi.hooks, adminApi.hooks, statusApi.hooks]) h.store = store;
+  clock = real;
+  record('12c the store as row 12 left it (index v1): read as v2, a kept picked-up card to its page, a pre-switch one stays', why, { index: { v: ix.v, cards: Object.keys(ix.orders), done: ix.done, last: ix.last } });
+}
+
+// 15 — erase: logged in only, a POST with x-admin; the card and the blob gone; a second tap „already gone”; the links
+// answer as a wrong one; no mail; the number is not given again; five orders arriving during an erase
+{
+  const why = [];
+  const real = clock;
+  clock = SWITCH + 5 * DAYMS;
+  const c = cookieAt(clock);
+  const open = await body(await post(orderApi, orderInput()));
+  const picked = await body(await post(orderApi, orderInput()));
+  await walk(picked.ref, c);
+  const openBlob = blobAt(open.ref).body;
+  const r401 = await adminPost({ op: 'erase', ref: open.ref });
+  if (r401.status !== 401) why.push(`erase without the cookie → ${r401.status}`);
+  const r403 = await adminPost({ op: 'erase', ref: open.ref }, { cookie: c, header: false });
+  if (r403.status !== 403) why.push(`erase without x-admin → ${r403.status}`);
+  const rGet = await adminGet({ op: 'erase', ref: open.ref }, { cookie: c });
+  if (rGet.status !== 404) why.push(`a GET erase → ${rGet.status} (want 404: no such op)`);
+  const r400 = await adminPost({ op: 'erase', ref: 'SJ-2026-ABCD' }, { cookie: c });
+  if (r400.status !== 400) why.push(`erase of a page reference → ${r400.status}`);
+  if (blobAt(open.ref)?.body !== openBlob || !(open.ref in ixNow().orders)) why.push('a refused erase changed something');
+  // the customer's link and the shop's step link before: they work
+  if ((await statusGet(signStatus(SECRET, open.ref))).status !== 200) why.push('the status link did not work before the erase');
+  mails.length = 0;
+  const e1 = await opsOf(() => adminPost({ op: 'erase', ref: open.ref }, { cookie: c }).then(body));
+  calls['erase an open order („Șterge comanda”)'] = e1.calls;
+  const e2 = await opsOf(() => adminPost({ op: 'erase', ref: picked.ref }, { cookie: c }).then(body));
+  calls['erase a picked-up order (its page and the index)'] = e2.calls;
+  if (!e1.r.ok || e1.r.erased !== true || !e2.r.ok || e2.r.erased !== true) why.push(`erase answers ${JSON.stringify([e1.r, e2.r])}`);
+  for (const o of [open, picked]) {
+    if (blobAt(o.ref)) why.push(`${o.ref}: the blob is still there`);
+    if (o.ref in ixNow().orders) why.push(`${o.ref}: the index card is still there`);
+    if (pageNow(o.ref)?.orders?.[o.ref]) why.push(`${o.ref}: the page card is still there`);
+  }
+  const list = await body(await adminGet({ op: 'list' }, { cookie: c }));
+  const pk = pageOf(parseRef(picked.ref).year, parseRef(picked.ref).n);
+  const page = await body(await adminGet({ op: 'page', p: pk }, { cookie: c }));
+  if ([...list.orders, ...page.orders].some((o) => o.ref === open.ref || o.ref === picked.ref)) why.push('the screen still shows an erased order');
+  if ((list.done[pk] ?? 0) !== page.orders.length) why.push(`after the erase the count of ${pk} = ${list.done[pk]}, the page holds ${page.orders.length}`);
+  const again = await opsOf(() => adminPost({ op: 'erase', ref: open.ref }, { cookie: c }));
+  calls['a second tap on an erased order'] = again.calls;
+  const againB = await body(again.r);
+  if (again.r.status !== 200 || againB.erased !== false || againB.ok !== true) why.push(`a second tap → ${again.r.status} ${JSON.stringify(againB)} (want 200 erased:false)`);
+  if (again.calls.advanced) why.push(`a second tap wrote: ${JSON.stringify(again.calls)}`);
+  if (mails.length) why.push(`the erase sent ${mails.length} mail(s)`);
+  // the customer's status link answers as a wrong key does; the shop's step link as a gone order
+  const st = await statusGet(signStatus(SECRET, open.ref));
+  const wrong = await statusGet({ r: open.ref, k: 'x'.repeat(43) });
+  const stText = await st.text();
+  const wrongText = await wrong.text();
+  if (st.status !== wrong.status || stText !== wrongText) why.push(`the status link after the erase: ${st.status} ${stText} ≠ wrong key ${wrong.status} ${wrongText}`);
+  const stepGet = await adminGet({ op: 'step', ...signStep(SECRET, open.ref, 'gata', clock) });
+  const stepPost = await adminPost({ op: 'step', ...signStep(SECRET, open.ref, 'gata', clock) });
+  if (stepGet.status !== 404 || stepPost.status !== 404) why.push(`the step link after the erase: GET ${stepGet.status} POST ${stepPost.status} (want 404)`);
+  if (blobAt(open.ref)) why.push('a step link after the erase wrote the order back');
+  // the highest number erased: the next order does not get it again
+  const top = await body(await post(orderApi, orderInput()));
+  const topN = parseRef(top.ref).n;
+  await adminPost({ op: 'erase', ref: top.ref }, { cookie: c });
+  const nextOne = await body(await post(orderApi, orderInput()));
+  if (parseRef(nextOne.ref).n !== topN + 1) why.push(`after erasing ${top.ref} the next order got ${nextOne.ref}`);
+  // five orders arriving during an erase: the index stays valid and holds the five, not the erased one
+  const victim = await body(await post(orderApi, orderInput()));
+  const [er, ...five] = await Promise.all([adminPost({ op: 'erase', ref: victim.ref }, { cookie: c }).then(body), ...[1, 2, 3, 4, 5].map(() => post(orderApi, orderInput()).then(body))]);
+  let ix;
+  try {
+    ix = ixNow();
+  } catch {
+    why.push('the index is not valid JSON after the race');
+  }
+  if (ix) {
+    if (!er.ok || er.erased !== true) why.push(`the erase in the race → ${JSON.stringify(er)}`);
+    if (victim.ref in ix.orders || blobAt(victim.ref)) why.push('the erased order came back in the race');
+    for (const f of five) {
+      if (!f.ok) why.push(`an order in the race → ${JSON.stringify(f)}`);
+      else if (!(f.ref in ix.orders) || !blobAt(f.ref)) why.push(`${f.ref} missing after the race`);
+    }
+    if (new Set(five.map((f) => f.ref)).size !== 5) why.push(`the race gave ${five.map((f) => f.ref)}`);
+    const refs = five.map((f) => parseRef(f.ref));
+    if (refs.some((p) => p && ix.last[p.year] < p.n)) why.push(`the index's last ${JSON.stringify(ix.last)} is below a number given`);
+    for (const r of Object.keys(ix.orders)) if (!blobAt(r)) why.push(`the index holds ${r} without its order`);
+  }
+  clock = real;
+  record('12c erase: 401 without the cookie, 403 without the header, a GET changes nothing, card and blob gone, links dead, no mail, five orders during an erase', why, { erased: [open.ref, picked.ref], second: againB, status_after: `${st.status} ${stText}`, renumber: { erased: top.ref, next: nextOne.ref }, race: { erased: victim.ref, five: five.map((f) => f.ref) } });
+}
+
+// 16 — the full sweep mends a card's lost write (an order in neither the index nor its page) and drops a card whose
+// order is gone
+{
+  const why = [];
+  const real = clock;
+  clock = SWITCH + 6 * DAYMS;
+  const c = cookieAt(clock);
+  const lostOpen = await body(await post(orderApi, orderInput()));
+  const lostDone = await body(await post(orderApi, orderInput()));
+  await walk(lostDone.ref, c);
+  const ix = ixNow();
+  delete ix.orders[lostOpen.ref];
+  ix.orders['SJ-2026-0999'] = { ...ix.orders[Object.keys(ix.orders)[0]], ref: 'SJ-2026-0999', n: 999, receivedAt: new Date(clock - 3 * DAYMS).toISOString(), changedAt: undefined };
+  store.map.set(INDEX, { ...store.map.get(INDEX), body: JSON.stringify(ix) });
+  const pk = pagePath(pageOf(parseRef(lostDone.ref).year, parseRef(lostDone.ref).n));
+  const pg = JSON.parse(store.map.get(pk).body);
+  delete pg.orders[lostDone.ref];
+  store.map.set(pk, { ...store.map.get(pk), body: JSON.stringify(pg) });
+  clock += 2 * DAYMS;
+  const swept = await opsOf(() => adminGet({ op: 'sweep' }, { headers: { authorization: `Bearer ${CRON}` } }).then(body));
+  calls['the weekly full sweep (this test store)'] = swept.calls;
+  const after = ixNow();
+  if (!(lostOpen.ref in after.orders)) why.push('the open order whose card was lost is not back in the index');
+  if (!pageNow(lostDone.ref)?.orders?.[lostDone.ref]) why.push('the picked-up order whose card was lost is not back in its page');
+  if ('SJ-2026-0999' in after.orders) why.push('a card whose order is gone stayed in the index');
+  for (const [k, n] of Object.entries(after.done)) {
+    const p = store.map.get(pagePath(k));
+    if (!p || Object.keys(JSON.parse(p.body).orders).length !== n) why.push(`page ${k}: count ${n} ≠ the page`);
+  }
+  clock = real;
+  record('12c the full sweep puts a lost card back (index or page) and drops a card whose order is gone', why, swept.r);
+}
+
 // 10 — the built /admin HTML and script carry no order field values
 {
   const why = [];
@@ -430,5 +695,6 @@ const blobOf = (ref) => store.map.get(pathOf(parseRef(ref).year, parseRef(ref).n
 globalThis.fetch = realFetch;
 const pass = results.filter((r) => r.ok).length;
 console.log(`\nadmin tests ${pass}/${results.length} · store calls ${JSON.stringify(store.ops)}`);
-if (out) writeFileSync(resolve(out), JSON.stringify({ _source: `scripts/admin-test.mjs on ${new Date().toISOString()} — the functions in-process, the store a local double, Resend stubbed; nothing left this machine [MEASURED-OURS] local`, pass, total: results.length, store_ops: store.ops, results }, null, 1));
+for (const [k, v] of Object.entries(calls)) console.log(`  calls · ${k}: ${v.simple} simple · ${v.advanced} advanced${v.removes ? ` · ${v.removes} delete(s)` : ''}`);
+if (out) writeFileSync(resolve(out), JSON.stringify({ _source: `scripts/admin-test.mjs on ${new Date().toISOString()} — the functions in-process, the store a local double, Resend stubbed; nothing left this machine [MEASURED-OURS] local`, pass, total: results.length, store_ops: store.ops, calls_per_action: calls, results }, null, 1));
 process.exit(pass === results.length ? 0 : 1);
