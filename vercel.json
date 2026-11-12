@@ -27,6 +27,12 @@
       ]
     },
     {
+      "source": "/sw.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    },
+    {
       "source": "/assistant-index.json",
       "headers": [
         { "key": "X-Robots-Tag", "value": "noindex" }

@@ -557,6 +557,29 @@ if (built) {
     verdict('vercel-routes', e, `${(v.redirects ?? []).length} redirects one hop to built pages; ${(v.rewrites ?? []).length} rewrites to existing functions; IndexNow key file`);
   }
 
+  // 10c — the retiring worker (row 11k): browsers that knew the previous site still run its worker (/sw.js, scope /);
+  // public/sw.js replaces it, clears the caches and unregisters. It stays for good, answers no request, is never cached,
+  // and nothing on this site registers a worker.
+  {
+    const e = [];
+    const v = JSON.parse(read(join(root, 'vercel.json')));
+    const sw = join(dist, 'sw.js');
+    if (!existsSync(sw)) e.push('dist/sw.js missing — browsers with the old site\'s worker keep it (row 11k)');
+    else {
+      const code = read(sw).replace(/^\s*\/\/.*$/gm, '');
+      if (read(sw) !== read(join(root, 'public/sw.js'))) e.push('dist/sw.js differs from public/sw.js');
+      if (/addEventListener\(\s*['"]fetch['"]|\bonfetch\b|importScripts|\bfetch\(/.test(code)) e.push('sw.js handles or makes requests — the retiring worker has no fetch handler and loads nothing');
+      for (const [re, what] of [[/skipWaiting\(\)/, 'skipWaiting()'], [/caches\.delete\(/, 'caches.delete'], [/registration\.unregister\(\)/, 'registration.unregister()'], [/\.navigate\(/, 'client.navigate']])
+        if (!re.test(code)) e.push(`sw.js lacks ${what}`);
+    }
+    const rule = (v.headers ?? []).find((h) => h.source === '/sw.js');
+    if (!rule?.headers.some((h) => h.key.toLowerCase() === 'cache-control' && /no-store/.test(h.value))) e.push('vercel.json: no Cache-Control: no-store on /sw.js');
+    if ([...(v.redirects ?? []), ...(v.rewrites ?? [])].some((r) => r.source === '/sw.js')) e.push('vercel.json routes /sw.js away from the file');
+    for (const f of walk(dist).filter((f) => /\.(html|js|mjs)$/.test(f) && f !== sw))
+      if (/serviceWorker\s*\.\s*register|rel="manifest"/.test(read(f))) e.push(`${rel(f)}: registers a service worker or links a manifest — this site runs none`);
+    verdict('retiring-sw', e, 'dist/sw.js = the retiring worker (no fetch handler; clears caches, unregisters, reloads), no-store; no page registers a worker');
+  }
+
   // 11 — motion
   {
     const e = [];

@@ -194,6 +194,10 @@ if (process.argv.includes('--serve')) {
   }
   const key = readdirSync(join(root, 'public')).find((f) => /^[0-9a-f]{32}\.txt$/.test(f));
   await check('indexnow', `/${key}`, '200, body = key', (r) => (r.final === 200 && r.body.trim() === key.slice(0, -4) ? '' : `got ${r.final}`));
+  // row 11k: the retiring worker replaces the previous site's /sw.js in the browsers that still run it
+  await check('sw', '/sw.js', '200 JavaScript, no-store, no fetch handler', (r) =>
+    r.chain.length !== 1 || r.final !== 200 ? `got ${r.final}` : !/javascript/.test(r.type) ? `type ${r.type}`
+      : r.headers['cache-control'] !== 'no-store' ? `cache-control ${r.headers['cache-control']}` : /addEventListener\(\s*['"]fetch/.test(r.body) ? 'a fetch handler' : '');
 
   console.log('| | kind | old URL | want | got |\n|---|---|---|---|---|');
   for (const r of rows) console.log(`| ${r.ok ? '✓' : '✗'} | ${r.kind} | \`${r.path}\` | ${r.want} | ${r.got}${r.ok ? '' : ` — **${r.why}**`} |`);
