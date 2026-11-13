@@ -57,6 +57,30 @@ const BACK = new Set(['dat', 'dit', 'die', 'deze', 'het', 'daar', 'daarin', 'eri
 // only with a cue word as well (allergie, bevat, zit … in, zonder, contine, fara …)
 const FOODLIKE = new Set(['milk', 'eggs', 'fish', 'nuts', 'peanuts', 'mustard']);
 const CUES = ['allergie', 'allergisch', 'allergeen', 'allergenen', 'bevat', 'bevatten', 'zit', 'zitten', 'zonder', 'vrij', 'sporen', 'kruisbesmetting', 'alergie', 'alergic', 'alergica', 'alergen', 'alergeni', 'contine', 'contin', 'fara', 'urme', 'contaminare'];
+// Row 11l — „what is in it” (language knowledge, not copy; normalised words). A question that asks what a named product
+// contains, with no allergen named, is an allergen question (contentsOf): the words that ask it by themselves (with a
+// product named) …
+const C_ASK = new Set(['ingredient', 'ingredienten', 'ingrediente', 'ingredientele', 'samenstelling', 'compozitie', 'compozitia', 'compozitiei', 'continut', 'continutul', 'bevat', 'bevatten', 'contine', 'contin', 'contineti']);
+// … a verb that asks what goes into it, with „in” / „în” right before the product (an article between) or „erin” /
+// „daarin” / „în el, în ea” after it: Dutch always (zit, gaat), Dutch to the shop only (steken jullie, doet u …), Romanian
+// with „ce” (ce e / ce puneți / ce intră / ce folosiți în …)
+const C_IN_NL = new Set(['zit', 'zitten', 'gaat', 'gaan']);
+const C_IN_NL_YOU = new Set(['steken', 'steekt', 'stoppen', 'stopt', 'doen', 'doet', 'verwerken', 'verwerkt', 'mengen', 'mengt']);
+const C_YOU = new Set(['jullie', 'u', 'ge', 'gij', 'gullie']);
+const C_IN_RO = new Set(['e', 'este', 'sunt', 'are', 'intra', 'puneti', 'bagati', 'adaugati', 'amestecati', 'folositi']);
+const C_ARTICLE = new Set(['de', 'het', 'een', 't', 'die', 'dat', 'uw', 'jullie']);
+const C_INTO_IT = new Set(['erin', 'daarin', 'derin', 'hierin']);
+const C_IT_RO = new Set(['el', 'ea', 'ei', 'ele']);
+// … „only meat” (alleen / enkel / puur / 100 % vlees · doar / numai carne, „carne pură”), a filler word between allowed
+const C_ONLY = new Set(['alleen', 'enkel', 'puur', 'zuiver', 'uitsluitend', '100', 'doar', 'numai', 'exclusiv']);
+const C_FILL = new Set(['maar', 'procent', 'uit', 'van', 'din', 'de']);
+const C_PURE = new Set(['pura', 'curata', 'puur', 'zuiver']);
+// … „made of” (waar is … van gemaakt, waaruit bestaat … · din ce e făcut …), not „zelf gemaakt” (products-own-made)
+const C_OWN = new Set(['zelf', 'huisgemaakt', 'eigen', 'thuis']);
+// A package keeps its bank answer: what it holds is a list of other products (the colli lines, the bank's colli and
+// platter entries) — the colli, the gourmet and fondue sets, and every product whose name is a set (prepare: `pk`)
+const PACKAGE_CATS = new Set(['colli', 'gourmet']);
+const PACKAGE_WORDS = ['tapas', 'schotel', 'buffet', 'pakket', 'platou', 'bufet'];
 // words a trigger can fold into that mean something else without their accent („vóór” before → „voor” for)
 const FOLDS = new Set(['voor']);
 // shorthand customers type for the bank's words (per persoon · kilogram)
@@ -89,6 +113,8 @@ export function prepare(ix) {
   const stop = { nl: new Set(ix.stop.nl), ro: new Set(ix.stop.ro) };
   ix._stop = stop;
   for (const p of ix.p) p.phw = p.ph.map(split);
+  // row 11l: a package (its contents are other products; contentsOf leaves it to the bank)
+  for (const p of ix.p) p.pk = PACKAGE_CATS.has(p.c) || [...words(p.n.nl), ...words(p.n.ro)].some((w) => PACKAGE_WORDS.some((k) => w === k || w.endsWith(k)));
   ix._byId = new Map(ix.p.map((p) => [p.id, p]));
   ix._generic = new Map(Object.entries(ix.generic));
   const df = { nl: new Map(), ro: new Map() };
@@ -1022,6 +1048,47 @@ function alNames(ix, ids, L) {
   return n.length < 2 ? n.join('') : `${n.slice(0, -1).join(', ')} ${L === 'ro' ? 'și' : 'en'} ${n[n.length - 1]}`;
 }
 
+/** Row 11l (the owners' d1 of 12.11: every answer says a product may hold traces; an allergic customer contacts the
+ *  shop): the product a „what is in it” question asks about, with no allergen named — „conține ceva carnea tocată în
+ *  afară de carne?”, „e doar carne în carnea tocată?”, „ce ingrediente are américain?”, „Is het gehakt alleen vlees?”,
+ *  „Wat zit er in de braadworst?”, „Waar is de braadworst van gemaakt?” — or null. Such a question is read as the allergen
+ *  questions are (allergenRoute: the product's group row, or the §4 hand-off where it has no group, with the notice), not
+ *  as „do you have”. How a package is told apart: when a package is named anywhere in the message (a colli, a gourmet or
+ *  fondue set, a tapas formula, a schotel / platou, a buffet — `pk`, or a word that only packages share: „colli”), or the
+ *  thing the question is about is a word several products share („worst”), this returns null and the message goes on as
+ *  before: „Wat zit er in colli John?” and „Wat zit er in de koude schotel?” keep their bank answers. With no product
+ *  named, a word that points back („wat zit erin?”, „ce conține asta?”) asks about the last answer's product. */
+function contentsOf(ix, T, st) {
+  const all = productSpans(ix, T);
+  const pk = (s) => s.ids.every((id) => ix._byId.get(id)?.pk);
+  if (all.some(pk)) return null;
+  const inSpan = (i) => all.some((s) => i >= s.at && i < s.at + s.len);
+  const meat = (w) => w === 'vlees' || /^[a-z]{3,}vlees$/.test(w) || same(w, 'carne');
+  // „in” / „în” right before a product (an article between): that product is what the question is about
+  let after = null;
+  for (let i = 0; i < T.length && !after; i++)
+    if (T[i] === 'in') {
+      const j = C_ARTICLE.has(T[i + 1]) ? i + 2 : i + 1;
+      after = all.find((s) => s.at === j) ?? null;
+    }
+  const intoIt = T.some((w) => C_INTO_IT.has(w)) || T[T.length - 1] === 'in' || T.some((w, i) => w === 'in' && C_IT_RO.has(T[i + 1]));
+  const verbIn =
+    T.some((w) => C_IN_NL.has(w)) || (T.some((w) => C_YOU.has(w)) && T.some((w) => C_IN_NL_YOU.has(w))) || (T.includes('ce') && T.some((w) => C_IN_RO.has(w)));
+  const only =
+    T.some((w, i) => C_ONLY.has(w) && [1, 2].some((k) => T[i + k] && meat(T[i + k]) && !inSpan(i + k) && (k === 1 || C_FILL.has(T[i + 1])))) ||
+    T.some((w, i) => meat(w) && !inSpan(i) && C_PURE.has(T[i + 1]));
+  const made =
+    (T.includes('gemaakt') && !T.some((w) => C_OWN.has(w)) && (T.includes('waarvan') || T.includes('waarmee') || ((T.includes('waar') || T.includes('wat')) && (T.includes('van') || T.includes('met'))))) ||
+    (T.includes('bestaat') && (T.includes('waaruit') || (T.includes('wat') && T.includes('uit')))) ||
+    (T.some((w, i) => w === 'din' && T[i + 1] === 'ce') && T.some((w) => /^(facut|face$|fac$|faceti$|preparat|consta)/.test(w)));
+  const ask = T.some((w) => C_ASK.has(w));
+  if (!(ask || only || made || (verbIn && (after || intoIt)))) return null;
+  const s = after ?? all[0];
+  if (s) return !s.generic && s.ids.length === 1 ? s.ids[0] : null;
+  if (st.last && T.some((w) => BACK.has(w)) && !ix._byId.get(st.last)?.pk) return st.last;
+  return null;
+}
+
 function allergenRoute(ctx) {
   const { ix, st, T, L, raw, here } = ctx;
   const t = ix.s[L].t;
@@ -1032,13 +1099,15 @@ function allergenRoute(ctx) {
   const allergyWord = T.some((w) => /allerg|^alerg|^kruisbesmet|^contaminar/.test(w));
   // a message that is only an allergen word („mosterd?”, „mustar?”, „lactosevrij?”) asks about that allergen
   const bare = al.ids.length > 0 && T.every((w) => ix._stop.nl.has(w) || ix._stop.ro.has(w) || ix.al.list.some((a) => a.w.some((x) => same(x, w) || w.startsWith(x))));
-  if (!(al.strong.length || (al.ids.length && (cue || bare)) || allergyWord)) return null;
+  // row 11l: „what is in it”, no allergen named — the product it asks about
+  const asked = al.ids.length ? null : contentsOf(ix, T, st);
+  if (!(al.strong.length || (al.ids.length && (cue || bare)) || allergyWord || asked)) return null;
 
   const notice = textLine(ix.al.notice[L]);
   const done = (r, dbg) => {
     r.face = 'serious';
     linkTo(ix, r, L, ix.al.href[L], here);
-    return { r, dbg: { intent: 'allergen', dynamic: 'allergen', handoff: 'none', ...dbg } };
+    return { r, dbg: { intent: 'allergen', dynamic: 'allergen', handoff: 'none', ...(asked ? { asked: 'contents' } : {}), ...dbg } };
   };
   const cats = catsIn(ix, T);
   const spans = productSpans(ix, T).filter((s) => !s.generic && s.ids.length === 1);
@@ -1048,7 +1117,7 @@ function allergenRoute(ctx) {
   // de porc” beside „cârnați”) is the product (row 11f)
   const named = spans.filter((s) => ![...Array(s.len).keys()].every((k) => catWords.has(s.at + k)));
   const back = !named.length && !cats.length && st.last && T.some((w) => BACK.has(w));
-  const pid = named[0]?.ids[0] ?? (back ? st.last : null);
+  const pid = asked ?? named[0]?.ids[0] ?? (back ? st.last : null);
 
   // a named product: the matrix only through the owners' confirmed product → category map; until then, hand off
   if (pid) {
