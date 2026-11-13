@@ -79,6 +79,9 @@ if (want('--local')) {
     if (e.intent && dbg.intent !== e.intent) why.push(`intent ${dbg.intent} ≠ ${e.intent}`);
     if (e.product && dbg.product !== e.product) why.push(`product ${dbg.product} ≠ ${e.product}`);
     for (const s of e.must_include ?? []) if (!t.includes(s)) why.push(`missing „${s}”`);
+    // must_not_start (row 11m): the reply's first word is none of these (case-insensitive)
+    const first = t.trim().match(/^[\p{L}\p{N}']+/u)?.[0] ?? '';
+    for (const s of e.must_not_start ?? []) if (first.toLowerCase() === s.toLowerCase()) why.push(`starts with „${first}”`);
     if (reply.lang !== c.lang) why.push(`answered in ${reply.lang}`);
     const ok = !why.length;
     const acts = reply.acts.map((a) => a.kind);
