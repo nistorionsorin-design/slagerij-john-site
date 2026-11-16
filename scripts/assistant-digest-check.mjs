@@ -1,6 +1,7 @@
 // The weekly mail of unanswered questions, checked without the network (row 11b, test ms-04): api/qa-digest.js runs
 // with `fetch` stubbed — the database's qa_misses_week answers rows for the right token and none for a wrong one (as
 // the SQL does), Resend's /emails records the mail. Nothing leaves this machine. Used by scripts/assistant-test-11b.mjs.
+// Row 11n (D-77): without QA_DIGEST_TO the mail goes to info@ as before; with it, to exactly its addresses.
 const ROWS = [
   { day: '2026-11-09', lang: 'nl', page: '/producten', q: 'hebben jullie hertenvlees' },
   { day: '2026-11-11', lang: 'ro', page: '/ro/produse', q: 'aveți carne de cerb' },
@@ -22,6 +23,7 @@ export async function digestCheck() {
   };
   Object.assign(process.env, { CRON_SECRET: 'cron', METRICS_URL: 'https://stub.supabase.co', METRICS_KEY: 'stub', QA_DIGEST_TOKEN: 'right-token', RESEND_API_KEY: 'stub', ORDER_MAIL_FROM: 'bestellingen@slagerij-john.be', VERCEL_ENV: 'production' });
   delete process.env.QA_DIGEST_DRY_RUN;
+  delete process.env.QA_DIGEST_TO;
   const { default: fn } = await import('../api/qa-digest.js');
   const call = (auth) => fn.fetch(new Request('https://slagerij-john.be/api/qa-digest', { headers: auth ? { authorization: auth } : {} }));
   const why = [];
@@ -43,7 +45,20 @@ export async function digestCheck() {
     rowsFor = () => [];
     const d = await (await call('Bearer cron')).json();
     if (d.sent || sent.length !== 1) why.push('0 rows sent a mail');
-    return { ok: !why.length, why: why.join('; '), mail: { lang: 'ro', subject: m.subject, to: m.to, lines: (m.text ?? '').split('\n') } };
+    // row 11n (D-77): QA_DIGEST_TO holds addresses → the mail goes to exactly those, not to ORDER_MAIL_TO / info@
+    rowsFor = (token) => (token === 'right-token' ? ROWS : []);
+    process.env.QA_DIGEST_TO = ' a@example.invalid , b@example.invalid,';
+    let e = {};
+    try {
+      e = await (await call('Bearer cron')).json();
+    } finally {
+      delete process.env.QA_DIGEST_TO;
+    }
+    const m2 = sent[1] ?? {};
+    if (!e.sent || sent.length !== 2) why.push('QA_DIGEST_TO set → no mail');
+    if (JSON.stringify(m2.to) !== JSON.stringify(['a@example.invalid', 'b@example.invalid'])) why.push(`QA_DIGEST_TO → to ${JSON.stringify(m2.to)}`);
+    if ((m2.to ?? []).includes('info@slagerij-john.be')) why.push('QA_DIGEST_TO set, info@ still a recipient');
+    return { ok: !why.length, why: why.join('; '), mail: { lang: 'ro', subject: m.subject, to: m.to, to_digest: m2.to, lines: (m.text ?? '').split('\n') } };
   } finally {
     globalThis.fetch = real;
     for (const k of Object.keys(process.env)) if (!(k in keep)) delete process.env[k];

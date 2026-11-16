@@ -4,8 +4,10 @@
 // nothing is read or sent. Reads the last 7 days through qa_misses_week(site, QA_DIGEST_TOKEN)
 // (docs/sql/qa-misses-11b.sql: the token's sha256 sits in the database, the token only in Vercel) and, when there are
 // rows, sends the Romanian mail of lexicon §6 (src/lib/assistant/misses.js digestMail) through the order mail's Resend
-// setup (RESEND_API_KEY · ORDER_MAIL_FROM) to ORDER_MAIL_TO (default: entity.json e-mail). No rows, no token, no keys →
-// nothing is sent; the answer says which, never a value. Secrets only as Vercel environment variables (D-26).
+// setup (RESEND_API_KEY · ORDER_MAIL_FROM) to QA_DIGEST_TO (row 11n, D-77: a comma-separated list of addresses) or, when
+// that holds no address, to ORDER_MAIL_TO (default: entity.json e-mail) as before; the order mails never read
+// QA_DIGEST_TO. No rows, no token, no keys → nothing is sent; the answer says which, never a value. Secrets only as
+// Vercel environment variables (D-26).
 // QA_DIGEST_DRY_RUN=1 builds the mail and prints its subject without sending (a preview deployment).
 // Row 11d (D-65, §13.5): the mail also carries the week's table of the next-question buttons, read through
 // qa_paths_week(site, QA_DIGEST_TOKEN, 7) (docs/sql/qa-asks-11d.sql); until Dan runs that file, or on any error, the
@@ -32,6 +34,11 @@ async function pathsWeek(env, site) {
   } catch {
     return null;
   }
+}
+/** the weekly mail's recipients (D-77): QA_DIGEST_TO split on commas, each trimmed, empties dropped; none → ORDER_MAIL_TO */
+function recipients(env) {
+  const list = String(env.QA_DIGEST_TO ?? '').split(',').map((a) => a.trim()).filter(Boolean);
+  return list.length ? list : [env.ORDER_MAIL_TO || entity.email];
 }
 const answer = (status, body) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
 const log = (o) => console.log(JSON.stringify({ event: 'qa-digest', ...o }));
@@ -75,7 +82,7 @@ export default {
     const r = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { authorization: `Bearer ${env.RESEND_API_KEY}`, 'content-type': 'application/json' },
-      body: JSON.stringify({ from: env.ORDER_MAIL_FROM, to: [env.ORDER_MAIL_TO || entity.email], subject: mail.subject, text: mail.text, html: mail.html }),
+      body: JSON.stringify({ from: env.ORDER_MAIL_FROM, to: recipients(env), subject: mail.subject, text: mail.text, html: mail.html }),
       signal: AbortSignal.timeout(8000),
     }).catch(() => null);
     log({ sent: !!r?.ok, rows: rows.length, status: r?.status ?? 0 });
